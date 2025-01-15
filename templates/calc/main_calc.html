@@ -1,0 +1,78 @@
+<!-- templates/calc/main_calc.html -->
+{% extends 'admin/base.html' %}
+{% block content %}
+
+<!-- Haupt-Headline -->
+<h2>ParetoCalc – Main Calculation</h2>
+<hr/>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs" id="calcTabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="tab-projekt" data-bs-toggle="tab"
+       href="#projekt" role="tab" aria-controls="projekt" aria-selected="true">1. Projekt</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="tab-material" data-bs-toggle="tab"
+       href="#material" role="tab" aria-controls="material" aria-selected="false">2. Material</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="tab-fertigung" data-bs-toggle="tab"
+       href="#fertigung" role="tab" aria-controls="fertigung" aria-selected="false">3. Fertigung</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="tab-charts" data-bs-toggle="tab"
+       href="#charts" role="tab" aria-controls="charts" aria-selected="false">4. Charts</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="tab-baugruppe" data-bs-toggle="tab"
+       href="#baugruppe" role="tab" aria-controls="baugruppe" aria-selected="false">5. Baugruppe</a>
+  </li>
+</ul>
+
+<!-- Tab Contents -->
+<div class="tab-content mt-3" id="calcTabContent">
+  <!-- TAB 1: Projekt -->
+  <div class="tab-pane fade show active" id="projekt" role="tabpanel"
+       aria-labelledby="tab-projekt">
+    <!-- Projektdaten - Dummy -->
+    <label>Jahresstückzahl:</label>
+    <input type="number" id="inputJahresStueck" value="10000" class="form-control w-25"/>
+    <label>Gewinn %:</label>
+    <input type="number" id="inputGewinn" value="10" class="form-control w-25"/>
+
+    <!-- Parametrik-Button -->
+    <button class="btn btn-sm btn-secondary mt-3" onclick="openParametrikModal();">
+      Parametrik-Rechner
+    </button>
+
+    <!-- Hier könnte eine Modal-DIV eingefügt werden -->
+  </div>
+
+  <!-- TAB 2: Material -->
+  <div class="tab-pane fade" id="material" role="tabpanel" aria-labelledby="tab-material">
+    <p>Materialkosten-Infos. Button Materialliste etc.</p>
+    <button class="btn btn-sm btn-info" onclick="openMaterialModal();">Material-Liste</button>
+  </div>
+
+  <!-- TAB 3: Fertigung -->
+  <div class="tab-pane fade" id="fertigung" role="tabpanel" aria-labelledby="tab-fertigung">
+    <p>8 Zeilen Arbeitsschritte, Zykluszeit, etc.</p>
+    <button class="btn btn-sm btn-success" onclick="openTaktzeitModal();">Taktzeit-Rechner</button>
+  </div>
+
+  <!-- TAB 4: Charts -->
+  <div class="tab-pane fade" id="charts" role="tabpanel" aria-labelledby="tab-charts">
+    <p>Slider + Charts (Material +/- 30%, Lohn +/- 30%, CO2 Mix ...)</p>
+  </div>
+
+  <!-- TAB 5: Baugruppe -->
+  <div class="tab-pane fade" id="baugruppe" role="tabpanel" aria-labelledby="tab-baugruppe">
+    <p>Baugruppenliste, Excel-Export, etc.</p>
+  </div>
+</div>
+
+<hr/>
+<button class="btn btn-primary" onclick="triggerMainCalc()">Berechnen</button>
+
+{% endblock %}

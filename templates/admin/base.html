@@ -1,0 +1,54 @@
+<!-- templates/admin/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ParetoCalc V2 – Admin</title>
+  <!-- Beispiel für ColorAdmin CSS -->
+  <!-- Passe den Pfad auf deine Struktur an, z. B.: /static/color_admin/css/app.min.css -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='color_admin/css/app.min.css') }}">
+  {% block extra_css %}{% endblock %}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+  <!-- SIDEBAR / NAV -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand ms-3" href="#">ParetoCalc</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarColorAdmin" aria-controls="navbarColorAdmin"
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColorAdmin">
+      <ul class="navbar-nav ms-auto me-3">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin_bp.dashboard') }}">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin_bp.users_list') }}">Users</a>
+        </li>
+        <!-- Ggf. weitere Links: Payment, GPT, Calc ... -->
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('auth_bp.admin_logout') }}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="container mt-4">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="text-center mt-5 mb-3">
+    <small>&copy; 2025 ParetoCalc</small>
+  </footer>
+
+  <!-- Beispiel: ColorAdmin JS -->
+  <script src="{{ url_for('static', filename='color_admin/js/app.min.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

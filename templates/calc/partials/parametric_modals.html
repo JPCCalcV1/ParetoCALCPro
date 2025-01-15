@@ -1,0 +1,21 @@
+<!-- templates/calc/partials/parametric_modals.html -->
+<div class="modal fade" id="modalParametrik" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Parametrik-Rechner</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Wähle den gewünschten Parametrik-Rechner:</p>
+        <button class="btn btn-outline-primary" onclick="calcParamFeinguss()">Feinguss</button>
+        <button class="btn btn-outline-primary" onclick="calcParamKaltflies()">Kaltfließpressen</button>
+        <button class="btn btn-outline-primary" onclick="calcParamSchmieden()">Schmieden</button>
+        <button class="btn btn-outline-primary" onclick="calcParamPcb()">PCB</button>
+        <hr/>
+        <p>Ergebnis: <span id="paramResult"></span></p>
+      </div>
+    </div>
+  </div>
+</div>

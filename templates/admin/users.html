@@ -1,0 +1,28 @@
+<!-- templates/admin/users.html -->
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<h2>User-Übersicht</h2>
+<hr/>
+
+<div class="table-responsive">
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Rolle</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in all_users %}
+      <tr>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.role }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
