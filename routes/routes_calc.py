@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_required
 from core.extensions import limiter
 
+
 calc_bp = Blueprint('calc_bp', __name__)
 
 @calc_bp.route('/taktzeit', methods=['POST'])

@@ -10,7 +10,6 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 csrf = CSRFProtect()
 
-# Rate-Limiter: Standardmäßig kein globales Limit, wir vergeben Limits per Dekorator
 limiter = Limiter(
     key_func=get_remote_address,
     default_limits=[]
@@ -18,5 +17,6 @@ limiter = Limiter(
 
 @login_manager.user_loader
 def load_user(user_id):
+    # Import erst hier, um zirkuläre Imports zu vermeiden
     from models.user import User
     return User.query.get(int(user_id))

@@ -8,6 +8,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from core.extensions import db, limiter
 from models.user import User
 
+
 auth_bp = Blueprint('auth_bp', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -98,3 +99,24 @@ def admin_dashboard_placeholder():
     if not current_user.is_admin:
         return "Nur Admin erlaubt", 403
     return render_template('admin/dashboard_placeholder.html')
+
+@auth_bp.route("/whoami", methods=["GET"])
+def whoami_dev():
+    # Hardcoded: Return "logged_in": True, "license": "extended", etc.
+    return jsonify({
+        "logged_in": True,
+        "email": "dev@example.com",
+        "license": "extended"
+    }), 200
+
+@auth_bp.route("/login", methods=["POST"])
+def dev_login():
+    return jsonify({"error": None}), 200  # Provisorisch OK
+
+@auth_bp.route("/logout", methods=["POST"])
+def dev_logout():
+    return jsonify({"msg": "logout ok"}), 200
+
+@auth_bp.route("/register", methods=["POST"])
+def dev_register():
+    return jsonify({"error": None}), 200

@@ -7,6 +7,7 @@ from models.gpt_session import GPTSession
 
 gpt_bp = Blueprint('gpt_bp', __name__)
 
+
 @gpt_bp.route('/create-session', methods=['POST'])
 @login_required
 @limiter.limit("5/minute")
@@ -36,6 +37,7 @@ def create_gpt_session():
             'used_count': new_session.used_count,
             'allowed_count': new_session.allowed_count
         }), 201
+
 
 @gpt_bp.route('/ask', methods=['POST'])
 @login_required
