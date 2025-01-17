@@ -54,7 +54,7 @@ function calculateSchmieden() {
   console.log("Schmieden => Sende an /calc/param/schmieden:", payload);
 
   // 3) AJAX-Fetch
-  fetch("/calc/param/schmieden", {
+  fetch("/mycalc/schmieden", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

@@ -3,72 +3,35 @@
 import os
 import json
 import requests
-from flask import Blueprint, request, jsonify, render_template, g, session
+from flask import Blueprint, request, jsonify, render_template, session, g
 from datetime import datetime
+from models.user import db, User
+from core.extensions import csrf, limiter  # NEU: limiter import
+import calculations  # Deine file: calculations.py
 
-# Dein DB- & User-Modell
-from models import db, User
-from core.extensions import csrf  # Falls du @csrf.exempt nutzen willst
-import calculations  # Deine calculations.py (mit calculate_all(...))
+# => def taktzeit_calc(...), def param_calc(...), def calculate_all(data)...
 
 mycalc_bp = Blueprint("mycalc_bp", __name__)
-
-# CustomGPT API-Einstellungen (ENV oder Hardcode)
-CGPT_API_KEY = os.getenv("CUSTOMGPT_API_KEY", "")
-CGPT_PROJECT_ID = os.getenv("CUSTOMGPT_PROJECT_ID", "")
-BASE_URL = "https://app.customgpt.ai/api/v1/projects"
 
 
 @mycalc_bp.before_app_request
 def load_current_user():
-    """
-    Wird vor jeder Anfrage in diesem Blueprint aufgerufen.
-    Lädt den aktuellen User via session["user_id"] in g.user.
-    """
     uid = session.get("user_id")
     if uid:
-        user = User.query.get(uid)
-        g.user = user
+        g.user = User.query.get(uid)
     else:
         g.user = None
 
 
-@mycalc_bp.route("/", methods=["GET"])
-def show_calc_page():
-    """
-    Rendert die Hauptseite (mycalc.html).
-    """
-    return render_template("my_calc_final.html")
-
-
-@mycalc_bp.route("/impressum", methods=["GET"])
-def impressum():
-    """
-    Einfaches Impressum. Gibt reines HTML zurück.
-    """
-    return "<h1>Impressum</h1><p>Beta ...</p>"
-
-
-@mycalc_bp.route("/datenschutz", methods=["GET"])
-def datenschutz():
-    """
-    Einfaches Datenschutz-Placeholder.
-    """
-    return "<h1>Datenschutz</h1><p>...</p>"
-
-
 @mycalc_bp.route("/material_list", methods=["GET"])
 def get_material_list():
-    """
-    Gibt abhängig vom Lizenz-Level (g.user.license_level())
-    die passende JSON-Datei für Materialdaten zurück.
-    """
     if not g.user:
         return jsonify({"error": "Not logged in"}), 403
-    if not g.user.has_valid_license():
-        return jsonify({"error": "Lizenz abgelaufen"}), 403
 
     lvl = g.user.license_level()
+    if lvl == "no_access":
+        return jsonify({"error": "Lizenz abgelaufen"}), 403
+
     if lvl in ["test", "premium"]:
         filename = "materialListe_pro.json"
     elif lvl == "plus":
@@ -89,27 +52,24 @@ def get_material_list():
         return jsonify({"error": str(e)}), 500
 
 
+# ---------------------------------------------
+#   MASCHINEN-LISTE
+# ---------------------------------------------
 @mycalc_bp.route("/machine_list", methods=["GET"])
 def get_machine_list():
-    """
-    Analog zu material_list.
-    Hier könntest du je nach License-Level
-    unterschiedliche Maschinenlisten ausgeben.
-    """
     if not g.user:
         return jsonify({"error": "Not logged in"}), 403
-    if not g.user.has_valid_license():
-        return jsonify({"error": "Lizenz abgelaufen"}), 403
 
     lvl = g.user.license_level()
-    # Falls du verschiedene JSONs hast (machineListe_pro.json, etc.)
-    # analog wie oben:
+    if lvl == "no_access":
+        return jsonify({"error": "Lizenz abgelaufen"}), 403
+
     if lvl in ["test", "premium"]:
-        filename = "machineListe_pro.json"
+        filename = "machines_pro.json"
     elif lvl == "plus":
-        filename = "machineListe_plus.json"
+        filename = "machines_plus.json"
     elif lvl == "extended":
-        filename = "machineListe_extended.json"
+        filename = "machines_extended.json"
     else:
         return jsonify({"error": "Lizenz nicht ausreichend"}), 403
 
@@ -124,25 +84,24 @@ def get_machine_list():
         return jsonify({"error": str(e)}), 500
 
 
+# ---------------------------------------------
+#   LOHN-LISTE
+# ---------------------------------------------
 @mycalc_bp.route("/lohn_list", methods=["GET"])
 def get_lohn_list():
-    """
-    Analog zum Material-/Machine-Listing.
-    Falls du verschiedene Lohnlisten hast (pro License).
-    """
     if not g.user:
         return jsonify({"error": "Not logged in"}), 403
-    if not g.user.has_valid_license():
-        return jsonify({"error": "Lizenz abgelaufen"}), 403
 
     lvl = g.user.license_level()
-    # Beispiel:
+    if lvl == "no_access":
+        return jsonify({"error": "Lizenz abgelaufen"}), 403
+
     if lvl in ["test", "premium"]:
-        filename = "lohnListe_pro.json"
+        filename = "lohnliste_pro.json"
     elif lvl == "plus":
-        filename = "lohnListe_plus.json"
+        filename = "lohnliste_plus.json"
     elif lvl == "extended":
-        filename = "lohnListe_extended.json"
+        filename = "lohnliste_extended.json"
     else:
         return jsonify({"error": "Lizenz nicht ausreichend"}), 403
 
@@ -157,100 +116,192 @@ def get_lohn_list():
         return jsonify({"error": str(e)}), 500
 
 
-@mycalc_bp.route("/calc", methods=["POST"])
-@csrf.exempt  # Falls dein JS-Frontend keinen CSRF-Token mitsendet
-def do_calc():
+# ---------------------------------------------
+#   CALC MACHINE (optional)
+#   => Wenn du Maschinenkosten
+#   => programmatisch berechnen willst
+# ---------------------------------------------
+@mycalc_bp.route("/calc_machine", methods=["POST"])
+def calc_machine():
     """
-    Ruft calculations.calculate_all(data_in) auf
-    und gibt das Ergebnis als JSON zurück.
+    Liest JSON-Body, z. B. { "purchasePrice":..., "hoursPerYear":..., ... }
+    Rechnet via calculations.calc_machine(...) => returns JSON
     """
     if not g.user:
         return jsonify({"error": "Not logged in"}), 403
 
     data_in = request.get_json() or {}
     try:
-        result = calculations.calculate_all(data_in)
+        result = calculations.calc_machine(data_in)
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
 
+# ---------------------------------------------
+#   CALC LABOR (optional)
+#   => Wenn du Lohnberechnung
+#   => programmatisch machen willst
+# ---------------------------------------------
+@mycalc_bp.route("/calc_labor", methods=["POST"])
+def calc_labor():
+    """
+    Liest JSON-Body, z. B.: {
+      "baseWage":20.0, "socialChargesPct":0.5, "shiftSurchargePct":0.2
+    }
+    => calculations.calc_labor(...) => returns { "labor_rate": ... }
+    """
+    if not g.user:
+        return jsonify({"error": "Not logged in"}), 403
+
+    data_in = request.get_json() or {}
+    try:
+        result = calculations.calc_labor(data_in)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@mycalc_bp.route("/", methods=["GET"])
+def show_calc_page():
+    return render_template("my_calc_final.html")
+
+
+@mycalc_bp.route("/taktzeit", methods=["POST"])
+def calc_taktzeit():
+    """Ex-V1 Taktzeitrechner."""
+    if not g.user:
+        return jsonify({"error": "Not logged in"}), 403
+
+    data_in = request.get_json() or {}
+    cycle_time = float(data_in.get("cycle_time", 0.0))
+    stations = int(data_in.get("stations", 1))
+    result_val = calculations.taktzeit_calc(cycle_time, stations)
+
+    return jsonify({
+        "cycle_time": cycle_time,
+        "stations": stations,
+        "calculated_taktzeit": result_val
+    }), 200
+
+
+@mycalc_bp.route("/parametrik", methods=["POST"])
+def calc_parametrik():
+    """Ex-V1 Parametrik."""
+    if not g.user:
+        return jsonify({"error": "Not logged in"}), 403
+
+    data_in = request.get_json() or {}
+    base_val = float(data_in.get("base_value", 0.0))
+    factor = float(data_in.get("factor", 1.0))
+    result_val = calculations.param_calc(base_val, factor)
+
+    return jsonify({
+        "base_value": base_val,
+        "factor": factor,
+        "result": result_val
+    }), 200
+
+
+@mycalc_bp.route("/calc", methods=["POST"])
+@csrf.exempt  # falls dein JS keinen CSRF-Token sendet
+def do_calc():
+    """Ex-V1: Gesamtkalkulation => calculations.calculate_all(data_in)."""
+    if not g.user:
+        return jsonify({"error": "Not logged in"}), 403
+
+    data_in = request.get_json() or {}
+    try:
+        res = calculations.calculate_all(data_in)
+        return jsonify(res)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
 @mycalc_bp.route("/gpt_ask", methods=["POST"])
-@csrf.exempt
+@csrf.exempt  # falls dein JS keinen CSRF-Token sendet
+@limiter.limit("50 per day")  # NEU: max. 50 GPT-Calls pro Tag
 def gpt_ask():
     """
-    Stellt eine Frage an CustomGPT, verbraucht 1 GPT-Call,
-    sofern license_level() in ["test","premium","extended"].
+    GPT => userQuestion => check license => custom GPT usage -> +1 gpt_used_count
+    EINE Route => /mycalc/gpt_ask
     """
     if not g.user:
         return jsonify({"error": "Not logged in"}), 403
 
     lvl = g.user.license_level()
-    if lvl not in ["test", "premium", "extended"]:
-        return jsonify({"error": "No GPT access for tier"}), 403
+    if lvl not in ["test", "plus", "premium", "extended"]:
+        return jsonify({"error": "No GPT in this tier"}), 403
 
     if g.user.gpt_used_count >= g.user.gpt_allowed_count:
         return jsonify({"error": "GPT limit reached"}), 429
 
-    data = request.get_json() or {}
-    prompt = data.get("prompt", "") or data.get("question", "")
-    if not prompt.strip():
+    data_in = request.get_json() or {}
+    prompt = data_in.get("question", "").strip()
+    if not prompt:
         return jsonify({"error": "No prompt"}), 400
 
-    # GPT-Session-ID in session[] merken
-    session_id = session.get("gpt_session_id", "")
-    if not session_id:
+    # Falls du eine Remote-API an customGPT.ai nutzt:
+    CGPT_API_KEY = os.getenv("CUSTOMGPT_API_KEY", "")
+    CGPT_PROJECT_ID = os.getenv("CUSTOMGPT_PROJECT_ID", "")
+    if not CGPT_API_KEY or not CGPT_PROJECT_ID:
+        return jsonify({"error": "No CustomGPT config"}), 500
+
+    # Session-basierte Konversation
+    sess_id = session.get("gpt_session_id", "")
+    if not sess_id:
+        # auto create conversation
         sid = create_gpt_session_internal("AutoSession")
         if not sid:
-            return jsonify({"error": "Failed to create GPT session"}), 500
+            return jsonify({"error": "GPT session creation fail"}), 500
         session["gpt_session_id"] = sid
-        session_id = sid
+        sess_id = sid
 
-    # Request an CustomGPT
+    endpoint = f"https://app.customgpt.ai/api/v1/projects/{CGPT_PROJECT_ID}/conversations/{sess_id}/messages"
+    headers = {
+        "Authorization": f"Bearer {CGPT_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "response_source": "default",
+        "prompt": prompt
+    }
+
     try:
-        r = requests.post(
-            f"{BASE_URL}/{CGPT_PROJECT_ID}/conversations/{session_id}/messages",
-            headers={
-                "Authorization": f"Bearer {CGPT_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={"response_source": "default", "prompt": prompt},
-            timeout=15
-        )
+        r = requests.post(endpoint, headers=headers, json=payload, timeout=15)
         if not r.ok:
             return jsonify({"error": f"CustomGPT: {r.status_code}", "details": r.text}), 500
 
-        data_r = r.json()
-        answer_text = data_r.get("data", {}).get("openai_response", "")
-        if not answer_text.strip():
+        rd = r.json()
+        answer_txt = rd.get("data", {}).get("openai_response", "")
+        if not answer_txt.strip():
             return jsonify({"error": "No valid answer"}), 500
 
-        # GPT-Call verbraucht
+        # usage
         g.user.gpt_used_count += 1
         db.session.commit()
 
-        return jsonify({"answer": answer_text})
+        return jsonify({"answer": answer_txt}), 200
     except Exception as ex:
         return jsonify({"error": str(ex)}), 500
 
 
 def create_gpt_session_internal(name="AutoSession"):
-    """
-    Hilfsfunktion, um bei CustomGPT eine Conversation Session zu erzeugen.
-    """
+    CGPT_API_KEY = os.getenv("CUSTOMGPT_API_KEY", "")
+    CGPT_PROJECT_ID = os.getenv("CUSTOMGPT_PROJECT_ID", "")
+    if not CGPT_API_KEY or not CGPT_PROJECT_ID:
+        return None
+    endpoint = f"https://app.customgpt.ai/api/v1/projects/{CGPT_PROJECT_ID}/conversations"
+    headers = {
+        "Authorization": f"Bearer {CGPT_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {"name": name}
     try:
-        r = requests.post(
-            f"{BASE_URL}/{CGPT_PROJECT_ID}/conversations",
-            headers={
-                "Authorization": f"Bearer {CGPT_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={"name": name},
-            timeout=15
-        )
-        if not r.ok:
+        rr = requests.post(endpoint, headers=headers, json=payload, timeout=15)
+        if not rr.ok:
             return None
-        rr = r.json()
-        return rr.get("data", {}).get("session_id", None)
+        dd = rr.json()
+        return dd.get("data", {}).get("session_id", None)
     except:
         return None

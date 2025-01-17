@@ -7,152 +7,183 @@ from core.extensions import csrf
 param_calc_bp = Blueprint('param_calc_bp', __name__)
 
 
-@param_calc_bp.route('/feinguss', methods=['POST'])
+@param_calc_bp.route("/feinguss", methods=["POST"])
 @login_required
-@csrf.exempt   # Falls du globales CSRF hast und dein Frontend den Token NICHT mitsendet.
-@limiter.limit("20/minute")  # optionales Rate-Limit
+@csrf.exempt
+@limiter.limit("20/minute")
 def calc_feinguss():
     """
-    Nimmt JSON-Daten vom Frontend entgegen (Feinguss-Parameter) und
-    führt die gesamte Feinguss-Berechnung durch.
-
-    BEISPIEL POST-Body (JSON):
-    {
-      "matName": "Stahl 1.4408",
-      "landName": "DE",
-      "shellName": "Medium",
-      "gw_g": 50.0,
-      "qty": 10000,
-      "ruest_min": 90,
-      "post_factor": 1.0
-    }
-
-    GIBT JSON zurück:
-    {
-      "ok": true,
-      "cost_per_part": 2.37,
-      "co2_per_part": 1.09,
-      "cost_material_total": ...,
-      "cost_process": ...,
-      "cost_ruest_each": ...,
-      "cost_overhead": ...,
-      "debug": ...
-    }
+    POST /calc/param/feinguss (V2)
+    Empfängt JSON mit Feinguss-Parametern, führt sämtliche
+    Kalkulationen serverseitig durch und gibt ein JSON-Resultat.
     """
     try:
         data = request.get_json()
         if not data:
             return jsonify({"error": "No JSON body"}), 400
 
-        # 1) Eingaben extrahieren
-        matName   = data.get("matName", "Stahl 1.4408")
-        landName  = data.get("landName", "DE")
-        shellName = data.get("shellName", "Medium")
-        gw_g      = float(data.get("gw_g", 50.0))
-        qty       = float(data.get("qty", 10000.0))
-        ruest_min = float(data.get("ruest_min", 90))
-        post_factor = float(data.get("post_factor", 1.0))
+        # -----------------------------------------------------
+        # 1) Eingabe-Felder extrahieren
+        # -----------------------------------------------------
+        matKey      = data.get("fgMatSelect", "Stahl")
+        locKey      = data.get("fgLocationSelect", "DE")
+        partWeight  = float(data.get("fgWeight", 50.0))         # g
+        scrapRateIn = float(data.get("fgScrapRate", 5.0))       # in % => 5 => 0.05
+        annualQty   = float(data.get("fgQuantity", 1000.0))
 
-        # 2) Interne Tabellen (könntest du später in DB auslagern)
-        material_data = {
-            "Stahl DC01":   { "price":1.30, "co2_kg":2.5,  "vac":False },
-            "Stahl 1.4408": { "price":2.50, "co2_kg":3.5,  "vac":False },
-            "Alu Si7Mg":    { "price":7.00, "co2_kg":10.0, "vac":False },
-            "Titan Ti64":   { "price":30.0, "co2_kg":40.0, "vac":True }
+        compKey     = data.get("fgComplexitySelect", "Medium")
+        ruestMin    = float(data.get("fgSetupTimeMin", 60.0))
+        overheadPct = float(data.get("fgOverheadRate", 15.0))   # 15 => 0.15
+        profitPct   = float(data.get("fgProfitRate", 10.0))     # 10 => 0.10
+        toolCost    = float(data.get("fgToolCost", 0.0))
+        postProcMin = float(data.get("fgPostProcMin", 0.5))
+
+        # -----------------------------------------------------
+        # 2) Interne Datenbasen
+        # -----------------------------------------------------
+        materials = {
+            "Stahl": {
+                "name": "Stahl (Allg.)",
+                "pricePerKg": 2.5,
+                "shellBase":  0.4
+            },
+            "Alu": {
+                "name": "Aluminium",
+                "pricePerKg": 5.0,
+                "shellBase":  0.5
+            },
+            "Titan": {
+                "name": "Titan",
+                "pricePerKg": 25.0,
+                "shellBase":  1.0
+            },
+            "NickelAlloy": {
+                "name": "Nickelbasis-Legierung",
+                "pricePerKg": 20.0,
+                "shellBase":  0.8
+            }
         }
-        country_data = {
-            "DE":    { "lohnfactor":1.0,  "energy_co2":0.38, "energy_eur":0.20 },
-            "China": { "lohnfactor":0.35, "energy_co2":0.60, "energy_eur":0.10 },
-            "Polen": { "lohnfactor":0.6,  "energy_co2":0.45, "energy_eur":0.14 }
+        locations = {
+            "DE": {
+                "name": "Deutschland",
+                "wageFactor": 1.0
+            },
+            "CN": {
+                "name": "China",
+                "wageFactor": 0.35
+            },
+            "PL": {
+                "name": "Polen",
+                "wageFactor": 0.6
+            }
         }
-        shell_data = {
-            "Low":    { "shell_eur":0.30, "shell_time_min":1.0 },
-            "Medium": { "shell_eur":0.60, "shell_time_min":2.0 },
-            "High":   { "shell_eur":1.00, "shell_time_min":3.5 }
+        complexity = {
+            "Low": {
+                "factorTime": 0.7,
+                "shellBonus": 0.0
+            },
+            "Medium": {
+                "factorTime": 1.0,
+                "shellBonus": 0.3
+            },
+            "High": {
+                "factorTime": 1.3,
+                "shellBonus": 0.6
+            }
         }
+        # Defaults
+        baseHourlyWage = 60.0  # €/h
+        defaultScrapMax = 0.5  # 50% max
+        # -----------------------------------------------------
+        # 3) Helper-Parsing
+        # -----------------------------------------------------
+        def parse_percent(val):
+            """
+            Alles <=1 => direct, alles >1 => /100
+            """
+            if val < 0:
+                return 0.0
+            if val > 1.0:
+                return val / 100.0
+            return val
 
-        global_base_lohn = 30.0
-        energy_factor_stahl = 0.07
-        energy_factor_alu   = 0.04
-        energy_factor_titan = 0.12
+        def parse_scrap(val):
+            """
+            Analog parse_percent, max ~50%
+            """
+            if val < 0:
+                return 0.0
+            if val > 1.0:
+                val /= 100.0
+            if val > defaultScrapMax:
+                # optional warning
+                pass
+            return val
 
-        # 3) Lookups
-        mat_info   = material_data.get(matName, material_data["Stahl 1.4408"])
-        land_info  = country_data.get(landName, country_data["DE"])
-        shell_info = shell_data.get(shellName, shell_data["Medium"])
+        overheadRate = parse_percent(overheadPct)    # z.B. 15 => 0.15
+        profitRate   = parse_percent(profitPct)      # z.B. 10 => 0.10
+        scrapRate    = parse_scrap(scrapRateIn)      # z.B. 5 => 0.05
 
-        lohnfactor   = land_info["lohnfactor"]
-        energy_co2   = land_info["energy_co2"]
-        energy_eur   = land_info["energy_eur"]
+        # -----------------------------------------------------
+        # 4) Datensätze & Plausis
+        # -----------------------------------------------------
+        matInfo = materials.get(matKey, materials["Stahl"])
+        locInfo = locations.get(locKey, locations["DE"])
+        compInfo= complexity.get(compKey, complexity["Medium"])
 
-        # 4) Hauptberechnung
-        part_kg          = gw_g / 1000.0
-        cost_mat_leg     = part_kg * mat_info["price"]
-        co2_mat_leg      = part_kg * mat_info["co2_kg"]
-        shell_labor_eur  = (global_base_lohn * lohnfactor / 60.0) * shell_info["shell_time_min"]
-        cost_shell_eur   = shell_info["shell_eur"]
-        cost_material_total = cost_mat_leg + shell_labor_eur + cost_shell_eur
+        # Minimale Plausipüfung
+        if partWeight <= 0:
+            return jsonify({"error": "partWeight <= 0, ungültig."}), 400
+        if annualQty < 1:
+            return jsonify({"error": "annualQty < 1, ungültig."}), 400
 
-        co2_shell      = 0.05 * part_kg
-        co2_mat_total  = co2_mat_leg + co2_shell
+        # -----------------------------------------------------
+        # 5) Hauptberechnung – identisch zu feinguss_parametric_v2.js
+        # -----------------------------------------------------
+        # a) Material+Shell
+        weight_kg = partWeight / 1000.0
+        totalWeight_kg = weight_kg * (1.0 + scrapRate)
+        costMaterial = totalWeight_kg * matInfo["pricePerKg"]
+        costShell    = matInfo["shellBase"] + compInfo["shellBonus"]
+        costMatShell = costMaterial + costShell
 
-        # Energie
-        energy_kWh = 0.0
-        if mat_info["vac"]:
-            energy_kWh = energy_factor_titan * (gw_g / 100.0)
-        elif "Alu" in matName:
-            energy_kWh = energy_factor_alu * (gw_g / 100.0)
-        else:
-            energy_kWh = energy_factor_stahl * (gw_g / 100.0)
+        # b) Fertigung
+        fertigungStundensatz = baseHourlyWage * locInfo["wageFactor"]  # z.B. 60 * 1.0 = 60
+        wagePerMin = fertigungStundensatz / 60.0
+        baseTimeMin = 1.0 + postProcMin
+        timePartMin = baseTimeMin * compInfo["factorTime"]
 
-        cost_energy = energy_kWh * energy_eur
-        co2_energy  = energy_kWh * energy_co2
+        costLaborMachinePerPart = wagePerMin * timePartMin
+        costRuestPerPart = 0.0
+        if annualQty > 0 and ruestMin > 0:
+            costRuestPerPart = (ruestMin * wagePerMin) / annualQty
 
-        # Gieß-Lohn
-        giess_time_min = 0.5 + 0.5 * part_kg
-        if mat_info["vac"]:
-            giess_time_min *= 1.3
-        giess_labor_eur = (global_base_lohn * lohnfactor / 60.0) * giess_time_min
+        costToolPerPart = 0.0
+        if annualQty > 0 and toolCost > 0:
+            costToolPerPart = toolCost / annualQty
 
-        # Nachbearbeitung
-        postproc_labor_min = 0.2 + 0.8 * (gw_g / 500.0) * post_factor
-        if postproc_labor_min < 0.2:
-            postproc_labor_min = 0.2
-        postproc_labor_eur = (global_base_lohn * lohnfactor / 60.0) * postproc_labor_min
+        # Energiepauschale
+        costEnergy = 0.05
+        costFertigung = costLaborMachinePerPart + costRuestPerPart + costToolPerPart + costEnergy
 
-        cost_process = cost_energy + giess_labor_eur + postproc_labor_eur
-        co2_process  = co2_energy + 0.01 * (gw_g / 100.0)
+        # c) Overhead und Gewinn
+        baseCosts = costMatShell + costFertigung
+        overheadVal = baseCosts * overheadRate
+        withOverhead= baseCosts + overheadVal
+        profitVal = withOverhead * profitRate
+        endPrice = withOverhead + profitVal
 
-        # Rüst => pro Teil
-        cost_ruest_each = ((ruest_min / 60.0) * (global_base_lohn * lohnfactor)) / max(qty,1)
-
-        cost_per_part = cost_material_total + cost_process + cost_ruest_each
-        co2_per_part  = co2_mat_total + co2_process
-
-        # Overhead
-        overhead_pct    = 0.08
-        cost_overhead   = cost_per_part * overhead_pct
-        cost_per_part  += cost_overhead
-        co2_per_part   += 0.05 * co2_per_part
-
-        # 5) Ergebnis
+        # -----------------------------------------------------
+        # 6) Ergebnis & Return
+        # -----------------------------------------------------
         result = {
             "ok": True,
-            "cost_per_part": round(cost_per_part, 3),
-            "co2_per_part":  round(co2_per_part, 3),
-            "cost_material_total": round(cost_material_total, 3),
-            "cost_process": round(cost_process, 3),
-            "cost_ruest_each": round(cost_ruest_each, 3),
-            "cost_overhead": round(cost_overhead, 3),
-            "debug": {
-                "matName": matName,
-                "landName": landName,
-                "shellName": shellName,
-                "gw_g": gw_g,
-                "qty": qty,
-                "ruest_min": ruest_min,
-                "post_factor": post_factor
-            }
+            "costMatShell": round(costMatShell, 2),
+            "costFertigung": round(costFertigung, 2),
+            "overheadVal": round(overheadVal, 2),
+            "profitVal": round(profitVal, 2),
+            "endPrice": round(endPrice, 2),
+            "msg": "Feinguss Parametric V2 erfolgreich"
         }
         return jsonify(result), 200
 

@@ -390,50 +390,7 @@
         Materialliste laden
       </button>
 
-      <!-- Modal: Materialliste -->
-      <div class="modal fade" id="modalMaterial" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Materialliste</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <table
-                class="table table-bordered table-sm"
-                id="tblMaterialList"
-              >
-                <thead>
-                  <tr>
-                    <th>Material</th>
-                    <th>Verfahrens-Typ</th>
-                    <th>Gesamtpreis (€/kg)</th>
-                    <th>CO₂ (kg)</th>
-                    <th>Kommentar</th>
-                    <th>Aktion</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Dynamische Einträge per JS -->
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Schließen
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+
 
       <!-- Felder in Tab2 -->
       <div class="mb-2 row">
@@ -781,7 +738,8 @@
           Export als CSV
         </button>
       </div>
-    </div> <!-- Ende von Tab 5 -->
+    </div>
+    </div><!-- Ende von Tab 5 -->
 <div class="card mt-3">
     <div class="card-header">
         <h5>KI-Assistent (Beta)</h5>
@@ -838,70 +796,74 @@
 >
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
+
       <div class="modal-header">
         <h5 class="modal-title">Parametric Tools</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+
       <div class="modal-body">
         <p>Wähle deinen Prozess:</p>
-<div class="d-flex flex-wrap justify-content-between">
-  <!-- Feinguss -->
-  <div class="text-center m-2">
-    <img
-      src="/static/img/feinguss.jpeg"
-      alt="Feinguss"
-      class="img-choice"
-      onclick="openFeingussModal()"
-      style="width: 150px; height: auto; cursor: pointer;"
-    />
-    <p>Feinguss</p>
-  </div>
-  <!-- Schmieden -->
-  <div class="text-center m-2">
-    <img
-      src="/static/img/schmieden.jpeg"
-      alt="Schmieden"
-      class="img-choice"
-      onclick="openSchmiedenModal()"
-      style="width: 150px; height: auto; cursor: pointer;"
-    />
-    <p>Schmieden</p>
-  </div>
-  <!-- Kaltfließpressen -->
-  <div class="text-center m-2">
-    <img
-      src="/static/img/kaltfliess.jpeg"
-      alt="Kaltfließpressen"
-      class="img-choice"
-      onclick="openKaltfliessModal()"
-      style="width: 150px; height: auto; cursor: pointer;"
-    />
-    <p>Kaltfließpressen</p>
-  </div>
-  <!-- PCB-Parametrik -->
-  <div class="text-center m-2">
-    <img
-      src="/static/img/pcb_logo.jpeg"
-      alt="PCB-Parametrik"
-      class="img-choice"
-      onclick="openPcbModal()"
-      style="width: 150px; height: auto; cursor: pointer;"
-    />
-    <p>PCB-Parametrik</p>
-  </div>
-</div>
-<div class="modal-footer">
-  <button
-    type="button"
-    class="btn btn-secondary"
-    data-bs-dismiss="modal"
-  >
-    Schließen
-  </button>
-</div>
+        <div class="d-flex flex-wrap justify-content-between">
+          <!-- Feinguss -->
+          <div class="text-center m-2">
+            <img
+              src="/static/img/feinguss.jpeg"
+              alt="Feinguss"
+              class="img-choice"
+              onclick="openFeingussModal()"
+              style="width: 150px; height: auto; cursor: pointer;"
+            />
+            <p>Feinguss</p>
+          </div>
+          <!-- Schmieden -->
+          <div class="text-center m-2">
+            <img
+              src="/static/img/schmieden.jpeg"
+              alt="Schmieden"
+              class="img-choice"
+              onclick="openSchmiedenModal()"
+              style="width: 150px; height: auto; cursor: pointer;"
+            />
+            <p>Schmieden</p>
+          </div>
+          <!-- Kaltfließpressen -->
+          <div class="text-center m-2">
+            <img
+              src="/static/img/kaltfliess.jpeg"
+              alt="Kaltfließpressen"
+              class="img-choice"
+              onclick="openKaltfliessModal()"
+              style="width: 150px; height: auto; cursor: pointer;"
+            />
+            <p>Kaltfließpressen</p>
+          </div>
+          <!-- PCB-Parametrik -->
+          <div class="text-center m-2">
+            <img
+              src="/static/img/pcb_logo.jpeg"
+              alt="PCB-Parametrik"
+              class="img-choice"
+              onclick="openPcbModal()"
+              style="width: 150px; height: auto; cursor: pointer;"
+            />
+            <p>PCB-Parametrik</p>
+          </div>
+        </div>
+      </div>
 
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Schließen
         </button>
       </div>
+
+      <!-- Hier war ein überflüssiges </button> -->
+
     </div>
   </div>
 </div>
@@ -1186,7 +1148,7 @@
           type="button"
           class="btn btn-primary btn-sm"
           id="fgCalcBtn"
-          onclick="calculateFeingussParametricV2()"
+          onclick="calculateFeinguss()"
         >
           Berechnen
         </button>
@@ -3542,7 +3504,7 @@
           Schließen
         </button>
 
-        <span id="machResult">0.00</span>
+
         <span class="ms-3">
           Maschinenkosten (€/h) gesamt:
           <b id="machResult">--</b>
@@ -3701,4 +3663,5 @@ function onUpgradeClick() {
 
 </body>
 </html>
+
 

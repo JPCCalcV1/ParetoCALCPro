@@ -51,7 +51,7 @@ function calculateKaltfliess() {
   console.log("Kaltfliess => Sende an /calc/param/kaltfliess:", payload);
 
   // 3) AJAX per Fetch
-  fetch("/calc/param/kaltfliess", {
+  fetch("/mycalc/kaltfliess", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

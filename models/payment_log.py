@@ -1,7 +1,7 @@
 # models/payment_log.py
 
 from datetime import datetime
-from core.extensions import db
+from models.user import db
 
 class PaymentLog(db.Model):
     __tablename__ = "payment_log"
@@ -15,8 +15,8 @@ class PaymentLog(db.Model):
     # NEU: status-Feld
     status = db.Column(db.String(20), default="pending")
 
-    # Relationship (falls du willst)
+    # Relationship (optional, aber praktisch)
     user = db.relationship("User", backref="payments")
 
-    def __repr__(self):
-        return f"<PaymentLog id={self.id} status={self.status} event_id={self.event_id}>"
+def __repr__(self):
+    return f"<PaymentLog id={self.id} status={self.status} event_id={self.event_id}>"

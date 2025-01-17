@@ -74,7 +74,7 @@ function calculateStamping() {
 
   console.log("Stamping => Payload:", payload);
 
-  fetch("/calc/takt/stamping", {
+  fetch("/mycalc/stamping", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

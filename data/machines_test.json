@@ -1,0 +1,973 @@
+[
+  {
+    "machineName": "Mehrspindler ∅16 - Standard",
+    "machineNameIntern": "Index MS16 Plus (Vollausstattung, Standard)",
+    "verfahren": "Drehen",
+    "kaufpreis": 600000,
+    "power_kW": 25,
+    "throughputPartsPerYear": 500000,
+    "comment": "Basis ~400k, real lauffähig 600k. 6-Spindel, ∅16 mm max, hoher Output."
+  },
+  {
+    "machineName": "Mehrspindler ∅16 - Automotive Special",
+    "machineNameIntern": "Index MS16 Plus (High-End Automotive)",
+    "verfahren": "Drehen",
+    "kaufpreis": 1100000,
+    "power_kW": 25,
+    "throughputPartsPerYear": 500000,
+    "comment": "Zusätzliche Robotik, Inline-QS, Sonderspannung"
+  },
+  {
+    "machineName": "Mehrspindler ∅25 - Standard",
+    "machineNameIntern": "Index MS25 (Vollausstattung, Standard)",
+    "verfahren": "Drehen",
+    "kaufpreis": 700000,
+    "power_kW": 30,
+    "throughputPartsPerYear": 400000,
+    "comment": "∅25 mm Stange, 6-Spindel."
+  },
+  {
+    "machineName": "Mehrspindler ∅25 - Automotive Special",
+    "machineNameIntern": "Index MS25 (High-End Automotive)",
+    "verfahren": "Drehen",
+    "kaufpreis": 1300000,
+    "power_kW": 30,
+    "throughputPartsPerYear": 400000,
+    "comment": "Mit Sonder-Messtechnik, Roboterzellen, Werkzeugsatz"
+  },
+  {
+    "machineName": "Mehrspindler ∅42 - Standard",
+    "machineNameIntern": "Index MS42 (Vollausstattung, Standard)",
+    "verfahren": "Drehen",
+    "kaufpreis": 1000000,
+    "power_kW": 40,
+    "throughputPartsPerYear": 400000,
+    "comment": "∅42 mm, 6-8 Spindeln, sehr hohe Produktivität."
+  },
+  {
+    "machineName": "Mehrspindler ∅42 - Automotive Special",
+    "machineNameIntern": "Index MS42 (High-End Automotive)",
+    "verfahren": "Drehen",
+    "kaufpreis": 1500000,
+    "power_kW": 40,
+    "throughputPartsPerYear": 400000,
+    "comment": "Umfassende Automation & QS; hier als Mittelwert 1,5."
+  },
+  {
+    "machineName": "Mehrspindler ∅32 - Standard",
+    "machineNameIntern": "Schütte S32PC (Vollausstattung, Standard)",
+    "verfahren": "Drehen",
+    "kaufpreis": 900000,
+    "power_kW": 35,
+    "throughputPartsPerYear": 350000,
+    "comment": "Vollautomatisiert; 6-Spindel bis ∅32 mm, Premium-Segment."
+  },
+  {
+    "machineName": "Mehrspindler ∅32 - Automotive Special",
+    "machineNameIntern": "Schütte S32PC (High-End Automotive)",
+    "verfahren": "Drehen",
+    "kaufpreis": 1500000,
+    "power_kW": 35,
+    "throughputPartsPerYear": 350000,
+    "comment": "Mit High-End-Automation, Robotik, QS-Systeme"
+  },
+  {
+    "machineName": "Mehrspindler ∅50+ - Standard",
+    "machineNameIntern": "Schütte S51 (Vollausstattung, Standard)",
+    "verfahren": "Drehen",
+    "kaufpreis": 1300000,
+    "power_kW": 50,
+    "throughputPartsPerYear": 300000,
+    "comment": "Größere Ausführung, ∅50+ mm, ideal für große Teile."
+  },
+  {
+    "machineName": "Mehrspindler ∅50+ - Automotive Special",
+    "machineNameIntern": "Schütte S51 (High-End Automotive)",
+    "verfahren": "Drehen",
+    "kaufpreis": 2100000,
+    "power_kW": 50,
+    "throughputPartsPerYear": 300000,
+    "comment": "Robotik, QS, Verzahnungseinheiten"
+  },
+    {
+      "machineName": "Einspindler (klein) - Standard",
+      "machineNameIntern": "DMG Mori NLX 2000 (Standard)",
+      "verfahren": "Drehen",
+      "kaufpreis": 220000,
+      "power_kW": 12,
+      "throughputPartsPerYear": 120000,
+      "comment": "Kompakte Drehmaschine für Stangen bis ~51 mm, Standard-Automation (Stangenlader)."
+    },
+    {
+      "machineName": "Einspindler (klein) - High-End",
+      "machineNameIntern": "DMG Mori NLX 2000 (Automotive-Special)",
+      "verfahren": "Drehen",
+      "kaufpreis": 400000,
+      "power_kW": 12,
+      "throughputPartsPerYear": 120000,
+      "comment": "Mit Roboterzelle, umfangreicher Messtechnik, angetriebenen Werkzeugen, Y-Achse."
+    },
+    {
+      "machineName": "Einspindler (mittel) - Standard",
+      "machineNameIntern": "Mazak Quick Turn 250 (Standard)",
+      "verfahren": "Drehen",
+      "kaufpreis": 300000,
+      "power_kW": 18,
+      "throughputPartsPerYear": 150000,
+      "comment": "Ø65 mm Stangendurchlass, Standard-Automation, ggf. Stangenlader."
+    },
+    {
+      "machineName": "Einspindler (mittel) - High-End",
+      "machineNameIntern": "Mazak Quick Turn 250 (Automotive-Special)",
+      "verfahren": "Drehen",
+      "kaufpreis": 550000,
+      "power_kW": 18,
+      "throughputPartsPerYear": 150000,
+      "comment": "Zweites Werkzeugrevolver, Y-Achse, Hochdruckkühlung, Roboter, Inline-Messung."
+    },
+    {
+      "machineName": "Einspindler (mittel-groß) - Standard",
+      "machineNameIntern": "Okuma LB3000 EX II (Standard)",
+      "verfahren": "Drehen",
+      "kaufpreis": 400000,
+      "power_kW": 22,
+      "throughputPartsPerYear": 100000,
+      "comment": "Bis Ø80 mm Stange oder Futter ~250 mm. Einfacher Automationsgrad."
+    },
+    {
+      "machineName": "Einspindler (mittel-groß) - High-End",
+      "machineNameIntern": "Okuma LB3000 EX II (Automotive-Special)",
+      "verfahren": "Drehen",
+      "kaufpreis": 750000,
+      "power_kW": 22,
+      "throughputPartsPerYear": 100000,
+      "comment": "Mit Gegenspindel, Y-Achse, Hochdruck, Roboter-Beladung, Messsystemen."
+    },
+    {
+      "machineName": "Einspindler (groß) - Standard",
+      "machineNameIntern": "Doosan Puma 5100 (Standard)",
+      "verfahren": "Drehen",
+      "kaufpreis": 500000,
+      "power_kW": 30,
+      "throughputPartsPerYear": 70000,
+      "comment": "Größere Maschine (Futter ~300 mm), Standardautomatisierung, manuelle Beladung möglich."
+    },
+    {
+      "machineName": "Einspindler (groß) - High-End",
+      "machineNameIntern": "Doosan Puma 5100 (Automotive-Special)",
+      "verfahren": "Drehen",
+      "kaufpreis": 900000,
+      "power_kW": 30,
+      "throughputPartsPerYear": 70000,
+      "comment": "Komplettzelle mit Roboter oder Portal, angetriebenen Werkzeugen, umfangreicher QS."
+    },
+    {
+      "machineName": "3-Achs (klein) - Standard",
+      "machineNameIntern": "Haas VF-2 (Standard)",
+      "verfahren": "Fräsen",
+      "kaufpreis": 150000,
+      "power_kW": 11,
+      "throughputPartsPerYear": 30000,
+      "comment": "Kleine 3-Achs, Basis-Ausstattung, einfache Automation (Teilezuführung manuell)."
+    },
+    {
+      "machineName": "3-Achs (klein) - High-End",
+      "machineNameIntern": "Haas VF-2 (Automotive-Special)",
+      "verfahren": "Fräsen",
+      "kaufpreis": 300000,
+      "power_kW": 11,
+      "throughputPartsPerYear": 30000,
+      "comment": "Mit 4./5. Achse-Nachrüstung, Messtaster, größerem Werkzeugmagazin, evtl. Robot-Handling."
+    },
+    {
+      "machineName": "3-Achs (mittel) - Standard",
+      "machineNameIntern": "DMG Mori CMX 600 V (Standard)",
+      "verfahren": "Fräsen",
+      "kaufpreis": 250000,
+      "power_kW": 15,
+      "throughputPartsPerYear": 40000,
+      "comment": "Mittleres Vertikal-BAZ (X=600mm), Basiskonfiguration, Späneförderer, 30er Werkzeugmagazin."
+    },
+    {
+      "machineName": "3-Achs (mittel) - High-End",
+      "machineNameIntern": "DMG Mori CMX 600 V (Automotive-Special)",
+      "verfahren": "Fräsen",
+      "kaufpreis": 450000,
+      "power_kW": 15,
+      "throughputPartsPerYear": 40000,
+      "comment": "Mit 4./5. Achse, Renishaw-Messtaster, größere Magazinplätze, ggf. Palettenwechsler."
+    },
+  
+  
+    {
+      "machineName": "5-Achs (kompakt) - Standard",
+      "machineNameIntern": "DMG Mori DMU 50 (Standard)",
+      "verfahren": "Fräsen",
+      "kaufpreis": 350000,
+      "power_kW": 18,
+      "throughputPartsPerYear": 40000,
+      "comment": "Einsteiger-5-Achs, manuelle Beladung, Standard-Magazin, ~15k-12k Spindel."
+    },
+    {
+      "machineName": "5-Achs (kompakt) - High-End",
+      "machineNameIntern": "DMG Mori DMU 50 (Automotive-Special)",
+      "verfahren": "Fräsen",
+      "kaufpreis": 600000,
+      "power_kW": 18,
+      "throughputPartsPerYear": 40000,
+      "comment": "Mit Hochgeschwindigkeitsspindel (18–20k), Messtaster, Automatischer Palettenwechsler."
+    },
+    {
+      "machineName": "5-Achs (mittel) - Standard",
+      "machineNameIntern": "Chiron FZ12 FX (Standard)",
+      "verfahren": "Fräsen",
+      "kaufpreis": 450000,
+      "power_kW": 20,
+      "throughputPartsPerYear": 50000,
+      "comment": "Schnelles 5-Achs BAZ, Basisausstattung, ca. 40er Werkzeugmagazin, 12k Spindel."
+    },
+    {
+      "machineName": "5-Achs (mittel) - High-End",
+      "machineNameIntern": "Chiron FZ12 FX (Automotive-Special)",
+      "verfahren": "Fräsen",
+      "kaufpreis": 800000,
+      "power_kW": 20,
+      "throughputPartsPerYear": 50000,
+      "comment": "Roboter-Beladung, 20k Spindel, 2-fach Palettenwechsler, umfangreiche Messtechnik."
+    },
+    {
+      "machineName": "5-Achs (groß) - Standard",
+      "machineNameIntern": "DMG Mori DMU 75 monoBLOCK (Standard)",
+      "verfahren": "Fräsen",
+      "kaufpreis": 600000,
+      "power_kW": 25,
+      "throughputPartsPerYear": 30000,
+      "comment": "Größere 5-Achs, Werkstück bis ~Ø600 mm, manuelle oder einfache Automation."
+    },
+    {
+      "machineName": "5-Achs (groß) - High-End",
+      "machineNameIntern": "DMG Mori DMU 75 monoBLOCK (Automotive-Special)",
+      "verfahren": "Fräsen",
+      "kaufpreis": 1000000,
+      "power_kW": 25,
+      "throughputPartsPerYear": 30000,
+      "comment": "Automatisierte Fertigungszelle, Palettensystem, Hochgeschwindigkeitsspindel, QS-Paket."
+    },
+    {
+      "machineName": "Spritzguss 50 t - Standard",
+      "machineNameIntern": "Arburg Allrounder 370S (Standard)",
+      "verfahren": "Spritzguss",
+      "kaufpreis": 100000,
+      "power_kW": 15,
+      "throughputPartsPerYear": 2000000,
+      "comment": "Kleine Maschine (~50 t Schließkraft), Standardausstattung. Ideal für kleine Teile."
+    },
+    {
+      "machineName": "Spritzguss 50 t - High-End",
+      "machineNameIntern": "Arburg Allrounder 370S (Automotive-Special)",
+      "verfahren": "Spritzguss",
+      "kaufpreis": 180000,
+      "power_kW": 15,
+      "throughputPartsPerYear": 2000000,
+      "comment": "Mit Robot-Handling, integrierter Qualitätsüberwachung, energiereduzierter Servo-Antrieb."
+    },
+    {
+      "machineName": "Spritzguss 150 t - Standard",
+      "machineNameIntern": "ENGEL victory 150 (Standard)",
+      "verfahren": "Spritzguss",
+      "kaufpreis": 180000,
+      "power_kW": 30,
+      "throughputPartsPerYear": 1500000,
+      "comment": "Schließkraft ~150 t, für Gehäuse, technische Teile, Standardausführung."
+    },
+    {
+      "machineName": "Spritzguss 150 t - High-End",
+      "machineNameIntern": "ENGEL victory 150 (Automotive-Special)",
+      "verfahren": "Spritzguss",
+      "kaufpreis": 350000,
+      "power_kW": 30,
+      "throughputPartsPerYear": 1500000,
+      "comment": "Roboter-Kurzentnahme, MES-Anbindung, verschleißfeste Plastifiziereinheit, Kameraprüfung."
+    },
+    {
+      "machineName": "Spritzguss 300 t - Standard",
+      "machineNameIntern": "KraussMaffei CX 300 (Standard)",
+      "verfahren": "Spritzguss",
+      "kaufpreis": 300000,
+      "power_kW": 50,
+      "throughputPartsPerYear": 1000000,
+      "comment": "300 t Schließkraft für mittlere Teile, Basisausstattung, normaler Zyklus."
+    },
+    {
+      "machineName": "Spritzguss 300 t - High-End",
+      "machineNameIntern": "KraussMaffei CX 300 (Automotive-Special)",
+      "verfahren": "Spritzguss",
+      "kaufpreis": 550000,
+      "power_kW": 50,
+      "throughputPartsPerYear": 1000000,
+      "comment": "Hochautomatisiert, Materialtrockner, 6-Achs-Roboter, integrierte Messtechnik, i4.0-Anbindung."
+    },
+    {
+      "machineName": "Spritzguss 500 t - Standard",
+      "machineNameIntern": "Haitian Mars II 500 (Standard)",
+      "verfahren": "Spritzguss",
+      "kaufpreis": 500000,
+      "power_kW": 80,
+      "throughputPartsPerYear": 800000,
+      "comment": "500 t Schließkraft, für größere Gehäuse oder Automobil-Komponenten, Basispaket."
+    },
+    {
+      "machineName": "Spritzguss 500 t - High-End",
+      "machineNameIntern": "Haitian Mars II 500 (Automotive-Special)",
+      "verfahren": "Spritzguss",
+      "kaufpreis": 800000,
+      "power_kW": 80,
+      "throughputPartsPerYear": 800000,
+      "comment": "Servo-elektrische Antriebe, vollautomatische Teileentnahme, Qualitätssensorik."
+    },
+    {
+      "machineName": "Spritzguss 800 t - Standard",
+      "machineNameIntern": "ENGEL duo 800 (Standard)",
+      "verfahren": "Spritzguss",
+      "kaufpreis": 800000,
+      "power_kW": 120,
+      "throughputPartsPerYear": 500000,
+      "comment": "Große Maschine (800 t), Standardausführung, für Großteile (z. B. Stoßfänger-Segmente)."
+    },
+    {
+      "machineName": "Spritzguss 800 t - High-End",
+      "machineNameIntern": "ENGEL duo 800 (Automotive-Special)",
+      "verfahren": "Spritzguss",
+      "kaufpreis": 1500000,
+      "power_kW": 120,
+      "throughputPartsPerYear": 500000,
+      "comment": "High-End-Automation, Multi-Kavität oder Mehrkomponenten-Einheit, Robotportal, i4.0-Lösung."
+    },
+    {
+      "machineName": "Druckguss Al 300 t - Standard",
+      "machineNameIntern": "Bühler Carat 300 (Standard)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 300000,
+      "power_kW": 80,
+      "throughputPartsPerYear": 150000,
+      "comment": "Alu-Druckguss, 300 t Schließkraft, einfache Peripherie, manuelle Entnahme möglich."
+    },
+    {
+      "machineName": "Druckguss Al 300 t - High-End",
+      "machineNameIntern": "Bühler Carat 300 (Automotive-Special)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 500000,
+      "power_kW": 80,
+      "throughputPartsPerYear": 150000,
+      "comment": "Mit Roboterzelle, integrierter Qualitätskontrolle, High-End Kühltechnik, i4.0-Anbindung."
+    },
+    {
+      "machineName": "Druckguss Al 800 t - Standard",
+      "machineNameIntern": "Italpresse IP 800 (Standard)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 500000,
+      "power_kW": 150,
+      "throughputPartsPerYear": 80000,
+      "comment": "Alu-Druckguss, 800 t, größere Gehäuse/Strukturteile, Standard Automation."
+    },
+    {
+      "machineName": "Druckguss Al 800 t - High-End",
+      "machineNameIntern": "Italpresse IP 800 (Automotive-Special)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 900000,
+      "power_kW": 150,
+      "throughputPartsPerYear": 80000,
+      "comment": "Erweiterte Peripherie, Vakuum-System, Robot-Handling, Inline-Prüfung, MES-Anbindung."
+    },
+    {
+      "machineName": "Druckguss Mg 320 t - Standard",
+      "machineNameIntern": "Frech K-Series 320 (Standard)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 350000,
+      "power_kW": 100,
+      "throughputPartsPerYear": 120000,
+      "comment": "Magnesiumdruckguss, 320 t, Basiskonfiguration. Teile sind leicht, aber korrosionsanfälliger."
+    },
+    {
+      "machineName": "Druckguss Mg 320 t - High-End",
+      "machineNameIntern": "Frech K-Series 320 (Automotive-Special)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 600000,
+      "power_kW": 100,
+      "throughputPartsPerYear": 120000,
+      "comment": "Robot-Entnahme, Schutzgas- oder Vakuumtechnik, umfangreiche Messtechnik, i4.0-Features."
+    },
+    {
+      "machineName": "Druckguss Mg 800 t - Standard",
+      "machineNameIntern": "Ube Mg 800 (Standard)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 700000,
+      "power_kW": 180,
+      "throughputPartsPerYear": 70000,
+      "comment": "Magnesiumdruckguss, 800 t, geeignet für große Bauteile z.B. im Automobil-Leichtbau."
+    },
+    {
+      "machineName": "Druckguss Mg 800 t - High-End",
+      "machineNameIntern": "Ube Mg 800 (Automotive-Special)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 1300000,
+      "power_kW": 180,
+      "throughputPartsPerYear": 70000,
+      "comment": "Komplette Automationszelle, Vakuumguss, Schutzgas, Robotik, QS-System, teils 24/7 ausgelegt."
+    },
+    {
+      "machineName": "Druckguss Zn 80 t - Standard",
+      "machineNameIntern": "Frech DAW 80 (Standard)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 120000,
+      "power_kW": 50,
+      "throughputPartsPerYear": 300000,
+      "comment": "Zinkdruckguss (Zamak), 80 t, für kleine und mittlere Teile, manuelle Entnahme möglich."
+    },
+    {
+      "machineName": "Druckguss Zn 80 t - High-End",
+      "machineNameIntern": "Frech DAW 80 (Automotive-Special)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 200000,
+      "power_kW": 50,
+      "throughputPartsPerYear": 300000,
+      "comment": "Mit automatischer Anguss-Trennung, Roboterzellen, ggf. Prozessüberwachung, QS-Sensorik."
+    },
+    {
+      "machineName": "Druckguss Zn 250 t - Standard",
+      "machineNameIntern": "Italpresse Z 250 (Standard)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 250000,
+      "power_kW": 80,
+      "throughputPartsPerYear": 180000,
+      "comment": "Zinkdruckguss, 250 t, Standardausführung, mittlere Bauteile, einfache Automation."
+    },
+    {
+      "machineName": "Druckguss Zn 250 t - High-End",
+      "machineNameIntern": "Italpresse Z 250 (Automotive-Special)",
+      "verfahren": "Druckguss",
+      "kaufpreis": 400000,
+      "power_kW": 80,
+      "throughputPartsPerYear": 180000,
+      "comment": "Integriertes Handling, Teile-Palettierung, ggf. Mehrkavitäten-Werkzeug, QS-System."
+    },
+    {
+      "machineName": "Stanzpresse 160 t - Standard",
+      "machineNameIntern": "Schuler MC 160 (Standard)",
+      "verfahren": "Stanzen",
+      "kaufpreis": 120000,
+      "power_kW": 15,
+      "throughputPartsPerYear": 800000,
+      "comment": "Mechanische Exzenterpresse (160 t), Basisausstattung, manuelles Teilehandling oder einfacher Rollen-vorschub."
+    },
+    {
+      "machineName": "Stanzpresse 160 t - High-End",
+      "machineNameIntern": "Schuler MC 160 (Automotive-Special)",
+      "verfahren": "Stanzen",
+      "kaufpreis": 200000,
+      "power_kW": 15,
+      "throughputPartsPerYear": 800000,
+      "comment": "Automatischer Coil-Abwickler, servo-geregelter Vorschub, Lichtvorhänge, QS-Sensorik. Höherer Output dank Prozessüberwachung."
+    },
+    {
+      "machineName": "Stanzpresse 400 t - Standard",
+      "machineNameIntern": "AIDA NC1 400 (Standard)",
+      "verfahren": "Stanzen",
+      "kaufpreis": 300000,
+      "power_kW": 30,
+      "throughputPartsPerYear": 1200000,
+      "comment": "Große Exzenterpresse (400 t), Basisausstattung, für mittel-große Blechteile, simpler Transfer."
+    },
+    {
+      "machineName": "Stanzpresse 400 t - High-End",
+      "machineNameIntern": "AIDA NC1 400 (Automotive-Special)",
+      "verfahren": "Stanzen",
+      "kaufpreis": 500000,
+      "power_kW": 30,
+      "throughputPartsPerYear": 1200000,
+      "comment": "Vollautomatisch mit Coil-Zuführung, Folgeverbundwerkzeug, ggf. Servo-Antrieb, Kameraprüfung, MES-Anbindung."
+    },
+    {
+      "machineName": "Stanzpresse 630 t - Standard",
+      "machineNameIntern": "Minster E2 630 (Standard)",
+      "verfahren": "Stanzen",
+      "kaufpreis": 500000,
+      "power_kW": 50,
+      "throughputPartsPerYear": 1500000,
+      "comment": "630 t Exzenter-/Kurbelpresse, Basisausführung, manuelle Rüstvorgänge, Standard-Sicherheitszäune."
+    },
+    {
+      "machineName": "Stanzpresse 630 t - High-End",
+      "machineNameIntern": "Minster E2 630 (Automotive-Special)",
+      "verfahren": "Stanzen",
+      "kaufpreis": 900000,
+      "power_kW": 50,
+      "throughputPartsPerYear": 1500000,
+      "comment": "Mit automatischem Werkzeugwechsel (Quick-Die-Change), servo-geregelter Antrieb, Transfer-System, Roboterabnahme."
+    },
+    {
+      "machineName": "Stanzpresse 800 t - Standard",
+      "machineNameIntern": "Komatsu H1F 800 (Standard)",
+      "verfahren": "Stanzen",
+      "kaufpreis": 700000,
+      "power_kW": 70,
+      "throughputPartsPerYear": 2000000,
+      "comment": "Für große Blechteile (Karosserieteile), einfache Coil-Anlage, manuelle Rüstungen."
+    },
+    {
+      "machineName": "Stanzpresse 800 t - High-End",
+      "machineNameIntern": "Komatsu H1F 800 (Automotive-Special)",
+      "verfahren": "Stanzen",
+      "kaufpreis": 1200000,
+      "power_kW": 70,
+      "throughputPartsPerYear": 2000000,
+      "comment": "Mit Servo-Technologie, vollautomatischem Werkzeugwechsel, MES, Inline-Prüfung, Transfer- oder Roboterverkettung."
+    },
+    {
+      "machineName": "Kaltfließpresse 4-Station (klein) - Standard",
+      "machineNameIntern": "Hatebur COLDmatic CM 4 (Standard)",
+      "verfahren": "Kaltfließpressen",
+      "kaufpreis": 600000,
+      "power_kW": 75,
+      "throughputPartsPerYear": 20000000,
+      "comment": "4-Station-Presse für kleinere Verbindungselemente, max. ∅10-12 mm, Basisausstattung."
+    },
+    {
+      "machineName": "Kaltfließpresse 4-Station (klein) - High-End",
+      "machineNameIntern": "Hatebur COLDmatic CM 4 (Automotive-Special)",
+      "verfahren": "Kaltfließpressen",
+      "kaufpreis": 1000000,
+      "power_kW": 90,
+      "throughputPartsPerYear": 20000000,
+      "comment": "Mit vollautomatischer Teilezuführung, höherwertigen Werkzeugen, QS-Kamera, i4.0-Anbindung."
+    },
+    {
+      "machineName": "Kaltfließpresse 6-Station (groß) - Standard",
+      "machineNameIntern": "Hatebur COLDmatic CM 6 (Standard)",
+      "verfahren": "Kaltfließpressen",
+      "kaufpreis": 2000000,
+      "power_kW": 120,
+      "throughputPartsPerYear": 50000000,
+      "comment": "6-Station-Presse, größere Bauteile (∅20 mm+), Basisausstattung, manuelle Werkzeugwechsel."
+    },
+    {
+      "machineName": "Kaltfließpresse 6-Station (groß) - High-End",
+      "machineNameIntern": "Hatebur COLDmatic CM 6 (Automotive-Special)",
+      "verfahren": "Kaltfließpressen",
+      "kaufpreis": 3000000,
+      "power_kW": 150,
+      "throughputPartsPerYear": 50000000,
+      "comment": "Vollautomatische Bauteilentnahme, SPS-gesteuerter Werkzeugwechsel, Online-Messsystem, Robotik."
+    },
+    {
+      "machineName": "Kaltfließpresse 4-Station (klein) - Standard",
+      "machineNameIntern": "National Machinery FORMAX 2000 (Standard)",
+      "verfahren": "Kaltfließpressen",
+      "kaufpreis": 700000,
+      "power_kW": 80,
+      "throughputPartsPerYear": 25000000,
+      "comment": "4-stufige Presse, kompakt, Basistechnik für Bolzen, Schraubenrohlinge, einfache Automatisierung."
+    },
+    {
+      "machineName": "Kaltfließpresse 4-Station (klein) - High-End",
+      "machineNameIntern": "National Machinery FORMAX 2000 (Automotive-Special)",
+      "verfahren": "Kaltfließpressen",
+      "kaufpreis": 1200000,
+      "power_kW": 100,
+      "throughputPartsPerYear": 25000000,
+      "comment": "Erweiterte Automation, hochfeste Werkzeugaufnahmen, Prozesskontrolle, Sensorik, i4.0-Features."
+    },
+    {
+      "machineName": "Kaltfließpresse 6-Station (groß) - Standard",
+      "machineNameIntern": "National Machinery FORMAX 6000 (Standard)",
+      "verfahren": "Kaltfließpressen",
+      "kaufpreis": 2200000,
+      "power_kW": 130,
+      "throughputPartsPerYear": 60000000,
+      "comment": "6-stufig, für größere/komplexere Teile, Basispaket, manuelle oder halbautomatische Teilezuführung."
+    },
+    {
+      "machineName": "Kaltfließpresse 6-Station (groß) - High-End",
+      "machineNameIntern": "National Machinery FORMAX 6000 (Automotive-Special)",
+      "verfahren": "Kaltfließpressen",
+      "kaufpreis": 3500000,
+      "power_kW": 160,
+      "throughputPartsPerYear": 60000000,
+      "comment": "Mit vollautomatischem Materialeinzug, Roboter, QS-Kameras, High-Speed, hochlegierte Werkzeugstähle."
+    },
+      {
+        "machineName": "Schmiedepresse 1600 t - Standard",
+        "machineNameIntern": "Schuler HPX 1600 (Standard)",
+        "verfahren": "Schmieden",
+        "kaufpreis": 1200000,
+        "power_kW": 150,
+        "throughputPartsPerYear": 400000,
+        "comment": "Mechanische Kurbelpresse ~1600 t, Basisausstattung, manuelle Teil-/Werkzeugwechsel."
+      },
+      {
+        "machineName": "Schmiedepresse 1600 t - High-End",
+        "machineNameIntern": "Schuler HPX 1600 (Automotive-Special)",
+        "verfahren": "Schmieden",
+        "kaufpreis": 2000000,
+        "power_kW": 180,
+        "throughputPartsPerYear": 400000,
+        "comment": "Vollautomatische Zuführung, Roboterentnahme, Schnellrüstsystem, Online-Prozesskontrolle."
+      },
+      {
+        "machineName": "Schmiedepresse 4000 t - Standard",
+        "machineNameIntern": "Schuler HPX 4000 (Standard)",
+        "verfahren": "Schmieden",
+        "kaufpreis": 3500000,
+        "power_kW": 300,
+        "throughputPartsPerYear": 600000,
+        "comment": "Große Kurbel-/Knuckle-Joint-Presse, ~4000 t, basische Auslegung, für Wellen/Radnaben etc."
+      },
+      {
+        "machineName": "Schmiedepresse 4000 t - High-End",
+        "machineNameIntern": "Schuler HPX 4000 (Automotive-Special)",
+        "verfahren": "Schmieden",
+        "kaufpreis": 5500000,
+        "power_kW": 350,
+        "throughputPartsPerYear": 600000,
+        "comment": "Automatisierter Teile- und Werkzeugwechsel, Servoantrieb, Prozesstemp.-Überwachung, QS-Systeme."
+      },
+      {
+        "machineName": "Schmiedepresse 2000 t - Standard",
+        "machineNameIntern": "Lasco SPR 2000 (Standard)",
+        "verfahren": "Schmieden",
+        "kaufpreis": 1800000,
+        "power_kW": 200,
+        "throughputPartsPerYear": 500000,
+        "comment": "Servopresse ~2000 t, Basisausstattung, einfacher Greifer für Rohlinge, manuelle QS."
+      },
+      {
+        "machineName": "Schmiedepresse 2000 t - High-End",
+        "machineNameIntern": "Lasco SPR 2000 (Automotive-Special)",
+        "verfahren": "Schmieden",
+        "kaufpreis": 3000000,
+        "power_kW": 250,
+        "throughputPartsPerYear": 500000,
+        "comment": "Vollautomatischer Teiletransport, integrierte Ofen-Anbindung, Werkzeugkühlung, Messstation."
+      },
+      {
+        "machineName": "Schmiedepresse 5000 t - Standard",
+        "machineNameIntern": "Lasco SPR 5000 (Standard)",
+        "verfahren": "Schmieden",
+        "kaufpreis": 5000000,
+        "power_kW": 400,
+        "throughputPartsPerYear": 800000,
+        "comment": "Sehr große Presse ~5000 t, Standard-Robotik für Rohlinge, manuelle Rüstvorgänge."
+      },
+      {
+        "machineName": "Schmiedepresse 5000 t - High-End",
+        "machineNameIntern": "Lasco SPR 5000 (Automotive-Special)",
+        "verfahren": "Schmieden",
+        "kaufpreis": 8000000,
+        "power_kW": 450,
+        "throughputPartsPerYear": 800000,
+        "comment": "High-End-Anlage mit Servoantrieb, automatischem Werkzeugwechsel, umfangreicher Prozessdatenerfassung."
+      },
+        {
+          "machineName": "Wachsinjektionsanlage (klein) - Standard",
+          "machineNameIntern": "Rance Alpha 100 (Standard)",
+          "verfahren": "Feinguss",
+          "kaufpreis": 80000,
+          "power_kW": 5,
+          "throughputPartsPerYear": 100000,
+          "comment": "Manuelle Wachsverarbeitung, kleiner Injektionskolben, 1-fach Werkzeug, Basisausstattung."
+        },
+        {
+          "machineName": "Wachsinjektionsanlage (klein) - High-End",
+          "machineNameIntern": "Rance Alpha 100 (Automotive-Special)",
+          "verfahren": "Feinguss",
+          "kaufpreis": 150000,
+          "power_kW": 5,
+          "throughputPartsPerYear": 100000,
+          "comment": "Mit teilautomatischer Werkzeugzuführung, Mehrfachkavität, Prozesskontrolle, i4.0-Schnittstelle."
+        },
+        {
+          "machineName": "Wachsinjektionsanlage (mittel) - Standard",
+          "machineNameIntern": "Indutherm IW 300 (Standard)",
+          "verfahren": "Feinguss",
+          "kaufpreis": 200000,
+          "power_kW": 10,
+          "throughputPartsPerYear": 300000,
+          "comment": "Mittlere Injektionsanlage, 2- bis 4-fach Werkzeug, Basisausstattung, manuelle Entnahme."
+        },
+        {
+          "machineName": "Wachsinjektionsanlage (mittel) - High-End",
+          "machineNameIntern": "Indutherm IW 300 (Automotive-Special)",
+          "verfahren": "Feinguss",
+          "kaufpreis": 350000,
+          "power_kW": 10,
+          "throughputPartsPerYear": 300000,
+          "comment": "Vollautom. Werkzeug-Handling, Robotgesteuerte Entnahme, integrierter Wachsrückgewinnung, QS-Software."
+        },
+          {
+            "machineName": "Feingusslinie (klein) - Standard",
+            "machineNameIntern": "Eutectic FC 50 (Standard)",
+            "verfahren": "Feinguss",
+            "kaufpreis": 300000,
+            "power_kW": 50,
+            "throughputPartsPerYear": 50000,
+            "comment": "Kleiner Induktions- oder Tiegelofen bis ~30 kg Schmelze, einfache Keramikschale-Station, manuelles Gießen."
+          },
+          {
+            "machineName": "Feingusslinie (klein) - High-End",
+            "machineNameIntern": "Eutectic FC 50 (Automotive-Special)",
+            "verfahren": "Feinguss",
+            "kaufpreis": 500000,
+            "power_kW": 60,
+            "throughputPartsPerYear": 50000,
+            "comment": "Autom. Keramikschalen-Robot, Vakuumgusskammer, Prozesskontrolle, i4.0-Datentracking."
+          },
+          {
+            "machineName": "Feingusslinie (mittel) - Standard",
+            "machineNameIntern": "Inductotherm ICS 150 (Standard)",
+            "verfahren": "Feinguss",
+            "kaufpreis": 600000,
+            "power_kW": 100,
+            "throughputPartsPerYear": 150000,
+            "comment": "Größerer Induktionsofen (100-200 kg Schmelzvolumen), Keramikbeschichtung manuell, einfache Trocknungsstation."
+          },
+          {
+            "machineName": "Feingusslinie (mittel) - High-End",
+            "machineNameIntern": "Inductotherm ICS 150 (Automotive-Special)",
+            "verfahren": "Feinguss",
+            "kaufpreis": 1000000,
+            "power_kW": 120,
+            "throughputPartsPerYear": 150000,
+            "comment": "Vollautomatischer Dip-/Slurry-Roboter, Klimatisierte Trocknung, Vakuum-/Gashüllen-Gießsystem, QS-Kamera."
+          },
+          
+            {
+              "machineName": "Teilewaschmaschine (klein) - Standard",
+              "machineNameIntern": "Dürr EcoCBase 200 (Standard)",
+              "verfahren": "Waschen/Reinigung",
+              "kaufpreis": 70000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 300000,
+              "comment": "Wasserbasierte Waschmaschine, einfaches Beladesystem, manuelle Entnahme."
+            },
+            {
+              "machineName": "Teilewaschmaschine (klein) - High-End",
+              "machineNameIntern": "Dürr EcoCBase 200 (Automotive-Special)",
+              "verfahren": "Waschen/Reinigung",
+              "kaufpreis": 120000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 300000,
+              "comment": "Automatische Bestückung (Roboter/Portal), integrierte Mess-Sensorik, Hochdruckspülen, i4.0-ready."
+            },
+          
+          
+            {
+              "machineName": "Teilewaschmaschine (groß) - Standard",
+              "machineNameIntern": "Dürr EcoCMax 600 (Standard)",
+              "verfahren": "Waschen/Reinigung",
+              "kaufpreis": 180000,
+              "power_kW": 35,
+              "throughputPartsPerYear": 150000,
+              "comment": "Großer Waschraum für schwere Gussteile, manuelle Beschickung, einfache SPS."
+            },
+            {
+              "machineName": "Teilewaschmaschine (groß) - High-End",
+              "machineNameIntern": "Dürr EcoCMax 600 (Automotive-Special)",
+              "verfahren": "Waschen/Reinigung",
+              "kaufpreis": 300000,
+              "power_kW": 45,
+              "throughputPartsPerYear": 150000,
+              "comment": "Vollautomatischer Waschzyklus mit Vakuumtrocknung, integrierter SPC-Auswertung, i4.0-Schnittstelle."
+            },
+          
+          
+            {
+              "machineName": "Montagearbeitsplatz (manuell) - Standard",
+              "machineNameIntern": "Handarbeitsplatz MA-1 (Standard)",
+              "verfahren": "Montage/Handarbeit",
+              "kaufpreis": 10000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 50000,
+              "comment": "Einfacher ergonomischer Montageplatz mit Werkzeugablagen, Beleuchtung; manuelle Fertigung."
+            },
+            {
+              "machineName": "Montagearbeitsplatz (manuell) - High-End",
+              "machineNameIntern": "Handarbeitsplatz MA-1 (Automotive-Special)",
+              "verfahren": "Montage/Handarbeit",
+              "kaufpreis": 20000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 50000,
+              "comment": "Zusatzmodule für Pick-to-Light-System, drehbarer Arbeitstisch, Prozessdokumentation via Tablets."
+            },
+          
+          
+            {
+              "machineName": "Montagezelle (automatisiert) - Standard",
+              "machineNameIntern": "Bosch Rexroth LC Automation (Standard)",
+              "verfahren": "Montage/Automatisierung",
+              "kaufpreis": 80000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 120000,
+              "comment": "Linearmodul mit einfacher SPS, Zuführung per Vibrationswendelförderer, manuelle Endkontrolle."
+            },
+            {
+              "machineName": "Montagezelle (automatisiert) - High-End",
+              "machineNameIntern": "Bosch Rexroth LC Automation (Automotive-Special)",
+              "verfahren": "Montage/Automatisierung",
+              "kaufpreis": 150000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 150000,
+              "comment": "Vollautomatisch (Roboterhandling), Kamera-Prüfung, MES-Anbindung, automatischer NIO-Ausschleuser."
+            },
+          
+          
+            {
+              "machineName": "Entgrat-Station (manuell) - Standard",
+              "machineNameIntern": "Handentgratarbeitsplatz EG1 (Standard)",
+              "verfahren": "Entgraten",
+              "kaufpreis": 5000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 20000,
+              "comment": "Einfache Werkbank mit pneumatischem Schleifer, Absaugung, Beleuchtung; manuelles Entgraten."
+            },
+            {
+              "machineName": "Entgrat-Station (manuell) - High-End",
+              "machineNameIntern": "Handentgratarbeitsplatz EG1 (Automotive-Special)",
+              "verfahren": "Entgraten",
+              "kaufpreis": 10000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 20000,
+              "comment": "Ergonomische Roboterassistenz für schwere Teile, hochleistungsfähige Absaugung, Sicherheitslichtvorhang."
+            },
+          
+          
+            {
+              "machineName": "Entgratmaschine (CNC) - Standard",
+              "machineNameIntern": "Rösler DEM-200 (Standard)",
+              "verfahren": "Entgraten",
+              "kaufpreis": 50000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 80000,
+              "comment": "Kleine CNC-gesteuerte Entgrat-Anlage, einfache 2-Achs-Bearbeitung (Bürsten, Schleifen)."
+            },
+            {
+              "machineName": "Entgratmaschine (CNC) - High-End",
+              "machineNameIntern": "Rösler DEM-200 (Automotive-Special)",
+              "verfahren": "Entgraten",
+              "kaufpreis": 90000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 120000,
+              "comment": "4-Achs gesteuerte Entgratmaschine mit Automations-Handling, Datentracking, Werkzeugüberwachung."
+            },
+          
+          
+            {
+              "machineName": "Wärmeofen (kalt/Warmhalten) - Standard",
+              "machineNameIntern": "Nabertherm NW-500 (Standard)",
+              "verfahren": "Wärmebehandlung",
+              "kaufpreis": 40000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 50000,
+              "comment": "Kammerofen bis 650°C, manuelle Beschickung, einfache Temperatursteuerung, eher für Vorwärmprozesse."
+            },
+            {
+              "machineName": "Wärmeofen (kalt/Warmhalten) - High-End",
+              "machineNameIntern": "Nabertherm NW-500 (Automotive-Special)",
+              "verfahren": "Wärmebehandlung",
+              "kaufpreis": 70000,
+              "power_kW": 40,
+              "throughputPartsPerYear": 50000,
+              "comment": "Vollautomatische Beschickung (Shuttle oder Roboter), SPS-Regelung für präzise Rampen, Datenerfassung (i4.0)."
+            },
+          
+          
+            {
+              "machineName": "Härteofen (Vollwärmebehandlung) - Standard",
+              "machineNameIntern": "Ipsen HT-1000 (Standard)",
+              "verfahren": "Wärmebehandlung",
+              "kaufpreis": 150000,
+              "power_kW": 60,
+              "throughputPartsPerYear": 30000,
+              "comment": "Gas- oder elektrisch beheizter Ofen bis 1000°C, manuelle Be-/Entladung, Basis-Prozesssteuerung."
+            },
+            {
+              "machineName": "Härteofen (Vollwärmebehandlung) - High-End",
+              "machineNameIntern": "Ipsen HT-1000 (Automotive-Special)",
+              "verfahren": "Wärmebehandlung",
+              "kaufpreis": 300000,
+              "power_kW": 80,
+              "throughputPartsPerYear": 30000,
+              "comment": "Automatisierte Chargenhandhabung, Vakuum- oder Schutzgas-Option, Rezeptverwaltung, lückenlose Prozessdokumentation."
+            },
+            {
+              "machineName": "Spritzguss 100 t - Standard",
+              "machineNameIntern": "ENGEL e-mac 100 (Standard)",
+              "verfahren": "Spritzguss",
+              "kaufpreis": 140000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 1800000,
+              "comment": "Zwischen 50 t und 150 t, real ~100 t Schließkraft, Standard."
+            },
+            {
+              "machineName": "Spritzguss 100 t - High-End",
+              "machineNameIntern": "ENGEL e-mac 100 (Automotive-Special)",
+              "verfahren": "Spritzguss",
+              "kaufpreis": 250000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 1800000,
+              "comment": "Mit Automationshandling, QC-Sensorik, Multi-Material-Einsatz."
+            },
+            {
+              "machineName": "Spritzguss 200 t - Standard",
+              "machineNameIntern": "Arburg Allrounder 570C (Standard)",
+              "verfahren": "Spritzguss",
+              "kaufpreis": 220000,
+              "power_kW": 35,
+              "throughputPartsPerYear": 1200000,
+              "comment": "Mittlere Spritzguss, 200 t, Basisausstattung, etc."
+            },
+            {
+              "machineName": "Spritzguss 200 t - High-End",
+              "machineNameIntern": "Arburg Allrounder 570C (Automotive-Special)",
+              "verfahren": "Spritzguss",
+              "kaufpreis": 400000,
+              "power_kW": 35,
+              "throughputPartsPerYear": 1200000,
+              "comment": "Servoelektrische Ausführung, advanced Robot, Inline-Kameras, etc."
+            },
+            {
+              "machineName": "Druckguss Al 200 t - Standard",
+              "machineNameIntern": "Bühler Carat 200 (Standard)",
+              "verfahren": "Druckguss",
+              "kaufpreis": 250000,
+              "power_kW": 60,
+              "throughputPartsPerYear": 200000,
+              "comment": "Mittlere Alu-Druckguss, 200 t, Basisausstattung."
+            },
+            {
+              "machineName": "Druckguss Al 200 t - High-End",
+              "machineNameIntern": "Bühler Carat 200 (Automotive-Special)",
+              "verfahren": "Druckguss",
+              "kaufpreis": 400000,
+              "power_kW": 60,
+              "throughputPartsPerYear": 200000,
+              "comment": "Mit Roboter, Vakuumoption, QS-Kamera, i4.0-Schnittstelle."
+            },
+            {
+              "machineName": "Druckguss Al 400 t - Standard",
+              "machineNameIntern": "Bühler Carat 400 (Standard)",
+              "verfahren": "Druckguss",
+              "kaufpreis": 350000,
+              "power_kW": 90,
+              "throughputPartsPerYear": 120000,
+              "comment": "Alu-Druckguss, 400 t, Standardausführung."
+            },
+            {
+              "machineName": "Druckguss Al 400 t - High-End",
+              "machineNameIntern": "Bühler Carat 400 (Automotive-Special)",
+              "verfahren": "Druckguss",
+              "kaufpreis": 600000,
+              "power_kW": 90,
+              "throughputPartsPerYear": 120000,
+              "comment": "Erweiterte Peripherie, QS, Automationszelle, etc."
+            }          
+]

@@ -1,25 +1,33 @@
-/********************************************************
- * feinguss_calculator.js – AJAX-Variante
+/*************************************************************
+ * feinguss_calculator_v2.js – Reduzierte JS-Version für V2
  *
- * Übernimmt NICHT mehr die eigentliche Berechnung,
- * sondern holt sich das Ergebnis vom Backend.
- ********************************************************/
+ * Alle wesentlichen Berechnungen liegen jetzt im Backend
+ * (siehe routes_feinguss_v2.py). Dieses Skript sammelt nur
+ * die Formulardaten aus dem Modal und ruft per AJAX die
+ * Route /calc/param/feinguss auf. Das empfangene Ergebnis
+ * (JSON) wird dann in die UI (Tabelle, Chart) geschrieben.
+ *************************************************************/
 
-// Globale Chart-Objekte (damit wir sie zerstören können)
-let feingussCostChartObj = null;
-let feingussCo2ChartObj  = null;
+"use strict";
 
+// Globale Referenz auf das Chart-Objekt, damit wir es zerstören können, wenn nötig
+let fgCostChartV2 = null;
+
+/**
+ * Öffnet das Feinguss-Modal.
+ * (Falls du es woanders aufrufst, z.B. über openFeingussModal() etc.,
+ *  kannst du diesen Code anpassen oder entfernen.)
+ */
 function openFeingussModal() {
-  // Schließt das ParamTools-Modal, falls offen
   const paramEl = document.getElementById("modalParamTools");
   if (paramEl) {
     const bsModal = bootstrap.Modal.getInstance(paramEl);
     bsModal?.hide();
   }
-  // Öffne feingussModal
+  // Feinguss-Modal öffnen
   const modalEl = document.getElementById("feingussModal");
   if (!modalEl) {
-    console.error("feingussModal not found!");
+    console.error("feingussModal nicht gefunden!");
     return;
   }
   const bsModal = new bootstrap.Modal(modalEl);
@@ -27,171 +35,179 @@ function openFeingussModal() {
 }
 
 /**
- * Sammelt die Eingaben aus dem Feinguss-Modal
- * und ruft das Backend /calc/param/feinguss auf.
+ * Sammelt die Eingaben aus dem Feinguss-Modal (V2),
+ * macht einen POST-Request an /calc/param/feinguss
+ * und schreibt das Ergebnis ins UI.
  */
 function calculateFeinguss() {
-  // 1) Sammle Eingaben
-  const matName   = document.getElementById("feingussMatSelect")?.value || "Stahl 1.4408";
-  const landName  = document.getElementById("feingussCountrySelect")?.value || "DE";
-  const shellName = document.getElementById("feingussShellSelect")?.value || "Medium";
+  console.log("[Feinguss V2] Starte AJAX-Call zum Backend.");
 
-  const gw_g      = parseFloat(document.getElementById("feingussPartWeight")?.value) || 50.0;
-  const qty       = parseFloat(document.getElementById("feingussAnnualQty")?.value) || 10000;
-  const ruest_min = parseFloat(document.getElementById("feingussRuestMin")?.value) || 90;
-  const post_factor = parseFloat(document.getElementById("feingussPostproc")?.value) || 1.0;
+  // 1) Eingaben sammeln
+  const matKey    = document.getElementById("fgMatSelect")?.value         || "Stahl";
+  const locKey    = document.getElementById("fgLocationSelect")?.value    || "DE";
+  const weight    = parseFloat(document.getElementById("fgWeight")?.value) || 50.0;
+  const scrapRate = parseFloat(document.getElementById("fgScrapRate")?.value) || 5.0;
+  const qty       = parseFloat(document.getElementById("fgQuantity")?.value) || 1000.0;
 
+  const compKey   = document.getElementById("fgComplexitySelect")?.value  || "Medium";
+  const setupMin  = parseFloat(document.getElementById("fgSetupTimeMin")?.value)  || 60.0;
+  const ohRate    = parseFloat(document.getElementById("fgOverheadRate")?.value)  || 15.0;
+  const pfRate    = parseFloat(document.getElementById("fgProfitRate")?.value)    || 10.0;
+  const toolCost  = parseFloat(document.getElementById("fgToolCost")?.value)      || 0.0;
+  const postMin   = parseFloat(document.getElementById("fgPostProcMin")?.value)   || 0.5;
+
+  // 2) Payload zusammenstellen
   const payload = {
-    matName,
-    landName,
-    shellName,
-    gw_g,
-    qty,
-    ruest_min,
-    post_factor
+    fgMatSelect:        matKey,
+    fgLocationSelect:   locKey,
+    fgWeight:           weight,
+    fgScrapRate:        scrapRate,
+    fgQuantity:         qty,
+
+    fgComplexitySelect: compKey,
+    fgSetupTimeMin:     setupMin,
+    fgOverheadRate:     ohRate,
+    fgProfitRate:       pfRate,
+    fgToolCost:         toolCost,
+    fgPostProcMin:      postMin
   };
 
-  console.log("Feinguss => Sende Payload an Backend:", payload);
+  console.log("[Feinguss V2] Payload =>", payload);
 
-  // 2) AJAX-Call zum Backend
+  // 3) AJAX-Request (fetch) an den Backend-Endpunkt
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
-  fetch("/calc/param/feinguss", {
+  fetch("/mycalc/feinguss", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": csrfToken  // Falls du CSRF nutzt
+      "X-CSRFToken": csrfToken
     },
     body: JSON.stringify(payload)
   })
-    .then(res => {
-      if (!res.ok) {
-        throw new Error("HTTP " + res.status);
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status);
       }
-      return res.json();
+      return response.json();
     })
     .then(data => {
-      console.log("Feinguss-Ergebnis vom Backend:", data);
+      console.log("[Feinguss V2] Backend Response:", data);
       if (data.error) {
         alert("Fehler: " + data.error);
         return;
       }
       if (!data.ok) {
-        alert("Berechnung fehlgeschlagen oder unvollständig.");
+        alert("Feinguss-Berechnung unvollständig oder abgelehnt.");
         return;
       }
-      // 3) Update UI
-      updateFeingussUI(data);
+      // => UI-Update
+      fillFeingussV2UI(data);
     })
     .catch(err => {
-      console.error("Feinguss AJAX Error:", err);
+      console.error("[Feinguss V2] AJAX Error:", err);
       alert("Feinguss-Request fehlgeschlagen: " + err);
     });
 }
 
 /**
- * Füllt #feingussResultText, #feingussCostChart, #feingussCo2Chart
+ * Schreibt das vom Backend gelieferte Ergebnis
+ * in die Tabelle (#fgTableBody) und zeichnet das Pie-Chart (#fgCostChart).
  */
-function updateFeingussUI(data) {
-  // data enthält:
-  // {
-  //   "ok": true,
-  //   "cost_per_part": 2.37,
-  //   "co2_per_part": 1.09,
-  //   "cost_material_total": ...,
-  //   "cost_process": ...,
-  //   "cost_ruest_each": ...,
-  //   "cost_overhead": ...,
-  //   "debug": {...}
+function fillFeingussV2UI(data) {
+  // data={
+  //   ok:true,
+  //   costMatShell:3.25,
+  //   costFertigung:2.10,
+  //   overheadVal:0.83,
+  //   profitVal:0.59,
+  //   endPrice:6.77,
+  //   msg:"Feinguss Parametric V2 erfolgreich"
   // }
 
-  const textDiv = document.getElementById("feingussResultText");
-  if (!textDiv) return;
+  const tblBody = document.getElementById("fgTableBody");
+  if (!tblBody) {
+    console.warn("[Feinguss V2] fgTableBody not found!");
+    return;
+  }
 
-  let html = `
-    <p><b>Kosten/Teil:</b> ${data.cost_per_part?.toFixed(2) ?? "--"} €<br/>
-    <b>CO₂/Teil:</b> ${data.co2_per_part?.toFixed(2) ?? "--"} kg</p>
-    <p>
-      Material: ${data.cost_material_total?.toFixed(2) ?? "--"} €<br/>
-      Prozess: ${data.cost_process?.toFixed(2) ?? "--"} €<br/>
-      Rüst/Teil: ${data.cost_ruest_each?.toFixed(2) ?? "--"} €<br/>
-      Overhead: ${data.cost_overhead?.toFixed(2) ?? "--"} €<br/>
-    </p>
-    <p style="font-size:0.85rem; color:#666;">
-      debug: ${JSON.stringify(data.debug)}
-    </p>
-  `;
-  textDiv.innerHTML = html;
+  // Tabelle: 5 Zeilen
+  //   1) Material + Shell
+  //   2) Fertigung
+  //   3) Overhead
+  //   4) Gewinn
+  //   5) Endpreis
+  tblBody.innerHTML = "";
+  const rows = [
+    ["Material + Shell",    data.costMatShell?.toFixed(2) + " €"],
+    ["Fertigung",           data.costFertigung?.toFixed(2) + " €"],
+    ["Overhead",            data.overheadVal?.toFixed(2) + " €"],
+    ["Gewinn",              data.profitVal?.toFixed(2) + " €"],
+    ["Endpreis/Teil",       data.endPrice?.toFixed(2) + " €"]
+  ];
 
-  // Pie 1 => cost
-  const costCtx = document.getElementById("feingussCostChart");
-  if (costCtx) {
-    if (feingussCostChartObj) {
-      feingussCostChartObj.destroy();
-    }
-    const cost_mat   = data.cost_material_total ?? 0;
-    const cost_proc  = data.cost_process ?? 0;
-    const cost_ruest = data.cost_ruest_each ?? 0;
-    const cost_oh    = data.cost_overhead ?? 0;
-    const totalCost  = data.cost_per_part ?? 0;
-    const costData= {
-      labels: ["Mat+Shell","Prozess","Rüst","Overhead"],
+  rows.forEach(([label, val]) => {
+    const tr = document.createElement("tr");
+    const td1= document.createElement("td");
+    const td2= document.createElement("td");
+    td1.textContent = label;
+    td2.textContent = val;
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tblBody.appendChild(tr);
+  });
+
+  // Chart
+  const costChartEl = document.getElementById("fgCostChart");
+  if (!costChartEl) {
+    console.warn("[Feinguss V2] fgCostChart not found!");
+    return;
+  }
+
+  // Zerstöre altes Chart-Objekt, wenn vorhanden
+  if (fgCostChartV2) {
+    fgCostChartV2.destroy();
+  }
+
+  const dataVals = [
+    data.costMatShell  ?? 0,
+    data.costFertigung ?? 0,
+    data.overheadVal   ?? 0,
+    data.profitVal     ?? 0
+  ];
+  const dataLabels = ["Mat+Shell", "Fertigung", "Overhead", "Gewinn"];
+  const endPriceVal = data.endPrice?.toFixed(2) ?? "--";
+
+  fgCostChartV2 = new Chart(costChartEl, {
+    type: "pie",
+    data: {
+      labels: dataLabels,
       datasets: [{
-        data: [cost_mat, cost_proc, cost_ruest, cost_oh],
-        backgroundColor: ["#FF6384","#36A2EB","#FFCE56","#8BC34A"]
+        data: dataVals,
+        backgroundColor: ["#F44336","#2196F3","#FFC107","#4CAF50"]
       }]
-    };
-    feingussCostChartObj= new Chart(costCtx, {
-      type: "pie",
-      data: costData,
-      options: {
-        responsive:false,
-        plugins: {
-          title: {
-            display: true,
-            text: totalCost.toFixed(2) + " €/Teil"
-          }
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        title: {
+          display: true,
+          text: `Kostenverteilung (Endpreis = ${endPriceVal} €)`
         }
       }
-    });
-  }
-
-  // Pie 2 => CO2
-  const co2Ctx = document.getElementById("feingussCo2Chart");
-  if (co2Ctx) {
-    if (feingussCo2ChartObj) {
-      feingussCo2ChartObj.destroy();
     }
-    const totalCo2 = data.co2_per_part ?? 0;
-    // Einfacher Breakdown: 50/50
-    // (Wenn du mehr Info vom Backend bräuchtest, kannst du es verfeinern.)
-    let matCo2 = totalCo2*0.7;
-    let procCo2= totalCo2 - matCo2;
-    const co2Data= {
-      labels:["Mat+Shell","Prozess"],
-      datasets:[{
-        data:[matCo2, procCo2],
-        backgroundColor:["#9CCC65","#FF7043"]
-      }]
-    };
-    feingussCo2ChartObj= new Chart(co2Ctx, {
-      type:"pie",
-      data:co2Data,
-      options:{
-        responsive:false,
-        plugins:{
-          title:{
-            display:true,
-            text: totalCo2.toFixed(2)+" kg CO₂/Teil"
-          }
-        }
-      }
-    });
-  }
+  });
 }
 
 /**
- * Falls du "In Baugruppe übernehmen" Button nutzen willst
+ * initFeingussV2():
+ *  - Optionale Init-Funktion, falls du beim Seitenladen
+ *    bereits irgendwas definieren oder Events binden willst.
  */
-function addFeingussToBaugruppe() {
-  alert("Noch nicht implementiert. Hier könntest du 'data' von letzter Response speichern.");
+function initFeingussV2() {
+  // Beispiel: Button-Click an die Funktion binden:
+  const calcBtn = document.getElementById("fgCalcBtn");
+  if (calcBtn) {
+    calcBtn.addEventListener("click", calculateFeingussParametric);
+  }
+  console.log("[Feinguss V2] initFeingussV2 aufgerufen.");
 }

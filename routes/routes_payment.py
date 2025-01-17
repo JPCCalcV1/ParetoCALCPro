@@ -1,110 +1,264 @@
 # routes/routes_payment.py
-
 import os
-from datetime import datetime, timedelta
-from flask import Blueprint, request, jsonify
-from flask_login import current_user, login_required
-from core.extensions import db, csrf
-from models.payment import PaymentLog
-from models.user import User
 import stripe
+from flask import Blueprint, request, jsonify, session
+from datetime import datetime, timedelta
 
-stripe.api_key = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_123')
+from models.user import db, User
+from models.payment_log import PaymentLog
+from core.extensions import csrf
 
-payment_bp = Blueprint('payment_bp', __name__)
+# Für Payment-Fail E-Mail (falls du SendGrid o.Ä. nutzt)
+# => Stelle sicher, dass du in helpers/sendgrid_helper.py ein send_email(...) hast.
+from helpers.sendgrid_helper import send_email
 
-@payment_bp.route('/create-checkout-session', methods=['POST'])
-@login_required
+payment_bp = Blueprint("payment_bp", __name__)
+
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+stripe.api_key = STRIPE_SECRET_KEY
+
+# Deine Price-Map – anpassen an deine Stripe-Preise
+price_map = {
+    "test":     os.getenv("STRIPE_PRICE_TEST", "price_testXYZ"),
+    "plus":     os.getenv("STRIPE_PRICE_PLUS", "price_plusXYZ"),
+    "premium":  os.getenv("STRIPE_PRICE_PREMIUM", "price_premXYZ"),
+    "extended": os.getenv("STRIPE_PRICE_EXTENDED", "price_extXYZ"),
+}
+
+# ---------------------------------------------------------
+# V1-ROUTE: Falls du EINE Payment-Route (OneOff) behalten willst
+# ---------------------------------------------------------
+@payment_bp.route("/create-checkout-session", methods=["POST"])
 def create_checkout_session():
-    """Erzeugt eine Stripe-Checkout-Session und legt einen PaymentLog an."""
-    price_data = {
-        'currency': 'eur',
-        'unit_amount': 9999,
-        'product_data': {
-            'name': 'ParetoCalc Subscription'
-        }
-    }
+    """
+    V1: Falls du nur EINE Art Payment hast (OneOff).
+    Bleibt kompatibel, falls dein Frontend schon /create-checkout-session aufruft.
+    """
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data_in = request.get_json() or {}
+    which_tier = data_in.get("which_tier", "extended")
+
+    price_id = price_map.get(which_tier)
+    if not price_id:
+        return jsonify({"error": f"No price for {which_tier}"}), 400
+
     try:
-        price = stripe.Price.create(**price_data)
-        session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{'price': price.id, 'quantity': 1}],
-            mode='subscription',
-            success_url='https://your-domain.com/success?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url='https://your-domain.com/cancel',
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{"price": price_id, "quantity": 1}],
+            mode="payment",
+            success_url="https://yourdomain.com/pay/success",
+            cancel_url="https://yourdomain.com/pay/cancel",
             metadata={
-                'user_id': current_user.id
+                "user_id": user.id,
+                "which_tier": which_tier
             }
         )
-
-        payment_log = PaymentLog(
-            user_id=current_user.id,
-            status='pending'
-        )
-        db.session.add(payment_log)
-        db.session.commit()
-
-        return jsonify({
-            'checkout_url': session.url,
-            'session_id': session.id
-        }), 200
+        return jsonify({"checkout_url": checkout_session.url}), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        return jsonify({"error": str(e)}), 500
 
-@payment_bp.route('/webhook', methods=['POST'])
-@csrf.exempt
-def stripe_webhook():
-    """Stripe-Webhooks verarbeiten (invoice.paid, invoice.payment_failed, etc.)."""
-    payload = request.data
-    sig_header = request.headers.get('Stripe-Signature')
-    webhook_secret = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+
+# ---------------------------------------------------------
+# NEU (V2): Subscription – 7 Tage Trial, dann invoice.paid => +30 Tage
+# ---------------------------------------------------------
+@payment_bp.route("/create-checkout-session-subscription", methods=["POST"])
+def create_checkout_session_subscription():
+    """
+    Subscription: 7 Tage Trial -> invoice.paid => +30 Tage je Abrechnungszyklus.
+    """
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data_in = request.get_json() or {}
+    which_tier = data_in.get("which_tier", "plus")
 
     try:
-        event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
-    except stripe.error.SignatureVerificationError:
-        return jsonify({'error': 'Invalid signature'}), 400
+        price_id = price_map.get(which_tier)
+        if not price_id:
+            return jsonify({"error": f"No Price-ID for {which_tier}"}), 400
 
-    event_type = event['type']
-    if event_type == 'invoice.paid':
-        handle_invoice_paid(event)
-    elif event_type == 'invoice.payment_failed':
-        handle_invoice_failed(event)
-    # ggf. mehr events abfangen
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{"price": price_id, "quantity": 1}],
+            mode="subscription",
+            subscription_data={
+                "trial_period_days": 7
+            },
+            success_url="https://yourdomain.com/pay/success",
+            cancel_url="https://yourdomain.com/pay/cancel",
+            metadata={
+                "user_id": user.id,
+                "which_tier": which_tier
+            }
+        )
+        return jsonify({"checkout_url": checkout_session.url}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    return jsonify({'status': 'success'}), 200
 
-def handle_invoice_paid(event):
-    """Setzt PaymentLog auf 'paid', entfernt GracePeriod."""
-    invoice = event['data']['object']
-    user_id = invoice['metadata'].get('user_id')
-    if user_id:
-        payment_log = PaymentLog.query.filter_by(
-            user_id=user_id, status='pending'
-        ).order_by(PaymentLog.created_at.desc()).first()
-        if payment_log:
-            payment_log.status = 'paid'
-            payment_log.expiry_date = None
-            payment_log.updated_at = datetime.utcnow()
-            db.session.commit()
-
-def handle_invoice_failed(event):
-    """Setzt PaymentLog auf 'failed' + GracePeriod (z. B. 5 Tage)."""
-    invoice = event['data']['object']
-    user_id = invoice['metadata'].get('user_id')
-    if user_id:
-        payment_log = PaymentLog.query.filter_by(
-            user_id=user_id, status='pending'
-        ).order_by(PaymentLog.created_at.desc()).first()
-        if payment_log:
-            payment_log.status = 'failed'
-            grace_days = determine_grace_period(user_id)
-            payment_log.expiry_date = datetime.utcnow() + timedelta(days=grace_days)
-            payment_log.updated_at = datetime.utcnow()
-            db.session.commit()
-
-def determine_grace_period(user_id):
-    """Bestimmt dynamisch die GracePeriod in Tagen."""
+# ---------------------------------------------------------
+# NEU (V2): OneOff – 365 Tage, separate Route
+# ---------------------------------------------------------
+@payment_bp.route("/create-checkout-session-oneoff", methods=["POST"])
+def create_checkout_session_oneoff():
+    """
+    OneOff: 365 Tage.
+    """
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
     user = User.query.get(user_id)
-    if user and user.is_admin:
-        return 7  # z. B. Admin 7 Tage
-    return 5  # Standard 5 Tage
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data_in = request.get_json() or {}
+    which_tier = data_in.get("which_tier", "extended")
+
+    try:
+        price_id = price_map.get(which_tier)
+        if not price_id:
+            return jsonify({"error": f"No price for {which_tier}"}), 400
+
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{"price": price_id, "quantity": 1}],
+            mode="payment",
+            success_url="https://yourdomain.com/pay/success",
+            cancel_url="https://yourdomain.com/pay/cancel",
+            metadata={
+                "user_id": user.id,
+                "which_tier": which_tier
+            }
+        )
+        return jsonify({"checkout_url": checkout_session.url}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# ---------------------------------------------------------
+# WEBHOOK – Nur hier CSRF-Exempt
+# ---------------------------------------------------------
+@payment_bp.route("/webhook", methods=["POST"])
+@csrf.exempt  # Nur hier exempt, da Stripe JSON sendet ohne CSRF
+def stripe_webhook():
+    payload = request.data
+    sig_header = request.headers.get("Stripe-Signature", "")
+    if not STRIPE_WEBHOOK_SECRET:
+        return jsonify({"error": "No webhook secret"}), 500
+
+    try:
+        event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
+    except stripe.error.SignatureVerificationError as e:
+        print("Signature error:", e)
+        return jsonify({"error": "Invalid signature"}), 400
+
+    # PaymentLog anlegen
+    new_log = PaymentLog(
+        user_id=None,
+        event_id=event["id"],
+        event_type=event["type"],
+        raw_data=str(event),
+        status="pending"  # NEU: Startet mit "pending"
+    )
+    db.session.add(new_log)
+    db.session.commit()
+
+    etype = event["type"]
+    data_obj = event["data"]["object"]
+
+    # -----------------------------------------------------
+    # checkout.session.completed =>
+    # - Mode "subscription": 7 Tage
+    # - Mode "payment": 365 Tage
+    # -----------------------------------------------------
+    if etype == "checkout.session.completed":
+        user_id = data_obj.get("metadata", {}).get("user_id")
+        which_tier = data_obj.get("metadata", {}).get("which_tier", "extended")
+        mode = data_obj.get("mode")
+
+        if user_id:
+            u = User.query.get(user_id)
+            if u:
+                if mode == "subscription":
+                    u.license_tier = which_tier
+                    u.license_expiry = datetime.now() + timedelta(days=7)
+                    db.session.commit()
+                elif mode == "payment":
+                    u.license_tier = which_tier
+                    u.license_expiry = datetime.now() + timedelta(days=365)
+                    db.session.commit()
+
+        # Payment completed => PaymentLog status = "completed"
+        new_log.status = "completed"
+        db.session.commit()
+
+    # -----------------------------------------------------
+    # invoice.paid => z.B. Subscription Renewal => +30 Tage
+    # -----------------------------------------------------
+    elif etype == "invoice.paid":
+        sub_id = data_obj.get("subscription")
+        if sub_id:
+            sub_obj = stripe.Subscription.retrieve(sub_id)
+            user_id = sub_obj.get("metadata", {}).get("user_id")
+            which_tier = sub_obj.get("metadata", {}).get("which_tier", "plus")
+
+            if user_id:
+                u = User.query.get(user_id)
+                if u:
+                    # Falls license_expiry abgelaufen -> setze ab heute +30
+                    # sonst hänge 30 Tage dran
+                    if not u.license_expiry or u.license_expiry < datetime.now():
+                        u.license_expiry = datetime.now() + timedelta(days=30)
+                    else:
+                        u.license_expiry += timedelta(days=30)
+                    u.license_tier = which_tier
+                    db.session.commit()
+
+        new_log.status = "paid"
+        db.session.commit()
+
+    # -----------------------------------------------------
+    # invoice.payment_failed => Access entziehen + E-Mail
+    # -----------------------------------------------------
+    elif etype == "invoice.payment_failed":
+        sub_id = data_obj.get("subscription")
+        if sub_id:
+            sub_obj = stripe.Subscription.retrieve(sub_id)
+            user_id = sub_obj.get("metadata", {}).get("user_id")
+            if user_id:
+                u = User.query.get(user_id)
+                if u:
+                    # Lizenz wegnehmen
+                    u.license_tier = "no_access"
+                    u.license_expiry = None
+                    db.session.commit()
+
+                    # => Sende E-Mail (Try/Catch, damit es den Workflow nicht stoppt)
+                    try:
+                        send_email(
+                            to=u.email,
+                            subject="Payment failed",
+                            plain_body="Deine Zahlung schlug fehl! Bitte Zahlungsmethode aktualisieren.",
+                            html_body="<p>Zahlung fehlgeschlagen. Bitte updaten!</p>"
+                        )
+                    except Exception as mail_ex:
+                        print("SendGrid error:", mail_ex)
+
+        new_log.status = "failed"
+        db.session.commit()
+
+    return jsonify({"status": "ok"}), 200

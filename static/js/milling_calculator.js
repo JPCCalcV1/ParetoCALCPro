@@ -68,7 +68,7 @@ function calculateMilling() {
 
   console.log("Milling => Payload:", payload);
 
-  fetch("/calc/takt/milling", {
+  fetch("/mycalc/milling", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

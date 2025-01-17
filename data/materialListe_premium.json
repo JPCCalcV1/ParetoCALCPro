@@ -1,0 +1,316 @@
+[
+  {
+    "material": "AlSi9Cu3",
+    "verfahrensTyp": "Aluguss (Druckguss)",
+    "form": "Guss-Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.60,
+    "legierungsZuschlagEURkg": 0.20,
+    "umarbeitungsKostenEURkg": 0.50,
+    "gesamtPreisEURkg": 2.30,
+    "co2EmissionenKG": 8.0,
+    "kommentar": "Standard Alu-Druckgusslegierung, Automotive"
+  },
+  {
+    "material": "Zamak 5",
+    "verfahrensTyp": "Zinkdruckguss",
+    "form": "Guss-Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.50,
+    "legierungsZuschlagEURkg": 0.30,
+    "umarbeitungsKostenEURkg": 0.40,
+    "gesamtPreisEURkg": 2.20,
+    "co2EmissionenKG": 6.5,
+    "kommentar": "Zinkdruckguss (Zamak 5), vielseitig einsetzbar"
+  },
+  {
+    "material": "AZ91",
+    "verfahrensTyp": "Magnesiumdruckguss",
+    "form": "Guss-Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 2.00,
+    "legierungsZuschlagEURkg": 0.40,
+    "umarbeitungsKostenEURkg": 0.60,
+    "gesamtPreisEURkg": 3.00,
+    "co2EmissionenKG": 10.0,
+    "kommentar": "Leichtbau-Druckgusslegierung (Mg)"
+  },
+
+
+  {
+    "material": "1.4408",
+    "verfahrensTyp": "Feinguss",
+    "form": "Guss-Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.10,
+    "legierungsZuschlagEURkg": 1.50,
+    "umarbeitungsKostenEURkg": 1.20,
+    "gesamtPreisEURkg": 3.80,
+    "co2EmissionenKG": 6.0,
+    "kommentar": "Edelstahl-Feinguss, korrosionsbeständig (AISI 316 artverwandt)"
+  },
+  {
+    "material": "AlSi7Mg",
+    "verfahrensTyp": "Feinguss",
+    "form": "Guss-Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.70,
+    "legierungsZuschlagEURkg": 0.30,
+    "umarbeitungsKostenEURkg": 1.00,
+    "gesamtPreisEURkg": 3.00,
+    "co2EmissionenKG": 8.5,
+    "kommentar": "Alu-Feingusslegierung, mittlere Festigkeit"
+  },
+  {
+    "material": "Ti6Al4V",
+    "verfahrensTyp": "Feinguss",
+    "form": "Guss-Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 10.00,
+    "legierungsZuschlagEURkg": 5.00,
+    "umarbeitungsKostenEURkg": 8.00,
+    "gesamtPreisEURkg": 23.00,
+    "co2EmissionenKG": 35.0,
+    "kommentar": "Titan-Feinguss, sehr teuer, hochfest, leicht"
+  },
+
+
+  {
+    "material": "C45",
+    "verfahrensTyp": "Schmieden",
+    "form": "Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 0.80,
+    "legierungsZuschlagEURkg": 0.10,
+    "umarbeitungsKostenEURkg": 0.30,
+    "gesamtPreisEURkg": 1.20,
+    "co2EmissionenKG": 2.5,
+    "kommentar": "Vergütungsstahl, übliches Schmiedebauteil"
+  },
+  {
+    "material": "42CrMo4",
+    "verfahrensTyp": "Schmieden",
+    "form": "Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 0.90,
+    "legierungsZuschlagEURkg": 0.20,
+    "umarbeitungsKostenEURkg": 0.35,
+    "gesamtPreisEURkg": 1.45,
+    "co2EmissionenKG": 2.8,
+    "kommentar": "Chrom-Molybdän-Stahl, höhere Festigkeit"
+  },
+  {
+    "material": "Al6082",
+    "verfahrensTyp": "Schmieden",
+    "form": "Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.80,
+    "legierungsZuschlagEURkg": 0.30,
+    "umarbeitungsKostenEURkg": 0.50,
+    "gesamtPreisEURkg": 2.60,
+    "co2EmissionenKG": 9.0,
+    "kommentar": "Häufige Alu-Schmiedesorte"
+  },
+
+
+  {
+    "material": "C10",
+    "verfahrensTyp": "Kaltfließpressen",
+    "form": "Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 0.65,
+    "legierungsZuschlagEURkg": 0.05,
+    "umarbeitungsKostenEURkg": 0.25,
+    "gesamtPreisEURkg": 0.95,
+    "co2EmissionenKG": 2.2,
+    "kommentar": "Niedriggekohlter Stahl, gut kaltumformbar"
+  },
+  {
+    "material": "C35",
+    "verfahrensTyp": "Kaltfließpressen",
+    "form": "Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 0.70,
+    "legierungsZuschlagEURkg": 0.05,
+    "umarbeitungsKostenEURkg": 0.30,
+    "gesamtPreisEURkg": 1.05,
+    "co2EmissionenKG": 2.3,
+    "kommentar": "Kohlenstoffstahl, mittlere Festigkeit"
+  },
+  {
+    "material": "Al6060",
+    "verfahrensTyp": "Kaltfließpressen",
+    "form": "Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.70,
+    "legierungsZuschlagEURkg": 0.25,
+    "umarbeitungsKostenEURkg": 0.40,
+    "gesamtPreisEURkg": 2.35,
+    "co2EmissionenKG": 8.0,
+    "kommentar": "Alu-Legierung für Kaltumformprozesse (weicher als 6082)"
+  },
+  {
+    "material": "Edelstahl 304",
+    "verfahrensTyp": "Kaltfließpressen",
+    "form": "Rohteil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.00,
+    "legierungsZuschlagEURkg": 1.20,
+    "umarbeitungsKostenEURkg": 0.50,
+    "gesamtPreisEURkg": 2.70,
+    "co2EmissionenKG": 5.0,
+    "kommentar": "Standard-18/8-Edelstahl, bedingt kaltumformbar"
+  },
+
+
+  {
+    "material": "PP (Polypropylen)",
+    "verfahrensTyp": "Spritzguss",
+    "form": "Granulat",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.20,
+    "legierungsZuschlagEURkg": 0.00,
+    "umarbeitungsKostenEURkg": 0.40,
+    "gesamtPreisEURkg": 1.60,
+    "co2EmissionenKG": 2.5,
+    "kommentar": "Standard PP-Granulat"
+  },
+  {
+    "material": "ABS",
+    "verfahrensTyp": "Spritzguss",
+    "form": "Granulat",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.50,
+    "legierungsZuschlagEURkg": 0.00,
+    "umarbeitungsKostenEURkg": 0.40,
+    "gesamtPreisEURkg": 1.90,
+    "co2EmissionenKG": 3.0,
+    "kommentar": "ABS-Granulat, vielseitiger Standardkunststoff"
+  },
+  {
+    "material": "PA6 GF30",
+    "verfahrensTyp": "Spritzguss",
+    "form": "Granulat",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 2.00,
+    "legierungsZuschlagEURkg": 0.00,
+    "umarbeitungsKostenEURkg": 0.50,
+    "gesamtPreisEURkg": 2.50,
+    "co2EmissionenKG": 4.0,
+    "kommentar": "Glasfaserverstärkt (30%) für höhere Festigkeit"
+  },
+  {
+    "material": "PC (Polycarbonat)",
+    "verfahrensTyp": "Spritzguss",
+    "form": "Granulat",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 2.20,
+    "legierungsZuschlagEURkg": 0.00,
+    "umarbeitungsKostenEURkg": 0.60,
+    "gesamtPreisEURkg": 2.80,
+    "co2EmissionenKG": 5.0,
+    "kommentar": "Hochwertiger technischer Kunststoff"
+  },
+  {
+    "material": "POM (Polyacetal)",
+    "verfahrensTyp": "Spritzguss",
+    "form": "Granulat",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 2.30,
+    "legierungsZuschlagEURkg": 0.00,
+    "umarbeitungsKostenEURkg": 0.50,
+    "gesamtPreisEURkg": 2.80,
+    "co2EmissionenKG": 4.5,
+    "kommentar": "Gut zerspanbar, reibungsarm, hohe Maßhaltigkeit"
+  },
+  {
+    "material": "PPS (Polyphenylensulfid)",
+    "verfahrensTyp": "Spritzguss",
+    "form": "Granulat",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 4.00,
+    "legierungsZuschlagEURkg": 0.00,
+    "umarbeitungsKostenEURkg": 0.70,
+    "gesamtPreisEURkg": 4.70,
+    "co2EmissionenKG": 7.0,
+    "kommentar": "Hochtemperatur-Kunststoff, sehr chemikalienbeständig"
+  },
+
+
+  {
+    "material": "GG25",
+    "verfahrensTyp": "Zerspanung (Guss)",
+    "form": "Rohling",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 0.70,
+    "legierungsZuschlagEURkg": 0.05,
+    "umarbeitungsKostenEURkg": 0.15,
+    "gesamtPreisEURkg": 0.90,
+    "co2EmissionenKG": 2.4,
+    "kommentar": "Grauguss, mittlere Festigkeit, gut zerspanbar"
+  },
+
+
+  {
+    "material": "DC01",
+    "verfahrensTyp": "Stanzen",
+    "form": "Coil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 0.65,
+    "legierungsZuschlagEURkg": 0.00,
+    "umarbeitungsKostenEURkg": 0.20,
+    "gesamtPreisEURkg": 0.85,
+    "co2EmissionenKG": 2.1,
+    "kommentar": "Tiefzieh- und Stanzqualität, dünnes Coilmaterial"
+  },
+  {
+    "material": "DP600",
+    "verfahrensTyp": "Stanzen",
+    "form": "Coil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 0.70,
+    "legierungsZuschlagEURkg": 0.10,
+    "umarbeitungsKostenEURkg": 0.25,
+    "gesamtPreisEURkg": 1.05,
+    "co2EmissionenKG": 2.3,
+    "kommentar": "Dualphasenstahl, Automotive, höhere Festigkeit"
+  },
+  {
+    "material": "AW 1050",
+    "verfahrensTyp": "Stanzen",
+    "form": "Coil",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.60,
+    "legierungsZuschlagEURkg": 0.05,
+    "umarbeitungsKostenEURkg": 0.30,
+    "gesamtPreisEURkg": 1.95,
+    "co2EmissionenKG": 7.5,
+    "kommentar": "Reinaluminium (~99,5%), gut umformbar, aber geringe Festigkeit"
+  },
+
+
+  {
+    "material": "PA12",
+    "verfahrensTyp": "Lasersintern (SLS)",
+    "form": "Pulver",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 4.00,
+    "legierungsZuschlagEURkg": 0.00,
+    "umarbeitungsKostenEURkg": 1.50,
+    "gesamtPreisEURkg": 5.50,
+    "co2EmissionenKG": 7.0,
+    "kommentar": "Standard-Polyamid für SLS, Prototyping und Kleinserien"
+  },
+  {
+    "material": "316L (Stainless Steel)",
+    "verfahrensTyp": "Lasersintern (SLM)",
+    "form": "Pulver",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.10,
+    "legierungsZuschlagEURkg": 1.50,
+    "umarbeitungsKostenEURkg": 8.00,
+    "gesamtPreisEURkg": 10.60,
+    "co2EmissionenKG": 30.0,
+    "kommentar": "Feinpulver für metallisches Laserschmelzen; energieintensiv"
+  }
+]

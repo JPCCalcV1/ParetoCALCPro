@@ -6,51 +6,32 @@ from core.extensions import limiter, csrf
 
 
 takt_calc_bp = Blueprint('takt_calc_bp', __name__)
-
 @takt_calc_bp.route("/spritzguss", methods=["POST"])
 @login_required
 @csrf.exempt
 @limiter.limit("20/minute")
 def calc_spritzguss():
     """
-    POST /calc/takt/spritzguss
-    JSON-Beispiel:
-    {
-      "material": "PP",
-      "cavities": 4,
-      "partWeight": 50.0,
-      "runnerWeight": 10.0,
-      "length_mm": 100,
-      "width_mm": 80,
-      "wall_mm": 2.0,
-      "machineKey": "50t Standard",
-      "isMachineAuto": false,
-      "safe_pct": 30,
-      "press_bar": 300,
-      "isAutomotive": false,
-      "hasRobot": false,
-      "hasSlider": false,
-      "hold_s": 2.0,
-      "util_pct": 85,
-      "min_cool_s": 1.5,
-      "hasContour": false
-    }
+    POST /calc/takt/spritzguss  (V2-Version)
+    Erwartet JSON mit denselben Feldern wie vorher.
     """
     try:
         data = request.get_json()
         if not data:
             return jsonify({"error": "No JSON body"}), 400
 
-        # 1) Felder extrahieren
+        # ---------------------------------------------------
+        # 1) EINGABE-PARAMETER AUS JSON
+        # ---------------------------------------------------
         material       = data.get("material", "PP")
         cavities       = int(data.get("cavities", 4))
-        partW_g        = float(data.get("partWeight", 50.0))
-        runnerW_g      = float(data.get("runnerWeight", 10.0))
+        partWeight     = float(data.get("partWeight", 50.0))
+        runnerWeight   = float(data.get("runnerWeight", 10.0))
         length_mm      = float(data.get("length_mm", 100.0))
         width_mm       = float(data.get("width_mm", 80.0))
         wall_mm        = float(data.get("wall_mm", 2.0))
 
-        machineKey     = data.get("machineKey", "50t Standard")
+        machineKey     = data.get("machineKey", "80t HighSpeed")
         isMachineAuto  = bool(data.get("isMachineAuto", False))
         safe_pct       = float(data.get("safe_pct", 30.0))
         press_bar      = float(data.get("press_bar", 300.0))
@@ -58,112 +39,181 @@ def calc_spritzguss():
         hasRobot       = bool(data.get("hasRobot", False))
         hasSlider      = bool(data.get("hasSlider", False))
         hold_s         = float(data.get("hold_s", 2.0))
-        util_pct       = float(data.get("util_pct", 85.0))
         min_cool_s     = float(data.get("min_cool_s", 1.5))
         hasContour     = bool(data.get("hasContour", False))
 
-        # 2) Datentabellen
+        # ---------------------------------------------------
+        # 2) DATENBASEN
+        # ---------------------------------------------------
+        # Maschinen-Daten (inklusive neuer Stufen)
         machineData = {
-            "50t Standard": {
-                "tons": 50,
-                "rate": 70.0,
-                "openclose": 1.2,
-                "min_cycle": 3.0
+            "80t HighSpeed": {
+                "tons": 80,
+                "openclose": 1.0,
+                "min_cycle": 2.5,
+                "flags": ["highspeed"]
             },
             "100t Standard": {
                 "tons": 100,
-                "rate": 90.0,
                 "openclose": 1.5,
-                "min_cycle": 4.0
+                "min_cycle": 4.0,
+                "flags": []
+            },
+            "120t AllElectric": {
+                "tons": 120,
+                "openclose": 1.2,
+                "min_cycle": 3.5,
+                "flags": ["electric"]
             },
             "150t Automotive": {
                 "tons": 150,
-                "rate": 110.0,
                 "openclose": 2.2,
-                "min_cycle": 6.0
+                "min_cycle": 6.0,
+                "flags": ["automotive"]
             },
-            "200t HighSpeed": {
+            "200t Standard": {
                 "tons": 200,
-                "rate": 120.0,
-                "openclose": 1.2,
-                "min_cycle": 3.5
+                "openclose": 1.6,
+                "min_cycle": 4.5,
+                "flags": []
+            },
+            "250t Standard": {
+                "tons": 250,
+                "openclose": 2.0,
+                "min_cycle": 5.0,
+                "flags": []
+            },
+            "350t Automotive": {
+                "tons": 350,
+                "openclose": 2.2,
+                "min_cycle": 6.0,
+                "flags": ["automotive"]
+            },
+            "400t Standard": {
+                "tons": 400,
+                "openclose": 2.5,
+                "min_cycle": 7.0,
+                "flags": []
             }
         }
+
+        # Material-Daten
         materialData = {
-            "PP":      { "price": 1.50, "coolf": 0.30 },
-            "ABS":     { "price": 2.00, "coolf": 0.35 },
-            "PA6GF30": { "price": 3.00, "coolf": 0.45 },
-            "PC":      { "price": 2.80, "coolf": 0.40 }
+            "PP":      { "coolf": 0.30 },
+            "ABS":     { "coolf": 0.35 },
+            "PA6GF30": { "coolf": 0.45 },
+            "PC":      { "coolf": 0.40 },
+            "POM":     { "coolf": 0.38 },
+            "TPE":     { "coolf": 0.25 },
+            "PBT":     { "coolf": 0.42 }
         }
 
-        # Hilfsfunktion
+        # ---------------------------------------------------
+        # 3) HILFSFUNKTION: pickAutoMachine
+        #    Sucht die kleinstmögliche Maschine >= benötigte Tons
+        # ---------------------------------------------------
         def pick_auto_machine(tonsNeeded):
             bestKey = None
-            bestVal = 999999
+            bestVal = float("inf")
             for k, info in machineData.items():
-                if info["tons"] >= tonsNeeded and info["tons"] < bestVal:
-                    bestVal = info["tons"]
+                t = info["tons"]
+                if t >= tonsNeeded and t < bestVal:
+                    bestVal = t
                     bestKey = k
             if not bestKey:
-                # pick largest
-                bestKey = max(machineData.keys(), key=lambda x: machineData[x]["tons"])
+                # Falls keine Maschine tonnenmäßig reicht,
+                # nimm die größte verfügbare:
+                bestKey = max(machineData.keys(),
+                              key=lambda x: machineData[x]["tons"])
             return bestKey
 
-        # 3) Berechnung
+        # ---------------------------------------------------
+        # 4) BERECHNUNG
+        # ---------------------------------------------------
+        # (a) Cooling-Factor
         matObj = materialData.get(material, materialData["PP"])
-        shot_weight_g = (partW_g + runnerW_g) * cavities
+        coolFactor = matObj["coolf"]
 
-        # Schließkraft
-        closure_tons = ((length_mm * width_mm) / 100.0) * press_bar * 0.0001 * cavities
+        # (b) Schussgewicht
+        shotWeight_g = (partWeight + runnerWeight) * cavities
+
+        # (c) Projizierte Fläche (cm^2)
+        projArea_cm2 = (length_mm * width_mm) / 100.0
+
+        # (d) Schließkraft (t)
+        closure_tons = projArea_cm2 * press_bar * 0.0001 * cavities
         closure_tons *= (1 + safe_pct / 100.0)
         if isAutomotive:
-            closure_tons *= 1.2
+            closure_tons *= 1.2  # +20%
 
-        # Maschine auto oder manuell
+        # (e) Maschine aus den Stammdaten
         chosenKey = machineKey
+        if chosenKey not in machineData:
+            chosenKey = "80t HighSpeed"
+
+        # => Falls isMachineAuto, dann auto-picken
         if isMachineAuto:
             chosenKey = pick_auto_machine(closure_tons)
+
         chosenMachine = machineData[chosenKey]
 
-        coolFactor = matObj["coolf"]
+        # (f) Kühlzeit
         rawCool_s = coolFactor * (wall_mm ** 2)
         if rawCool_s < min_cool_s:
             rawCool_s = min_cool_s
         if hasContour:
-            rawCool_s *= 0.8
+            rawCool_s *= 0.8  # -20%
 
+        # (g) Handling
         handle_s = 2.0 if hasRobot else 0.5
         slider_s = 1.5 if hasSlider else 0.0
 
-        injection_s = 1.0 + hold_s
+        # (h) Einspritzzeit + Nachdruck
+        injection_s = 1.0 + hold_s  # injBaseTime + hold_s
+
+        # (i) Maschine open/close
         oc_s = chosenMachine["openclose"]
+
+        # (j) Zyklus pro Schuss
         rawCycleShot = oc_s + injection_s + rawCool_s + handle_s + slider_s
-        if rawCycleShot < chosenMachine["min_cycle"]:
-            rawCycleShot = chosenMachine["min_cycle"]
 
+        # (k) Minimalzyklus der Maschine
+        minCyc = chosenMachine["min_cycle"]
+        if rawCycleShot < minCyc:
+            rawCycleShot = minCyc
+
+        # (l) Zyklus pro Teil
         cyclePart_s = rawCycleShot / cavities
-        realUtil    = util_pct / 100.0
-        tph         = (3600.0 / rawCycleShot) * cavities * realUtil
 
-        # einfache Kosten-Formel
-        ms_rate_h   = chosenMachine["rate"]
-        shotMatCost = (shot_weight_g / 1000.0) * matObj["price"]
-        costPerTeilMat = shotMatCost / cavities
-        costMachineEach= (ms_rate_h / 3600.0) * (rawCycleShot / cavities)
-        costEach       = costPerTeilMat + costMachineEach
+        # ---------------------------------------------------
+        # 5) ERGEBNIS-VORBEREITUNG
+        # ---------------------------------------------------
+        # Wir belassen "costEach" und "throughput" in dieser V2-Demo auf Null/None.
+        # Frontend kann "--" anzeigen, wenn None.
+        machineExplain = (
+            f"Maschine '{chosenKey}' gewählt, da mindestens "
+            f"{round(closure_tons,1)} t benötigt werden."
+        )
 
-        # Return
         result = {
             "ok": True,
-            "closure_tons": round(closure_tons, 2),
-            "rawCycleShot": round(rawCycleShot, 2),
-            "cyclePart_s": round(cyclePart_s, 3),
-            "tph": round(tph, 1),
-            "costEach": round(costEach, 3),
-            "shotWeight_g": round(shot_weight_g, 1),
+            "closure_tons": round(closure_tons, 1),
             "chosenMachine": chosenKey,
-            "msg": f"Spritzguss-Berechnung (Backend). material={material}, cavities={cavities}"
+            "rawCycleShot": round(rawCycleShot, 2),
+            "cyclePart_s": round(cyclePart_s, 2),
+            # Diese Liste wird z.B. vom Donut-Chart gebraucht:
+            "rawSegmentVals": [
+                round(oc_s, 2),
+                round(injection_s, 2),
+                round(rawCool_s, 2),
+                round(handle_s + slider_s, 2)
+            ],
+            "machineExplain": machineExplain,
+            "costEach": None,        # V2 => nicht berechnet => UI zeigt "--"
+            "throughput": None,      # V2 => nicht berechnet => UI zeigt "--"
+            "msg": "Spritzguss-Berechnung (Backend V2)."
         }
+
         return jsonify(result), 200
 
     except Exception as e:
