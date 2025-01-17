@@ -9,92 +9,39 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"
   />
-  <!-- Optional: Color Admin (Icons, Fonts) -->
+  <!-- Optional: FontAwesome Icons -->
   <link
     href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"
     rel="stylesheet"
   />
-  <style>
-    body {
-      background-color: #f8f9fa;
-      font-family: "Open Sans", sans-serif;
-    }
-    .card {
-      border-radius: 4px;
-    }
-    .card-header h5 {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-  </style>
 </head>
 <body class="p-3">
-
-<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4">
   <div class="container-fluid">
     <a class="navbar-brand fw-bold" href="/landing">
       ParetoCalc Admin
     </a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarContent"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div
-      class="collapse navbar-collapse justify-content-end"
-      id="navbarContent"
-    >
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="/mycalc">MyCalc</a></li>
-        <li class="nav-item"><a class="nav-link" href="/upgrade">Upgrade</a></li>
-        <li class="nav-item"><a class="nav-link" href="/auth/login_form">Login</a></li>
-      </ul>
-    </div>
+    <!-- … Restliche Navbar … -->
   </div>
 </nav>
 
 <div class="container">
-
   <h1>Admin Dashboard</h1>
   <hr/>
 
-  <div class="row">
-    <!-- Card 1 -->
-    <div class="col-md-6 mb-4">
+  <!-- Card-Übersicht, wie du sie in V2 hast -->
+  <div class="row mb-4">
+    <div class="col-md-6">
       <div class="card">
-        <div class="card-header">
-          <h5>Gesamt-Überblick</h5>
-        </div>
+        <div class="card-header"><h5>Gesamt-Überblick</h5></div>
         <div class="card-body">
-          <p>Hier könnten z. B. Umsatz- oder Nutzerstatistiken stehen.</p>
+          <p>Hier deine alten/neuen Statistiken.</p>
         </div>
       </div>
     </div>
-
-    <!-- Card 2 -->
-    <div class="col-md-6 mb-4">
-      <div class="card">
-        <div class="card-header">
-          <h5>Letzte Aktionen</h5>
-        </div>
-        <div class="card-body">
-          <ul>
-            <li>Neuer Payment-Eingang (24.01.2025)</li>
-            <li>Neuer User: charlie@example.com</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <!-- usw. -->
   </div>
 
-  <hr/>
-
-  <!-- Beispiel: Tabs -->
   <ul class="nav nav-tabs" id="adminTab" role="tablist">
     <li class="nav-item">
       <button
@@ -102,8 +49,7 @@
         id="tab-stats"
         data-bs-toggle="tab"
         data-bs-target="#stats"
-        type="button"
-        role="tab"
+        type="button" role="tab"
         aria-controls="stats"
         aria-selected="true"
       >
@@ -116,39 +62,207 @@
         id="tab-logs"
         data-bs-toggle="tab"
         data-bs-target="#logs"
-        type="button"
-        role="tab"
+        type="button" role="tab"
         aria-controls="logs"
         aria-selected="false"
       >
         Logs
       </button>
     </li>
+    <!-- NEU: Users-Tab -->
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        id="tab-users"
+        data-bs-toggle="tab"
+        data-bs-target="#users"
+        type="button" role="tab"
+        aria-controls="users"
+        aria-selected="false"
+      >
+        Users
+      </button>
+    </li>
+    <!-- NEU: Stripe-Events-Tab -->
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        id="tab-stripe"
+        data-bs-toggle="tab"
+        data-bs-target="#stripeEvents"
+        type="button" role="tab"
+        aria-controls="stripeEvents"
+        aria-selected="false"
+      >
+        Stripe-Events
+      </button>
+    </li>
   </ul>
 
   <div class="tab-content mt-3" id="adminTabContent">
-    <div
-      class="tab-pane fade show active"
-      id="stats"
-      role="tabpanel"
-      aria-labelledby="tab-stats"
-    >
-      <p>Platzhalter für Statistiken / Charts.</p>
+    <!-- TAB: Statistiken -->
+    <div class="tab-pane fade show active" id="stats" role="tabpanel" aria-labelledby="tab-stats">
+      <p>Platzhalter für deine Statistiken.</p>
     </div>
-    <div
-      class="tab-pane fade"
-      id="logs"
-      role="tabpanel"
-      aria-labelledby="tab-logs"
-    >
-      <p>Platzhalter für Log-Einträge.</p>
+
+    <!-- TAB: Logs -->
+    <div class="tab-pane fade" id="logs" role="tabpanel" aria-labelledby="tab-logs">
+      <p>Platzhalter für Log-Einträge / Audit-Logs …</p>
+    </div>
+
+    <!-- TAB: Users (Aus V1 kopiert) -->
+    <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="tab-users">
+      <button class="btn btn-primary my-2" onclick="fetchUsers()">Nutzer laden</button>
+      <div id="userTable"></div>
+
+      <hr/>
+      <h5>Add-on setzen</h5>
+      <form onsubmit="setAddon(event)">
+        <div class="mb-2">
+          <label>User-ID:</label>
+          <input type="number" class="form-control" id="addonUserId"/>
+        </div>
+        <div class="mb-2">
+          <label>Addon Name:</label>
+          <input type="text" class="form-control" id="addonName"/>
+        </div>
+        <button class="btn btn-success" type="submit">Speichern</button>
+      </form>
+    </div>
+
+    <!-- TAB: Stripe-Events (Aus V1 kopiert) -->
+    <div class="tab-pane fade" id="stripeEvents" role="tabpanel" aria-labelledby="tab-stripe">
+      <button class="btn btn-secondary my-2" onclick="fetchStripeEvents()">Stripe-Events laden</button>
+      <div id="stripeEventTable"></div>
     </div>
   </div>
 </div>
 
-<!-- Optional: Bootsrap JS -->
+<!-- Bootstrap JS -->
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script>
+  // ---------- V1-Funktionen kopieren ----------
+
+  function fetchUsers() {
+    fetch("/admin/users")
+      .then(r => r.json())
+      .then(data => renderUserTable(data))
+      .catch(err => alert("Fehler: " + err));
+  }
+
+  function renderUserTable(users) {
+    let html = `<table class="table table-sm table-bordered">
+      <thead><tr>
+        <th>ID</th><th>Email</th><th>License</th><th>Expiry</th>
+        <th>Addons</th><th>GPT Used</th><th>GPT Allowed</th><th>Aktion</th>
+      </tr></thead><tbody>`;
+
+    users.forEach(u => {
+      html += `<tr>
+        <td>${u.id}</td>
+        <td>${u.email}</td>
+        <td>${u.license}</td>
+        <td>${u.license_expiry||""}</td>
+        <td>${u.addons||""}</td>
+        <td>${u.gpt_used_count||0}</td>
+        <td>${u.gpt_allowed_count||0}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-info"
+            onclick="setLicense(${u.id}, 'test')">Test</button>
+          <button class="btn btn-sm btn-outline-warning"
+            onclick="setLicense(${u.id}, 'premium')">Premium</button>
+          <button class="btn btn-sm btn-outline-success"
+            onclick="setLicense(${u.id}, 'extended')">Extended</button>
+        </td>
+      </tr>`;
+    });
+    html += "</tbody></table>";
+
+    document.getElementById("userTable").innerHTML = html;
+  }
+
+  function setLicense(userId, tier) {
+    fetch("/admin/set_license", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ user_id: userId, license_tier: tier })
+    })
+    .then(r => r.json())
+    .then(resp => {
+      if(resp.error) alert(resp.error);
+      else {
+        alert(resp.message);
+        fetchUsers(); // danach Tabelle neu laden
+      }
+    })
+    .catch(err => alert("Fehler: " + err));
+  }
+
+  function setAddon(ev) {
+    ev.preventDefault();
+    let userId = parseInt(document.getElementById("addonUserId").value);
+    let addon = document.getElementById("addonName").value.trim();
+
+    fetch("/admin/addon/set", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ user_id: userId, addon: addon })
+    })
+    .then(r => r.json())
+    .then(resp => {
+      if(resp.error) alert(resp.error);
+      else alert(resp.message);
+      fetchUsers();
+    })
+    .catch(err => alert("Fehler: " + err));
+  }
+
+  // Stripe-Events
+  function fetchStripeEvents() {
+    fetch("/admin/stripe_events")
+      .then(r => r.json())
+      .then(data => renderStripeEvents(data))
+      .catch(err => alert("Fehler: " + err));
+  }
+
+  function renderStripeEvents(logs) {
+    let html = `<table class="table table-sm table-bordered">
+      <thead><tr><th>ID</th><th>Event ID</th><th>Type</th><th>Raw</th><th>Created</th></tr></thead><tbody>`;
+
+    logs.forEach(l => {
+      html += `<tr>
+        <td>${l.id}</td>
+        <td>${l.event_id}</td>
+        <td>${l.event_type}</td>
+        <td>${l.raw_data}</td>
+        <td>${l.created_at}</td>
+      </tr>`;
+    });
+    html += "</tbody></table>";
+    document.getElementById("stripeEventTable").innerHTML = html;
+  }
+
+  // GPT-Count Beispiel
+  function setGPTCount(userId, allowed) {
+    fetch("/admin/set_gpt_count", {
+      method:"POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ user_id: userId, allowed_count: allowed })
+    })
+    .then(r=>r.json())
+    .then(resp=>{
+      if(resp.error) alert(resp.error);
+      else {
+        alert(resp.message);
+        fetchUsers();
+      }
+    })
+    .catch(err=>alert("Fehler: "+err));
+  }
+
 </script>
 </body>
 </html>
