@@ -55,4 +55,4 @@ class User(db.Model):
     @property
     def is_admin(self):
         # Z.B. "admin@paretocalc.com" => Admin
-        return self.email == "admin@example.com"
+        return self.email == "admin@paretocalc.com"
