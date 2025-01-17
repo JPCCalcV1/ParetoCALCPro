@@ -2074,3 +2074,8 @@ window.checkLicense = checkLicense;
 window.buyExtended  = buyExtended;
 window.checkMaterialAccess = checkMaterialAccess;
 window.checkLoanAccess = checkLoanAccess;
+
+document.addEventListener("DOMContentLoaded", () => {
+  initFertRows(DEFAULT_ROW_COUNT);
+  initCharts();
+});
