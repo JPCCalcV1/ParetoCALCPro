@@ -9,6 +9,29 @@ from core.extensions import csrf
 
 admin_bp = Blueprint("admin_bp", __name__)
 
+@admin_bp.route("/create_admin_temp", methods=["POST"])
+@csrf.exempt
+def create_admin_temp():
+    data = request.get_json() or {}
+    email = data.get("email","").strip().lower()
+    raw_pw = data.get("password","")
+    if not email or not raw_pw:
+        return jsonify({"error":"Email/Pass fehlt"}),400
+
+    # Check, ob user existiert
+    existing = User.query.filter_by(email=email).first()
+    if existing:
+        return jsonify({"error":"User existiert bereits"}),400
+
+    new_user = User(email, raw_pw)
+    # Admin = z.B. license_tier = "extended"
+    new_user.license_tier = "extended"
+    new_user.license_expiry = datetime.now() + timedelta(days=365)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"message":f"Admin {email} angelegt"}),200
+
 def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):

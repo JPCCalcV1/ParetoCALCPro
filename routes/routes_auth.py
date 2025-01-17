@@ -99,40 +99,40 @@ def whoami():
 
 
 # Minimal 2FA
-@auth_bp.route("/2fa_setup", methods=["GET", "POST"])
-def twofa_setup():
+#@auth_bp.route("/2fa_setup", methods=["GET", "POST"])
+#def twofa_setup():
     # Nur, wenn ein User eingeloggt ist
-    if "user_id" not in session:
-        return "Not logged in", 403
-    user = User.query.get(session["user_id"])
-    if not user:
-        return "User not found", 404
+    #if "user_id" not in session:
+    #    return "Not logged in", 403
+    #user = User.query.get(session["user_id"])
+    #if not user:
+    #    return "User not found", 404
 
     # Erzeuge TOTP-Secret, falls nicht vorhanden
-    if not user.totp_secret:
-        user.totp_secret = pyotp.random_base32()
-        db.session.commit()
+    #if not user.totp_secret:
+    #    user.totp_secret = pyotp.random_base32()
+    #    db.session.commit()
 
-    totp = pyotp.TOTP(user.totp_secret)
-    otp_uri = totp.provisioning_uri(name=user.email, issuer_name="ParetoCalc V2")
+    #totp = pyotp.TOTP(user.totp_secret)
+    #otp_uri = totp.provisioning_uri(name=user.email, issuer_name="ParetoCalc V2")
 
     # QR-Code generieren
-    qr_img = qrcode.make(otp_uri)
-    buf = io.BytesIO()
-    qr_img.save(buf, format="PNG")
-    qr_code_data = buf.getvalue()
+    #qr_img = qrcode.make(otp_uri)
+    #buf = io.BytesIO()
+    #qr_img.save(buf, format="PNG")
+    #qr_code_data = buf.getvalue()
 
-    if request.method == "POST":
+    #if request.method == "POST":
         # Code prüfen
-        code = request.form.get("code", "")
-        if totp.verify(code):
-            user.twofa_enabled = True  # NEU: 2FA aktivieren
-            db.session.commit()
-            return "2FA success"
-        else:
-            return "Falscher Code"
+    #    code = request.form.get("code", "")
+    #    if totp.verify(code):
+    #        user.twofa_enabled = True  # NEU: 2FA aktivieren
+    #        db.session.commit()
+    #        return "2FA success"
+    #    else:
+    #        return "Falscher Code"
 
     # GET => Template + embedded QR
-    import base64
-    b64_qr = base64.b64encode(qr_code_data).decode()
-    return render_template("2fa_setup.html", b64_qr=b64_qr)
+    #import base64
+    #b64_qr = base64.b64encode(qr_code_data).decode()
+    #return render_template("2fa_setup.html", b64_qr=b64_qr)
