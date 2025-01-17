@@ -2076,6 +2076,6 @@ window.checkMaterialAccess = checkMaterialAccess;
 window.checkLoanAccess = checkLoanAccess;
 
 document.addEventListener("DOMContentLoaded", () => {
-  initFertRows(DEFAULT_ROW_COUNT);
-  initCharts();
+  console.log("DOMContentLoaded => now calling initFertRows()");
+  initFertRows(8);
 });
