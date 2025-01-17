@@ -185,7 +185,7 @@ function calculateSpritzguss() {
 
   // 4) Request an Backend
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
-  fetch("/mycalc/spritzguss", {
+  fetch("/calc/takt/spritzguss", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
