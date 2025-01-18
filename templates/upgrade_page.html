@@ -2,73 +2,32 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8"/>
-   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Upgrade / Pläne</title>
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"
   />
-  <style>
-    body {
-      background-color: #f8f9fa;
-    }
-    /* Cards mit dezentem Schatten + Hover-Effekt */
-    .card {
-      border-radius: 6px;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
-    /* Größere Titel */
-    .card-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
-    /* Einheitliche Button-Optik anpassen */
-    .btn-plan {
-      width: 100%;
-      margin-top: 0.5rem;
-    }
-  </style>
 </head>
 <body class="p-3 bg-light">
 
 <h2>Wähle deinen Plan</h2>
 <p class="text-muted">
-  Alle Pläne erfordern Bezahlmethode (z. B. Kreditkarte).
-  <br/>
-  Je nach Tier auch 7 Tage Testphase.
+  Alle Pläne erfordern Bezahlmethode (z.B. Kreditkarte).
+  Je nach Tier auch 7 Tage Testphase (z.B. Premium).
 </p>
 
 <div class="row row-cols-1 row-cols-md-2 g-4">
-  <!-- Test / DB => optional -->
-  <div class="col">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Test (7 Tage, 0 €)</h5>
-        <p class="card-text">
-          Interner Testmodus – kann optional als Separates Stripe-Produkt angelegt werden.
-        </p>
-        <button class="btn btn-outline-secondary btn-plan" onclick="buyTestTrial()">
-          Testen
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- ABO: Plus -->
   <div class="col">
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Plus (z.B. 20 €/Monat)</h5>
         <p class="card-text">
-          Eingeschränkte Material-/Maschinendaten, kein GPT.
-          <br/>7 Tage Testphase bei Stripe.
+          Eingeschränkte Daten, aber günstig.
+          <br/>Auf Wunsch: 7 Tage Testphase bei Stripe (optional).
         </p>
-        <button class="btn btn-info btn-plan" onclick="buyPlus()">
+        <button class="btn btn-info w-100" onclick="buyPlus()">
           Jetzt Plus buchen
         </button>
       </div>
@@ -81,27 +40,25 @@
       <div class="card-body">
         <h5 class="card-title">Premium (z.B. 50 €/Monat)</h5>
         <p class="card-text">
-          Volle Taktzeitrechner, GPT, Standard-Listen.
-          <br/>Mit 7 Tage Stripe-Trial
+          Alle Taktzeitrechner, GPT usw.
+          <br/>7 Tage Stripe-Trial
         </p>
-        <button class="btn btn-primary btn-plan" onclick="buyPremium()">
+        <button class="btn btn-primary w-100" onclick="buyPremium()">
           Jetzt Premium buchen
         </button>
       </div>
     </div>
   </div>
 
-  <!-- One-off: Extended -->
+  <!-- One-off: Extended (1 Jahr) -->
   <div class="col">
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Extended (z.B. 99 €/Jahr)</h5>
         <p class="card-text">
-          Alle Features, erweiterte Lohn-/Materiallisten,
-          <br/>GPT-Kontingent höher etc.
-          <br/>Einmalzahlung => 365 Tage.
+          Alles drin, abgerechnet als OneOff für 365 Tage.
         </p>
-        <button class="btn btn-warning btn-plan" onclick="buyExtended()">
+        <button class="btn btn-warning w-100" onclick="buyExtended()">
           Extended kaufen
         </button>
       </div>
@@ -118,20 +75,6 @@
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
 </script>
 <script>
-async function buyTestTrial(){
-  try {
-    const r = await fetch("/pay/create-checkout-session-subscription", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ which_tier:"test" })
-    });
-    const d = await r.json();
-    if(d.error){alert(d.error);return;}
-    window.location = d.checkout_url;
-  } catch(err){
-    alert("Fehler: "+err);
-  }
-}
 async function buyPlus(){
   try {
     const r = await fetch("/pay/create-checkout-session-subscription", {
@@ -140,12 +83,11 @@ async function buyPlus(){
       body: JSON.stringify({ which_tier:"plus" })
     });
     const d = await r.json();
-    if(d.error){alert(d.error);return;}
+    if(d.error){ alert(d.error); return; }
     window.location = d.checkout_url;
-  } catch(err){
-    alert("Fehler: "+err);
-  }
+  } catch(err){ alert("Fehler: "+err); }
 }
+
 async function buyPremium(){
   try {
     const r = await fetch("/pay/create-checkout-session-subscription", {
@@ -154,12 +96,11 @@ async function buyPremium(){
       body: JSON.stringify({ which_tier:"premium" })
     });
     const d = await r.json();
-    if(d.error){alert(d.error);return;}
+    if(d.error){ alert(d.error); return; }
     window.location = d.checkout_url;
-  } catch(err){
-    alert("Fehler: "+err);
-  }
+  } catch(err){ alert("Fehler: "+err); }
 }
+
 async function buyExtended(){
   try {
     const r = await fetch("/pay/create-checkout-session-oneoff", {
@@ -168,11 +109,9 @@ async function buyExtended(){
       body: JSON.stringify({ which_tier:"extended" })
     });
     const d = await r.json();
-    if(d.error){alert(d.error);return;}
+    if(d.error){ alert(d.error); return; }
     window.location = d.checkout_url;
-  } catch(err){
-    alert("Fehler: "+err);
-  }
+  } catch(err){ alert("Fehler: "+err); }
 }
 </script>
 </body>

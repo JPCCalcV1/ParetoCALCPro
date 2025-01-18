@@ -20,7 +20,6 @@ stripe.api_key = STRIPE_SECRET_KEY
 
 # Deine Price-Map – anpassen an deine Stripe-Preise
 price_map = {
-    "test":     os.getenv("STRIPE_PRICE_TEST", "price_testXYZ"),
     "plus":     os.getenv("STRIPE_PRICE_PLUS", "price_plusXYZ"),
     "premium":  os.getenv("STRIPE_PRICE_PREMIUM", "price_premXYZ"),
     "extended": os.getenv("STRIPE_PRICE_EXTENDED", "price_extXYZ"),
