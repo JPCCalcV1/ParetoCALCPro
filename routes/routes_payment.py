@@ -24,7 +24,10 @@ price_map = {
     "premium":  os.getenv("STRIPE_PRICE_PREMIUM", "price_premXYZ"),
     "extended": os.getenv("STRIPE_PRICE_EXTENDED", "price_extXYZ"),
 }
-
+print("STRIPE_SECRET_KEY =", STRIPE_SECRET_KEY)
+print("STRIPE_PRICE_PLUS =", os.getenv("STRIPE_PRICE_PLUS"))
+print("STRIPE_PRICE_PREMIUM =", os.getenv("STRIPE_PRICE_PREMIUM"))
+print("STRIPE_PRICE_EXTENDED =", os.getenv("STRIPE_PRICE_EXTENDED"))
 # ---------------------------------------------------------
 # V1-ROUTE: Falls du EINE Payment-Route (OneOff) behalten willst
 # ---------------------------------------------------------
@@ -46,6 +49,7 @@ def create_checkout_session():
     which_tier = data_in.get("which_tier", "extended")
 
     price_id = price_map.get(which_tier)
+    app.logger.debug(f"Price-ID für {which_tier}: {price_id}")  # Log für Price-ID
     if not price_id:
         return jsonify({"error": f"No price for {which_tier}"}), 400
 
