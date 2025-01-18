@@ -130,7 +130,7 @@ async function buyPremium() {
 async function buyExtended() {
   try {
     // OneOff => "/pay/checkout-oneoff"
-    const r = await fetch("/pay/checkout-oneoff", {
+    const r = await fetch("/pay/checkout-sub", {
       method: "POST",
       headers: { "Content-Type":"application/json" },
       body: JSON.stringify({ which_tier: "extended" })
