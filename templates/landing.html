@@ -14,6 +14,7 @@
     href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"
     rel="stylesheet"
   />
+  <!-- CSRF-Token falls benötigt -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <style>
@@ -29,7 +30,7 @@
     }
     .navbar-brand {
       font-weight: 600;
-      color: #0d6efd; /* "Bootstrap Blau" */
+      color: #0d6efd; /* "Bootstrap-Blau" */
     }
     .navbar-nav .nav-link {
       color: #333;
@@ -37,8 +38,6 @@
     .navbar-nav .nav-link:hover {
       color: #0d6efd;
     }
-
-    /* Hero / Intro-Bereich */
     .hero-section {
       position: relative;
       min-height: 80vh;
@@ -69,7 +68,6 @@
       font-size: 1.25rem;
       margin-bottom: 2rem;
     }
-
     .footer {
       background: #f1f3f4;
       padding: 1rem 0;
@@ -81,7 +79,14 @@
   <!-- NAVBAR -->
   <nav id="mainNavbar" class="navbar navbar-expand-lg">
     <div class="container">
-      <a class="navbar-brand" href="/landing">ParetoCalc</a>
+      <!-- Link zurück zu "/" statt "/landing" -->
+      <a class="navbar-brand" href="/">ParetoCalc</a>
+      <!--
+        Wenn du /landing als Route hättest, würde es 404 geben,
+        da du in app.py "landing_bp" => route("/") nutzt.
+        Also => "/" ist dein Home.
+      -->
+
       <button
         class="navbar-toggler"
         type="button"
@@ -99,17 +104,23 @@
         id="navbarContent"
       >
         <ul class="navbar-nav">
+          <!-- Home-Link zeigt ebenfalls auf "/" -->
           <li class="nav-item">
-            <a class="nav-link active" href="/landing">Home</a>
+            <a class="nav-link active" href="/">Home</a>
           </li>
+          <!-- MyCalc => /mycalc -->
           <li class="nav-item">
             <a class="nav-link" href="/mycalc">MyCalc</a>
           </li>
+          <!-- Upgrade => /upgrade -->
           <li class="nav-item">
             <a class="nav-link" href="/upgrade">Upgrade</a>
           </li>
+          <!-- Login: check if route is /auth/login_form or /auth/login -->
           <li class="nav-item">
             <a class="nav-link" href="/auth/login_form">Login</a>
+            <!-- Falls du nur /auth/login hast,
+                 dann nimm => href="/auth/login" -->
           </li>
         </ul>
       </div>
@@ -125,6 +136,7 @@
         Das ultimative Kalkulationstool für Fertigungsprozesse,
         Kosten, CO₂ und mehr.
       </p>
+      <!-- Button => führt nach /auth/login_form oder /auth/login -->
       <a href="/auth/login_form" class="btn btn-primary btn-lg">
         Jetzt loslegen
       </a>
@@ -150,7 +162,7 @@
         <div class="card">
           <div class="card-body">
             <h5>CO₂-Kalkulation</h5>
-            <p>Berechne Emissionen pro 100 Stück in Echtzeit.</p>
+            <p>Berechne Emissionen pro 100 Stück in Echtzeit.</p>
           </div>
         </div>
       </div>
@@ -169,7 +181,9 @@
   <div class="footer">
     <div class="container">
       <p class="m-0">
-        &copy; 2025 ParetoCalc | <a href="/admin_dashboard">Admin Dashboard</a>
+        &copy; 2025 ParetoCalc |
+        <!-- Admin-Dashboard => /admin/dashboard, nicht /admin_dashboard -->
+        <a href="/admin/dashboard">Admin Dashboard</a>
       </p>
     </div>
   </div>
