@@ -1,4 +1,4 @@
-# models/user.py
+""" START OF FILE: models/user.py (with 20+ lines context) """
 
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -13,7 +13,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(200), nullable=False)
 
     # License-Felder
-    license_tier = db.Column(db.String(20), default="test")  # e.g. "test","plus","premium","extended","no_access"
+    license_tier = db.Column(db.String(20), default="test")
     license_expiry = db.Column(db.DateTime, default=None)
 
     # GPT-Felder
@@ -29,7 +29,7 @@ class User(db.Model):
     # Single Sign-On
     current_session_token = db.Column(db.String(64), nullable=True)
 
-    # NEU: TOTP-Enable
+    # 2FA-Enable
     twofa_enabled = db.Column(db.Boolean, default=False)
 
     def __init__(self, email, raw_password):
@@ -43,16 +43,28 @@ class User(db.Model):
         return check_password_hash(self.password_hash, raw_password)
 
     def has_valid_license(self):
+        """
+        Prüft, ob license_expiry in der Zukunft liegt.
+        """
         if not self.license_expiry:
             return False
         return datetime.now() < self.license_expiry
 
     def license_level(self):
+        """
+        Gibt entweder 'no_access' zurück, wenn license_expiry abgelaufen ist,
+        oder license_tier (test, plus, premium, extended, ...).
+        """
         if not self.has_valid_license():
             return "no_access"
         return self.license_tier
 
     @property
     def is_admin(self):
-        # Z.B. "admin@paretocalc.com" => Admin
+        """
+        Einfacher Check, ob E-Mail 'admin@paretocalc.com' => Admin.
+        Falls du mehrere Admins zulassen willst, passe die Bedingung an.
+        """
         return self.email == "admin@paretocalc.com"
+
+""" END OF FILE: models/user.py """

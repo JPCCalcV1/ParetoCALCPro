@@ -1,3 +1,5 @@
+""" START OF BEST-OF CODE (Beispiel) """
+
 import os
 import stripe
 from flask import Blueprint, request, jsonify, session, current_app, render_template
@@ -6,7 +8,9 @@ from datetime import datetime, timedelta
 from models.user import db, User
 from models.payment_log import PaymentLog
 from core.extensions import csrf
-from helpers.sendgrid_helper import send_email  # falls du E-Mail nutzt
+
+# Optionaler E-Mail-Versand
+# from helpers.sendgrid_helper import send_email
 
 payment_bp = Blueprint("payment_bp", __name__)
 
@@ -14,203 +18,132 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 stripe.api_key = STRIPE_SECRET_KEY
 
-# Price-Map: "plus", "premium", "extended" (du hast V1 "test" entfernt)
 price_map = {
     "plus":     os.getenv("STRIPE_PRICE_PLUS", "price_plusXYZ"),
     "premium":  os.getenv("STRIPE_PRICE_PREMIUM", "price_premXYZ"),
     "extended": os.getenv("STRIPE_PRICE_EXTENDED", "price_extXYZ"),
 }
 
-
-# ---------------------------------------------------------
-#   CREATE-CHECKOUT-SESSION (V1)
-# ---------------------------------------------------------
-
-@payment_bp.route("/create-checkout-session", methods=["POST"])
+# ------------------------------------
+#   Einmalzahlung => /checkout-oneoff
+# ------------------------------------
+@payment_bp.route("/checkout-oneoff", methods=["POST"])
 @csrf.exempt
-def create_checkout_session():
+def create_checkout_session_oneoff():
     """
-    V1: Falls du nur EINE Art Payment hast (OneOff).
-    Bleibt kompatibel, falls dein Frontend schon /create-checkout-session aufruft.
+    Beispiel: User zahlt EINMALIG => 365 Tage
+    JSON-Eingabe: {"which_tier":"extended"}
     """
-    # current_app.logger.debug("==> V1 create_checkout_session (OneOff) CALLED")
-
     user_id = session.get("user_id")
     if not user_id:
-        return jsonify({"error": "Not logged in"}), 401
+        return jsonify({"error":"Not logged in"}),401
 
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error":"User not found"}),404
 
     data_in = request.get_json() or {}
-    which_tier = data_in.get("which_tier", "extended")  # default extended
-    # current_app.logger.debug(f"[V1 create_session] which_tier={which_tier}")
-
+    which_tier = data_in.get("which_tier","extended")
     price_id = price_map.get(which_tier)
-    # current_app.logger.debug(f"[V1 create_session] price_id={price_id}")
-
     if not price_id:
-        return jsonify({"error": f"No price for {which_tier}"}), 400
+        return jsonify({"error":f"No price for {which_tier}"}),400
 
     try:
+        # mode="payment"
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
-            line_items=[{"price": price_id, "quantity": 1}],
+            line_items=[{"price": price_id, "quantity":1}],
             mode="payment",
-            success_url="https://www.jpccalc.de/stripe/success",
-            cancel_url="https://www.jpccalc.de/stripe/cancel",
+            success_url="https://yourdomain.com/pay/success",
+            cancel_url="https://yourdomain.com/pay/cancel",
             metadata={
-                "user_id": user.id,
-                "which_tier": which_tier
+                "user_id": str(user.id),
+                "which_tier": which_tier,
+                "mode_used": "oneoff"  # optional
             }
         )
-        # current_app.logger.debug(f"[V1 create_session] Stripe session url: {checkout_session.url}")
-        return jsonify({"checkout_url": checkout_session.url}), 200
+        return jsonify({"checkout_url": checkout_session.url}),200
+    except stripe.error.StripeError as se:
+        current_app.logger.error("StripeError in checkout-oneoff: %s", str(se))
+        return jsonify({"error": str(se)}),500
+    except Exception as ex:
+        current_app.logger.error("Exception in checkout-oneoff: %s", str(ex))
+        return jsonify({"error": str(ex)}),500
 
-    except Exception as e:
-        current_app.logger.error(f"[V1 create_session] Stripe Exception: {str(e)}")
-        return jsonify({"error": str(e)}), 500
 
-
-# ---------------------------------------------------------
-#   CREATE-CHECKOUT-SESSION-SUBSCRIPTION (V2 ABO)
-# ---------------------------------------------------------
+# ------------------------------------
+#   Abo => /checkout-sub (Subscription)
+# ------------------------------------
 @payment_bp.route("/checkout-sub", methods=["POST"])
 @csrf.exempt
 def create_checkout_session_subscription():
     """
-    V2: Subscription => 7 Tage Trial, invoice.paid => +30 Tage
+    User bucht ein ABO => z. B. +30 Tage bei invoice.paid
+    JSON-Eingabe: {"which_tier":"plus" | "premium" | "extended"}
+    => subscription_data => metadata => user_id
+    => trial_period_days => 7
     """
-    # print("[create_checkout_session_subscription] Route was called.")
-    # current_app.logger.debug("==> create_checkout_session_subscription CALLED")
-
     user_id = session.get("user_id")
     if not user_id:
-        return jsonify({"error": "Not logged in"}), 401
+        return jsonify({"error":"Not logged in"}),401
 
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error":"User not found"}),404
 
     data_in = request.get_json() or {}
-    # Im Frontend: buyPlus() => { which_tier:"plus" }
-    # buyPremium() => { which_tier:"premium" }
-    which_tier = data_in.get("which_tier", "plus")
-    # current_app.logger.debug(f"[SUBSCRIPTION] which_tier={which_tier}")
-
+    which_tier = data_in.get("which_tier","plus")
     price_id = price_map.get(which_tier)
-    # current_app.logger.debug(f"[SUBSCRIPTION] price_id={price_id}")
-
     if not price_id:
-        return jsonify({"error": f"No Price-ID for {which_tier}"}), 400
+        return jsonify({"error":f"No price for {which_tier}"}),400
 
     try:
+        # mode="subscription"
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
-            line_items=[{"price": price_id, "quantity": 1}],
+            line_items=[{"price": price_id, "quantity":1}],
             mode="subscription",
             subscription_data={
-                "trial_period_days": 7
+                "trial_period_days":7,
+                "metadata": {
+                    "user_id": str(user.id),
+                    "which_tier": which_tier,
+                    "mode_used": "subscription"
+                }
             },
-            success_url="https://www.jpccalc.de/stripe/success",
-            cancel_url="https://www.jpccalc.de/stripe/cancel",
-            metadata={
-                "user_id": user.id,
-                "which_tier": which_tier
-            }
+            success_url="https://yourdomain.com/pay/success",
+            cancel_url="https://yourdomain.com/pay/cancel"
         )
-        # current_app.logger.debug(f"[SUBSCRIPTION] Created session => {checkout_session.url}")
-        return jsonify({"checkout_url": checkout_session.url}), 200
-
-    except stripe.error.StripeError as e:
-        current_app.logger.error(f"[SUBSCRIPTION] StripeError: {str(e)}")
-        return jsonify({"error": str(e)}), 500
-
+        return jsonify({"checkout_url": checkout_session.url}),200
+    except stripe.error.StripeError as se:
+        current_app.logger.error("StripeError in checkout-sub: %s", str(se))
+        return jsonify({"error": str(se)}),500
     except Exception as ex:
-        current_app.logger.error(f"[SUBSCRIPTION] Other Exception: {str(ex)}")
-        return jsonify({"error": str(ex)}), 500
+        current_app.logger.error("Exception in checkout-sub: %s", str(ex))
+        return jsonify({"error": str(ex)}),500
 
 
-# ---------------------------------------------------------
-#   CREATE-CHECKOUT-SESSION-ONEOFF (V2 ABO-Einmal)
-# ---------------------------------------------------------
-
-@payment_bp.route("/create-checkout-session-oneoff", methods=["POST"])
-@csrf.exempt
-def create_checkout_session_oneoff():
-    """
-    OneOff: 365 Tage => Gleiche Logik wie V1, aber separat.
-    """
-    # current_app.logger.debug("==> create_checkout_session_oneoff CALLED")
-
-    user_id = session.get("user_id")
-    if not user_id:
-        return jsonify({"error": "Not logged in"}), 401
-
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    data_in = request.get_json() or {}
-    which_tier = data_in.get("which_tier", "extended")
-    # current_app.logger.debug(f"[ONEOFF] which_tier={which_tier}")
-
-    price_id = price_map.get(which_tier)
-    # current_app.logger.debug(f"[ONEOFF] price_id={price_id}")
-
-    if not price_id:
-        return jsonify({"error": f"No price for {which_tier}"}), 400
-
-    try:
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=["card"],
-            line_items=[{"price": price_id, "quantity": 1}],
-            mode="payment",
-            success_url="https://www.jpccalc.de/stripe/success",
-            cancel_url="https://www.jpccalc.de/stripe/cancel",
-            metadata={
-                "user_id": user.id,
-                "which_tier": which_tier
-            }
-        )
-        # current_app.logger.debug(f"[ONEOFF] Created session => {checkout_session.url}")
-        return jsonify({"checkout_url": checkout_session.url}), 200
-
-    except stripe.error.StripeError as e:
-        current_app.logger.error(f"[ONEOFF] StripeError: {str(e)}")
-        return jsonify({"error": str(e)}), 500
-
-    except Exception as ex:
-        current_app.logger.error(f"[ONEOFF] Other Exception: {str(ex)}")
-        return jsonify({"error": str(ex)}), 500
-
-
-# ---------------------------------------------------------
-#   WEBHOOK
-# ---------------------------------------------------------
+# ------------------------------------
+#    Webhook => /webhook
+# ------------------------------------
 @payment_bp.route("/webhook", methods=["POST"])
 @csrf.exempt
 def stripe_webhook():
     payload = request.data
-    sig_header = request.headers.get("Stripe-Signature", "")
-    # current_app.logger.debug("[WEBHOOK] Received payload size=%d" % len(payload))
+    sig_header = request.headers.get("Stripe-Signature","")
 
     if not STRIPE_WEBHOOK_SECRET:
-        current_app.logger.error("[WEBHOOK] No STRIPE_WEBHOOK_SECRET configured.")
-        return jsonify({"error": "No webhook secret"}), 500
+        current_app.logger.error("No STRIPE_WEBHOOK_SECRET set!")
+        return jsonify({"error":"No webhook secret"}),500
 
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
     except stripe.error.SignatureVerificationError as e:
-        current_app.logger.error("[WEBHOOK] Signature error: %s", str(e))
-        return jsonify({"error": "Invalid signature"}), 400
+        current_app.logger.error("Signature error: %s", str(e))
+        return jsonify({"error":"Invalid signature"}),400
 
     etype = event["type"]
     data_obj = event["data"]["object"]
-    # current_app.logger.debug(f"[WEBHOOK] Event type={etype}")
-
-    # 3) PaymentLog anlegen
     new_log = PaymentLog(
         user_id=None,
         event_id=event["id"],
@@ -221,67 +154,58 @@ def stripe_webhook():
     db.session.add(new_log)
     db.session.commit()
 
-    # -- Hilfsfunktion: Safely get user-Objekt (abbrechen, wenn None)
-    def get_user_from_metadata(meta_dict):
-        """Liest 'user_id' aus metadaten und gibt User-Objekt zurück (oder None)."""
-        uid = meta_dict.get("user_id")
+    def get_user_from_metadata(meta):
+        uid = meta.get("user_id")
         if not uid:
-            # print("[Webhook] No user_id in metadata => ignoring.")
             return None
-        user = User.query.get(uid)
-        if not user:
-            # print(f"[Webhook] User with id={uid} not found in DB.")
-            return None
-        return user
+        return User.query.get(int(uid))
 
-    # 4) Verzweige nach event type
+    # 1) checkout.session.completed => initialer Kauf (OneOff oder ABO-Start)
     if etype == "checkout.session.completed":
-        which_tier = data_obj.get("metadata", {}).get("which_tier", "extended")
-        mode = data_obj.get("mode")
-        user = get_user_from_metadata(data_obj.get("metadata", {}))
+        meta = data_obj.get("metadata", {})
+        user = get_user_from_metadata(meta)
+        mode = data_obj.get("mode")  # "payment" or "subscription"
+        which_tier = meta.get("which_tier","extended")
 
         if user:
-            # print(f"[Webhook] checkout.session.completed for user={user.email}, tier={which_tier}, mode={mode}")
-            if mode == "subscription":
-                user.license_tier = which_tier
-                user.license_expiry = datetime.now() + timedelta(days=7)
-            elif mode == "payment":
+            if mode == "payment":
+                # Einmalzahlung => +365 Tage
                 user.license_tier = which_tier
                 user.license_expiry = datetime.now() + timedelta(days=365)
+            elif mode == "subscription":
+                # ABO => +7 Tage (Trial).
+                # Für Verlängerungen => "invoice.paid" unten.
+                user.license_tier = which_tier
+                user.license_expiry = datetime.now() + timedelta(days=7)
             db.session.commit()
+
+            new_log.user_id = user.id
             new_log.status = "completed"
             db.session.commit()
-        else:
-            # print("[Webhook] Warning: No valid user found for checkout.session.completed")
-            pass
 
+    # 2) invoice.paid => ABO-Verlängerung
     elif etype == "invoice.paid":
         sub_id = data_obj.get("subscription")
         if sub_id:
             sub_obj = stripe.Subscription.retrieve(sub_id)
             meta = sub_obj.get("metadata", {})
             user = get_user_from_metadata(meta)
-            which_tier = meta.get("which_tier", "plus")
+            which_tier = meta.get("which_tier","plus")
 
             if user:
-                # print(f"[Webhook] invoice.paid for user={user.email}, tier={which_tier}")
-                # Falls license_expiry abgelaufen -> setze ab heute +30
-                # sonst hänge 30 Tage dran
+                # Falls abgelaufen => setze ab heute +30, sonst hänge +30 dran
                 if not user.license_expiry or user.license_expiry < datetime.now():
                     user.license_expiry = datetime.now() + timedelta(days=30)
                 else:
                     user.license_expiry += timedelta(days=30)
                 user.license_tier = which_tier
                 db.session.commit()
+
+                new_log.user_id = user.id
                 new_log.status = "paid"
                 db.session.commit()
-            else:
-                # print("[Webhook] invoice.paid: No valid user found => ignoring.")
-                pass
-        else:
-            # print("[Webhook] invoice.paid: No subscription ID => ignoring.")
-            pass
 
+    # 3) invoice.payment_failed => ABO-Zahlung nicht erfolgreich
     elif etype == "invoice.payment_failed":
         sub_id = data_obj.get("subscription")
         if sub_id:
@@ -290,45 +214,44 @@ def stripe_webhook():
             user = get_user_from_metadata(meta)
 
             if user:
-                # print(f"[Webhook] invoice.payment_failed for user={user.email}")
                 user.license_tier = "no_access"
                 user.license_expiry = None
                 db.session.commit()
 
-                # => E-Mail
-                try:
-                    if user and user.email:
-                        send_email(
-                            user.email,
-                            "Payment failed",
-                            "Deine Zahlung schlug fehl! Bitte Zahlungsmethode aktualisieren.",
-                            "<p>Zahlung fehlgeschlagen. Bitte updaten!</p>"
-                        )
-                    else:
-                        # print("[Webhook] Payment failed, but no user/email => cannot send email.")
-                        pass
-                except Exception as mail_ex:
-                    # print("[Webhook] SendGrid error:", mail_ex)
-                    pass
+                # E-Mail optional:
+                # try:
+                #     send_email(
+                #         user.email,
+                #         "Payment fehlgeschlagen",
+                #         "Bitte Kreditkarte aktualisieren...",
+                #         "<p>Deine Zahlung schlug fehl. Bitte aktualisiere...</p>"
+                #     )
+                # except Exception as mail_ex:
+                #     current_app.logger.exception("SendGrid error on payment_failed")
 
+                new_log.user_id = user.id
                 new_log.status = "failed"
                 db.session.commit()
-            else:
-                # print("[Webhook] invoice.payment_failed: No valid user found => ignoring.")
-                pass
-        else:
-            # print("[Webhook] invoice.payment_failed: No subscription ID => ignoring.")
-            pass
-    else:
-        # print(f"[Webhook] Unhandled event type: {etype}")
-        pass
 
-    return jsonify({"status": "ok"}), 200
+    # else:
+    #   current_app.logger.info("Unhandled event type: %s", etype)
+
+    return jsonify({"status":"ok"}),200
+
 
 @payment_bp.route("/success", methods=["GET"])
 def payment_success():
-    return render_template("stripe/payment_success.html")
+    return render_template("pay/payment_success.html")
+
 
 @payment_bp.route("/cancel", methods=["GET"])
 def payment_cancel():
-    return render_template("stripe/payment_cancel.html")
+    return render_template("pay/payment_cancel.html")
+
+
+# Debug: optional
+@payment_bp.route("/test", methods=["GET"])
+def test_payment_route():
+    return jsonify({"message":"Payment blueprint is running!"}),200
+
+""" END OF BEST-OF CODE (Beispiel) """

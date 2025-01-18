@@ -1,8 +1,10 @@
-# routes/routes_admin.py
+""" START OF FILE: routes/routes_admin.py (with 20+ lines context) """
 
 from flask import Blueprint, render_template, request, jsonify, session
 from functools import wraps
 from datetime import datetime, timedelta
+
+# Achtung: Hier nur importieren, NICHT erneut db = SQLAlchemy() aufrufen
 from models.user import db, User
 from models.payment_log import PaymentLog
 from core.extensions import csrf
@@ -12,19 +14,23 @@ admin_bp = Blueprint("admin_bp", __name__)
 @admin_bp.route("/create_admin_temp", methods=["POST"])
 @csrf.exempt
 def create_admin_temp():
+    """
+    Erstellt schnell einen Admin-User.
+    JSON-Beispiel: { "email":"admin@paretocalc.com", "password":"abc123" }
+    """
     data = request.get_json() or {}
     email = data.get("email","").strip().lower()
     raw_pw = data.get("password","")
+
     if not email or not raw_pw:
         return jsonify({"error":"Email/Pass fehlt"}),400
 
-    # Check, ob user existiert
     existing = User.query.filter_by(email=email).first()
     if existing:
         return jsonify({"error":"User existiert bereits"}),400
 
     new_user = User(email, raw_pw)
-    # Admin = z.B. license_tier = "extended"
+    # Admin = license_tier = "extended", 1 Jahr
     new_user.license_tier = "extended"
     new_user.license_expiry = datetime.now() + timedelta(days=365)
     db.session.add(new_user)
@@ -32,27 +38,37 @@ def create_admin_temp():
 
     return jsonify({"message":f"Admin {email} angelegt"}),200
 
+
 def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         uid = session.get("user_id")
         if not uid:
             return jsonify({"error":"Not logged in"}),401
+
         user = User.query.get(uid)
-        # Hier: check user.is_admin
         if not user or not user.is_admin:
             return jsonify({"error":"No admin rights"}),403
+
         return f(*args, **kwargs)
     return decorated
+
 
 @admin_bp.route("/dashboard", methods=["GET"])
 @admin_required
 def admin_dashboard():
+    """
+    Rendert das Admin-Dashboard Template (admin_dashboard.html).
+    """
     return render_template("admin_dashboard.html")
+
 
 @admin_bp.route("/users", methods=["GET"])
 @admin_required
 def list_users():
+    """
+    Liefert JSON-Liste aller User (inkl. license, addons, GPT-Counts).
+    """
     users= User.query.all()
     out=[]
     for u in users:
@@ -67,18 +83,25 @@ def list_users():
         })
     return jsonify(out)
 
+
 @admin_bp.route("/set_license", methods=["POST"])
 @csrf.exempt
 @admin_required
 def set_license():
+    """
+    Setzt license_tier eines Users manuell. 
+    JSON-Beispiel: { "user_id": 5, "license_tier": "premium" }
+    """
     data= request.get_json() or {}
     user_id= data.get("user_id")
     tier= data.get("license_tier","test")
+
     user= User.query.get(user_id)
     if not user:
         return jsonify({"error":"User not found"}),404
 
     user.license_tier= tier
+    # GPT-Limits je nach Tier
     if tier=="test":
         user.gpt_allowed_count=10
     elif tier=="plus":
@@ -90,14 +113,20 @@ def set_license():
     else:
         user.gpt_allowed_count=0
 
+    # Reset usage
     user.gpt_used_count=0
     db.session.commit()
     return jsonify({"message":f"{user.email} => {tier}"}),200
+
 
 @admin_bp.route("/addon/set", methods=["POST"])
 @csrf.exempt
 @admin_required
 def set_addon():
+    """
+    Fügt dem User ein Addon hinzu (z. B. 'GPT-Export').
+    JSON: { "user_id": 5, "addon": "GPT-Export" }
+    """
     data= request.get_json() or {}
     user_id= data.get("user_id")
     addon= data.get("addon","").strip()
@@ -113,9 +142,13 @@ def set_addon():
     db.session.commit()
     return jsonify({"message":f"Addon '{addon}' set for {user.email}"}),200
 
+
 @admin_bp.route("/stripe_events", methods=["GET"])
 @admin_required
 def list_stripe_events():
+    """
+    Zeigt die PaymentLogs aus der DB an.
+    """
     logs= PaymentLog.query.all()
     out=[]
     for l in logs:
@@ -128,13 +161,19 @@ def list_stripe_events():
         })
     return jsonify(out)
 
+
 @admin_bp.route("/set_gpt_count", methods=["POST"])
 @csrf.exempt
 @admin_required
 def set_gpt_count():
+    """
+    Manuell GPT-Kontingent (allowed_count) verändern.
+    JSON: { "user_id": 5, "allowed_count": 100 }
+    """
     data= request.get_json() or {}
     user_id= data.get("user_id")
     allowed_count= data.get("allowed_count",50)
+
     user= User.query.get(user_id)
     if not user:
         return jsonify({"error":"User not found"}),404
@@ -142,3 +181,5 @@ def set_gpt_count():
     user.gpt_allowed_count= allowed_count
     db.session.commit()
     return jsonify({"message":f"{user.email} => GPT allowed {allowed_count}"}),200
+
+""" END OF FILE: routes/routes_admin.py """

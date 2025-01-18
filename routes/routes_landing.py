@@ -12,7 +12,4 @@ def landing():
     """
     return render_template("landing/landing.html")
 
-from flask import Blueprint, jsonify
-from helpers.sendgrid_helper import send_email  # Import SendGrid-Helper
-
 

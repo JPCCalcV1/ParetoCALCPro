@@ -1,3 +1,5 @@
+""" START OF FILE: templates/upgrade_page.html (best-of version) """
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -13,7 +15,7 @@
 
 <h2>Wähle deinen Plan</h2>
 <p class="text-muted">
-  Alle Pläne erfordern Bezahlmethode (z.B. Kreditkarte).
+  Alle Pläne erfordern eine Bezahlmethode (z.B. Kreditkarte).
   Je nach Tier auch 7 Tage Testphase (z.B. Premium).
 </p>
 
@@ -22,10 +24,10 @@
   <div class="col">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Plus (z.B. 20 €/Monat)</h5>
+        <h5 class="card-title">Plus (z.B. 20€/Monat)</h5>
         <p class="card-text">
           Eingeschränkte Daten, aber günstig.
-          <br/>Auf Wunsch: 7 Tage Testphase bei Stripe (optional).
+          <br/>Typischerweise 7 Tage Testphase (optional).
         </p>
         <button class="btn btn-info w-100" onclick="buyPlus()">
           Jetzt Plus buchen
@@ -38,10 +40,10 @@
   <div class="col">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Premium (z.B. 50 €/Monat)</h5>
+        <h5 class="card-title">Premium (z.B. 50€/Monat)</h5>
         <p class="card-text">
           Alle Taktzeitrechner, GPT usw.
-          <br/>7 Tage Stripe-Trial
+          <br/>7 Tage Stripe-Trial (z.B.)
         </p>
         <button class="btn btn-primary w-100" onclick="buyPremium()">
           Jetzt Premium buchen
@@ -54,14 +56,13 @@
   <div class="col">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">Extended (z.B. 99 €/Jahr)</h5>
+        <h5 class="card-title">Extended (z.B. 99€/Jahr)</h5>
         <p class="card-text">
           Alles drin, abgerechnet als OneOff für 365 Tage.
         </p>
         <button class="btn btn-warning w-100" onclick="buyExtended()">
           Extended kaufen
         </button>
-
       </div>
     </div>
   </div>
@@ -72,50 +73,80 @@
   <a href="/mycalc/" class="btn btn-secondary">Zurück zu MyCalc</a>
 </p>
 
+<!-- Bootstrap JS -->
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
 </script>
 <script>
-async function buyPlus(){
+/**
+ * Falls du in deinem Blueprint in payment.py diese Routen definiert hast:
+ *   @payment_bp.route("/checkout-sub", methods=["POST"])
+ *   @payment_bp.route("/checkout-oneoff", methods=["POST"])
+ * und dein Blueprint hat das Prefix "/pay":
+ *   app.register_blueprint(payment_bp, url_prefix="/pay")
+ * Dann lauten die finalen URLs:
+ *   "/pay/checkout-sub"
+ *   "/pay/checkout-oneoff"
+ * 
+ * Passen sie bei Bedarf an, wenn du "/stripe/" o.ä. nutzt.
+ */
+
+async function buyPlus() {
   try {
-    const r = await fetch("/stripe/checkout-sub", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ which_tier:"plus" })
+    const r = await fetch("/pay/checkout-sub", {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ which_tier: "plus" })
     });
     const d = await r.json();
-    if(d.error){ alert(d.error); return; }
+    if(d.error) {
+      alert(d.error);
+      return;
+    }
     window.location = d.checkout_url;
-  } catch(err){ alert("Fehler: "+err); }
+  } catch(err) {
+    alert("Fehler: " + err);
+  }
 }
 
-async function buyPremium(){
+async function buyPremium() {
   try {
-    const r = await fetch("/stripe/checkout-sub", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ which_tier:"premium" })
+    const r = await fetch("/pay/checkout-sub", {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ which_tier: "premium" })
     });
     const d = await r.json();
-    if(d.error){ alert(d.error); return; }
+    if(d.error) {
+      alert(d.error);
+      return;
+    }
     window.location = d.checkout_url;
-  } catch(err){ alert("Fehler: "+err); }
+  } catch(err) {
+    alert("Fehler: " + err);
+  }
 }
 
-async function buyExtended(){
+async function buyExtended() {
   try {
-    const r = await fetch("/stripe/checkout-sub", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ which_tier:"extended" })
+    // OneOff => "/pay/checkout-oneoff"
+    const r = await fetch("/pay/checkout-oneoff", {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ which_tier: "extended" })
     });
     const d = await r.json();
-    if(d.error){ alert(d.error); return; }
+    if(d.error) {
+      alert(d.error);
+      return;
+    }
     window.location = d.checkout_url;
-  } catch(err){ alert("Fehler: "+err); }
+  } catch(err) {
+    alert("Fehler: " + err);
+  }
 }
-<!-- In upgrade_page.html -->
-
 </script>
 </body>
 </html>
+
+""" END OF FILE: templates/upgrade_page.html """
