@@ -18,6 +18,7 @@ from routes.routes_payment import payment_bp
 from routes.routes_admin import admin_bp
 from routes.mycalc_routes import mycalc_bp
 from routes.routes_calc_param import param_calc_bp
+from routes.routes_calc_takt import takt_calc_bp
 
 def create_app():
     app = Flask(__name__)
@@ -39,7 +40,8 @@ def create_app():
     app.register_blueprint(payment_bp, url_prefix="/pay")
     app.register_blueprint(admin_bp, url_prefix="/admin")
     app.register_blueprint(mycalc_bp, url_prefix="/mycalc")
-    app.register_blueprint(param_calc_bp, url_prefix="/mycalc")
+    app.register_blueprint(param_calc_bp, url_prefix="/calc/param")
+    app.register_blueprint(takt_calc_bp, url_prefix="/calc/takt")
 
 
     # Optional: Public Landing
