@@ -19,6 +19,7 @@ from routes.routes_admin import admin_bp
 from routes.mycalc_routes import mycalc_bp
 from routes.routes_calc_param import param_calc_bp
 from routes.routes_calc_takt import takt_calc_bp
+from routes.routes_landing import landing_bp  # <-- NEU
 
 def create_app():
     app = Flask(__name__)
@@ -36,6 +37,7 @@ def create_app():
     limiter.init_app(app)
 
     # Blueprint-Registrierung
+    app.register_blueprint(landing_bp)  # <-- NEU (ohne url_prefix => "/")
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(payment_bp, url_prefix="/pay")
     app.register_blueprint(admin_bp, url_prefix="/admin")
@@ -59,7 +61,7 @@ def create_app():
     def require_login():
         # Definiere public routes/prefixes
         public_routes = [
-            "/",  # Landing
+            "/",               # => Landing
             "/auth/login",
             "/auth/register",
             "/auth/whoami",  # optional

@@ -17,11 +17,19 @@ def calc_feinguss():
     Empfängt JSON mit Feinguss-Parametern, führt sämtliche
     Kalkulationen serverseitig durch und gibt ein JSON-Resultat.
     """
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({"error": "No JSON body"}), 400
+    if not g.user:
+        return jsonify({"error": "Not logged in"}), 403
 
+    lvl = g.user.license_level()
+    if lvl not in ["premium", "extended"]:
+        return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
+
+    # -----------------------------------------------------
+    # 1) Eingabe-Felder extrahieren
+    # -----------------------------------------------------
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No JSON body"}), 400
         # -----------------------------------------------------
         # 1) Eingabe-Felder extrahieren
         # -----------------------------------------------------

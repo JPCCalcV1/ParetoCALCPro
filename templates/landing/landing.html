@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>ParetoCalc Landing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <!-- Bootstrap 5 CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- Optional: FontAwesome (für Icons) -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"
+    rel="stylesheet"
+  />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
+  <style>
+    body {
+      font-family: "Open Sans", sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar {
+      background: #fff;
+      transition: background 0.3s;
+    }
+    .navbar-brand {
+      font-weight: 600;
+      color: #0d6efd; /* "Bootstrap Blau" */
+    }
+    .navbar-nav .nav-link {
+      color: #333;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #0d6efd;
+    }
+
+    /* Hero / Intro-Bereich */
+    .hero-section {
+      position: relative;
+      min-height: 80vh;
+      background: url("https://picsum.photos/1920/1080?grayscale") center center no-repeat;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .hero-section .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 700px;
+    }
+    .hero-content h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .hero-content p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer {
+      background: #f1f3f4;
+      padding: 1rem 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#mainNavbar" data-bs-offset="70">
+  <!-- NAVBAR -->
+  <nav id="mainNavbar" class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="/landing">ParetoCalc</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarContent"
+        aria-controls="navbarContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div
+        class="collapse navbar-collapse justify-content-end"
+        id="navbarContent"
+      >
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" href="/landing">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/mycalc">MyCalc</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/upgrade">Upgrade</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/auth/login_form">Login</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero-section">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <h1>Willkommen bei ParetoCalc!</h1>
+      <p>
+        Das ultimative Kalkulationstool für Fertigungsprozesse,
+        Kosten, CO₂ und mehr.
+      </p>
+      <a href="/auth/login_form" class="btn btn-primary btn-lg">
+        Jetzt loslegen
+      </a>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <div class="container my-5">
+    <h2>Funktionen & Highlights</h2>
+    <p>
+      Kurzbeschreibung deiner App, Vorteile, Beispiel-Screenshots etc.
+    </p>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5>Vielfältige Module</h5>
+            <p>Nutze Feinguss-, Schmiede-, PCB-Rechner u.v.m.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5>CO₂-Kalkulation</h5>
+            <p>Berechne Emissionen pro 100 Stück in Echtzeit.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5>Upgrade-Optionen</h5>
+            <p>Erhalte erweiterte Funktionen dank Abo oder One-Off.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="container">
+      <p class="m-0">
+        &copy; 2025 ParetoCalc | <a href="/admin_dashboard">Admin Dashboard</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  ></script>
+</body>
+</html>
