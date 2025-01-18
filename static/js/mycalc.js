@@ -743,36 +743,66 @@ function attachRowEvents() {
   console.log("DEBUG: Exiting attachRowEvents()");
 }
 
-/** updateRowCalc(rowIdx, lotSize): rechnet die Zeile neu (dummy) */
+/**
+ * updateRowCalc(rowIdx, lotSize):
+ * Ersetzt die bisherige Minimal-Rechnung durch das V1-Schema.
+ * cost100 = cycTime/3600 * msRate * 100 + cycTime/3600 * lohnRate * 100
+ *           + (ruestVal / lotSize)*100 + toolingVal
+ * co2_100 = cycTime/3600 * co2Hour * 100
+ */
 function updateRowCalc(rowIdx, lotSize) {
   console.log("DEBUG: Entering updateRowCalc() with rowIdx =", rowIdx, "lotSize =", lotSize);
+
   const rows = document.querySelectorAll("#fertTable tbody tr");
   if (rowIdx < 0 || rowIdx >= rows.length) {
     console.log("DEBUG: rowIdx out of range => returning");
     return;
   }
-  const row = rows[rowIdx];
+  const row = rows[rowIdx].cells; // bequemer Alias
 
-  // Bsp:
-  const cycTime = parseFloat(row.cells[1].querySelector("input").value) || 0;
-  const msRate  = parseFloat(row.cells[2].querySelector("input").value) || 0;
-  console.log("DEBUG: cycTime =", cycTime, "msRate =", msRate);
+  // cycTime = row.cells[1].querySelector("input")
+  // msRate  = row.cells[2].querySelector("input")
+  // lohnRate= row.cells[3].querySelector("input")
+  // ruestVal= row.cells[4].querySelector("input")
+  // toolingVal = row.cells[5].querySelector("input")
+  // fgkPct  = row.cells[6].querySelector("input") // (Falls du es brauchst)
+  // co2Hour = row.cells[7].querySelector("input")
 
-  let cost100 = 0;
-  if (lotSize > 0) {
-    console.log("DEBUG: lotSize > 0 => calculating cost100");
-    cost100 = (cycTime * msRate) / 3600.0 * 100;
-  }
-  row.cells[8].querySelector("span").textContent = cost100.toFixed(2);
+  const cycTime   = parseFloat(row[1].querySelector("input").value) || 0;
+  const msRate    = parseFloat(row[2].querySelector("input").value) || 0;
+  const lohnRate  = parseFloat(row[3].querySelector("input").value) || 0;
+  const ruestVal  = parseFloat(row[4].querySelector("input").value) || 0;
+  const toolingVal= parseFloat(row[5].querySelector("input").value) || 0;
+  // const fgkPct = parseFloat(row[6].querySelector("input").value) || 0; // Nur nötig, wenn du's einbeziehen willst
+  const co2Hour   = parseFloat(row[7].querySelector("input").value) || 0;
 
-  const co2Val = parseFloat(row.cells[7].querySelector("input").value) || 0;
-  console.log("DEBUG: co2Val =", co2Val, " -> setting co2/100 field");
-  // Bsp: co2 pro stück * 100
-  row.cells[9].querySelector("span").textContent = (co2Val * 100).toFixed(2);
+  console.log("DEBUG: cycTime=", cycTime, "msRate=", msRate, "lohnRate=", lohnRate,
+              "ruestVal=", ruestVal, "toolingVal=", toolingVal, "co2Hour=", co2Hour);
 
+  // Zyklus in Stunden:
+  const cycTimeH = cycTime / 3600;
+
+  // => Maschinenkosten pro 100
+  const costMach100  = cycTimeH * msRate  * 100;
+  // => Lohnkosten pro 100
+  const costLohn100  = cycTimeH * lohnRate * 100;
+  // => Rüstkosten pro 100 (verteilt auf lotSize)
+  const costRuest100 = (ruestVal / lotSize) * 100;
+  // => Tooling (falls gewünscht 1:1 addieren, je 100)
+  const costTool100  = toolingVal; // oder (toolingVal / lotSize)*100, je nach V1-Logik?
+
+  // Summiere => spalte[8] (Kosten/100)
+  const cost100 = costMach100 + costLohn100 + costRuest100 + costTool100;
+  row[8].querySelector("span").textContent = cost100.toFixed(2);
+
+  // => CO₂ pro 100 (CycTime in h * co2Hour * 100)
+  // (Beispiel: cycTime=10s => cycTimeH=10/3600=0.0027h, co2Hour=3 => result=0.0081 => *100 => 0.81)
+  const co2_100 = cycTimeH * co2Hour * 100;
+  row[9].querySelector("span").textContent = co2_100.toFixed(2);
+
+  console.log("DEBUG: cost100=", cost100, "co2_100=", co2_100);
   console.log("DEBUG: Exiting updateRowCalc()");
 }
-
 /** ============== Material-Funktionen ============== */
 
 /**

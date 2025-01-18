@@ -41,6 +41,7 @@ def create_app():
     app.register_blueprint(mycalc_bp, url_prefix="/mycalc")
     app.register_blueprint(param_calc_bp, url_prefix="/mycalc")
 
+
     # Optional: Public Landing
     @app.route("/")
     def landing_page():
@@ -56,15 +57,13 @@ def create_app():
     def require_login():
         # Definiere public routes/prefixes
         public_routes = [
-            "/",
+            "/",  # Landing
             "/auth/login",
             "/auth/register",
-            "/auth/whoami",
-            "/pay/webhook",  # Stripe-Webhook => exempt
-            "/upgrade",
+            "/auth/whoami",  # optional
+            "/pay/webhook",
             "/favicon.ico",
-            "/robots.txt",
-            "/test_sendgrid"  # falls existiert
+            "/robots.txt"
         ]
 
         # Wenn Route NICHT in den public_routes beginnt => check session
