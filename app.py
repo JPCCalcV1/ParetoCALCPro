@@ -2,12 +2,13 @@ import os
 from datetime import datetime, timedelta
 
 from flask import Flask, session, request, jsonify, render_template
-print(">>> Vor Import von flask_migrate <<<")
+# print(">>> Vor Import von flask_migrate <<<")
 try:
     from flask_migrate import Migrate
-    print(">>> Nach Import von flask_migrate <<<")
+    # print(">>> Nach Import von flask_migrate <<<")
 except ImportError as e:
-    print(f"ImportError: {e}")
+    # print(f"ImportError: {e}")
+    pass
 
 from models.user import db, User
 from core.extensions import csrf, limiter
@@ -24,15 +25,14 @@ from routes.routes_landing import landing_bp  # <-- NEU
 def create_app():
     app = Flask(__name__)
 
-
     # Hier direkt nach dem Erzeugen des app-Objekts:
-    print("=== ENV DEBUG START ===")
-    print("STRIPE_SECRET_KEY =", os.getenv("STRIPE_SECRET_KEY"))
-    print("STRIPE_WEBHOOK_SECRET =", os.getenv("STRIPE_WEBHOOK_SECRET"))
-    print("STRIPE_PRICE_PLUS =", os.getenv("STRIPE_PRICE_PLUS"))
-    print("STRIPE_PRICE_PREMIUM =", os.getenv("STRIPE_PRICE_PREMIUM"))
-    print("STRIPE_PRICE_EXTENDED =", os.getenv("STRIPE_PRICE_EXTENDED"))
-    print("=== ENV DEBUG END ===")
+    # print("=== ENV DEBUG START ===")
+    # print("STRIPE_SECRET_KEY =", os.getenv("STRIPE_SECRET_KEY"))
+    # print("STRIPE_WEBHOOK_SECRET =", os.getenv("STRIPE_WEBHOOK_SECRET"))
+    # print("STRIPE_PRICE_PLUS =", os.getenv("STRIPE_PRICE_PLUS"))
+    # print("STRIPE_PRICE_PREMIUM =", os.getenv("STRIPE_PRICE_PREMIUM"))
+    # print("STRIPE_PRICE_EXTENDED =", os.getenv("STRIPE_PRICE_EXTENDED"))
+    # print("=== ENV DEBUG END ===")
 
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "supersecret")
     db_url = os.getenv("DATABASE_URL", "sqlite:///test.db")
@@ -56,7 +56,6 @@ def create_app():
     app.register_blueprint(param_calc_bp, url_prefix="/calc/param")
     app.register_blueprint(takt_calc_bp, url_prefix="/calc/takt")
 
-
     # Optional: Public Landing
     @app.route("/")
     def landing_page():
@@ -70,7 +69,7 @@ def create_app():
     # Vor jedem Request => check public vs. login
     @app.before_request
     def require_login():
-        print(f"[BEFORE_REQUEST] path={request.path}")
+        # print(f"[BEFORE_REQUEST] path={request.path}")
         # your existing code
         # Definiere public routes/prefixes
         public_routes = [
@@ -88,29 +87,8 @@ def create_app():
             if not session.get("user_id"):
                 return jsonify({"error": "Not logged in"}), 401
 
-    @csrf.exempt
-    @app.route("/ping-test", methods=["POST"])
-    def ping_test():
-        """
-        Ein Minimal-Endpoint für POST, um zu sehen, ob
-        irgendetwas deinen Request blockt.
-        """
-        print("[PING-TEST] => This route was called!")
-        return jsonify({"msg": "pong from /ping-test!"}), 200
-
-    @csrf.exempt
-    @app.route("/pingtest-page", methods=["GET"])
-    def show_ping_test_page():
-        """
-        Gibt ein kleines HTML aus, das den Button enthält,
-        um POST /ping-test zu testen.
-        """
-        return render_template("ping_test.html")
-
     return app
 
 if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)
-
-

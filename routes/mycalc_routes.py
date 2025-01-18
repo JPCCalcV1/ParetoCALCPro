@@ -8,6 +8,7 @@ from datetime import datetime
 from models.user import db, User
 from core.extensions import csrf, limiter  # NEU: limiter import
 import calculations  # Deine file: calculations.py
+from helpers.sendgrid_helper import send_email
 
 # => def taktzeit_calc(...), def param_calc(...), def calculate_all(data)...
 
@@ -305,3 +306,21 @@ def create_gpt_session_internal(name="AutoSession"):
         return dd.get("data", {}).get("session_id", None)
     except:
         return None
+
+@mycalc_bp.route("/test_email", methods=["GET"])
+def test_email():
+    """
+    Testet den Versand einer E-Mail über SendGrid.
+    """
+    # Ziel-E-Mail für den Test
+    to_email = "deinname@gmail.com"  # Ersetze mit deiner Zieladresse
+    subject = "Test-E-Mail von SendGrid (Render)"
+    body_text = "Hallo! Dies ist ein Test direkt aus der Render-Umgebung."
+    body_html = "<strong>Hallo! Dies ist ein <i>HTML-Test</i> von Render aus.</strong>"
+
+    try:
+        # E-Mail versenden
+        status = send_email(to_email, subject, body_text, body_html)
+        return jsonify({"status": status, "message": "Test-E-Mail erfolgreich gesendet!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

@@ -1,0 +1,43 @@
+<!-- FILE: templates/pay/payment_success.html -->
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Zahlung erfolgreich</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+      background: #f3f3f3;
+    }
+    .container {
+      background: #fff;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+      border-radius: 5px;
+    }
+    a.button {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #28a745;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+    a.button:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Vielen Dank für deine Zahlung!</h1>
+    <p>Deine Lizenz wird in Kürze oder ist bereits aktiviert. Du kannst nun ParetoCalc V2 voll nutzen.</p>
+
+    <a class="button" href="/mycalc">Weiter zu MyCalc</a>
+  </div>
+</body>
+</html>

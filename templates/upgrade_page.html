@@ -61,7 +61,7 @@
         <button class="btn btn-warning w-100" onclick="buyExtended()">
           Extended kaufen
         </button>
-        <button onclick="callTestABC()">Test /pay/test-abc</button>
+
       </div>
     </div>
   </div>
@@ -104,7 +104,7 @@ async function buyPremium(){
 
 async function buyExtended(){
   try {
-    const r = await fetch("/stripe/create-checkout-session-oneoff", {
+    const r = await fetch("/stripe/checkout-sub", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({ which_tier:"extended" })
@@ -116,20 +116,6 @@ async function buyExtended(){
 }
 <!-- In upgrade_page.html -->
 
-
-async function callTestABC(){
-  try {
-    const resp = await fetch("/stripe/test-abc", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ test:"abc" })
-    });
-    const data = await resp.json();
-    alert("Response from test-abc: " + JSON.stringify(data));
-  } catch(e){
-    alert("Error: " + e);
-  }
-}
 </script>
 </body>
 </html>
