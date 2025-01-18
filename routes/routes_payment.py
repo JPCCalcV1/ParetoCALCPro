@@ -1,16 +1,12 @@
-# routes/routes_payment.py
 import os
 import stripe
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, current_app
 from datetime import datetime, timedelta
 
 from models.user import db, User
 from models.payment_log import PaymentLog
 from core.extensions import csrf
-
-# Für Payment-Fail E-Mail (falls du SendGrid o.Ä. nutzt)
-# => Stelle sicher, dass du in helpers/sendgrid_helper.py ein send_email(...) hast.
-from helpers.sendgrid_helper import send_email
+from helpers.sendgrid_helper import send_email  # falls du E-Mail nutzt
 
 payment_bp = Blueprint("payment_bp", __name__)
 
@@ -18,19 +14,23 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
 stripe.api_key = STRIPE_SECRET_KEY
 
-# Deine Price-Map – anpassen an deine Stripe-Preise
+# Price-Map: "plus", "premium", "extended" (du hast V1 "test" entfernt)
 price_map = {
     "plus":     os.getenv("STRIPE_PRICE_PLUS", "price_plusXYZ"),
     "premium":  os.getenv("STRIPE_PRICE_PREMIUM", "price_premXYZ"),
     "extended": os.getenv("STRIPE_PRICE_EXTENDED", "price_extXYZ"),
 }
 
-print("STRIPE_SECRET_KEY =", STRIPE_SECRET_KEY)
-print("STRIPE_PRICE_PLUS =", os.getenv("STRIPE_PRICE_PLUS"))
-print("STRIPE_PRICE_PREMIUM =", os.getenv("STRIPE_PRICE_PREMIUM"))
-print("STRIPE_PRICE_EXTENDED =", os.getenv("STRIPE_PRICE_EXTENDED"))
+# Log ENV once at import time
+print("[PaymentBP] STRIPE_SECRET_KEY =", STRIPE_SECRET_KEY)
+print("[PaymentBP] STRIPE_WEBHOOK_SECRET =", STRIPE_WEBHOOK_SECRET)
+print("[PaymentBP] price_map => plus =", price_map["plus"],
+      ", premium =", price_map["premium"],
+      ", extended =", price_map["extended"])
+
+
 # ---------------------------------------------------------
-# V1-ROUTE: Falls du EINE Payment-Route (OneOff) behalten willst
+#   CREATE-CHECKOUT-SESSION (V1)
 # ---------------------------------------------------------
 @payment_bp.route("/create-checkout-session", methods=["POST"])
 def create_checkout_session():
@@ -38,6 +38,8 @@ def create_checkout_session():
     V1: Falls du nur EINE Art Payment hast (OneOff).
     Bleibt kompatibel, falls dein Frontend schon /create-checkout-session aufruft.
     """
+    current_app.logger.debug("==> V1 create_checkout_session (OneOff) CALLED")
+
     user_id = session.get("user_id")
     if not user_id:
         return jsonify({"error": "Not logged in"}), 401
@@ -47,10 +49,12 @@ def create_checkout_session():
         return jsonify({"error": "User not found"}), 404
 
     data_in = request.get_json() or {}
-    which_tier = data_in.get("which_tier", "extended")
+    which_tier = data_in.get("which_tier", "extended")  # default extended
+    current_app.logger.debug(f"[V1 create_session] which_tier={which_tier}")
 
     price_id = price_map.get(which_tier)
-    app.logger.debug(f"Price-ID für {which_tier}: {price_id}")  # Log für Price-ID
+    current_app.logger.debug(f"[V1 create_session] price_id={price_id}")
+
     if not price_id:
         return jsonify({"error": f"No price for {which_tier}"}), 400
 
@@ -66,19 +70,24 @@ def create_checkout_session():
                 "which_tier": which_tier
             }
         )
+        current_app.logger.debug(f"[V1 create_session] Stripe session url: {checkout_session.url}")
         return jsonify({"checkout_url": checkout_session.url}), 200
+
     except Exception as e:
+        current_app.logger.error(f"[V1 create_session] Stripe Exception: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 
 # ---------------------------------------------------------
-# NEU (V2): Subscription – 7 Tage Trial, dann invoice.paid => +30 Tage
+#   CREATE-CHECKOUT-SESSION-SUBSCRIPTION (V2 ABO)
 # ---------------------------------------------------------
 @payment_bp.route("/create-checkout-session-subscription", methods=["POST"])
 def create_checkout_session_subscription():
     """
-    Subscription: 7 Tage Trial -> invoice.paid => +30 Tage je Abrechnungszyklus.
+    V2: Subscription => 7 Tage Trial, invoice.paid => +30 Tage
     """
+    current_app.logger.debug("==> create_checkout_session_subscription CALLED")
+
     user_id = session.get("user_id")
     if not user_id:
         return jsonify({"error": "Not logged in"}), 401
@@ -88,14 +97,18 @@ def create_checkout_session_subscription():
         return jsonify({"error": "User not found"}), 404
 
     data_in = request.get_json() or {}
+    # Im Frontend: buyPlus() => { which_tier:"plus" }
+    # buyPremium() => { which_tier:"premium" }
     which_tier = data_in.get("which_tier", "plus")
+    current_app.logger.debug(f"[SUBSCRIPTION] which_tier={which_tier}")
+
+    price_id = price_map.get(which_tier)
+    current_app.logger.debug(f"[SUBSCRIPTION] price_id={price_id}")
+
+    if not price_id:
+        return jsonify({"error": f"No Price-ID for {which_tier}"}), 400
 
     try:
-        price_id = price_map.get(which_tier)
-        app.logger.debug(f"Price-ID für {which_tier}: {price_id}")  # Log hinzufügen
-        if not price_id:
-            return jsonify({"error": f"No Price-ID for {which_tier}"}), 400
-
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             line_items=[{"price": price_id, "quantity": 1}],
@@ -110,34 +123,48 @@ def create_checkout_session_subscription():
                 "which_tier": which_tier
             }
         )
+        current_app.logger.debug(f"[SUBSCRIPTION] Created session => {checkout_session.url}")
         return jsonify({"checkout_url": checkout_session.url}), 200
-    except Exception as e:
+
+    except stripe.error.StripeError as e:
+        # Fang Stripe-spezifische Fehler ab
+        current_app.logger.error(f"[SUBSCRIPTION] StripeError: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+    except Exception as ex:
+        current_app.logger.error(f"[SUBSCRIPTION] Other Exception: {str(ex)}")
+        return jsonify({"error": str(ex)}), 500
 
 
 # ---------------------------------------------------------
-# NEU (V2): OneOff – 365 Tage, separate Route
+#   CREATE-CHECKOUT-SESSION-ONEOFF (V2 ABO-Einmal)
 # ---------------------------------------------------------
 @payment_bp.route("/create-checkout-session-oneoff", methods=["POST"])
 def create_checkout_session_oneoff():
     """
-    OneOff: 365 Tage.
+    OneOff: 365 Tage => Gleiche Logik wie V1, aber separat.
     """
+    current_app.logger.debug("==> create_checkout_session_oneoff CALLED")
+
     user_id = session.get("user_id")
     if not user_id:
         return jsonify({"error": "Not logged in"}), 401
+
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "User not found"}), 404
 
     data_in = request.get_json() or {}
     which_tier = data_in.get("which_tier", "extended")
+    current_app.logger.debug(f"[ONEOFF] which_tier={which_tier}")
+
+    price_id = price_map.get(which_tier)
+    current_app.logger.debug(f"[ONEOFF] price_id={price_id}")
+
+    if not price_id:
+        return jsonify({"error": f"No price for {which_tier}"}), 400
 
     try:
-        price_id = price_map.get(which_tier)
-        if not price_id:
-            return jsonify({"error": f"No price for {which_tier}"}), 400
-
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             line_items=[{"price": price_id, "quantity": 1}],
@@ -149,35 +176,41 @@ def create_checkout_session_oneoff():
                 "which_tier": which_tier
             }
         )
+        current_app.logger.debug(f"[ONEOFF] Created session => {checkout_session.url}")
         return jsonify({"checkout_url": checkout_session.url}), 200
-    except Exception as e:
+
+    except stripe.error.StripeError as e:
+        current_app.logger.error(f"[ONEOFF] StripeError: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+    except Exception as ex:
+        current_app.logger.error(f"[ONEOFF] Other Exception: {str(ex)}")
+        return jsonify({"error": str(ex)}), 500
 
 
 # ---------------------------------------------------------
-# WEBHOOK – Nur hier CSRF-Exempt
+#   WEBHOOK
 # ---------------------------------------------------------
 @payment_bp.route("/webhook", methods=["POST"])
 @csrf.exempt
 def stripe_webhook():
     payload = request.data
     sig_header = request.headers.get("Stripe-Signature", "")
+    current_app.logger.debug("[WEBHOOK] Received payload size=%d" % len(payload))
 
-    # 1) Check Webhook-Secret
     if not STRIPE_WEBHOOK_SECRET:
-        print("[Webhook] Error: No STRIPE_WEBHOOK_SECRET configured.")
+        current_app.logger.error("[WEBHOOK] No STRIPE_WEBHOOK_SECRET configured.")
         return jsonify({"error": "No webhook secret"}), 500
 
-    # 2) Signaturprüfung
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
     except stripe.error.SignatureVerificationError as e:
-        print("[Webhook] Signature error:", e)
+        current_app.logger.error("[WEBHOOK] Signature error: %s", str(e))
         return jsonify({"error": "Invalid signature"}), 400
 
     etype = event["type"]
     data_obj = event["data"]["object"]
-    print(f"[Webhook] Received event type: {etype}")  # Debug-Log
+    current_app.logger.debug(f"[WEBHOOK] Event type={etype}")
 
     # 3) PaymentLog anlegen
     new_log = PaymentLog(
