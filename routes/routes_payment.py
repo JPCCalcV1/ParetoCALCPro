@@ -87,6 +87,7 @@ def create_checkout_session_subscription():
 
     try:
         price_id = price_map.get(which_tier)
+        app.logger.debug(f"Price-ID für {which_tier}: {price_id}")  # Log hinzufügen
         if not price_id:
             return jsonify({"error": f"No Price-ID for {which_tier}"}), 400
 
@@ -152,112 +153,128 @@ def create_checkout_session_oneoff():
 # WEBHOOK – Nur hier CSRF-Exempt
 # ---------------------------------------------------------
 @payment_bp.route("/webhook", methods=["POST"])
-@csrf.exempt  # Nur hier exempt, da Stripe JSON sendet ohne CSRF
+@csrf.exempt
 def stripe_webhook():
     payload = request.data
     sig_header = request.headers.get("Stripe-Signature", "")
+
+    # 1) Check Webhook-Secret
     if not STRIPE_WEBHOOK_SECRET:
+        print("[Webhook] Error: No STRIPE_WEBHOOK_SECRET configured.")
         return jsonify({"error": "No webhook secret"}), 500
 
+    # 2) Signaturprüfung
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
     except stripe.error.SignatureVerificationError as e:
-        print("Signature error:", e)
+        print("[Webhook] Signature error:", e)
         return jsonify({"error": "Invalid signature"}), 400
 
-    # PaymentLog anlegen
+    etype = event["type"]
+    data_obj = event["data"]["object"]
+    print(f"[Webhook] Received event type: {etype}")  # Debug-Log
+
+    # 3) PaymentLog anlegen
     new_log = PaymentLog(
         user_id=None,
         event_id=event["id"],
-        event_type=event["type"],
+        event_type=etype,
         raw_data=str(event),
-        status="pending"  # NEU: Startet mit "pending"
+        status="pending"
     )
     db.session.add(new_log)
     db.session.commit()
 
-    etype = event["type"]
-    data_obj = event["data"]["object"]
+    # -- Hilfsfunktion: Safely get user-Objekt (abbrechen, wenn None)
+    def get_user_from_metadata(meta_dict):
+        """Liest 'user_id' aus metadaten und gibt User-Objekt zurück (oder None)."""
+        uid = meta_dict.get("user_id")
+        if not uid:
+            print("[Webhook] No user_id in metadata => ignoring.")
+            return None
+        user = User.query.get(uid)
+        if not user:
+            print(f"[Webhook] User with id={uid} not found in DB.")
+        return user
 
-    # -----------------------------------------------------
-    # checkout.session.completed =>
-    # - Mode "subscription": 7 Tage
-    # - Mode "payment": 365 Tage
-    # -----------------------------------------------------
+    # 4) Verzweige nach event type
     if etype == "checkout.session.completed":
-        user_id = data_obj.get("metadata", {}).get("user_id")
         which_tier = data_obj.get("metadata", {}).get("which_tier", "extended")
         mode = data_obj.get("mode")
+        user = get_user_from_metadata(data_obj.get("metadata", {}))
 
-        if user_id:
-            u = User.query.get(user_id)
-            if u:
-                if mode == "subscription":
-                    u.license_tier = which_tier
-                    u.license_expiry = datetime.now() + timedelta(days=7)
-                    db.session.commit()
-                elif mode == "payment":
-                    u.license_tier = which_tier
-                    u.license_expiry = datetime.now() + timedelta(days=365)
-                    db.session.commit()
+        if user:
+            print(f"[Webhook] checkout.session.completed for user={user.email}, tier={which_tier}, mode={mode}")
+            if mode == "subscription":
+                user.license_tier = which_tier
+                user.license_expiry = datetime.now() + timedelta(days=7)
+            elif mode == "payment":
+                user.license_tier = which_tier
+                user.license_expiry = datetime.now() + timedelta(days=365)
+            db.session.commit()
+            new_log.status = "completed"
+            db.session.commit()
+        else:
+            print("[Webhook] Warning: No valid user found for checkout.session.completed")
 
-        # Payment completed => PaymentLog status = "completed"
-        new_log.status = "completed"
-        db.session.commit()
-
-    # -----------------------------------------------------
-    # invoice.paid => z.B. Subscription Renewal => +30 Tage
-    # -----------------------------------------------------
     elif etype == "invoice.paid":
         sub_id = data_obj.get("subscription")
         if sub_id:
             sub_obj = stripe.Subscription.retrieve(sub_id)
-            user_id = sub_obj.get("metadata", {}).get("user_id")
-            which_tier = sub_obj.get("metadata", {}).get("which_tier", "plus")
+            meta = sub_obj.get("metadata", {})
+            user = get_user_from_metadata(meta)
+            which_tier = meta.get("which_tier", "plus")
 
-            if user_id:
-                u = User.query.get(user_id)
-                if u:
-                    # Falls license_expiry abgelaufen -> setze ab heute +30
-                    # sonst hänge 30 Tage dran
-                    if not u.license_expiry or u.license_expiry < datetime.now():
-                        u.license_expiry = datetime.now() + timedelta(days=30)
-                    else:
-                        u.license_expiry += timedelta(days=30)
-                    u.license_tier = which_tier
-                    db.session.commit()
+            if user:
+                print(f"[Webhook] invoice.paid for user={user.email}, tier={which_tier}")
+                # Falls license_expiry abgelaufen -> setze ab heute +30
+                # sonst hänge 30 Tage dran
+                if not user.license_expiry or user.license_expiry < datetime.now():
+                    user.license_expiry = datetime.now() + timedelta(days=30)
+                else:
+                    user.license_expiry += timedelta(days=30)
+                user.license_tier = which_tier
+                db.session.commit()
+                new_log.status = "paid"
+                db.session.commit()
+            else:
+                print("[Webhook] invoice.paid: No valid user found => ignoring.")
+        else:
+            print("[Webhook] invoice.paid: No subscription ID => ignoring.")
 
-        new_log.status = "paid"
-        db.session.commit()
-
-    # -----------------------------------------------------
-    # invoice.payment_failed => Access entziehen + E-Mail
-    # -----------------------------------------------------
     elif etype == "invoice.payment_failed":
         sub_id = data_obj.get("subscription")
         if sub_id:
             sub_obj = stripe.Subscription.retrieve(sub_id)
-            user_id = sub_obj.get("metadata", {}).get("user_id")
-            if user_id:
-                u = User.query.get(user_id)
-                if u:
-                    # Lizenz wegnehmen
-                    u.license_tier = "no_access"
-                    u.license_expiry = None
-                    db.session.commit()
+            meta = sub_obj.get("metadata", {})
+            user = get_user_from_metadata(meta)
 
-                    # => Sende E-Mail (Try/Catch, damit es den Workflow nicht stoppt)
-                    try:
-                        send_email(
-                            to=u.email,
-                            subject="Payment failed",
-                            plain_body="Deine Zahlung schlug fehl! Bitte Zahlungsmethode aktualisieren.",
-                            html_body="<p>Zahlung fehlgeschlagen. Bitte updaten!</p>"
-                        )
-                    except Exception as mail_ex:
-                        print("SendGrid error:", mail_ex)
+            if user:
+                print(f"[Webhook] invoice.payment_failed for user={user.email}")
+                user.license_tier = "no_access"
+                user.license_expiry = None
+                db.session.commit()
 
-        new_log.status = "failed"
-        db.session.commit()
+                # => E-Mail
+                try:
+                    # Safety-Check: Falls user.email None
+                    recipient = user.email or "no_email@invalid"
+                    send_email(
+                        to=recipient,
+                        subject="Payment failed",
+                        plain_body="Deine Zahlung schlug fehl! Bitte Zahlungsmethode aktualisieren.",
+                        html_body="<p>Zahlung fehlgeschlagen. Bitte updaten!</p>"
+                    )
+                except Exception as mail_ex:
+                    print("SendGrid error:", mail_ex)
+
+                new_log.status = "failed"
+                db.session.commit()
+            else:
+                print("[Webhook] invoice.payment_failed: No valid user found => ignoring.")
+        else:
+            print("[Webhook] invoice.payment_failed: No subscription ID => ignoring.")
+    else:
+        print(f"[Webhook] Unhandled event type: {etype}")
 
     return jsonify({"status": "ok"}), 200
