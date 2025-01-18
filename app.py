@@ -88,6 +88,7 @@ def create_app():
             if not session.get("user_id"):
                 return jsonify({"error": "Not logged in"}), 401
 
+    @csrf.exempt
     @app.route("/ping-test", methods=["POST"])
     def ping_test():
         """
@@ -97,6 +98,7 @@ def create_app():
         print("[PING-TEST] => This route was called!")
         return jsonify({"msg": "pong from /ping-test!"}), 200
 
+    @csrf.exempt
     @app.route("/pingtest-page", methods=["GET"])
     def show_ping_test_page():
         """
