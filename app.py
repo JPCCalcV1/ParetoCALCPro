@@ -88,6 +88,23 @@ def create_app():
             if not session.get("user_id"):
                 return jsonify({"error": "Not logged in"}), 401
 
+    @app.route("/ping-test", methods=["POST"])
+    def ping_test():
+        """
+        Ein Minimal-Endpoint für POST, um zu sehen, ob
+        irgendetwas deinen Request blockt.
+        """
+        print("[PING-TEST] => This route was called!")
+        return jsonify({"msg": "pong from /ping-test!"}), 200
+
+    @app.route("/pingtest-page", methods=["GET"])
+    def show_ping_test_page():
+        """
+        Gibt ein kleines HTML aus, das den Button enthält,
+        um POST /ping-test zu testen.
+        """
+        return render_template("ping_test.html")
+
     return app
 
 if __name__ == "__main__":
