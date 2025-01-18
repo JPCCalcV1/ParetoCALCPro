@@ -32,7 +32,9 @@ print("[PaymentBP] price_map => plus =", price_map["plus"],
 # ---------------------------------------------------------
 #   CREATE-CHECKOUT-SESSION (V1)
 # ---------------------------------------------------------
+
 @payment_bp.route("/create-checkout-session", methods=["POST"])
+@csrf.exempt
 def create_checkout_session():
     """
     V1: Falls du nur EINE Art Payment hast (OneOff).
@@ -82,6 +84,7 @@ def create_checkout_session():
 #   CREATE-CHECKOUT-SESSION-SUBSCRIPTION (V2 ABO)
 # ---------------------------------------------------------
 @payment_bp.route("/checkout-sub", methods=["POST"])
+@csrf.exempt
 def create_checkout_session_subscription():
     """
     V2: Subscription => 7 Tage Trial, invoice.paid => +30 Tage
@@ -140,7 +143,9 @@ def create_checkout_session_subscription():
 # ---------------------------------------------------------
 #   CREATE-CHECKOUT-SESSION-ONEOFF (V2 ABO-Einmal)
 # ---------------------------------------------------------
+
 @payment_bp.route("/create-checkout-session-oneoff", methods=["POST"])
+@csrf.exempt
 def create_checkout_session_oneoff():
     """
     OneOff: 365 Tage => Gleiche Logik wie V1, aber separat.
@@ -319,7 +324,9 @@ def stripe_webhook():
 
     return jsonify({"status": "ok"}), 200
 
+
 @payment_bp.route("/test-abc", methods=["POST"])
+@csrf.exempt
 def test_abc():
     print("[test_abc] THIS ROUTE was definitely called.")
     return {"msg":"ok"}, 200
