@@ -1,37 +1,39 @@
-# routes/routes_calc_param.py
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from flask_login import login_required
-from core.extensions import limiter
-from core.extensions import csrf
+from core.extensions import limiter, csrf
+# ^ Beachte: Hier importieren wir direkt g (global context),
+# damit "g.user" nicht zu "NameError" führt.
 
 param_calc_bp = Blueprint('param_calc_bp', __name__)
 
-
 @param_calc_bp.route("/feinguss", methods=["POST"])
-@login_required
-@csrf.exempt
+@login_required        # von flask_login, checkt session-l. user
+@csrf.exempt          # du kannst es optional entfernen,
 @limiter.limit("20/minute")
 def calc_feinguss():
     """
     POST /calc/param/feinguss (V2)
     Empfängt JSON mit Feinguss-Parametern, führt sämtliche
     Kalkulationen serverseitig durch und gibt ein JSON-Resultat.
+    Erfordert mind. Premium-Lizenz.
     """
+    # 1) Check: g.user vorhanden?
     if not g.user:
         return jsonify({"error": "Not logged in"}), 403
 
+    # 2) Lizenz-Check
     lvl = g.user.license_level()
     if lvl not in ["premium", "extended"]:
         return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
-    # -----------------------------------------------------
-    # 1) Eingabe-Felder extrahieren
-    # -----------------------------------------------------
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "No JSON body"}), 400
+    try:
+        # 3) JSON laden
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No JSON body"}), 400
+
         # -----------------------------------------------------
-        # 1) Eingabe-Felder extrahieren
+        # 4) Eingabe-Felder extrahieren
         # -----------------------------------------------------
         matKey      = data.get("fgMatSelect", "Stahl")
         locKey      = data.get("fgLocationSelect", "DE")
@@ -47,7 +49,7 @@ def calc_feinguss():
         postProcMin = float(data.get("fgPostProcMin", 0.5))
 
         # -----------------------------------------------------
-        # 2) Interne Datenbasen
+        # 5) Interne Datenbasen
         # -----------------------------------------------------
         materials = {
             "Stahl": {
@@ -99,16 +101,15 @@ def calc_feinguss():
                 "shellBonus": 0.6
             }
         }
-        # Defaults
+
         baseHourlyWage = 60.0  # €/h
         defaultScrapMax = 0.5  # 50% max
+
         # -----------------------------------------------------
-        # 3) Helper-Parsing
+        # 6) Helper-Funktionen
         # -----------------------------------------------------
         def parse_percent(val):
-            """
-            Alles <=1 => direct, alles >1 => /100
-            """
+            """Alles <=1 => direct, alles >1 => /100."""
             if val < 0:
                 return 0.0
             if val > 1.0:
@@ -116,9 +117,7 @@ def calc_feinguss():
             return val
 
         def parse_scrap(val):
-            """
-            Analog parse_percent, max ~50%
-            """
+            """Analog parse_percent, max ~50%."""
             if val < 0:
                 return 0.0
             if val > 1.0:
@@ -133,35 +132,33 @@ def calc_feinguss():
         scrapRate    = parse_scrap(scrapRateIn)      # z.B. 5 => 0.05
 
         # -----------------------------------------------------
-        # 4) Datensätze & Plausis
+        # 7) Plausiprüfungen
         # -----------------------------------------------------
         matInfo = materials.get(matKey, materials["Stahl"])
         locInfo = locations.get(locKey, locations["DE"])
         compInfo= complexity.get(compKey, complexity["Medium"])
 
-        # Minimale Plausipüfung
         if partWeight <= 0:
             return jsonify({"error": "partWeight <= 0, ungültig."}), 400
         if annualQty < 1:
             return jsonify({"error": "annualQty < 1, ungültig."}), 400
 
         # -----------------------------------------------------
-        # 5) Hauptberechnung – identisch zu feinguss_parametric_v2.js
+        # 8) Hauptberechnung
         # -----------------------------------------------------
-        # a) Material+Shell
         weight_kg = partWeight / 1000.0
         totalWeight_kg = weight_kg * (1.0 + scrapRate)
         costMaterial = totalWeight_kg * matInfo["pricePerKg"]
         costShell    = matInfo["shellBase"] + compInfo["shellBonus"]
         costMatShell = costMaterial + costShell
 
-        # b) Fertigung
         fertigungStundensatz = baseHourlyWage * locInfo["wageFactor"]  # z.B. 60 * 1.0 = 60
         wagePerMin = fertigungStundensatz / 60.0
         baseTimeMin = 1.0 + postProcMin
         timePartMin = baseTimeMin * compInfo["factorTime"]
 
         costLaborMachinePerPart = wagePerMin * timePartMin
+
         costRuestPerPart = 0.0
         if annualQty > 0 and ruestMin > 0:
             costRuestPerPart = (ruestMin * wagePerMin) / annualQty
@@ -170,19 +167,17 @@ def calc_feinguss():
         if annualQty > 0 and toolCost > 0:
             costToolPerPart = toolCost / annualQty
 
-        # Energiepauschale
         costEnergy = 0.05
         costFertigung = costLaborMachinePerPart + costRuestPerPart + costToolPerPart + costEnergy
 
-        # c) Overhead und Gewinn
         baseCosts = costMatShell + costFertigung
         overheadVal = baseCosts * overheadRate
-        withOverhead= baseCosts + overheadVal
+        withOverhead = baseCosts + overheadVal
         profitVal = withOverhead * profitRate
         endPrice = withOverhead + profitVal
 
         # -----------------------------------------------------
-        # 6) Ergebnis & Return
+        # 9) Ergebnis & Return
         # -----------------------------------------------------
         result = {
             "ok": True,
@@ -196,6 +191,7 @@ def calc_feinguss():
         return jsonify(result), 200
 
     except Exception as e:
+        # Catch-all für unerwartete Fehler
         return jsonify({"error": str(e)}), 500
 
 @param_calc_bp.route('/kaltfliess', methods=['POST'])
