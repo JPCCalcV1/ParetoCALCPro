@@ -77,7 +77,7 @@
 <script>
 async function buyPlus(){
   try {
-    const r = await fetch("/pay/create-checkout-session-subscription", {
+    const r = await fetch("/pay/checkout-sub", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({ which_tier:"plus" })
@@ -90,7 +90,7 @@ async function buyPlus(){
 
 async function buyPremium(){
   try {
-    const r = await fetch("/pay/create-checkout-session-subscription", {
+    const r = await fetch("/pay/checkout-sub", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({ which_tier:"premium" })
@@ -112,6 +112,22 @@ async function buyExtended(){
     if(d.error){ alert(d.error); return; }
     window.location = d.checkout_url;
   } catch(err){ alert("Fehler: "+err); }
+}
+<!-- In upgrade_page.html -->
+<button onclick="callTestABC()">Test /pay/test-abc</button>
+
+async function callTestABC(){
+  try {
+    const resp = await fetch("/pay/test-abc", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ test:"abc" })
+    });
+    const data = await resp.json();
+    alert("Response from test-abc: " + JSON.stringify(data));
+  } catch(e){
+    alert("Error: " + e);
+  }
 }
 </script>
 </body>

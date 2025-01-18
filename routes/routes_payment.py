@@ -81,7 +81,7 @@ def create_checkout_session():
 # ---------------------------------------------------------
 #   CREATE-CHECKOUT-SESSION-SUBSCRIPTION (V2 ABO)
 # ---------------------------------------------------------
-@payment_bp.route("/create-checkout-session-subscription", methods=["POST"])
+@payment_bp.route("/checkout-sub", methods=["POST"])
 def create_checkout_session_subscription():
     """
     V2: Subscription => 7 Tage Trial, invoice.paid => +30 Tage
@@ -318,3 +318,8 @@ def stripe_webhook():
         print(f"[Webhook] Unhandled event type: {etype}")
 
     return jsonify({"status": "ok"}), 200
+
+@payment_bp.route("/test-abc", methods=["POST"])
+def test_abc():
+    print("[test_abc] THIS ROUTE was definitely called.")
+    return {"msg":"ok"}, 200
