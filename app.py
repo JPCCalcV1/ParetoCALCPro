@@ -50,7 +50,7 @@ def create_app():
     # Blueprint-Registrierung
     app.register_blueprint(landing_bp)  # <-- NEU (ohne url_prefix => "/")
     app.register_blueprint(auth_bp, url_prefix="/auth")
-    app.register_blueprint(payment_bp, url_prefix="/stripe")
+    app.register_blueprint(payment_bp, url_prefix="/pay")
     app.register_blueprint(admin_bp, url_prefix="/admin")
     app.register_blueprint(mycalc_bp, url_prefix="/mycalc")
     app.register_blueprint(param_calc_bp, url_prefix="/calc/param")

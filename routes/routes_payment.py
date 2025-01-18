@@ -54,8 +54,8 @@ def create_checkout_session_oneoff():
             payment_method_types=["card"],
             line_items=[{"price": price_id, "quantity":1}],
             mode="payment",
-            success_url="https://yourdomain.com/pay/success",
-            cancel_url="https://yourdomain.com/pay/cancel",
+            success_url="https://jpccalc.de/pay/success",
+            cancel_url="https://jpccalc.de/pay/cancel",
             metadata={
                 "user_id": str(user.id),
                 "which_tier": which_tier,
@@ -111,8 +111,8 @@ def create_checkout_session_subscription():
                     "mode_used": "subscription"
                 }
             },
-            success_url="https://yourdomain.com/pay/success",
-            cancel_url="https://yourdomain.com/pay/cancel"
+            success_url="https://jpccalc.de/pay/success",
+            cancel_url="https://jpccalc.de/pay/cancel"
         )
         return jsonify({"checkout_url": checkout_session.url}),200
     except stripe.error.StripeError as se:
