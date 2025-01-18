@@ -257,16 +257,17 @@ def stripe_webhook():
 
                 # => E-Mail
                 try:
-                    # Safety-Check: Falls user.email None
-                    recipient = user.email or "no_email@invalid"
-                    send_email(
-                        to=recipient,
-                        subject="Payment failed",
-                        plain_body="Deine Zahlung schlug fehl! Bitte Zahlungsmethode aktualisieren.",
-                        html_body="<p>Zahlung fehlgeschlagen. Bitte updaten!</p>"
-                    )
+                    if user and user.email:
+                        send_email(
+                            user.email,
+                            "Payment failed",
+                            "Deine Zahlung schlug fehl! Bitte Zahlungsmethode aktualisieren.",
+                            "<p>Zahlung fehlgeschlagen. Bitte updaten!</p>"
+                        )
+                    else:
+                        print("[Webhook] Payment failed, but no user/email => cannot send email.")
                 except Exception as mail_ex:
-                    print("SendGrid error:", mail_ex)
+                    print("[Webhook] SendGrid error:", mail_ex)
 
                 new_log.status = "failed"
                 db.session.commit()

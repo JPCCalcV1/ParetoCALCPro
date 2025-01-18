@@ -4,7 +4,10 @@ from sendgrid.helpers.mail import Mail, Email, To, Content
 
 SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY", "")
 
+# helpers/sendgrid_helper.py
 def send_email(to_email, subject, body_text, body_html=None):
+    # dann intern: from_email = ...
+    # msg = ...
     sg = sendgrid.SendGridAPIClient(api_key=SENDGRID_API_KEY)
     from_email = Email("noreply@paretocalc.com")  # Dein From
     to_email = To(to_email)
