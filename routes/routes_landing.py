@@ -21,10 +21,10 @@ def test_email():
     """
     Öffentlich zugängliche Test-Route für E-Mail-Versand.
     """
-    to_email = "deinname@gmail.com"  # Test-Adresse
+    to_email = "jochen.pfeffer@web.de"  # Deine echte E-Mail-Adresse
     subject = "Test-E-Mail von SendGrid (Render)"
-    body_text = "Hallo! Dies ist ein Test direkt aus der Render-Umgebung."
-    body_html = "<strong>Hallo! Dies ist ein <i>HTML-Test</i> von Render aus.</strong>"
+    body_text = "Hallo Jochen, dies ist ein Test direkt aus der Render-Umgebung."
+    body_html = "<strong>Hallo Jochen, dies ist ein Test direkt aus der Render-Umgebung.</strong>"
 
     try:
         status = send_email(to_email, subject, body_text, body_html)
