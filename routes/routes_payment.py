@@ -86,6 +86,7 @@ def create_checkout_session_subscription():
     """
     V2: Subscription => 7 Tage Trial, invoice.paid => +30 Tage
     """
+    print("[create_checkout_session_subscription] Route was called.")
     current_app.logger.debug("==> create_checkout_session_subscription CALLED")
 
     user_id = session.get("user_id")

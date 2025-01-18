@@ -70,6 +70,8 @@ def create_app():
     # Vor jedem Request => check public vs. login
     @app.before_request
     def require_login():
+        print(f"[BEFORE_REQUEST] path={request.path}")
+        # your existing code
         # Definiere public routes/prefixes
         public_routes = [
             "/",               # => Landing
