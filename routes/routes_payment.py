@@ -24,6 +24,7 @@ price_map = {
     "premium":  os.getenv("STRIPE_PRICE_PREMIUM", "price_premXYZ"),
     "extended": os.getenv("STRIPE_PRICE_EXTENDED", "price_extXYZ"),
 }
+
 print("STRIPE_SECRET_KEY =", STRIPE_SECRET_KEY)
 print("STRIPE_PRICE_PLUS =", os.getenv("STRIPE_PRICE_PLUS"))
 print("STRIPE_PRICE_PREMIUM =", os.getenv("STRIPE_PRICE_PREMIUM"))

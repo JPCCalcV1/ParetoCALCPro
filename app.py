@@ -23,6 +23,17 @@ from routes.routes_landing import landing_bp  # <-- NEU
 
 def create_app():
     app = Flask(__name__)
+
+
+    # Hier direkt nach dem Erzeugen des app-Objekts:
+    print("=== ENV DEBUG START ===")
+    print("STRIPE_SECRET_KEY =", os.getenv("STRIPE_SECRET_KEY"))
+    print("STRIPE_WEBHOOK_SECRET =", os.getenv("STRIPE_WEBHOOK_SECRET"))
+    print("STRIPE_PRICE_PLUS =", os.getenv("STRIPE_PRICE_PLUS"))
+    print("STRIPE_PRICE_PREMIUM =", os.getenv("STRIPE_PRICE_PREMIUM"))
+    print("STRIPE_PRICE_EXTENDED =", os.getenv("STRIPE_PRICE_EXTENDED"))
+    print("=== ENV DEBUG END ===")
+
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "supersecret")
     db_url = os.getenv("DATABASE_URL", "sqlite:///test.db")
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url
