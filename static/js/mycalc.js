@@ -2017,6 +2017,7 @@ function checkLicense() {
  *  - POST /pay/create-checkout-session => { checkout_url }
  *  - Weiterleitung
  */
+/**
 function buyExtended() {
   const csrftoken = document.querySelector('meta[name="csrf-token"]')?.content || "";
   fetch("/pay/create-checkout-session", {
@@ -2035,7 +2036,7 @@ function buyExtended() {
       alert("Fehler beim Start des Lizenzkaufs: " + err);
     });
 }
-
+*/
 /**
  * checkMaterialAccess():
  *  - Ruft /auth/whoami => prüft license

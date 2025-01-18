@@ -63,8 +63,8 @@ def create_checkout_session():
             payment_method_types=["card"],
             line_items=[{"price": price_id, "quantity": 1}],
             mode="payment",
-            success_url="https://yourdomain.com/pay/success",
-            cancel_url="https://yourdomain.com/pay/cancel",
+            success_url="https://yourdomain.com/stripe/success",
+            cancel_url="https://yourdomain.com/stripe/cancel",
             metadata={
                 "user_id": user.id,
                 "which_tier": which_tier
@@ -117,8 +117,8 @@ def create_checkout_session_subscription():
             subscription_data={
                 "trial_period_days": 7
             },
-            success_url="https://yourdomain.com/pay/success",
-            cancel_url="https://yourdomain.com/pay/cancel",
+            success_url="https://yourdomain.com/stripe/success",
+            cancel_url="https://yourdomain.com/stripe/cancel",
             metadata={
                 "user_id": user.id,
                 "which_tier": which_tier
@@ -170,8 +170,8 @@ def create_checkout_session_oneoff():
             payment_method_types=["card"],
             line_items=[{"price": price_id, "quantity": 1}],
             mode="payment",
-            success_url="https://yourdomain.com/pay/success",
-            cancel_url="https://yourdomain.com/pay/cancel",
+            success_url="https://yourdomain.com/stripe/success",
+            cancel_url="https://yourdomain.com/stripe/cancel",
             metadata={
                 "user_id": user.id,
                 "which_tier": which_tier
