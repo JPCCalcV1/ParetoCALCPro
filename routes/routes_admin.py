@@ -1,16 +1,26 @@
-""" START OF FILE: routes/routes_admin.py (with 20+ lines context) """
-
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify, session, current_app
 from functools import wraps
 from datetime import datetime, timedelta
 
-# Achtung: Hier nur importieren, NICHT erneut db = SQLAlchemy() aufrufen
+# Achtung: importiere NICHT erneut "db = SQLAlchemy()",
+# sondern nutze dein existing db-Objekt
 from models.user import db, User
 from models.payment_log import PaymentLog
 from core.extensions import csrf
-from flask import current_app
 
 admin_bp = Blueprint("admin_bp", __name__)
+
+def admin_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        uid = session.get("user_id")
+        if not uid:
+            return jsonify({"error": "Not logged in"}), 401
+        user = User.query.get(uid)
+        if not user or not user.is_admin:
+            return jsonify({"error": "No admin rights"}), 403
+        return f(*args, **kwargs)
+    return decorated
 
 @admin_bp.route("/create_admin_temp", methods=["POST"])
 @csrf.exempt
@@ -24,11 +34,11 @@ def create_admin_temp():
     raw_pw = data.get("password","")
 
     if not email or not raw_pw:
-        return jsonify({"error":"Email/Pass fehlt"}),400
+        return jsonify({"error":"Email/Pass fehlt"}), 400
 
     existing = User.query.filter_by(email=email).first()
     if existing:
-        return jsonify({"error":"User existiert bereits"}),400
+        return jsonify({"error":"User existiert bereits"}), 400
 
     new_user = User(email, raw_pw)
     # Admin = license_tier = "extended", 1 Jahr
@@ -37,23 +47,7 @@ def create_admin_temp():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message":f"Admin {email} angelegt"}),200
-
-
-def admin_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        uid = session.get("user_id")
-        if not uid:
-            return jsonify({"error":"Not logged in"}),401
-
-        user = User.query.get(uid)
-        if not user or not user.is_admin:
-            return jsonify({"error":"No admin rights"}),403
-
-        return f(*args, **kwargs)
-    return decorated
-
+    return jsonify({"message": f"Admin {email} angelegt"}), 200
 
 @admin_bp.route("/dashboard", methods=["GET"])
 @admin_required
@@ -63,17 +57,16 @@ def admin_dashboard():
     """
     return render_template("admin_dashboard.html")
 
-
 @admin_bp.route("/users", methods=["GET"])
 @admin_required
 def list_users():
     """
     Liefert JSON-Liste aller User (inkl. license, addons, GPT-Counts).
     """
-    users= User.query.all()
+    users = User.query.all()
     current_app.logger.info("[admin/users] Found %d users from DB %s", len(users),
                             current_app.config["SQLALCHEMY_DATABASE_URI"])
-    out=[]
+    out = []
     for u in users:
         out.append({
             "id": u.id,
@@ -86,41 +79,39 @@ def list_users():
         })
     return jsonify(out)
 
-
 @admin_bp.route("/set_license", methods=["POST"])
 @csrf.exempt
 @admin_required
 def set_license():
     """
-    Setzt license_tier eines Users manuell. 
+    Setzt license_tier eines Users manuell.
     JSON-Beispiel: { "user_id": 5, "license_tier": "premium" }
     """
-    data= request.get_json() or {}
-    user_id= data.get("user_id")
-    tier= data.get("license_tier","test")
+    data = request.get_json() or {}
+    user_id = data.get("user_id")
+    tier = data.get("license_tier", "test")
 
-    user= User.query.get(user_id)
+    user = User.query.get(user_id)
     if not user:
-        return jsonify({"error":"User not found"}),404
+        return jsonify({"error":"User not found"}), 404
 
-    user.license_tier= tier
+    user.license_tier = tier
     # GPT-Limits je nach Tier
-    if tier=="test":
-        user.gpt_allowed_count=10
-    elif tier=="plus":
-        user.gpt_allowed_count=25
-    elif tier=="premium":
-        user.gpt_allowed_count=50
-    elif tier=="extended":
-        user.gpt_allowed_count=200
+    if tier == "test":
+        user.gpt_allowed_count = 10
+    elif tier == "plus":
+        user.gpt_allowed_count = 25
+    elif tier == "premium":
+        user.gpt_allowed_count = 50
+    elif tier == "extended":
+        user.gpt_allowed_count = 200
     else:
-        user.gpt_allowed_count=0
+        user.gpt_allowed_count = 0
 
     # Reset usage
-    user.gpt_used_count=0
+    user.gpt_used_count = 0
     db.session.commit()
-    return jsonify({"message":f"{user.email} => {tier}"}),200
-
+    return jsonify({"message": f"{user.email} => {tier}"}), 200
 
 @admin_bp.route("/addon/set", methods=["POST"])
 @csrf.exempt
@@ -130,21 +121,20 @@ def set_addon():
     Fügt dem User ein Addon hinzu (z. B. 'GPT-Export').
     JSON: { "user_id": 5, "addon": "GPT-Export" }
     """
-    data= request.get_json() or {}
-    user_id= data.get("user_id")
-    addon= data.get("addon","").strip()
+    data = request.get_json() or {}
+    user_id = data.get("user_id")
+    addon = data.get("addon","").strip()
 
-    user= User.query.get(user_id)
+    user = User.query.get(user_id)
     if not user:
-        return jsonify({"error":"User not found"}),404
+        return jsonify({"error":"User not found"}), 404
 
-    curr= user.addons.split(",") if user.addons else []
+    curr = user.addons.split(",") if user.addons else []
     if addon and addon not in curr:
         curr.append(addon)
-    user.addons= ",".join([c for c in curr if c])
+    user.addons = ",".join([c for c in curr if c])
     db.session.commit()
-    return jsonify({"message":f"Addon '{addon}' set for {user.email}"}),200
-
+    return jsonify({"message": f"Addon '{addon}' set for {user.email}"}), 200
 
 @admin_bp.route("/stripe_events", methods=["GET"])
 @admin_required
@@ -152,8 +142,8 @@ def list_stripe_events():
     """
     Zeigt die PaymentLogs aus der DB an.
     """
-    logs= PaymentLog.query.all()
-    out=[]
+    logs = PaymentLog.query.all()
+    out = []
     for l in logs:
         out.append({
             "id": l.id,
@@ -164,7 +154,6 @@ def list_stripe_events():
         })
     return jsonify(out)
 
-
 @admin_bp.route("/set_gpt_count", methods=["POST"])
 @csrf.exempt
 @admin_required
@@ -173,16 +162,41 @@ def set_gpt_count():
     Manuell GPT-Kontingent (allowed_count) verändern.
     JSON: { "user_id": 5, "allowed_count": 100 }
     """
-    data= request.get_json() or {}
-    user_id= data.get("user_id")
-    allowed_count= data.get("allowed_count",50)
+    data = request.get_json() or {}
+    user_id = data.get("user_id")
+    allowed_count = data.get("allowed_count", 50)
 
-    user= User.query.get(user_id)
+    user = User.query.get(user_id)
     if not user:
-        return jsonify({"error":"User not found"}),404
+        return jsonify({"error":"User not found"}), 404
 
-    user.gpt_allowed_count= allowed_count
+    user.gpt_allowed_count = allowed_count
     db.session.commit()
-    return jsonify({"message":f"{user.email} => GPT allowed {allowed_count}"}),200
+    return jsonify({"message": f"{user.email} => GPT allowed {allowed_count}"}), 200
 
-""" END OF FILE: routes/routes_admin.py """
+# NEU: Delete user
+@admin_bp.route("/delete_user", methods=["POST"])
+@csrf.exempt
+@admin_required
+def delete_user():
+    """
+    Löscht einen User komplett aus der Datenbank.
+    JSON-Beispiel: { "user_id": 5 }
+    """
+    data = request.get_json() or {}
+    user_id = data.get("user_id")
+
+    if not user_id:
+        return jsonify({"error":"user_id fehlt"}), 400
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error":"User not found"}), 404
+
+    # Optional: Verhindern, dass man sich selbst löscht, oder den Admin user?
+    # if user.email == "admin@paretocalc.com":
+    #    return jsonify({"error":"Cannot delete main admin"}), 403
+
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"message": f"User {user.email} wurde gelöscht"}), 200

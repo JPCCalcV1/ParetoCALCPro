@@ -18,10 +18,10 @@
 <body class="p-3">
 <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4">
   <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="/landing">
+    <a class="navbar-brand fw-bold" href="/">
       ParetoCalc Admin
     </a>
-    <!-- … Restliche Navbar … -->
+    <!-- ggf. weitere Links -->
   </div>
 </nav>
 
@@ -35,7 +35,7 @@
       <div class="card">
         <div class="card-header"><h5>Gesamt-Überblick</h5></div>
         <div class="card-body">
-          <p>Hier deine alten/neuen Statistiken.</p>
+          <p>Platzhalter für Statistiken oder ChartJS etc.</p>
         </div>
       </div>
     </div>
@@ -110,7 +110,7 @@
       <p>Platzhalter für Log-Einträge / Audit-Logs …</p>
     </div>
 
-    <!-- TAB: Users (Aus V1 kopiert) -->
+    <!-- TAB: Users -->
     <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="tab-users">
       <button class="btn btn-primary my-2" onclick="fetchUsers()">Nutzer laden</button>
       <div id="userTable"></div>
@@ -130,7 +130,7 @@
       </form>
     </div>
 
-    <!-- TAB: Stripe-Events (Aus V1 kopiert) -->
+    <!-- TAB: Stripe-Events -->
     <div class="tab-pane fade" id="stripeEvents" role="tabpanel" aria-labelledby="tab-stripe">
       <button class="btn btn-secondary my-2" onclick="fetchStripeEvents()">Stripe-Events laden</button>
       <div id="stripeEventTable"></div>
@@ -144,8 +144,6 @@
 </script>
 
 <script>
-  // ---------- V1-Funktionen kopieren ----------
-
   function fetchUsers() {
     fetch("/admin/users")
       .then(r => r.json())
@@ -157,7 +155,8 @@
     let html = `<table class="table table-sm table-bordered">
       <thead><tr>
         <th>ID</th><th>Email</th><th>License</th><th>Expiry</th>
-        <th>Addons</th><th>GPT Used</th><th>GPT Allowed</th><th>Aktion</th>
+        <th>Addons</th><th>GPT Used</th><th>GPT Allowed</th>
+        <th>Aktion</th>
       </tr></thead><tbody>`;
 
     users.forEach(u => {
@@ -176,6 +175,8 @@
             onclick="setLicense(${u.id}, 'premium')">Premium</button>
           <button class="btn btn-sm btn-outline-success"
             onclick="setLicense(${u.id}, 'extended')">Extended</button>
+          <button class="btn btn-sm btn-outline-danger ms-2"
+            onclick="deleteUser(${u.id})">Löschen</button>
         </td>
       </tr>`;
     });
@@ -195,7 +196,26 @@
       if(resp.error) alert(resp.error);
       else {
         alert(resp.message);
-        fetchUsers(); // danach Tabelle neu laden
+        fetchUsers(); // aktualisiert Tabelle
+      }
+    })
+    .catch(err => alert("Fehler: " + err));
+  }
+
+  // NEU: Delete user
+  function deleteUser(userId) {
+    if(!confirm(`User mit ID=${userId} wirklich löschen?`)) return;
+    fetch("/admin/delete_user", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ user_id: userId })
+    })
+    .then(r => r.json())
+    .then(resp => {
+      if(resp.error) alert("Fehler: " + resp.error);
+      else {
+        alert(resp.message);
+        fetchUsers();
       }
     })
     .catch(err => alert("Fehler: " + err));
@@ -230,7 +250,9 @@
 
   function renderStripeEvents(logs) {
     let html = `<table class="table table-sm table-bordered">
-      <thead><tr><th>ID</th><th>Event ID</th><th>Type</th><th>Raw</th><th>Created</th></tr></thead><tbody>`;
+      <thead><tr>
+        <th>ID</th><th>Event ID</th><th>Type</th><th>Raw</th><th>Created</th>
+      </tr></thead><tbody>`;
 
     logs.forEach(l => {
       html += `<tr>
@@ -244,25 +266,6 @@
     html += "</tbody></table>";
     document.getElementById("stripeEventTable").innerHTML = html;
   }
-
-  // GPT-Count Beispiel
-  function setGPTCount(userId, allowed) {
-    fetch("/admin/set_gpt_count", {
-      method:"POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ user_id: userId, allowed_count: allowed })
-    })
-    .then(r=>r.json())
-    .then(resp=>{
-      if(resp.error) alert(resp.error);
-      else {
-        alert(resp.message);
-        fetchUsers();
-      }
-    })
-    .catch(err=>alert("Fehler: "+err));
-  }
-
 </script>
 </body>
 </html>
