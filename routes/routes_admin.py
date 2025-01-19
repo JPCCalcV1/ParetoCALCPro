@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from models.user import db, User
 from models.payment_log import PaymentLog
 from core.extensions import csrf
+from flask import current_app
 
 admin_bp = Blueprint("admin_bp", __name__)
 
