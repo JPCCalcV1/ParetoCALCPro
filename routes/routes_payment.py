@@ -120,36 +120,32 @@ def create_checkout_session_oneoff():
         return jsonify({"error": str(ex)}),500
 
 
+
+
+
 @payment_bp.route("/webhook", methods=["POST"])
 @csrf.exempt
 def stripe_webhook():
-    """
-    EXTENDED DEBUGGING:
-    Hier werden alle relevanten Stripe-Events verarbeitet.
-    """
-    current_app.logger.info("==> Entering stripe_webhook (extended debug)")
-
+    # 1) Keine Session-Prüfung => KEIN redirect
     payload = request.data
-    sig_header = request.headers.get("Stripe-Signature","")
-    current_app.logger.info(f"[webhook] Payload size={len(payload)}, sig_header={sig_header[:30]}...")
+    sig_header = request.headers.get("Stripe-Signature", "")
 
     if not STRIPE_WEBHOOK_SECRET:
-        current_app.logger.error("[webhook] No STRIPE_WEBHOOK_SECRET set => abort")
+        current_app.logger.error("[webhook] No STRIPE_WEBHOOK_SECRET set!")
         return jsonify({"error": "No webhook secret"}), 500
 
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
-        current_app.logger.info(f"[webhook] Validated event id={event['id']}, type={event['type']}")
+        current_app.logger.info(f"[webhook] Received event={event['type']}, id={event['id']}")
     except stripe.error.SignatureVerificationError as e:
-        current_app.logger.exception(f"[webhook] Signature error: {e}")
-        return jsonify({"error":"Invalid signature"}),400
+        current_app.logger.warning(f"[webhook] Invalid signature: {e}")
+        return jsonify({"error": "Invalid signature"}), 400
 
     etype = event["type"]
     data_obj = event["data"]["object"]
 
-    # PaymentLog anlegen
+    # DB-Log => PaymentLog
     new_log = PaymentLog(
-        user_id=None,
         event_id=event["id"],
         event_type=etype,
         raw_data=str(event),
@@ -157,71 +153,63 @@ def stripe_webhook():
     )
     db.session.add(new_log)
     db.session.commit()
-    current_app.logger.info(f"[webhook] PaymentLog created => id={new_log.id}, event_type={etype}")
 
+    # Hilfsfunktion: user_id aus metadata
     def get_user_from_metadata(meta):
-        current_app.logger.info(f"[webhook->get_user_from_metadata] meta={meta}")
         uid_str = meta.get("user_id")
         if not uid_str:
-            current_app.logger.warning("[webhook->get_user_from_metadata] No user_id in meta")
             return None
-        user_obj = User.query.get(int(uid_str))
-        if user_obj:
-            current_app.logger.info(f"[webhook->get_user_from_metadata] Found user => {user_obj.email}, id={user_obj.id}")
-        else:
-            current_app.logger.warning(f"[webhook->get_user_from_metadata] No user with id={uid_str} found in DB")
-        return user_obj
+        return User.query.get(int(uid_str))
 
     # ------------------------------------------------
-    # A) checkout.session.completed => initial Payment
+    # checkout.session.completed => initial Payment
     # ------------------------------------------------
     if etype == "checkout.session.completed":
         meta = data_obj.get("metadata", {})
-        current_app.logger.info(f"[webhook] checkout.session.completed => meta={meta}")
-
         user = get_user_from_metadata(meta)
-        mode = data_obj.get("mode")  # "payment" or "subscription"
-        which_tier = meta.get("which_tier","extended")
+        which_tier = meta.get("which_tier", "plus")
+        mode = data_obj.get("mode")  # "payment" oder "subscription"
 
         current_app.logger.info(
-            f"[webhook] session.completed: mode={mode}, tier={which_tier}, user_found={bool(user)}"
+            f"[webhook] checkout.session.completed => mode={mode}, tier={which_tier}"
         )
 
-        if user:
-            if mode == "payment":
-                # => OneOff => +365 Tage
-                old_tier = user.license_tier
-                user.license_tier = which_tier
-                user.license_expiry = datetime.now() + timedelta(days=365)
-                db.session.commit()
+        # USER-CHECK
+        if not user:
+            current_app.logger.warning("[webhook] No user found => abort license update")
+            return jsonify({"status": "ok"}), 200
 
-                current_app.logger.info(
-                    f"[webhook] OneOff upgrade: {user.email}: {old_tier} => {which_tier}, expiry in 365 days"
-                )
+        # Trial vs. OneOff-Logik
+        old_tier = user.license_tier
+        old_expiry = user.license_expiry
 
-            elif mode == "subscription":
-                # ABO => z. B. +7 Tage Trial
-                old_tier = user.license_tier
-                user.license_tier = which_tier
-                user.license_expiry = datetime.now() + timedelta(days=7)
-                db.session.commit()
-
-                current_app.logger.info(
-                    f"[webhook] Subscription start: {user.email}: {old_tier} => {which_tier}, expiry+7 days"
-                )
-
-            new_log.user_id = user.id
-            new_log.status = "completed"
-            db.session.commit()
-
+        user.license_tier = which_tier
+        if mode == "payment":
+            # Einmalzahlung => +365 Tage
+            user.license_expiry = datetime.now() + timedelta(days=365)
+        elif mode == "subscription":
+            # Trial => +7 Tage
+            user.license_expiry = datetime.now() + timedelta(days=7)
         else:
-            current_app.logger.warning("[webhook] session.completed but no valid user => no license update")
+            current_app.logger.warning(f"[webhook] Unexpected mode={mode}, using 7 days default")
+            user.license_expiry = datetime.now() + timedelta(days=7)
+
+        db.session.commit()
+
+        current_app.logger.info(
+            f"[webhook] checkout.session.completed => user={user.email}, "
+            f"{old_tier}->{which_tier}, expiry: {old_expiry} => {user.license_expiry}"
+        )
+
+        # PaymentLog aktualisieren
+        new_log.user_id = user.id
+        new_log.status = "completed"
+        db.session.commit()
 
     # ------------------------------------------------
-    # B) invoice.paid => Subscription Verlängerung
+    # invoice.paid => Subscription Verlängerung
     # ------------------------------------------------
     elif etype == "invoice.paid":
-        current_app.logger.info("[webhook] invoice.paid triggered")
         sub_id = data_obj.get("subscription")
         current_app.logger.info(f"[webhook] invoice.paid => sub_id={sub_id}")
 
@@ -229,41 +217,39 @@ def stripe_webhook():
             sub_obj = stripe.Subscription.retrieve(sub_id)
             meta = sub_obj.get("metadata", {})
             user = get_user_from_metadata(meta)
-            which_tier = meta.get("which_tier","plus")
+            which_tier = meta.get("which_tier", "plus")
+
+            if not user:
+                current_app.logger.warning("[webhook] invoice.paid => No user found => abort")
+                return jsonify({"status": "ok"}), 200
+
+            old_tier = user.license_tier
+            old_expiry = user.license_expiry
+
+            # Verlängern um 30 Tage
+            if not user.license_expiry or user.license_expiry < datetime.now():
+                user.license_expiry = datetime.now() + timedelta(days=30)
+            else:
+                user.license_expiry += timedelta(days=30)
+
+            user.license_tier = which_tier
+            db.session.commit()
 
             current_app.logger.info(
-                f"[webhook] invoice.paid => tier={which_tier}, user_found={bool(user)}"
+                f"[webhook] invoice.paid => user={user.email}, {old_tier}->{which_tier}, "
+                f"expiry: {old_expiry} => {user.license_expiry}"
             )
 
-            if user:
-                # z. B. +30 Tage ABO
-                old_expiry = user.license_expiry
-                old_tier = user.license_tier
-
-                if not user.license_expiry or user.license_expiry < datetime.now():
-                    user.license_expiry = datetime.now() + timedelta(days=30)
-                else:
-                    user.license_expiry += timedelta(days=30)
-                user.license_tier = which_tier
-
-                db.session.commit()
-                new_log.user_id = user.id
-                new_log.status = "paid"
-                db.session.commit()
-
-                current_app.logger.info(
-                    f"[webhook] invoice.paid => {user.email}: from tier={old_tier}, old_expiry={old_expiry} => new tier={which_tier}, expiry={user.license_expiry}"
-                )
-            else:
-                current_app.logger.warning(f"[webhook] invoice.paid => No user found => no update")
+            new_log.user_id = user.id
+            new_log.status = "paid"
+            db.session.commit()
         else:
-            current_app.logger.warning("[webhook] invoice.paid => No sub_id => ignoring")
+            current_app.logger.warning("[webhook] invoice.paid => No subscription ID => ignoring")
 
     # ------------------------------------------------
-    # C) invoice.payment_failed => ABO fehlgeschlagen
+    # invoice.payment_failed => ABO fehlgeschlagen
     # ------------------------------------------------
     elif etype == "invoice.payment_failed":
-        current_app.logger.info("[webhook] invoice.payment_failed triggered")
         sub_id = data_obj.get("subscription")
         current_app.logger.info(f"[webhook] invoice.payment_failed => sub_id={sub_id}")
 
@@ -272,39 +258,29 @@ def stripe_webhook():
             meta = sub_obj.get("metadata", {})
             user = get_user_from_metadata(meta)
 
-            if user:
-                old_tier = user.license_tier
-                user.license_tier = "no_access"
-                user.license_expiry = None
-                db.session.commit()
+            if not user:
+                current_app.logger.warning("[webhook] payment_failed => No user => ignoring")
+                return jsonify({"status": "ok"}), 200
 
-                new_log.user_id = user.id
-                new_log.status = "failed"
-                db.session.commit()
+            old_tier = user.license_tier
+            user.license_tier = "no_access"
+            user.license_expiry = None
+            db.session.commit()
 
-                current_app.logger.info(
-                    f"[webhook] invoice.payment_failed => user={user.email} from tier={old_tier} => no_access"
-                )
+            current_app.logger.info(
+                f"[webhook] invoice.payment_failed => user={user.email}, "
+                f"{old_tier} => no_access"
+            )
 
-                # E-Mail optional
-                # try:
-                #     send_email(
-                #       to_email=user.email,
-                #       subject="Abo fehlgeschlagen",
-                #       body_text="Bitte Kreditkarte aktualisieren",
-                #       body_html="<p>Deine Zahlung schlug fehl...</p>"
-                #     )
-                # except Exception as mail_ex:
-                #     current_app.logger.exception(f"[webhook] SendGrid error: {mail_ex}")
-            else:
-                current_app.logger.warning("[webhook] invoice.payment_failed => No user => ignoring")
+            new_log.user_id = user.id
+            new_log.status = "failed"
+            db.session.commit()
         else:
-            current_app.logger.warning("[webhook] invoice.payment_failed => No sub_id => ignoring")
+            current_app.logger.warning("[webhook] payment_failed => No subscription ID => ignoring")
 
     else:
         current_app.logger.info(f"[webhook] Unhandled event type: {etype}")
 
-    current_app.logger.info("[webhook] Done => returning 200")
     return jsonify({"status": "ok"}), 200
 
 @payment_bp.route("/success", methods=["GET"])
