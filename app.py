@@ -1,8 +1,7 @@
-""" START OF CODE SNIPPET: app.py (create_app) with skip_webhook logic """
+""" START OF FILE: app.py - KAPITEL 1 """
 
 import os
 from datetime import datetime, timedelta
-
 from flask import Flask, session, request, jsonify, render_template
 try:
     from flask_migrate import Migrate
@@ -33,7 +32,7 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.init_app(app)
-    Migrate(app, db)
+    Migrate(app, db)  # Falls du migrations nutzt
 
     # CSRF & Rate-Limiter
     csrf.init_app(app)
@@ -69,11 +68,8 @@ def create_app():
             "/auth/whoami",
             "/favicon.ico",
             "/robots.txt",
-            # WICHTIG: /pay/webhook in die "öffentlichen" Routes aufnehmen
-            "/pay/webhook"
+            "/pay/webhook"  # Wichtig!
         ]
-
-        # Wenn current path NICHT in public_routes => check session
         if not any(request.path.startswith(r) for r in public_routes):
             if not session.get("user_id"):
                 return jsonify({"error": "Not logged in"}), 401
@@ -84,4 +80,4 @@ if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)
 
-""" END OF CODE SNIPPET: app.py (create_app) with skip_webhook logic """
+""" END OF FILE: app.py - KAPITEL 1 """
