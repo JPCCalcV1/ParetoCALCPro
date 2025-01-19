@@ -42,6 +42,13 @@ def create_checkout_session_subscription():
 
     data_in = request.get_json() or {}
     which_tier = data_in.get("which_tier", "plus")
+
+    price_map = {
+        "plus": os.getenv("STRIPE_PRICE_PLUS", ""),
+        "premium": os.getenv("STRIPE_PRICE_PREMIUM", ""),
+        "extended": os.getenv("STRIPE_PRICE_EXTENDED", "")
+    }
+
     price_id = price_map.get(which_tier)
 
     if not price_id:
