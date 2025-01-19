@@ -70,6 +70,8 @@ def list_users():
     Liefert JSON-Liste aller User (inkl. license, addons, GPT-Counts).
     """
     users= User.query.all()
+    current_app.logger.info("[admin/users] Found %d users from DB %s", len(users),
+                            current_app.config["SQLALCHEMY_DATABASE_URI"])
     out=[]
     for u in users:
         out.append({

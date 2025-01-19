@@ -135,6 +135,7 @@ def create_checkout_session_oneoff():
 def stripe_webhook():
     # 1) Keine Session-Prüfung => KEIN redirect
     current_app.logger.info("[webhook] Entered /pay/webhook")
+    current_app.logger.info("[webhook] Using DB URI: %s", current_app.config["SQLALCHEMY_DATABASE_URI"])
     payload = request.data
     sig_header = request.headers.get("Stripe-Signature", "")
 
