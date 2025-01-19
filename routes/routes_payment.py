@@ -127,6 +127,7 @@ def create_checkout_session_oneoff():
 @csrf.exempt
 def stripe_webhook():
     # 1) Keine Session-Prüfung => KEIN redirect
+    current_app.logger.info("[webhook] Entered /pay/webhook")
     payload = request.data
     sig_header = request.headers.get("Stripe-Signature", "")
 
@@ -218,7 +219,7 @@ def stripe_webhook():
             meta = sub_obj.get("metadata", {})
             user = get_user_from_metadata(meta)
             which_tier = meta.get("which_tier", "plus")
-
+            current_app.logger.info(f"[webhook] invoice.paid => meta={meta}")
             if not user:
                 current_app.logger.warning("[webhook] invoice.paid => No user found => abort")
                 return jsonify({"status": "ok"}), 200

@@ -1,4 +1,4 @@
-""" START OF CODE: app.py (create_app) - With /pay/webhook as public route """
+""" START OF CODE SNIPPET: app.py (create_app) with skip_webhook logic """
 
 import os
 from datetime import datetime, timedelta
@@ -9,6 +9,7 @@ try:
 except ImportError:
     pass
 
+# Modelle & Extensions
 from models.user import db, User
 from core.extensions import csrf, limiter
 
@@ -24,6 +25,7 @@ from routes.routes_landing import landing_bp
 def create_app():
     app = Flask(__name__)
 
+    # Basis-Konfiguration
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "supersecret")
     db_url = os.getenv("DATABASE_URL", "sqlite:///test.db")
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url
@@ -32,13 +34,12 @@ def create_app():
     db.init_app(app)
     Migrate(app, db)
 
-    # CSRF global
+    # CSRF & Rate-Limiter
     csrf.init_app(app)
-    # Rate-Limiter init
     limiter.init_app(app)
 
     # Blueprint-Registrierung
-    app.register_blueprint(landing_bp)  # ohne url_prefix => "/"
+    app.register_blueprint(landing_bp)        # kein prefix => "/"
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(payment_bp, url_prefix="/pay")
     app.register_blueprint(admin_bp, url_prefix="/admin")
@@ -57,22 +58,21 @@ def create_app():
     @app.before_request
     def require_login():
         """
-        Ensure that routes not in the 'public_routes' require an active session.
-        IMPORTANT: '/pay/webhook' is now in the public routes to avoid 307 or 401
-        during Stripe Webhook calls.
+        Verhindert 307/401 bei /pay/webhook,
+        da Stripe dort ohne Session-Zugriff POSTet.
         """
         public_routes = [
             "/",
             "/auth/login",
             "/auth/register",
             "/auth/whoami",
-            "/stripe/webhook",
-            "/pay/webhook",   # <-- ADDED TO ALLOW STRIPE WEBHOOK WITHOUT REDIRECT
             "/favicon.ico",
-            "/robots.txt"
+            "/robots.txt",
+            # WICHTIG: /pay/webhook in die "öffentlichen" Routes aufnehmen
+            "/pay/webhook"
         ]
 
-        # Wenn Route NICHT in den public_routes => check session
+        # Wenn current path NICHT in public_routes => check session
         if not any(request.path.startswith(r) for r in public_routes):
             if not session.get("user_id"):
                 return jsonify({"error": "Not logged in"}), 401
@@ -82,4 +82,5 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)
-""" END OF CODE: app.py (create_app) - With /pay/webhook as public route """
+
+""" END OF CODE SNIPPET: app.py (create_app) with skip_webhook logic """
