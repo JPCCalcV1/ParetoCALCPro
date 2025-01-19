@@ -42,7 +42,7 @@ def register():
 @limiter.limit("5 per 15 minutes")  # Rate-Limit: max. 5 Logins in 15 Min
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        return render_template("login_form.html")
 
     # POST => JSON oder form
     if request.form and "email" in request.form:
