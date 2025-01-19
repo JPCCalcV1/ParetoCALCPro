@@ -29,6 +29,7 @@ def create_app():
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "supersecret")
     db_url = os.getenv("DATABASE_URL", "sqlite:///test.db")
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+    print("DEBUG DB-URL =", app.config["SQLALCHEMY_DATABASE_URI"])
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.init_app(app)

@@ -197,6 +197,16 @@ def stripe_webhook():
 
         db.session.commit()
 
+        user.license_tier = which_tier
+        db.session.commit()
+
+        # Post-Commit-Check
+        fresh_user = User.query.get(user.id)
+        current_app.logger.info(
+            f"[webhook] AFTER COMMIT => fresh_user.license_tier={fresh_user.license_tier}, "
+            f"fresh_user.license_expiry={fresh_user.license_expiry}"
+        )
+
         current_app.logger.info(
             f"[webhook] checkout.session.completed => user={user.email}, "
             f"{old_tier}->{which_tier}, expiry: {old_expiry} => {user.license_expiry}"
@@ -235,7 +245,15 @@ def stripe_webhook():
 
             user.license_tier = which_tier
             db.session.commit()
+            user.license_tier = which_tier
+            db.session.commit()
 
+            # Post-Commit-Check
+            fresh_user = User.query.get(user.id)
+            current_app.logger.info(
+                f"[webhook] AFTER COMMIT => fresh_user.license_tier={fresh_user.license_tier}, "
+                f"fresh_user.license_expiry={fresh_user.license_expiry}"
+            )
             current_app.logger.info(
                 f"[webhook] invoice.paid => user={user.email}, {old_tier}->{which_tier}, "
                 f"expiry: {old_expiry} => {user.license_expiry}"
