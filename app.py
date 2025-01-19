@@ -1,13 +1,12 @@
+""" START OF CODE: app.py (create_app) - With /pay/webhook as public route """
+
 import os
 from datetime import datetime, timedelta
 
 from flask import Flask, session, request, jsonify, render_template
-# print(">>> Vor Import von flask_migrate <<<")
 try:
     from flask_migrate import Migrate
-    # print(">>> Nach Import von flask_migrate <<<")
-except ImportError as e:
-    # print(f"ImportError: {e}")
+except ImportError:
     pass
 
 from models.user import db, User
@@ -20,19 +19,10 @@ from routes.routes_admin import admin_bp
 from routes.mycalc_routes import mycalc_bp
 from routes.routes_calc_param import param_calc_bp
 from routes.routes_calc_takt import takt_calc_bp
-from routes.routes_landing import landing_bp  # <-- NEU
+from routes.routes_landing import landing_bp
 
 def create_app():
     app = Flask(__name__)
-
-    # Hier direkt nach dem Erzeugen des app-Objekts:
-    # print("=== ENV DEBUG START ===")
-    # print("STRIPE_SECRET_KEY =", os.getenv("STRIPE_SECRET_KEY"))
-    # print("STRIPE_WEBHOOK_SECRET =", os.getenv("STRIPE_WEBHOOK_SECRET"))
-    # print("STRIPE_PRICE_PLUS =", os.getenv("STRIPE_PRICE_PLUS"))
-    # print("STRIPE_PRICE_PREMIUM =", os.getenv("STRIPE_PRICE_PREMIUM"))
-    # print("STRIPE_PRICE_EXTENDED =", os.getenv("STRIPE_PRICE_EXTENDED"))
-    # print("=== ENV DEBUG END ===")
 
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "supersecret")
     db_url = os.getenv("DATABASE_URL", "sqlite:///test.db")
@@ -48,7 +38,7 @@ def create_app():
     limiter.init_app(app)
 
     # Blueprint-Registrierung
-    app.register_blueprint(landing_bp)  # <-- NEU (ohne url_prefix => "/")
+    app.register_blueprint(landing_bp)  # ohne url_prefix => "/"
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(payment_bp, url_prefix="/pay")
     app.register_blueprint(admin_bp, url_prefix="/admin")
@@ -56,33 +46,33 @@ def create_app():
     app.register_blueprint(param_calc_bp, url_prefix="/calc/param")
     app.register_blueprint(takt_calc_bp, url_prefix="/calc/takt")
 
-    # Optional: Public Landing
     @app.route("/")
     def landing_page():
-        return render_template("landing_page.html")  # Deine Landing-Page o.Ä.
+        return render_template("landing_page.html")
 
-    # Beispiel: /upgrade => Template mit Payment-Buttons
     @app.route("/upgrade", methods=["GET"])
     def show_upgrade():
         return render_template("upgrade_page.html")
 
-    # Vor jedem Request => check public vs. login
     @app.before_request
     def require_login():
-        # print(f"[BEFORE_REQUEST] path={request.path}")
-        # your existing code
-        # Definiere public routes/prefixes
+        """
+        Ensure that routes not in the 'public_routes' require an active session.
+        IMPORTANT: '/pay/webhook' is now in the public routes to avoid 307 or 401
+        during Stripe Webhook calls.
+        """
         public_routes = [
-            "/",               # => Landing
+            "/",
             "/auth/login",
             "/auth/register",
-            "/auth/whoami",  # optional
+            "/auth/whoami",
             "/stripe/webhook",
+            "/pay/webhook",   # <-- ADDED TO ALLOW STRIPE WEBHOOK WITHOUT REDIRECT
             "/favicon.ico",
             "/robots.txt"
         ]
 
-        # Wenn Route NICHT in den public_routes beginnt => check session
+        # Wenn Route NICHT in den public_routes => check session
         if not any(request.path.startswith(r) for r in public_routes):
             if not session.get("user_id"):
                 return jsonify({"error": "Not logged in"}), 401
@@ -92,3 +82,4 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     app.run(debug=True)
+""" END OF CODE: app.py (create_app) - With /pay/webhook as public route """
