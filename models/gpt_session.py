@@ -1,13 +1,13 @@
-# models/gpt_session.py
+# FILE: models/gpt_session.py
 
 from datetime import datetime
-from core.extensions import db
+from models.user import db
 
 class GPTSession(db.Model):
     __tablename__ = 'gpt_sessions'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     allowed_count = db.Column(db.Integer, default=10)
     used_count = db.Column(db.Integer, default=0)
 

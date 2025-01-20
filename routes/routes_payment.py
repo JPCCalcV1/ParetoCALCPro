@@ -133,9 +133,36 @@ def create_checkout_session_oneoff():
 ##          invoice.paid => +30 Tage Verlängerung
 ##          invoice.payment_failed => "no_access"
 ##############################################################
+from flask import Blueprint, request, jsonify, session, current_app, render_template
+from datetime import datetime, timedelta
+import stripe
+import os
+
+from models.user import db, User
+from models.payment_log import PaymentLog
+from core.extensions import csrf
+
+payment_bp = Blueprint("payment_bp", __name__)
+
+# ENV-Variablen / Konfiguration
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+stripe.api_key = STRIPE_SECRET_KEY
+
 @payment_bp.route("/webhook", methods=["POST"])
 @csrf.exempt
 def stripe_webhook():
+    """
+    Stripe-Webhook: verarbeitet Events wie
+    - checkout.session.completed
+    - invoice.paid
+    - invoice.payment_failed
+    etc.
+
+    Erweiterung:
+    - Speichert ggf. stripe_subscription_id im User, falls ABO
+    - optional SendGrid-E-Mail bei PaymentFailed oder so
+    """
     current_app.logger.info("[webhook] => Payment/Webhook invoked")
 
     payload = request.data
@@ -176,31 +203,36 @@ def stripe_webhook():
     ########################################
     if etype == "checkout.session.completed":
         meta = data_obj.get("metadata", {})
-        which_tier = meta.get("which_tier","plus")
-        mode_used = meta.get("mode_used","payment")
-        user = get_user_from_metadata(meta)
+        which_tier = meta.get("which_tier", "plus")
+        mode_used = meta.get("mode_used", "payment")  # "subscription" oder "payment"
 
+        user = get_user_from_metadata(meta)
         if not user:
             current_app.logger.warning("[webhook:session.completed] No user => abort")
-            return jsonify({"status":"ok"}),200
+            return jsonify({"status":"ok"}), 200
 
         old_tier = user.license_tier
 
-        # => ABO => +7 Tage TRIAL
-        if mode_used=="subscription":
+        # ABO => +7 Tage Trial
+        if mode_used == "subscription":
             user.license_tier = which_tier
             user.license_expiry = datetime.now() + timedelta(days=7)
+            # neu: subscription id (ggf. expand in Session.create)
+            sub_id = data_obj.get("subscription")
+            if sub_id:   # falls Stripe es hier liefert
+                user.stripe_subscription_id = sub_id
 
-        # => OneOff => +365
-        elif mode_used=="payment":
+        # OneOff => +365
+        elif mode_used == "payment":
             user.license_tier = which_tier
             user.license_expiry = datetime.now() + timedelta(days=365)
-
+            # OneOff => kein subscription_id
         else:
-            current_app.logger.warning(f"[webhook:session.completed] unknown mode={mode_used}, ignoring")
+            current_app.logger.warning(
+                f"[webhook:session.completed] unknown mode={mode_used}, ignoring"
+            )
 
         db.session.commit()
-
         new_log.user_id = user.id
         new_log.status = "completed"
         db.session.commit()
@@ -216,29 +248,33 @@ def stripe_webhook():
     elif etype == "invoice.paid":
         sub_id = data_obj.get("subscription")
         if sub_id:
+            # hole subscription-Objekt
             sub_obj = stripe.Subscription.retrieve(sub_id)
-            meta = sub_obj.get("metadata",{})
+            meta = sub_obj.get("metadata", {})
             user = get_user_from_metadata(meta)
-            which_tier = meta.get("which_tier","plus")
+            which_tier = meta.get("which_tier", "plus")
 
             if user:
                 old_tier = user.license_tier
-
                 # ABO => +30 Tage
                 if not user.license_expiry or user.license_expiry < datetime.now():
                     user.license_expiry = datetime.now() + timedelta(days=30)
                 else:
                     user.license_expiry += timedelta(days=30)
-
                 user.license_tier = which_tier
-                db.session.commit()
 
+                # optional: ensure local user.stripe_subscription_id is stored
+                if not user.stripe_subscription_id:
+                    user.stripe_subscription_id = sub_id
+
+                db.session.commit()
                 new_log.user_id = user.id
                 new_log.status = "paid"
                 db.session.commit()
 
                 current_app.logger.info(
-                    f"[webhook:invoice.paid] user={user.email}, {old_tier} => {which_tier}, expiry={user.license_expiry}"
+                    f"[webhook:invoice.paid] user={user.email}, {old_tier} => {which_tier}, "
+                    f"expiry={user.license_expiry}"
                 )
         else:
             current_app.logger.warning("[webhook:invoice.paid] No subscription => ignoring")
@@ -250,25 +286,37 @@ def stripe_webhook():
         sub_id = data_obj.get("subscription")
         if sub_id:
             sub_obj = stripe.Subscription.retrieve(sub_id)
-            meta = sub_obj.get("metadata",{})
+            meta = sub_obj.get("metadata", {})
             user = get_user_from_metadata(meta)
+
             if user:
                 old_tier = user.license_tier
                 user.license_tier = "no_access"
                 user.license_expiry = None
+                # optional: user.stripe_subscription_id = None
                 db.session.commit()
 
                 new_log.user_id = user.id
                 new_log.status = "failed"
                 db.session.commit()
 
-                current_app.logger.info(f"[webhook:payment_failed] user={user.email}, {old_tier}=>no_access")
-                # Optional: send_email(user.email, "Payment Fail", "Deine Abo-Zahlung schlug fehl!")
+                current_app.logger.info(
+                    f"[webhook:payment_failed] user={user.email}, {old_tier} => no_access"
+                )
+
+                # Optional: Send E-Mail via SendGrid:
+                # from helpers.sendgrid_helper import send_email
+                # send_email(
+                #    user.email,
+                #    subject="Zahlung fehlgeschlagen",
+                #    text_content="Deine Abo-Zahlung schlug fehl. Wir haben deine Lizenz ausgesetzt...",
+                #    html_content="<p>Deine Abo-Zahlung schlug fehl...</p>"
+                # )
         else:
             current_app.logger.warning("[webhook:payment_failed] No sub_id => ignoring")
 
     else:
-        current_app.logger.info(f"[webhook] Unhandled event type={etype}")
+        current_app.logger.info(f"[webhook] Unhandled event type: {etype}")
 
     return jsonify({"status":"ok"}),200
 
