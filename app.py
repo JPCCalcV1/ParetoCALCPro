@@ -74,6 +74,19 @@ def create_app():
             if not session.get("user_id"):
                 return jsonify({"error": "Not logged in"}), 401
 
+    @app.before_request
+    def check_license():
+        # erst checken, ob route public ist oder ob user eingeloggt ist
+        public_routes = [...]
+        if request.path.startswith("/mycalc"):
+            user_id = session.get("user_id")
+            if not user_id:
+                return redirect("/auth/login")
+            user = User.query.get(user_id)
+            if user.license_tier == "test":
+                return redirect("/upgrade")
+        # oder „license_level == no_access“ -> redirect("/upgrade")
+
     return app
 
 if __name__ == "__main__":

@@ -14,19 +14,18 @@ from core.extensions import csrf, limiter  # NEU: limiter import
 auth_bp = Blueprint("auth_bp", __name__)
 
 @auth_bp.route("/register", methods=["POST"])
-@csrf.exempt  # Falls dein JS keinen X-CSRFToken schickt, sonst entfernen
-@limiter.limit("5 per 15 minutes")  # Rate-Limit: max. 5 Registrierungen in 15 Min
+@csrf.exempt
 def register():
     data = request.get_json() or {}
-    email = data.get("email", "").strip().lower()
-    password = data.get("password", "")
+    email = data.get("email","").strip().lower()
+    password = data.get("password","")
 
     if not email or not password:
-        return jsonify({"error": "Email/Pass fehlt"}), 400
+        return jsonify({"error":"Email/Pass fehlt"}), 400
 
     existing = User.query.filter_by(email=email).first()
     if existing:
-        return jsonify({"error": "User existiert"}), 400
+        return jsonify({"error":"User existiert bereits"}), 400
 
     new_user = User(email, password)
     new_user.license_tier = "test"
@@ -34,7 +33,15 @@ def register():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": "Registrierung ok"}), 200
+    # AUTO-LOGIN:
+    session["user_id"] = new_user.id
+    new_token = str(uuid.uuid4())
+    new_user.current_session_token = new_token
+    db.session.commit()
+    session["sso_token"] = new_token
+
+    # Dann direkt redirect auf /upgrade
+    return jsonify({"message":"Registrierung ok", "next":"/upgrade"})
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
