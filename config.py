@@ -3,7 +3,8 @@ import os
 
 class DevConfig:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///paretocalc_dev.db')
+    import os
+    SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URL"]  # wirf KeyError, falls nicht gesetzt
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     WTF_CSRF_ENABLED = True
