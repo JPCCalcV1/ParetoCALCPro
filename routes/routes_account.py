@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from models.user import db, User
 from helpers.sendgrid_helper import send_email  # falls du sowas hast
 from functools import wraps
-
+from core.extensions import csrf  # <--- das fehlte!
 account_bp = Blueprint("account_bp", __name__)
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
