@@ -1,4 +1,4 @@
-# routes/routes_auth.py
+""" START OF FILE: routes_auth.py (erweiterte Fassung) """
 
 import os, uuid, io
 from datetime import datetime, timedelta
@@ -9,13 +9,20 @@ from flask import (
     render_template, redirect, url_for, flash
 )
 from models.user import db, User
-from core.extensions import csrf, limiter  # NEU: limiter import
+from core.extensions import csrf, limiter
+from werkzeug.security import generate_password_hash, check_password_hash
 
 auth_bp = Blueprint("auth_bp", __name__)
 
 @auth_bp.route("/register", methods=["POST"])
 @csrf.exempt
 def register():
+    """
+    Registriert einen neuen User.
+    - Setzt license_tier="test" + 7 Tage
+    - Meldet den User sofort an, so dass er "session['user_id']" hat.
+    - Leitet anschließend weiter zum /upgrade
+    """
     data = request.get_json() or {}
     email = data.get("email","").strip().lower()
     password = data.get("password","")
@@ -27,25 +34,26 @@ def register():
     if existing:
         return jsonify({"error":"User existiert bereits"}), 400
 
-    new_user = User(email, password)
+    # Neuen User anlegen
+    new_user = User(email=email, password=generate_password_hash(password))
     new_user.license_tier = "test"
     new_user.license_expiry = datetime.now() + timedelta(days=7)
+
     db.session.add(new_user)
     db.session.commit()
 
-    # AUTO-LOGIN:
+    # AUTO-LOGIN
     session["user_id"] = new_user.id
     new_token = str(uuid.uuid4())
     new_user.current_session_token = new_token
     db.session.commit()
     session["sso_token"] = new_token
 
-    # Dann direkt redirect auf /upgrade
+    # Weiterleitung => /upgrade => der User kann direkt Checkout starten
     return jsonify({"message":"Registrierung ok", "next":"/upgrade"})
 
-
 @auth_bp.route("/login", methods=["GET", "POST"])
-@csrf.exempt  # Falls dein JS keinen X-CSRFToken schickt, sonst entfernen
+@csrf.exempt
 @limiter.limit("5 per 15 minutes")  # Rate-Limit: max. 5 Logins in 15 Min
 def login():
     if request.method == "GET":
@@ -64,7 +72,7 @@ def login():
         return jsonify({"error": "Email/Pass fehlt"}), 400
 
     user = User.query.filter_by(email=email).first()
-    if not user or not user.check_password(password):
+    if not user or not check_password_hash(user.password, password):
         return jsonify({"error": "Wrong user/pass"}), 401
 
     # Session
@@ -75,7 +83,6 @@ def login():
     session["user_id"] = user.id
     session["sso_token"] = new_token
     return jsonify({"message": "Login ok", "license": user.license_level()})
-
 
 @auth_bp.route("/logout", methods=["POST"])
 @csrf.exempt
@@ -88,7 +95,6 @@ def logout():
             db.session.commit()
     session.clear()
     return jsonify({"message": "Logout ok"}), 200
-
 
 @auth_bp.route("/whoami", methods=["GET"])
 def whoami():
@@ -103,6 +109,8 @@ def whoami():
         "email": user.email,
         "license": user.license_level()
     }), 200
+
+""" END OF FILE: routes_auth.py """
 
 
 # Minimal 2FA

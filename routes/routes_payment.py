@@ -1,15 +1,10 @@
-""" START OF FILE: routes_payment.py - FINAL TRIAL LOGIC """
-
 import os
 import stripe
-from flask import Blueprint, request, jsonify, session, current_app, render_template
 from datetime import datetime, timedelta
 
-# Deine Models
+from flask import Blueprint, request, jsonify, session, current_app, render_template
 from models.user import db, User
 from models.payment_log import PaymentLog
-
-# Globale CSRF (sofern du es nutzt)
 from core.extensions import csrf
 
 payment_bp = Blueprint("payment_bp", __name__)
@@ -33,10 +28,8 @@ price_map = {
 @csrf.exempt
 def create_checkout_session_subscription():
     """
-    Erzeugt eine Subscription-Checkout-Session mit 7-Tage-Trial.
-    => checkout.session.completed => 0,00 EUR? => "trial".
-    => Du kannst HIER schon license_tier=..., ABER wir machen es
-       (wie unten) im Webhook => sofort +7 Tage bei mode="subscription".
+    Erzeugt eine Subscription-Checkout-Session mit z.B. 7-Tage-Trial.
+    => checkout.session.completed => license_tier = which_tier, expiry = +7
     """
     user_id = session.get("user_id")
     if not user_id:
@@ -59,7 +52,6 @@ def create_checkout_session_subscription():
             payment_method_types=["card"],
             line_items=[{"price": price_id, "quantity":1}],
             mode="subscription",
-            # 7 Tage Testphase => => 0,00 EUR
             subscription_data={
                 "trial_period_days": 7,
                 "metadata": {
@@ -68,10 +60,12 @@ def create_checkout_session_subscription():
                     "mode_used": "subscription"
                 }
             },
-            success_url="https://www.jpccalc.de/pay/success",
-            cancel_url="https://www.jpccalc.de/pay/cancel"
+            success_url="https://jpccalc.de/pay/success",
+            cancel_url="https://jpccalc.de/pay/cancel"
         )
-        current_app.logger.info(f"[checkout-sub] Created session.id={checkout_session.id}, url={checkout_session.url}")
+        current_app.logger.info(
+            f"[checkout-sub] Created session.id={checkout_session.id}, url={checkout_session.url}"
+        )
         return jsonify({"checkout_url": checkout_session.url}), 200
 
     except stripe.error.StripeError as e:

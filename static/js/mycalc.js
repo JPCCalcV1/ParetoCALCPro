@@ -2102,7 +2102,6 @@ window.doLogin      = doLogin;
 window.doLogout     = doLogout;
 window.doRegister   = doRegister;
 window.checkLicense = checkLicense;
-window.buyExtended  = buyExtended;
 window.checkMaterialAccess = checkMaterialAccess;
 window.checkLoanAccess = checkLoanAccess;
 
