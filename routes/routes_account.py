@@ -23,6 +23,7 @@ def login_required(f):
     return decorated
 
 @account_bp.route("/", methods=["GET"])
+@csrf.exempt
 @login_required
 def my_account_home():
     """
@@ -59,6 +60,7 @@ def my_account_home():
     )
 
 @account_bp.route("/cancel", methods=["POST"])
+@csrf.exempt
 @login_required
 def cancel_subscription():
     user_id = session["user_id"]
@@ -97,6 +99,7 @@ Dein ParetoCalc-Team
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 @account_bp.route("/upgrade", methods=["POST"])
+@csrf.exempt
 @login_required
 def upgrade_plan():
     """
@@ -148,6 +151,7 @@ def upgrade_plan():
         return jsonify({"error": str(ex)}),500
 
 @account_bp.route("/2fa/toggle", methods=["POST"])
+@csrf.exempt
 @login_required
 def toggle_2fa():
     """
