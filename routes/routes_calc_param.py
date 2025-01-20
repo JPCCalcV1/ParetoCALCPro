@@ -1,8 +1,13 @@
+# routes_calc_feinguss.py
+
 """
-routes_calc_feinguss.py
-Flask-Blueprint mit der Feinguss-Route /calc/param/feinguss,
-die die V1-Logik serverseitig ausführt.
+FEINGUSS-PARAMETRIC – V1-LOGIK INS BACKEND VERLAGERT
+----------------------------------------------------
+1) Lizenzauswertung (ab Premium)
+2) Rechenformeln 1:1 aus V1, nur in Python
+3) Ggf. disclaimers & Kommentare beibehalten
 """
+
 from flask import Blueprint, request, jsonify, g
 from flask_login import login_required
 from core.extensions import limiter, csrf
@@ -16,144 +21,184 @@ param_calc_bp = Blueprint('param_calc_bp', __name__)
 def calc_feinguss():
     """
     POST /calc/param/feinguss
-    Erwartet JSON mit Feldern (siehe buildFeingussPayload in JS):
-      {
-        "fgMatSelect": "Stahl",
-        "fgLocationSelect": "DE",
-        "fgWeight": 50.0,
-        "fgScrapRate": 5.0,
-        "fgQuantity": 1000,
-        "fgComplexitySelect": "Medium",
-        "fgSetupTimeMin": 60.0,
-        "fgOverheadRate": 15.0,
-        "fgProfitRate": 10.0,
-        "fgToolCost": 0.0,
-        "fgPostProcMin": 0.5
-      }
+    Erwartet JSON-Felder wie (siehe JS 'buildFeingussPayload'):
+      fgMatSelect        = "Stahl"   # Key (Stahl, Alu, Titan, NickelAlloy)
+      fgLocationSelect   = "DE"      # (DE, CN, PL)
+      fgWeight           = 50.0      # g
+      fgScrapRate        = 5.0       # % => 0.05
+      fgQuantity         = 1000      # Jahresmenge
 
-    Berechnet:
-      - Material + Shell
-      - Fertigung (Lohn+Rüst+Tool+Energie)
-      - Overhead
-      - Gewinn
-      - Endpreis
-    und gibt ein JSON-Ergebnis zurück.
+      fgComplexitySelect = "Medium"  # (Low, Medium, High)
+      fgSetupTimeMin     = 60.0      # min
+      fgOverheadRate     = 15.0      # % => 0.15
+      fgProfitRate       = 10.0      # % => 0.10
+      fgToolCost         = 0.0
+      fgPostProcMin      = 0.5       # Nachbearb. min/Teil
+
+    Rechnet (Material+Shell, Fertigung, Overhead, Gewinn) => Endpreis
+    Gibt JSON zurück wie:
+      {
+        "ok": True,
+        "costMatShell": 3.25,
+        "costFertigung": 2.10,
+        "overheadVal": 0.83,
+        "profitVal": 0.59,
+        "endPrice": 6.77,
+        "msg": "..."
+      }
     """
-    # 1) Check: g.user
+
+    # 1) Prüfe Login
     if not g.user:
         return jsonify({"error": "Not logged in"}), 403
 
-    # 2) Lizenz-Check (so wie in V2)
+    # 2) Lizenzauswertung => mind. Premium
     lvl = g.user.license_level()
     if lvl not in ["premium", "extended"]:
         return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
     try:
-        # 3) JSON laden
         data = request.get_json()
         if not data:
             return jsonify({"error": "No JSON body"}), 400
 
-        # 4) Eingaben
+        # --------------------------------------------------
+        # 3) Eingaben extrahieren (V1 Namenskonvention)
+        # --------------------------------------------------
         matKey    = data.get("fgMatSelect", "Stahl")
         locKey    = data.get("fgLocationSelect", "DE")
-        partWeight= float(data.get("fgWeight", 50.0))   # g
-        scrapRate = float(data.get("fgScrapRate", 5.0)) # % => 5 => 0.05
+        partWeight= float(data.get("fgWeight", 50.0))   # in g
+        scrapRate = float(data.get("fgScrapRate", 5.0)) # 5 => 5% => 0.05
         annualQty = float(data.get("fgQuantity", 1000))
 
         compKey   = data.get("fgComplexitySelect", "Medium")
         ruestMin  = float(data.get("fgSetupTimeMin", 60.0))
-        overheadP = float(data.get("fgOverheadRate", 15.0))  # => 15 => 0.15
-        profitP   = float(data.get("fgProfitRate", 10.0))    # => 10 => 0.10
+        overheadP = float(data.get("fgOverheadRate", 15.0))
+        profitP   = float(data.get("fgProfitRate", 10.0))
         toolCost  = float(data.get("fgToolCost", 0.0))
         postProc  = float(data.get("fgPostProcMin", 0.5))
 
-        # -----------------------------------------------------
-        # 5) Datenbasen (V1-Style)
-        # -----------------------------------------------------
+        # --------------------------------------------------
+        # 4) Material-Daten, Standorte, Complexity
+        #    => 1:1 aus V1, inkl. shellBase & shellBonus
+        # --------------------------------------------------
         materials = {
             "Stahl": {
+                "name": "Stahl (Allg.)",
                 "pricePerKg": 2.5,
                 "shellBase":  0.4
             },
             "Alu": {
+                "name": "Aluminium",
                 "pricePerKg": 5.0,
                 "shellBase":  0.5
             },
             "Titan": {
+                "name": "Titan",
                 "pricePerKg": 25.0,
                 "shellBase":  1.0
             },
             "NickelAlloy": {
+                "name": "Nickelbasis-Legierung",
                 "pricePerKg": 20.0,
                 "shellBase":  0.8
             }
         }
         locations = {
-            "DE": {"wageFactor": 1.0},
-            "CN": {"wageFactor": 0.35},
-            "PL": {"wageFactor": 0.6}
+            "DE": {
+                "name": "Deutschland",
+                "wageFactor": 1.0
+            },
+            "CN": {
+                "name": "China",
+                "wageFactor": 0.35
+            },
+            "PL": {
+                "name": "Polen",
+                "wageFactor": 0.6
+            }
         }
         complexity = {
-            "Low":    { "factorTime": 0.7, "shellBonus": 0.0 },
-            "Medium": { "factorTime": 1.0, "shellBonus": 0.3 },
-            "High":   { "factorTime": 1.3, "shellBonus": 0.6 }
+            "Low": {
+                "factorTime": 0.7,
+                "shellBonus": 0.0
+            },
+            "Medium": {
+                "factorTime": 1.0,
+                "shellBonus": 0.3
+            },
+            "High": {
+                "factorTime": 1.3,
+                "shellBonus": 0.6
+            }
         }
 
-        baseHourlyWage = 60.0  # €/h
-        maxScrapRate   = 0.5   # 50%
+        baseHourlyWage = 60.0  # z. B. 60 €/h in DE
+        maxScrapRate   = 0.5   # 50% Limit
 
-        # -----------------------------------------------------
-        # 6) parse-Funktionen
-        # -----------------------------------------------------
-        def parse_percent(val):
-            if val < 0: return 0.0
-            if val > 1.0:
-                return val / 100.0
-            return val
+        # --------------------------------------------------
+        # 5) parsePercent & parseScrap (V1 analog)
+        # --------------------------------------------------
+        def parse_percent(x):
+            """
+            parsePercent(15) => 0.15, parsePercent(0.2) => 0.2
+            Obergrenze für Overhead oder Profit theoret. nicht fix
+            """
+            if x < 0:
+                return 0.0
+            if x > 1.0:
+                return x / 100.0
+            return x
 
-        def parse_scrap(val):
-            if val < 0: return 0.0
-            if val > 1.0:
-                val /= 100.0
-            if val > maxScrapRate:
-                # optional warning
+        def parse_scrap(x):
+            """
+            parseScrap(5) => 0.05
+            parseScrap(45) => 0.45
+            maxScrapRate = 0.5 => 50% max
+            """
+            if x < 0:
+                return 0.0
+            if x > 1.0:
+                x /= 100.0
+            if x > maxScrapRate:
+                # optional Warning
                 pass
-            return val
+            return x
 
-        overheadRate = parse_percent(overheadP)
-        profitRate   = parse_percent(profitP)
-        sRate        = parse_scrap(scrapRate)
+        overheadRate = parse_percent(overheadP)  # 15 => 0.15
+        profitRate   = parse_percent(profitP)    # 10 => 0.10
+        sRate        = parse_scrap(scrapRate)    # 5 => 0.05
 
-        # -----------------------------------------------------
-        # 7) Check Input
-        # -----------------------------------------------------
+        # --------------------------------------------------
+        # 6) Plausiprüfung (V1 warnt in console.log)
+        #    => Hier brechen wir einfach ab
+        # --------------------------------------------------
         if partWeight <= 0:
-            return jsonify({"error": "partWeight <= 0"}), 400
+            return jsonify({"error": "Bauteilgewicht <= 0"}), 400
         if annualQty < 1:
-            return jsonify({"error": "annualQty < 1"}), 400
+            return jsonify({"error": "Jahresmenge <1"}), 400
 
         matInfo = materials.get(matKey, materials["Stahl"])
         locInfo = locations.get(locKey, locations["DE"])
-        cInfo   = complexity.get(compKey, complexity["Medium"])
+        compInfo= complexity.get(compKey, complexity["Medium"])
 
-        # -----------------------------------------------------
-        # 8) Material + Shell
-        # -----------------------------------------------------
-        weight_kg     = partWeight / 1000.0
-        totalWeight_kg= weight_kg * (1.0 + sRate)
-        costMaterial  = totalWeight_kg * matInfo["pricePerKg"]
-        costShell     = matInfo["shellBase"] + cInfo["shellBonus"]
-        costMatShell  = costMaterial + costShell
+        # --------------------------------------------------
+        # 7) Material + Shell (aus V1)
+        # --------------------------------------------------
+        weight_kg      = partWeight / 1000.0
+        totalWeight_kg = weight_kg * (1.0 + sRate)
+        costMaterial   = totalWeight_kg * matInfo["pricePerKg"]
+        costShell      = matInfo["shellBase"] + compInfo["shellBonus"]
+        costMatShell   = costMaterial + costShell
 
-        # -----------------------------------------------------
-        # 9) Fertigung (pauschal)
-        # -----------------------------------------------------
-        fertigungStundensatz = baseHourlyWage * locInfo["wageFactor"]  # z.B. 60 * 1.0
+        # --------------------------------------------------
+        # 8) Fertigung (V1 => timePartMin, wagePerMin, etc.)
+        # --------------------------------------------------
+        fertigungStundensatz = baseHourlyWage * locInfo["wageFactor"]  # Bsp: 60 *1=60
         wagePerMin = fertigungStundensatz / 60.0
 
         baseTimeMin = 1.0 + postProc
-        timePartMin = baseTimeMin * cInfo["factorTime"]
+        timePartMin = baseTimeMin * compInfo["factorTime"]
 
         costLaborMachinePerPart = wagePerMin * timePartMin
 
@@ -165,6 +210,7 @@ def calc_feinguss():
         if annualQty > 0 and toolCost > 0:
             costToolPerPart = toolCost / annualQty
 
+        # Energie => minimal 0.05
         costEnergy = 0.05
 
         costFertigung = (costLaborMachinePerPart
@@ -172,28 +218,28 @@ def calc_feinguss():
                          + costToolPerPart
                          + costEnergy)
 
-        # -----------------------------------------------------
-        # 10) Overhead & Gewinn
-        # -----------------------------------------------------
+        # --------------------------------------------------
+        # 9) Overhead & Profit
+        # --------------------------------------------------
         baseCosts   = costMatShell + costFertigung
         overheadVal = baseCosts * overheadRate
         withOverhead= baseCosts + overheadVal
         profitVal   = withOverhead * profitRate
         endPrice    = withOverhead + profitVal
 
-        # -----------------------------------------------------
-        # 11) JSON-Ergebnis
-        # -----------------------------------------------------
-        result = {
+        # --------------------------------------------------
+        # 10) JSON-Ergebnis
+        # --------------------------------------------------
+        return jsonify({
             "ok": True,
             "costMatShell":  round(costMatShell, 2),
             "costFertigung": round(costFertigung, 2),
             "overheadVal":   round(overheadVal, 2),
             "profitVal":     round(profitVal, 2),
             "endPrice":      round(endPrice, 2),
-            "msg": "Feinguss-Kalkulation (V1-Logik) im Backend."
-        }
-        return jsonify(result), 200
+            # du kannst hier gerne noch "scrapRateReal": sRate, etc. ausgeben
+            "msg": "Feinguss-Berechnung aus V1-Logik (Backend)."
+        }), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
