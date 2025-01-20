@@ -136,7 +136,6 @@ from models.user import db, User
 from models.payment_log import PaymentLog
 from core.extensions import csrf
 
-payment_bp = Blueprint("payment_bp", __name__)
 
 # ENV-Variablen / Konfiguration
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
