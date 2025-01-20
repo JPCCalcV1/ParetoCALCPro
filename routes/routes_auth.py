@@ -11,7 +11,7 @@ from flask import (
 from models.user import db, User
 from core.extensions import csrf, limiter
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from helpers.sendgrid_helper import send_email
 auth_bp = Blueprint("auth_bp", __name__)
 
 @auth_bp.route("/register", methods=["POST"])
@@ -40,6 +40,11 @@ def register():
 
     db.session.add(new_user)
     db.session.commit()
+
+    # Sende Willkommensmail
+    subject = "Willkommen bei ParetoCalc!"
+    text = f"Hallo {email},\n\nWillkommen bei ParetoCalc!\nViel Spaß beim Testen..."
+    send_email(email, subject, text)
 
     # AUTO-LOGIN
     session["user_id"] = new_user.id
