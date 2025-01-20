@@ -73,7 +73,7 @@ def login():
         return jsonify({"error": "Email/Pass fehlt"}), 400
 
     user = User.query.filter_by(email=email).first()
-    if not user or not check_password_hash(user.password, password):
+    if not user or not check_password_hash(user.password_hash, password):
         return jsonify({"error": "Wrong user/pass"}), 401
 
     # Session
