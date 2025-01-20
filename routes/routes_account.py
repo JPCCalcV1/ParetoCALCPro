@@ -138,8 +138,8 @@ def upgrade_plan():
                     "which_tier": which_tier
                 }
             },
-            success_url="https://www.deineDomain.de/pay/success",
-            cancel_url="https://www.deineDomain.de/pay/cancel"
+            success_url="https://jpccalc.de/pay/success",
+            cancel_url="https://jpccalc.de/pay/cancel"
         )
         return jsonify({"checkout_url": checkout_session.url})
     except stripe.error.StripeError as se:

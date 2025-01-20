@@ -7,7 +7,7 @@ class GPTSession(db.Model):
     __tablename__ = 'gpt_sessions'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     allowed_count = db.Column(db.Integer, default=10)
     used_count = db.Column(db.Integer, default=0)
 
