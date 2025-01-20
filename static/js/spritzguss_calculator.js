@@ -1,34 +1,25 @@
 /******************************************************
- * spritzguss_calculator_v2.js
+ * spritzguss_calculator_merged.js
  *
- * Dies ist die "reduzierte" JavaScript-Version für V2,
- * bei der die gesamte Rechenlogik im Backend liegt.
- * Alle UI-Funktionen, Profile-Logik, Flag-Verwaltung,
- * Chart-Update etc. bleiben wie in der finalen Version.
- *
- * Wichtig:
- *  - "calculateSpritzguss()" ruft jetzt nur noch per
- *    Fetch/AJAX das Backend auf (/calc/takt/spritzguss).
- *  - Die Rückgabe wird in "fillSpritzgussUI(data)"
- *    geschrieben.
- *  - CSRF-Token wird aus <meta name="csrf-token"> genutzt,
- *    falls dein Projekt das verlangt.
+ * Enthält:
+ *  - Profil-Logik & Auto-Runner aus V1
+ *  - Nur noch Backend-Aufruf (POST) wie in V2
+ *  - Chart-Update / UI-Ausgabe
  ******************************************************/
-
 "use strict";
 
 // Globale Referenz auf Doughnut-Chart
 let sgChart = null;
 
 /********************************************************
- * FLAGs, um manuell geänderte Felder zu erkennen
+ * FLAGS, um manuell geänderte Felder zu erkennen (V1)
  ********************************************************/
 let isWallEdited   = false;
 let isCavEdited    = false;
-let isRobotEdited  = false;  // Für Automotive => Roboter soll true bleiben, falls nicht manuell entfernt
+let isRobotEdited  = false;
 
 /********************************************************
- * fieldLabels => Mapping von ID => Lesbares Label
+ * Mapping IDs => "Lesbares Label" (für Profil-Log)
  ********************************************************/
 const fieldLabels = {
   sgMachineCombo:   "Maschine",
@@ -44,37 +35,28 @@ const fieldLabels = {
 };
 
 /********************************************************
- * KONFIGURATION (für autoEstimateRunner etc.)
- * => Hier bleiben z.B. runnerFactorBase, runnerFactorCav,
- *    robotTime etc. bestehen, falls wir sie teils
- *    frontseitig brauchen.
+ * Konfiguration (nur noch für Auto-Runner / Validierung)
  ********************************************************/
 const sgConfig = {
-  runnerFactorBase: 0.1,   // 10% vom Bauteilgewicht
-  runnerFactorCav:  2.0,   // +2g je Kavität
-  contourCoolRed:   0.8,   // -20% Kühlzeit
-  robotTime:        2.0,
-  manualTime:       0.5,
-  sliderTime:       1.5,
-  injBaseTime:      1.0,
-  defaultHoldTime:  2.0,
+  runnerFactorBase: 0.1,
+  runnerFactorCav:  2.0,
   minWall:          0.3,
   maxWall:          8.0,
   minCav:           1,
   maxCav:           64,
-  automotiveExtra:  1.2,
-  safetyDefault:    30
+  safetyDefault:    30,
+  defaultHoldTime:  2.0
 };
 
 /********************************************************
- * INIT-EVENTS
+ * INIT-LOGIK => Flags und Buttons
  ********************************************************/
 window.addEventListener("DOMContentLoaded", () => {
   initSpritzgussModal();
 });
 
 /********************************************************
- * initSpritzgussModal => Setup von Buttons/Checks/Flags
+ * initSpritzgussModal
  ********************************************************/
 function initSpritzgussModal() {
   // Runner-Auto
@@ -115,7 +97,7 @@ function initSpritzgussModal() {
 }
 
 /********************************************************
- * autoEstimateRunner => Schätzt den Anguss (Runner)
+ * AUTO-ESTIMATE RUNNER => Wie in V1
  ********************************************************/
 function autoEstimateRunner() {
   const wSpin = document.getElementById("sgPartWeight");
@@ -125,18 +107,59 @@ function autoEstimateRunner() {
 
   const partW = parseFloat(wSpin.value) || 50;
   const cav   = parseInt(cSpin.value)   || 4;
-  const guess = (sgConfig.runnerFactorBase * partW)
-              + (sgConfig.runnerFactorCav * cav);
+  const guess = (sgConfig.runnerFactorBase * partW) + (sgConfig.runnerFactorCav * cav);
   rSpin.value = guess.toFixed(1);
 }
 
 /********************************************************
- * calculateSpritzguss => V2 => nur noch AJAX zum Backend
+ * calculateSpritzguss => jetzt per AJAX (Backend)
  ********************************************************/
 function calculateSpritzguss() {
-  console.log("calculateSpritzguss() => Sende Daten an Backend (V2).");
+  console.log("calculateSpritzguss() => Backend-Request");
 
-  // 1) DOM-Referenzen
+  // 1) Daten aus DOM
+  const payload = buildSpritzgussPayload();
+  // 2) Plausibilitäts-Check
+  if (!validateSpritzgussInputs(payload.wall_mm, payload.cavities)) {
+    return;
+  }
+  // 3) POST an Flask
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
+  fetch("/calc/takt/spritzguss", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken
+    },
+    body: JSON.stringify(payload)
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(data => {
+      console.log("Backend => ", data);
+      if (data.error) {
+        alert("Fehler: " + data.error);
+        return;
+      }
+      if (!data.ok) {
+        alert("Spritzguss-Berechnung unvollständig oder abgelehnt.");
+        return;
+      }
+      // => UI befüllen
+      fillSpritzgussUI(data);
+    })
+    .catch(err => {
+      console.error("Spritzguss-Request Error:", err);
+      alert("Spritzguss-Anfrage fehlgeschlagen: " + err);
+    });
+}
+
+/********************************************************
+ * buildSpritzgussPayload => Sammelt Input-Felder
+ ********************************************************/
+function buildSpritzgussPayload() {
   const matSel   = document.getElementById("sgMaterialSelect");
   const cavEl    = document.getElementById("sgCavities");
   const partWEl  = document.getElementById("sgPartWeight");
@@ -156,9 +179,8 @@ function calculateSpritzguss() {
   const minCoolEl= document.getElementById("sgMinCool");
   const contChk  = document.getElementById("sgContourCoolChk");
 
-  // 2) Payload-Aufbau
-  const payload = {
-    material:       matSel?.value            || "PP",
+  return {
+    material:       matSel?.value || "PP",
     cavities:       parseInt(cavEl?.value)   || 4,
     partWeight:     parseFloat(partWEl?.value) || 50,
     runnerWeight:   parseFloat(runWEl?.value)  || 10,
@@ -177,47 +199,10 @@ function calculateSpritzguss() {
     min_cool_s:     parseFloat(minCoolEl?.value) || 1.5,
     hasContour:     !!contChk?.checked
   };
-
-  // 3) Vorab: simple Validation (optional)
-  if (!validateSpritzgussInputs(payload.wall_mm, payload.cavities)) {
-    return; // => Falls ungültig
-  }
-
-  // 4) Request an Backend
-  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
-  fetch("/calc/takt/spritzguss", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrfToken
-    },
-    body: JSON.stringify(payload)
-  })
-    .then(res => {
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return res.json();
-    })
-    .then(data => {
-      console.log("Backend (V2) => ", data);
-      if (data.error) {
-        alert("Fehler: " + data.error);
-        return;
-      }
-      if (!data.ok) {
-        alert("Spritzguss-Berechnung unvollständig oder abgelehnt.");
-        return;
-      }
-      // => UI befüllen
-      fillSpritzgussUI(data);
-    })
-    .catch(err => {
-      console.error("Spritzguss-Request Error (V2):", err);
-      alert("Spritzguss-Anfrage fehlgeschlagen: " + err);
-    });
 }
 
 /********************************************************
- * validateSpritzgussInputs => Plausibilitätscheck
+ * validateSpritzgussInputs => Plausi
  ********************************************************/
 function validateSpritzgussInputs(wall_mm, cav) {
   const errs = [];
@@ -227,7 +212,6 @@ function validateSpritzgussInputs(wall_mm, cav) {
   if (cav < sgConfig.minCav || cav > sgConfig.maxCav) {
     errs.push(`Kavitätenanzahl außerhalb (${sgConfig.minCav}–${sgConfig.maxCav})`);
   }
-
   if (errs.length > 0) {
     alert("Bitte prüfen:\n - " + errs.join("\n - "));
     return false;
@@ -236,51 +220,39 @@ function validateSpritzgussInputs(wall_mm, cav) {
 }
 
 /********************************************************
- * fillSpritzgussUI => Daten ins UI schreiben
+ * fillSpritzgussUI => Backend-Daten ins UI
  ********************************************************/
 function fillSpritzgussUI(data) {
-  // Erwartete Felder: data={
+  // data = {
   //   ok: true,
-  //   closure_tons: 120.0,
-  //   chosenMachine: "150t Automotive",
-  //   rawCycleShot: 7.5,
-  //   cyclePart_s: 1.88,
+  //   closure_tons, chosenMachine,
+  //   rawCycleShot, cyclePart_s,
   //   rawSegmentVals: [...],
-  //   machineExplain: "Maschine '150t Automotive' gewählt ...",
-  //   costEach: null,
-  //   throughput: null,
-  //   msg: "..."
+  //   machineExplain, costEach, throughput, ...
   // }
 
-  document.getElementById("sgClosureForce").textContent  =
+  document.getElementById("sgClosureForce").textContent =
     data.closure_tons?.toFixed(1) ?? "--";
-
   document.getElementById("sgChosenMachine").textContent =
     data.chosenMachine ?? "--";
-
-  document.getElementById("sgCycleShot").textContent     =
+  document.getElementById("sgCycleShot").textContent =
     data.rawCycleShot?.toFixed(2) ?? "--";
-
-  document.getElementById("sgCyclePart").textContent     =
+  document.getElementById("sgCyclePart").textContent =
     data.cyclePart_s?.toFixed(2) ?? "--";
 
-  // Zusätzliche Erklärung
+  // Maschine-Erklärung
   const explainEl = document.getElementById("sgMachineExplain");
   if (explainEl) {
     explainEl.textContent = data.machineExplain || "";
   }
 
-  // costEach & throughput in V2 = null => UI zeigt "--"
+  // cost & throughput => null => "--"
   const tputEl = document.getElementById("sgThroughput");
-  if (tputEl) {
-    tputEl.textContent = (data.throughput === null) ? "--" : data.throughput;
-  }
+  if (tputEl) tputEl.textContent = (data.throughput === null) ? "--" : data.throughput;
   const costEl = document.getElementById("sgCostEach");
-  if (costEl) {
-    costEl.textContent = (data.costEach === null) ? "--" : data.costEach;
-  }
+  if (costEl) costEl.textContent = (data.costEach === null) ? "--" : data.costEach;
 
-  // Donut-Chart
+  // Donut-Chart updaten
   if (Array.isArray(data.rawSegmentVals)) {
     drawSpritzgussChart(data.rawSegmentVals);
   }
@@ -292,7 +264,7 @@ function fillSpritzgussUI(data) {
 function drawSpritzgussChart(segmentVals) {
   const ctx = document.getElementById("sgCycleChart");
   if (!ctx) {
-    console.warn("drawSpritzgussChart => #sgCycleChart not found!");
+    console.warn("drawSpritzgussChart => Canvas fehlt!");
     return;
   }
   if (!sgChart) {
@@ -326,7 +298,7 @@ function applySpritzgussResult() {
   const cycText = document.getElementById("sgCyclePart")?.textContent || "0";
   const cycVal  = parseFloat(cycText) || 0;
 
-  // Bsp: Tab3 => #fertTable => Zeile 0 => Spalte[1]
+  // Bsp: Schreibt Zyklus in ein Table-Feld:
   const fertRows = document.querySelectorAll("#fertTable tbody tr");
   if (fertRows.length > 0) {
     fertRows[0].cells[1].querySelector("input").value = cycVal.toFixed(1);
@@ -336,25 +308,25 @@ function applySpritzgussResult() {
   const modalEl = document.getElementById("modalSpritzguss");
   if (modalEl) {
     const bsModal = bootstrap.Modal.getInstance(modalEl);
-    bsModal?.hide();
+    if (bsModal) bsModal.hide();
   }
   console.log("applySpritzgussResult => Zyklus", cycVal, "s übertragen.");
 }
 
 /********************************************************
- * loadProfile => Überschreibt Felder, wenn user sie
- *               nicht manuell geändert hat.
+ * loadProfile => z.B. 'standard', 'packaging', 'automotive'
+ *               => Setzt Felder nur dann neu, wenn user
+ *                  sie nicht manuell verändert hat.
  ********************************************************/
 function loadProfile(profileType) {
-  console.log("loadProfile called with:", profileType);
-  let sgProfileMsg = "Profil '" + profileType + "' hat geändert:\n";
+  console.log("loadProfile:", profileType);
   const changes = [];
+  let sgProfileMsg = "Profil '" + profileType + "' hat geändert:\n";
 
   function getLabelFor(id) {
     return fieldLabels[id] || id;
   }
 
-  // Nur überschreiben, falls 'flag' nicht true
   function setIfNotEdited(id, val, flag) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -366,8 +338,6 @@ function loadProfile(profileType) {
       }
     }
   }
-
-  // Nur überschreiben, falls 'flag' nicht true (Checkbox)
   function setCheckboxIfNotEdited(id, boolVal, flag) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -379,8 +349,6 @@ function loadProfile(profileType) {
       }
     }
   }
-
-  // Harte Überschreib-Funktion (immer)
   function setFormValue(id, val) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -400,7 +368,7 @@ function loadProfile(profileType) {
     }
   }
 
-  // 1) Profil-spezifische Logik
+  // 1) Profile-spezifische Änderungen
   if (profileType === "standard") {
     setFormValue("sgMachineCombo",    "100t Standard");
     setCheckbox("sgAutomotiveChk",    false);
@@ -435,14 +403,15 @@ function loadProfile(profileType) {
     setIfNotEdited("sgCavities",      2,   isCavEdited);
   }
 
-  // 2) Log ausgeben
+  // 2) Zusammenfassung
   if (changes.length > 0) {
     sgProfileMsg += changes.map(ch => " - " + ch).join("\n");
   } else {
     sgProfileMsg += " keine relevanten Felder verändert.";
   }
-
   console.log(sgProfileMsg);
+
+  // Ausgeben
   const profChgDiv = document.getElementById("sgProfileChanges");
   if (profChgDiv) {
     profChgDiv.innerText = sgProfileMsg;

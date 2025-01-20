@@ -1918,6 +1918,7 @@
       </div>
     </div>
   </div>  <!-- ================= SPRITZGUSS-MODAL ================= -->
+<!-- ============= SPRITZGUSS-MODAL – FINALE VERSION ============= -->
 <div
   class="modal fade"
   id="modalSpritzguss"
@@ -1927,8 +1928,10 @@
 >
   <div class="modal-dialog modal-xl modal-sg">
     <div class="modal-content">
+
       <!-- HEADER -->
       <div class="modal-header">
+        <!-- 5) Überschrift NICHT mehr „Szenario 1“ -->
         <h5 class="modal-title" id="spritzgussModalLabel">
           Spritzguss – Taktzeitrechner
         </h5>
@@ -1942,7 +1945,8 @@
 
       <!-- BODY -->
       <div class="modal-body p-2">
-        <!-- TABS (Basis / Erweitert) -->
+
+        <!-- TABS (Basis / Erweitert / Profile) -->
         <ul class="nav nav-tabs" id="sgTabs" role="tablist">
           <li class="nav-item" role="presentation">
             <button
@@ -1972,6 +1976,20 @@
               Erweitert
             </button>
           </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="sg-profile-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#sgTabProfile"
+              type="button"
+              role="tab"
+              aria-controls="sgTabProfile"
+              aria-selected="false"
+            >
+              Profile
+            </button>
+          </li>
         </ul>
 
         <!-- TAB-CONTENT -->
@@ -1991,6 +2009,9 @@
                   <option value="ABS">ABS</option>
                   <option value="PA6GF30">PA6GF30</option>
                   <option value="PC">PC</option>
+                  <option value="POM">POM</option>
+                  <option value="TPE">TPE</option>
+                  <option value="PBT">PBT</option>
                 </select>
               </div>
               <div class="col-md-6">
@@ -2000,6 +2021,8 @@
                   class="form-control form-control-sm"
                   id="sgCavities"
                   value="4"
+                  min="1"
+                  max="64"
                 />
               </div>
             </div>
@@ -2044,9 +2067,9 @@
 
             <div class="row mb-2">
               <div class="col-md-6">
-                <label class="form-label fw-bold mb-1"
-                  >Abmessungen (L×B, mm)</label
-                >
+                <label class="form-label fw-bold mb-1">
+                  Abmessungen (L×B, mm)
+                </label>
                 <div class="input-group input-group-sm">
                   <input
                     type="number"
@@ -2065,179 +2088,292 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold mb-1">Wandstärke (mm)</label>
+                <!-- Wir legen min="0.3" max="8.0" direkt im HTML an -->
                 <input
                   type="number"
                   class="form-control form-control-sm"
                   id="sgWallThickness"
                   value="2.0"
+                  min="0.3"
+                  max="8.0"
+                  step="0.1"
                 />
               </div>
             </div>
-          </div>
+          </div><!-- END TAB BASIC -->
 
-          <!-- TAB 2: ERWEITERT -->
+          <!-- TAB 2: ERWEITERT => Accordion -->
           <div
             class="tab-pane fade"
             id="sgTabAdvanced"
             role="tabpanel"
             aria-labelledby="sg-adv-tab"
           >
-            <div class="row mb-2">
-              <div class="col-md-6">
-                <label class="form-label fw-bold mb-1">Maschine (manuell)</label>
-                <select
-                  id="sgMachineCombo"
-                  class="form-select form-select-sm"
-                >
-                  <option value="50t Standard">50t Standard</option>
-                  <option value="100t Standard">100t Standard</option>
-                  <option value="150t Automotive">150t Automotive</option>
-                  <option value="200t HighSpeed">200t HighSpeed</option>
-                </select>
-                <div class="form-check mt-1">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="sgMachineAutoChk"
-                  />
-                  <label
-                    class="form-check-label"
-                    for="sgMachineAutoChk"
-                    style="font-size:0.85rem;"
+            <div class="accordion" id="sgAccordionAdvanced">
+              <!-- ACCORDION-EINTRAG 1: MASCHINE -->
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="sgAdvHeadOne">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#sgAdvCollapseOne"
+                    aria-expanded="false"
+                    aria-controls="sgAdvCollapseOne"
                   >
-                    Maschine automatisch?
-                  </label>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-bold mb-1">Formen-Innendruck (bar)</label>
-                <select
-                  id="sgPressureSelect"
-                  class="form-select form-select-sm"
+                    Maschinen-Parameter
+                  </button>
+                </h2>
+                <div
+                  id="sgAdvCollapseOne"
+                  class="accordion-collapse collapse"
+                  aria-labelledby="sgAdvHeadOne"
+                  data-bs-parent="#sgAccordionAdvanced"
                 >
-                  <option value="300">300</option>
-                  <option value="600">600</option>
-                  <option value="800">800</option>
-                </select>
-                <label class="form-label fw-bold mb-1 mt-2">
-                  Sicherheitszuschlag (%)
-                </label>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  id="sgSafetyFactor"
-                  value="30"
-                />
+                  <div class="accordion-body">
+                    <div class="row mb-2">
+                      <div class="col-md-6">
+                        <label class="form-label fw-bold mb-1">
+                          Maschine (manuell)
+                        </label>
+                        <select
+                          id="sgMachineCombo"
+                          class="form-select form-select-sm"
+                        >
+                          <!-- Zusätzliche Maschinen (z. B. 250t, 400t) -->
+                          <option value="80t HighSpeed">80t HighSpeed</option>
+                          <option value="100t Standard">100t Standard</option>
+                          <option value="120t AllElectric">120t AllElectric</option>
+                          <option value="150t Automotive">150t Automotive</option>
+                          <option value="200t Standard">200t Standard</option>
+                          <option value="250t Standard">250t Standard</option>
+                          <option value="350t Automotive">350t Automotive</option>
+                          <option value="400t Standard">400t Standard</option>
+                        </select>
+                        <div class="form-check mt-1">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="sgMachineAutoChk"
+                          />
+                          <label
+                            class="form-check-label"
+                            for="sgMachineAutoChk"
+                            style="font-size:0.85rem;"
+                          >
+                            Maschine automatisch?
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label fw-bold mb-1">
+                          Formen-Innendruck (bar)
+                        </label>
+                        <select
+                          id="sgPressureSelect"
+                          class="form-select form-select-sm"
+                        >
+                          <option value="300">300</option>
+                          <option value="600">600</option>
+                          <option value="800">800</option>
+                        </select>
+                        <label class="form-label fw-bold mb-1 mt-2">
+                          Sicherheitszuschlag (%)
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control form-control-sm"
+                          id="sgSafetyFactor"
+                          value="30"
+                        />
+                      </div>
+                    </div>
+                  </div><!-- .accordion-body -->
+                </div><!-- #sgAdvCollapseOne -->
+              </div><!-- .accordion-item -->
+
+              <!-- ACCORDION-EINTRAG 2: ZUSÄTZLICHE OPTIONEN -->
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="sgAdvHeadTwo">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#sgAdvCollapseTwo"
+                    aria-expanded="false"
+                    aria-controls="sgAdvCollapseTwo"
+                  >
+                    Zusätzliche Optionen
+                  </button>
+                </h2>
+                <div
+                  id="sgAdvCollapseTwo"
+                  class="accordion-collapse collapse"
+                  aria-labelledby="sgAdvHeadTwo"
+                  data-bs-parent="#sgAccordionAdvanced"
+                >
+                  <div class="accordion-body">
+                    <div class="form-check mb-1">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="sgAutomotiveChk"
+                      />
+                      <label class="form-check-label" for="sgAutomotiveChk">
+                        Automotive? (+20% Schließkraft)
+                      </label>
+                    </div>
+                    <div class="form-check mb-1">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="sgRobotChk"
+                      />
+                      <label class="form-check-label" for="sgRobotChk">
+                        Roboter? (+2s)
+                      </label>
+                    </div>
+                    <div class="form-check mb-1">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="sgSliderChk"
+                      />
+                      <label class="form-check-label" for="sgSliderChk">
+                        Schieber? (+1.5s)
+                      </label>
+                    </div>
+                    <label class="form-label fw-bold mb-1 mt-2">
+                      Nachdruck/Haltedruck (s)
+                    </label>
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      id="sgHoldPressure"
+                      value="2.0"
+                    />
+                    <label class="form-label fw-bold mb-1 mt-2">
+                      Min. Kühlzeit (s)
+                    </label>
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      id="sgMinCool"
+                      value="1.5"
+                    />
+                    <div class="form-check mb-1">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="sgContourCoolChk"
+                      />
+                      <label class="form-check-label" for="sgContourCoolChk">
+                        Konturnahe Kühlung (-20% Kühlzeit)
+                      </label>
+                    </div>
+                  </div><!-- .accordion-body -->
+                </div><!-- #sgAdvCollapseTwo -->
+              </div><!-- .accordion-item -->
+            </div><!-- .accordion -->
+          </div><!-- END TAB ERWEITERT -->
+
+          <!-- TAB 3: PROFILE -->
+          <div
+            class="tab-pane fade"
+            id="sgTabProfile"
+            role="tabpanel"
+            aria-labelledby="sg-profile-tab"
+          >
+            <div class="mt-2">
+              <h6>Wähle ein Prozess-Profil:</h6>
+              <div class="d-flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-sm"
+                  onclick="loadProfile('standard')"
+                >
+                  Standard-Profil
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-success btn-sm"
+                  onclick="loadProfile('packaging')"
+                >
+                  Verpackungs-Profil
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  onclick="loadProfile('automotive')"
+                >
+                  Automotive-Profil
+                </button>
+              </div>
+              <!-- Gibt an, welche Felder das Profil wirklich geändert hat (user-friendly labels) -->
+              <div
+                id="sgProfileChanges"
+                class="mt-3 p-2 border border-info"
+                style="white-space: pre-wrap; font-size:0.9rem;"
+              >
+                Noch kein Profil geladen.
               </div>
             </div>
-            <div class="row mb-2">
-              <div class="col-md-6">
-                <div class="form-check mb-1">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="sgAutomotiveChk"
-                  />
-                  <label class="form-check-label" for="sgAutomotiveChk">
-                    Automotive? (+20% Schließkraft)
-                  </label>
-                </div>
-                <div class="form-check mb-1">
-                  <input class="form-check-input" type="checkbox" id="sgRobotChk" />
-                  <label class="form-check-label" for="sgRobotChk">
-                    Roboter? (+2s)
-                  </label>
-                </div>
-                <div class="form-check mb-1">
-                  <input class="form-check-input" type="checkbox" id="sgSliderChk" />
-                  <label class="form-check-label" for="sgSliderChk">
-                    Schieber? (+1.5s)
-                  </label>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-bold mb-1">
-                  Nachdruck/Haltedruck (s)
-                </label>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  id="sgHoldPressure"
-                  value="2.0"
-                />
-                <label class="form-label fw-bold mb-1 mt-2">
-                  Auslastung (%)
-                </label>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  id="sgUtilPct"
-                  value="85"
-                />
-                <label class="form-label fw-bold mb-1 mt-2">
-                  Min. Kühlzeit (s)
-                </label>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  id="sgMinCool"
-                  value="1.5"
-                />
-                <div class="form-check mb-1">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="sgContourCoolChk"
-                  />
-                  <label class="form-check-label" for="sgContourCoolChk">
-                    Konturnahe Kühlung (-20% Kühlzeit)
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
+          </div><!-- END TAB PROFILE -->
+
         </div><!-- END of TAB-CONTENT -->
 
-        <hr/>
-        <!-- ERGEBNISSE: Sofort sichtbar unter Tabs -->
-        <div id="sgResultsArea" class="mt-2">
-          <h6>Ergebnisse</h6>
-          <div class="row">
-            <div class="col-md-6">
-              <div>
-                Schließkraft (t): <span id="sgClosureForce" class="fw-bold">--</span>
-              </div>
-              <div>
-                Gewählte Maschine:
-                <span id="sgChosenMachine" class="fw-bold">--</span>
-              </div>
-              <div>
-                Zyklus/Schuss (s):
-                <span id="sgCycleShot" class="fw-bold">--</span>
-              </div>
-              <div>
-                Zyklus/Teil (s):
-                <span id="sgCyclePart" class="fw-bold">--</span>
-              </div>
-              <div>
-                Teile/h (real):
-                <span id="sgThroughput" class="fw-bold">--</span>
-              </div>
-              <div>
-                Kosten/Teil:
-                <span id="sgCostEach" class="fw-bold">--</span>
-              </div>
+        <hr />
+        <!-- ERGEBNISSE: Kompakter Bereich -->
+        <h6>Ergebnisse</h6>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-1">
+              Schließkraft (t):
+              <span id="sgClosureForce" class="fw-bold">--</span>
             </div>
-            <div class="col-md-6">
-              <canvas
-                id="sgCycleChart"
-                width="240"
-                height="240"
-                style="border:1px solid #ccc;"
-              ></canvas>
+            <div class="mb-1">
+              Gewählte Maschine:
+              <span id="sgChosenMachine" class="fw-bold">--</span>
+            </div>
+            <div class="mb-1">
+              Zyklus/Schuss (s):
+              <span id="sgCycleShot" class="fw-bold">--</span>
+            </div>
+            <div class="mb-1">
+              Zyklus/Teil (s):
+              <span id="sgCyclePart" class="fw-bold">--</span>
+            </div>
+
+            <!-- Falls wir die Maschine-Erklärung hier wollen: -->
+            <div
+              id="sgMachineExplain"
+              class="text-muted"
+              style="font-size:0.85rem;"
+            >
+              <!-- JS kann hier eine Erklärung einfügen, z. B.:
+                   "Maschine '150t Automotive' gewählt, da mind. 110 t benötigt werden." -->
+            </div>
+
+            <!-- Ausgeblendete Felder für Durchsatz/Kosten, falls das JS noch "--" setzt -->
+            <div style="display:none;">
+              Teile/h:
+              <span id="sgThroughput">--</span>
+            </div>
+            <div style="display:none;">
+              Kosten/Teil:
+              <span id="sgCostEach">--</span>
             </div>
           </div>
+          <div class="col-md-6">
+            <canvas
+              id="sgCycleChart"
+              width="240"
+              height="240"
+              style="border:1px solid #ccc;"
+            ></canvas>
+          </div>
         </div>
+
       </div><!-- END modal-body -->
 
       <!-- FOOTER-BUTTONS -->
@@ -2249,7 +2385,6 @@
         >
           Schließen
         </button>
-        <!-- WICHTIG: Im AJAX-Ansatz rufst du JETZT calculateSpritzguss() auf, NICHT mehr lokal rechnen. -->
         <button
           type="button"
           class="btn btn-primary btn-sm"
@@ -2265,9 +2400,11 @@
           Übernehmen
         </button>
       </div>
-    </div>
-  </div>
-</div>
+
+    </div><!-- .modal-content -->
+  </div><!-- .modal-dialog -->
+</div><!-- #modalSpritzguss -->
+
 <!-- END #modalSpritzguss -->
 <!-- DRUCKGUSS-MODAL (Fancy v2.0) -->
   <div class="modal fade" id="modalDruckguss" tabindex="-1" aria-labelledby="druckgussModalLabel" aria-hidden="true">

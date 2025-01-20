@@ -1,19 +1,35 @@
-# routes/routes_calc_takt.py
-
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
 from core.extensions import limiter, csrf
 
-
 takt_calc_bp = Blueprint('takt_calc_bp', __name__)
+
 @takt_calc_bp.route("/spritzguss", methods=["POST"])
-#@login_required
 @csrf.exempt
 @limiter.limit("20/minute")
 def calc_spritzguss():
     """
-    POST /calc/takt/spritzguss  (V2-Version)
-    Erwartet JSON mit denselben Feldern wie vorher.
+    POST /calc/takt/spritzguss
+    Erwartet JSON mit Feldern wie:
+      {
+        "material": "PP",
+        "cavities": 4,
+        "partWeight": 50.0,
+        "runnerWeight": 10.0,
+        "length_mm": 100.0,
+        "width_mm": 80.0,
+        "wall_mm": 2.0,
+        "machineKey": "80t HighSpeed",
+        "isMachineAuto": false,
+        "safe_pct": 30.0,
+        "press_bar": 300,
+        "isAutomotive": false,
+        "hasRobot": false,
+        "hasSlider": false,
+        "hold_s": 2.0,
+        "min_cool_s": 1.5,
+        "hasContour": false
+      }
     """
     try:
         data = request.get_json()
@@ -43,10 +59,15 @@ def calc_spritzguss():
         hasContour     = bool(data.get("hasContour", False))
 
         # ---------------------------------------------------
-        # 2) DATENBASEN
+        # 2) MASCHINEN- & MATERIAL-DATEN (vereint aus V1)
         # ---------------------------------------------------
-        # Maschinen-Daten (inklusive neuer Stufen)
         machineData = {
+            "50t Standard": {
+                "tons": 50,
+                "openclose": 1.8,
+                "min_cycle": 3.5,
+                "flags": []
+            },
             "80t HighSpeed": {
                 "tons": 80,
                 "openclose": 1.0,
@@ -97,7 +118,6 @@ def calc_spritzguss():
             }
         }
 
-        # Material-Daten
         materialData = {
             "PP":      { "coolf": 0.30 },
             "ABS":     { "coolf": 0.35 },
@@ -109,35 +129,32 @@ def calc_spritzguss():
         }
 
         # ---------------------------------------------------
-        # 3) HILFSFUNKTION: pickAutoMachine
-        #    Sucht die kleinstmögliche Maschine >= benötigte Tons
+        # 3) HILFSFUNKTION => Maschine auto wählen
         # ---------------------------------------------------
-        def pick_auto_machine(tonsNeeded):
+        def pick_auto_machine(tons_needed):
             bestKey = None
             bestVal = float("inf")
-            for k, info in machineData.items():
+            for mk, info in machineData.items():
                 t = info["tons"]
-                if t >= tonsNeeded and t < bestVal:
+                if t >= tons_needed and t < bestVal:
                     bestVal = t
-                    bestKey = k
+                    bestKey = mk
             if not bestKey:
-                # Falls keine Maschine tonnenmäßig reicht,
-                # nimm die größte verfügbare:
-                bestKey = max(machineData.keys(),
-                              key=lambda x: machineData[x]["tons"])
+                # Falls keine Maschine tonnenmäßig reicht => größte
+                bestKey = max(machineData.keys(), key=lambda x: machineData[x]["tons"])
             return bestKey
 
         # ---------------------------------------------------
-        # 4) BERECHNUNG
+        # 4) BERECHNUNG => Aus V1-Logik ins Backend übernommen
         # ---------------------------------------------------
-        # (a) Cooling-Factor
+        # (a) Material-Kühlfaktor
         matObj = materialData.get(material, materialData["PP"])
         coolFactor = matObj["coolf"]
 
         # (b) Schussgewicht
         shotWeight_g = (partWeight + runnerWeight) * cavities
 
-        # (c) Projizierte Fläche (cm^2)
+        # (c) Projizierte Fläche (cm²)
         projArea_cm2 = (length_mm * width_mm) / 100.0
 
         # (d) Schließkraft (t)
@@ -146,12 +163,10 @@ def calc_spritzguss():
         if isAutomotive:
             closure_tons *= 1.2  # +20%
 
-        # (e) Maschine aus den Stammdaten
+        # (e) Maschine
         chosenKey = machineKey
         if chosenKey not in machineData:
             chosenKey = "80t HighSpeed"
-
-        # => Falls isMachineAuto, dann auto-picken
         if isMachineAuto:
             chosenKey = pick_auto_machine(closure_tons)
 
@@ -168,31 +183,28 @@ def calc_spritzguss():
         handle_s = 2.0 if hasRobot else 0.5
         slider_s = 1.5 if hasSlider else 0.0
 
-        # (h) Einspritzzeit + Nachdruck
-        injection_s = 1.0 + hold_s  # injBaseTime + hold_s
+        # (h) Einspritzen + Halten
+        injection_s = 1.0 + hold_s
 
         # (i) Maschine open/close
         oc_s = chosenMachine["openclose"]
 
-        # (j) Zyklus pro Schuss
+        # (j) Gesamte Zykluszeit pro Schuss
         rawCycleShot = oc_s + injection_s + rawCool_s + handle_s + slider_s
+        #     => nicht unter Maschinen-Minimalzyklus
+        minCycle = chosenMachine["min_cycle"]
+        if rawCycleShot < minCycle:
+            rawCycleShot = minCycle
 
-        # (k) Minimalzyklus der Maschine
-        minCyc = chosenMachine["min_cycle"]
-        if rawCycleShot < minCyc:
-            rawCycleShot = minCyc
-
-        # (l) Zyklus pro Teil
+        # (k) Zyklus pro Teil
         cyclePart_s = rawCycleShot / cavities
 
         # ---------------------------------------------------
-        # 5) ERGEBNIS-VORBEREITUNG
+        # 5) Ergebnis => JSON
         # ---------------------------------------------------
-        # Wir belassen "costEach" und "throughput" in dieser V2-Demo auf Null/None.
-        # Frontend kann "--" anzeigen, wenn None.
         machineExplain = (
-            f"Maschine '{chosenKey}' gewählt, da mindestens "
-            f"{round(closure_tons,1)} t benötigt werden."
+            f"Maschine '{chosenKey}' gewählt, "
+            f"da mindestens {round(closure_tons,1)} t benötigt werden."
         )
 
         result = {
@@ -201,7 +213,6 @@ def calc_spritzguss():
             "chosenMachine": chosenKey,
             "rawCycleShot": round(rawCycleShot, 2),
             "cyclePart_s": round(cyclePart_s, 2),
-            # Diese Liste wird z.B. vom Donut-Chart gebraucht:
             "rawSegmentVals": [
                 round(oc_s, 2),
                 round(injection_s, 2),
@@ -209,9 +220,10 @@ def calc_spritzguss():
                 round(handle_s + slider_s, 2)
             ],
             "machineExplain": machineExplain,
-            "costEach": None,        # V2 => nicht berechnet => UI zeigt "--"
-            "throughput": None,      # V2 => nicht berechnet => UI zeigt "--"
-            "msg": "Spritzguss-Berechnung (Backend V2)."
+            # Noch nicht kalkuliert => None => UI zeigt "--"
+            "costEach": None,
+            "throughput": None,
+            "msg": "Spritzguss-Berechnung aus V1-Logik (Backend)."
         }
 
         return jsonify(result), 200
