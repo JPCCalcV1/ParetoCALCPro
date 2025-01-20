@@ -35,7 +35,8 @@ def register():
         return jsonify({"error":"User existiert bereits"}), 400
 
     # Neuen User anlegen
-    new_user = User(email=email, password=generate_password_hash(password))
+    pw_hash = generate_password_hash(password)
+    new_user = User(email, pw_hash)
     new_user.license_tier = "test"
     new_user.license_expiry = datetime.now() + timedelta(days=7)
 
