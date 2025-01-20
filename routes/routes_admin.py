@@ -200,3 +200,41 @@ def delete_user():
     db.session.delete(user)
     db.session.commit()
     return jsonify({"message": f"User {user.email} wurde gelöscht"}), 200
+
+# FILE: routes/routes_admin.py (Erweiterung)
+@admin_bp.route("/cron/trial_reminder", methods=["GET"])
+def cron_trial_reminder():
+    """
+    Durchläuft alle user, die z.B. ABO + TRIAL in 2 Tagen enden -> Email
+    """
+    # 1) Hole ABO-User
+    #    "trial_end" -> da du license_expiry in user hast
+    #    ODER du guckst in user.stripe_subscription_id -> stripe data
+    #    Wir machen hier mal nur user.license_expiry:
+    from helpers.sendgrid_helper import send_email
+
+    soon = datetime.now() + timedelta(days=2)
+
+    # Bsp: wir wollen user, die license_tier in [plus, premium], license_expiry < soon, >= now
+    # und stripe_subscription_id != None
+    users = User.query.filter(
+        User.stripe_subscription_id != None,
+        User.license_tier.in_(["plus","premium","extended"]),
+        User.license_expiry >= datetime.now(),
+        User.license_expiry <= soon
+    ).all()
+
+    cnt = 0
+    for u in users:
+        subject = "Hinweis: Deine Testphase endet in Kürze"
+        txt = f"""Hallo {u.email},
+deine Testphase oder dein Trial endet bald (am {u.license_expiry}).
+Falls du kündigen möchtest, besuche bitte dein Dashboard /account.
+Ansonsten läuft dein ABO wie geplant weiter.
+Grüße,
+Dein ParetoCalc-Team
+"""
+        send_email(u.email, subject, txt)
+        cnt += 1
+
+    return jsonify({"message": f"Reminder sent to {cnt} user(s)."})

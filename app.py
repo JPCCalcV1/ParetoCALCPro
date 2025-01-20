@@ -20,6 +20,7 @@ from routes.mycalc_routes import mycalc_bp
 from routes.routes_calc_param import param_calc_bp
 from routes.routes_calc_takt import takt_calc_bp
 from routes.routes_landing import landing_bp
+from routes.routes_account import account_bp
 
 def create_app():
     app = Flask(__name__)
@@ -46,7 +47,7 @@ def create_app():
     app.register_blueprint(mycalc_bp, url_prefix="/mycalc")
     app.register_blueprint(param_calc_bp, url_prefix="/calc/param")
     app.register_blueprint(takt_calc_bp, url_prefix="/calc/takt")
-
+    app.register_blueprint(account_bp, url_prefix="/account")
     @app.route("/")
     def landing_page():
         return render_template("landing_page.html")
@@ -57,18 +58,9 @@ def create_app():
 
     @app.before_request
     def require_login():
-        """
-        Verhindert 307/401 bei /pay/webhook,
-        da Stripe dort ohne Session-Zugriff POSTet.
-        """
         public_routes = [
-            "/",
-            "/auth/login",
-            "/auth/register",
-            "/auth/whoami",
-            "/favicon.ico",
-            "/robots.txt",
-            "/pay/webhook"  # Wichtig!
+            "/", "/auth/login", "/auth/register", "/auth/whoami",
+            "/favicon.ico", "/robots.txt", "/pay/webhook"
         ]
         if not any(request.path.startswith(r) for r in public_routes):
             if not session.get("user_id"):
@@ -76,16 +68,18 @@ def create_app():
 
     @app.before_request
     def check_license():
-        # erst checken, ob route public ist oder ob user eingeloggt ist
-        public_routes = [...]
         if request.path.startswith("/mycalc"):
             user_id = session.get("user_id")
             if not user_id:
-                return redirect("/auth/login")
+                return redirect("/auth/login")  # nicht eingeloggt
             user = User.query.get(user_id)
+            # Falls Test oder abgelaufen => Meldung
             if user.license_tier == "test":
-                return redirect("/upgrade")
-        # oder „license_level == no_access“ -> redirect("/upgrade")
+                # => Variante A: wir hängen msg an
+                return redirect("/upgrade?msg=Bitte%20ein%20Abo%20abschliessen!")
+            if user.license_level() == "no_access":
+                # license_expiry abgelaufen => Meldung
+                return redirect("/upgrade?msg=Zugang%20abgelaufen!")
 
     return app
 

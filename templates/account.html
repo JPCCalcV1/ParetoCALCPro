@@ -1,0 +1,80 @@
+<!-- FILE: templates/account/dashboard.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Mein Account</title>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
+</head>
+<body class="p-3">
+  <h2>Mein Account / Dashboard</h2>
+  <hr/>
+
+  <p>Hallo {{ user.email }}!</p>
+
+  <div class="mb-3">
+    <strong>Aktueller Plan:</strong> {{ user.license_tier }}<br/>
+    <strong>Gültig bis:</strong> {{ user.license_expiry or "N/A" }}<br/>
+  </div>
+
+  {% if subscription_id %}
+    <div class="mb-3">
+      <p><strong>Subscription ID:</strong> {{ subscription_id }}</p>
+      {% if next_billing_date %}
+        <p>Nächste Abrechnung: {{ next_billing_date }}</p>
+      {% endif %}
+      <!-- Cancel-Button -->
+      <form action="{{ url_for('account_bp.cancel_subscription') }}" method="POST">
+        <button class="btn btn-danger">
+          ABO kündigen
+        </button>
+      </form>
+    </div>
+  {% else %}
+    <p>Kein aktives ABO hinterlegt.</p>
+  {% endif %}
+
+  <!-- Upgrade-Buttons (z. B. "Plus", "Premium", "Extended") -->
+  <div class="mb-3">
+    <h5>Plan wechseln / Upgrade</h5>
+    <button class="btn btn-outline-info" onclick="doUpgrade('plus')">Auf Plus wechseln</button>
+    <button class="btn btn-outline-warning" onclick="doUpgrade('premium')">Auf Premium wechseln</button>
+    <button class="btn btn-outline-success" onclick="doUpgrade('extended')">Extended / Jahres-Abo</button>
+  </div>
+
+  <!-- 2FA Toggle (optional) -->
+  <div class="mb-3">
+    <p>2FA ist {{ "aktiviert" if user.twofa_enabled else "deaktiviert" }}.</p>
+    <form action="{{ url_for('account_bp.toggle_2fa') }}" method="POST">
+      <button class="btn btn-secondary">
+        {{ "2FA deaktivieren" if user.twofa_enabled else "2FA aktivieren" }}
+      </button>
+    </form>
+  </div>
+
+  <hr/>
+  <p>
+    <a href="/mycalc/" class="btn btn-outline-secondary">Zurück zu MyCalc</a>
+  </p>
+
+  <script>
+    async function doUpgrade(whichTier){
+      try {
+        const resp = await fetch("/account/upgrade", {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({ which_tier: whichTier })
+        });
+        const d = await resp.json();
+        if(d.error){ alert(d.error); return; }
+        window.location = d.checkout_url;
+      } catch(err){
+        alert("Fehler: " + err);
+      }
+    }
+  </script>
+</body>
+</html>
