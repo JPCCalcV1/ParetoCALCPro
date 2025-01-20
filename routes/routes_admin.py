@@ -238,3 +238,17 @@ Dein ParetoCalc-Team
         cnt += 1
 
     return jsonify({"message": f"Reminder sent to {cnt} user(s)."})
+
+@admin_bp.route("/delete_by_email_temp", methods=["POST"])
+@csrf.exempt
+def delete_by_email_temp():
+    data = request.get_json() or {}
+    email = data.get("email","").strip().lower()
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error":"User not found"}), 404
+
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"message": f"User {user.email} wurde gelöscht"}), 200
