@@ -261,9 +261,19 @@ def calc_kaltfliess():
     Gibt JSON zurück (kosten, co2 etc.).
     """
     try:
+        # Hole die JSON-Daten aus dem Request
         data = request.get_json()
-        if not data:
-            return jsonify({"error": "No JSON body"}), 400
+
+        if "user_id" not in session:
+            return jsonify({"error": "Not logged in"}), 403
+
+        user = User.query.get(session["user_id"])
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        lvl = user.license_level()
+        if lvl not in ["premium", "extended", "plus"]:
+            return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
         # (1) Eingaben
         matName    = data.get("matName", "C10 (Stahl)")
@@ -416,9 +426,19 @@ def calc_schmieden():
       }
     """
     try:
+        # Hole die JSON-Daten aus dem Request
         data = request.get_json()
-        if not data:
-            return jsonify({"error": "No JSON body"}), 400
+
+        if "user_id" not in session:
+            return jsonify({"error": "Not logged in"}), 403
+
+        user = User.query.get(session["user_id"])
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        lvl = user.license_level()
+        if lvl not in ["premium", "extended", "plus"]:
+            return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
         # (1) Eingaben aus JSON
         mat_str   = data.get("mat_str", "C45 (Stahl)")
@@ -566,9 +586,19 @@ def calc_pcb():
     }
     """
     try:
+        # Hole die JSON-Daten aus dem Request
         data = request.get_json()
-        if not data:
-            return jsonify({"error": "No JSON body"}), 400
+
+        if "user_id" not in session:
+            return jsonify({"error": "Not logged in"}), 403
+
+        user = User.query.get(session["user_id"])
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        lvl = user.license_level()
+        if lvl not in ["premium", "extended", "plus"]:
+            return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
         # (1) Eingaben aus dem JSON
         l_mm       = float(data.get("l_mm", 100.0))

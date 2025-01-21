@@ -2,6 +2,10 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_required
 from core.extensions import limiter, csrf
 
+from flask import Blueprint, request, jsonify, session
+from models.user import User
+from core.extensions import limiter, csrf
+
 takt_calc_bp = Blueprint('takt_calc_bp', __name__)
 
 @takt_calc_bp.route("/spritzguss", methods=["POST"])
@@ -31,9 +35,19 @@ def calc_spritzguss():
       }
     """
     try:
+        # Hole die JSON-Daten aus dem Request
         data = request.get_json()
-        if not data:
-            return jsonify({"error": "No JSON body"}), 400
+
+        if "user_id" not in session:
+            return jsonify({"error": "Not logged in"}), 403
+
+        user = User.query.get(session["user_id"])
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        lvl = user.license_level()
+        if lvl not in ["premium", "extended", "plus"]:
+            return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
         # ---------------------------------------------------
         # 1) EINGABE-PARAMETER AUS JSON
@@ -258,9 +272,19 @@ def calc_druckguss():
     }
     """
     try:
+        # Hole die JSON-Daten aus dem Request
         data = request.get_json()
-        if not data:
-            return jsonify({"error": "No JSON body"}), 400
+
+        if "user_id" not in session:
+            return jsonify({"error": "Not logged in"}), 403
+
+        user = User.query.get(session["user_id"])
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        lvl = user.license_level()
+        if lvl not in ["premium", "extended", "plus"]:
+            return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
         # (1) Eingaben parsen
         matName       = data.get("matName", "AlSi9Cu3")
@@ -443,9 +467,19 @@ def calc_milling():
     }
     """
     try:
+        # Hole die JSON-Daten aus dem Request
         data = request.get_json()
-        if not data:
-            return jsonify({"error": "No JSON body"}), 400
+
+        if "user_id" not in session:
+            return jsonify({"error": "Not logged in"}), 403
+
+        user = User.query.get(session["user_id"])
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        lvl = user.license_level()
+        if lvl not in ["premium", "extended", "plus"]:
+            return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
         # (1) Eingaben parsen
         matName = data.get("matName", "Stahl S235")
@@ -601,11 +635,20 @@ def calc_stamping():
     }
     Gibt u.a. pressForce_t, chosenPress, cycle_s, costEach, co2Each zurück.
     """
-
     try:
+        # Hole die JSON-Daten aus dem Request
         data = request.get_json()
-        if not data:
-            return jsonify({"error": "No JSON body"}), 400
+
+        if "user_id" not in session:
+            return jsonify({"error": "Not logged in"}), 403
+
+        user = User.query.get(session["user_id"])
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        lvl = user.license_level()
+        if lvl not in ["premium", "extended", "plus"]:
+            return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
         # 1) Eingaben parsen
         matName   = data.get("matName", "Stahl DC01")
