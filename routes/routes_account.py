@@ -1,171 +1,254 @@
-# FILE: routes/routes_account.py
-
-import os
-import stripe
-from flask import Blueprint, request, session, render_template, jsonify, redirect, url_for, flash
-from datetime import datetime, timedelta
-from models.user import db, User
-from helpers.sendgrid_helper import send_email  # falls du sowas hast
+from flask import Blueprint, render_template, request, jsonify, session, current_app
 from functools import wraps
-from core.extensions import csrf  # <--- das fehlte!
-account_bp = Blueprint("account_bp", __name__)
+from datetime import datetime, timedelta
 
-STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
-stripe.api_key = STRIPE_SECRET_KEY
+# Achtung: importiere NICHT erneut "db = SQLAlchemy()",
+# sondern nutze dein existing db-Objekt
+from models.user import db, User
+from models.payment_log import PaymentLog
+from core.extensions import csrf
 
-def login_required(f):
+admin_bp = Blueprint("admin_bp", __name__)
+
+def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if "user_id" not in session:
-            # oder flash("Bitte zuerst einloggen.")
-            return redirect("/auth/login")
+        uid = session.get("user_id")
+        if not uid:
+            return jsonify({"error": "Not logged in"}), 401
+        user = User.query.get(uid)
+        if not user or not user.is_admin:
+            return jsonify({"error": "No admin rights"}), 403
         return f(*args, **kwargs)
     return decorated
 
-@account_bp.route("/", methods=["GET"])
+@admin_bp.route("/create_admin_temp", methods=["POST"])
 @csrf.exempt
-@login_required
-def my_account_home():
+def create_admin_temp():
     """
-    Kunden-Dashboard, zeigt:
-    - Aktuellen Plan (license_tier)
-    - license_expiry
-    - ABO-Infos (Subscription ID, next billing, cancel-Button)
-    - 2FA-Status (falls du es hast)
+    Erstellt schnell einen Admin-User.
+    JSON-Beispiel: { "email":"admin@paretocalc.com", "password":"abc123" }
     """
-    user_id = session["user_id"]
+    data = request.get_json() or {}
+    email = data.get("email","").strip().lower()
+    raw_pw = data.get("password","")
+
+    if not email or not raw_pw:
+        return jsonify({"error":"Email/Pass fehlt"}), 400
+
+    existing = User.query.filter_by(email=email).first()
+    if existing:
+        return jsonify({"error":"User existiert bereits"}), 400
+
+    new_user = User(email, raw_pw)
+    # Admin = license_tier = "extended", 1 Jahr
+    new_user.license_tier = "extended"
+    new_user.license_expiry = datetime.now() + timedelta(days=365)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"message": f"Admin {email} angelegt"}), 200
+
+@admin_bp.route("/dashboard", methods=["GET"])
+@admin_required
+def admin_dashboard():
+    """
+    Rendert das Admin-Dashboard Template (admin_dashboard.html).
+    """
+    return render_template("admin_dashboard.html")
+
+@admin_bp.route("/users", methods=["GET"])
+@admin_required
+def list_users():
+    """
+    Liefert JSON-Liste aller User (inkl. license, addons, GPT-Counts).
+    """
+    users = User.query.all()
+    current_app.logger.info("[admin/users] Found %d users from DB %s", len(users),
+                            current_app.config["SQLALCHEMY_DATABASE_URI"])
+    out = []
+    for u in users:
+        out.append({
+            "id": u.id,
+            "email": u.email,
+            "license": u.license_tier,
+            "license_expiry": str(u.license_expiry) if u.license_expiry else None,
+            "addons": u.addons,
+            "gpt_used_count": u.gpt_used_count,
+            "gpt_allowed_count": u.gpt_allowed_count
+        })
+    return jsonify(out)
+
+@admin_bp.route("/set_license", methods=["POST"])
+@csrf.exempt
+@admin_required
+def set_license():
+    """
+    Setzt license_tier eines Users manuell.
+    JSON-Beispiel: { "user_id": 5, "license_tier": "premium" }
+    """
+    data = request.get_json() or {}
+    user_id = data.get("user_id")
+    tier = data.get("license_tier", "test")
+
     user = User.query.get(user_id)
     if not user:
-        # Falls nicht vorhanden => Abbruch
-        return redirect("/auth/logout")
+        return jsonify({"error":"User not found"}), 404
 
-    # Check ABO: subscription?
-    sub_id = getattr(user, "stripe_subscription_id", None)
+    user.license_tier = tier
+    # GPT-Limits je nach Tier
+    if tier == "test":
+        user.gpt_allowed_count = 10
+    elif tier == "plus":
+        user.gpt_allowed_count = 25
+    elif tier == "premium":
+        user.gpt_allowed_count = 50
+    elif tier == "extended":
+        user.gpt_allowed_count = 200
+    else:
+        user.gpt_allowed_count = 0
 
-    # Minimale Info, um z. B. next_billing_date anzuzeigen:
-    next_billing = None
-    if sub_id:
-        try:
-            sub_obj = stripe.Subscription.retrieve(sub_id)
-            next_billing_ts = sub_obj.get("current_period_end")  # Unix timestamp
-            if next_billing_ts:
-                next_billing = datetime.utcfromtimestamp(next_billing_ts)
-        except:
-            pass
+    # Reset usage
+    user.gpt_used_count = 0
+    db.session.commit()
+    return jsonify({"message": f"{user.email} => {tier}"}), 200
 
-    return render_template("account/dashboard.html",
-        user=user,
-        subscription_id=sub_id,
-        next_billing_date=next_billing,
-    )
-
-@account_bp.route("/cancel", methods=["POST"])
+@admin_bp.route("/addon/set", methods=["POST"])
 @csrf.exempt
-@login_required
-def cancel_subscription():
-    user_id = session["user_id"]
+@admin_required
+def set_addon():
+    """
+    Fügt dem User ein Addon hinzu (z. B. 'GPT-Export').
+    JSON: { "user_id": 5, "addon": "GPT-Export" }
+    """
+    data = request.get_json() or {}
+    user_id = data.get("user_id")
+    addon = data.get("addon","").strip()
+
     user = User.query.get(user_id)
-    if not user or not user.stripe_subscription_id:
-        return jsonify({"error":"No subscription to cancel."}), 400
+    if not user:
+        return jsonify({"error":"User not found"}), 404
 
-    try:
-        stripe.Subscription.modify(
-            user.stripe_subscription_id,
-            cancel_at_period_end=True
-        )
-        user.license_tier = "test"
-        user.license_expiry = datetime.now()  # etc...
-        db.session.commit()
+    curr = user.addons.split(",") if user.addons else []
+    if addon and addon not in curr:
+        curr.append(addon)
+    user.addons = ",".join([c for c in curr if c])
+    db.session.commit()
+    return jsonify({"message": f"Addon '{addon}' set for {user.email}"}), 200
 
-        # OPTIONAL: SendGrid-Mail
-        from helpers.sendgrid_helper import send_email
-        subject = "Abo-Kündigung bestätigt"
-        txt = f"""Hallo {user.email},
-dein Abo (Subscription ID: {user.stripe_subscription_id}) wurde gekündigt.
-Du behältst den Zugang bis Periodenende. 
+@admin_bp.route("/stripe_events", methods=["GET"])
+@admin_required
+def list_stripe_events():
+    """
+    Zeigt die PaymentLogs aus der DB an.
+    """
+    logs = PaymentLog.query.all()
+    out = []
+    for l in logs:
+        out.append({
+            "id": l.id,
+            "event_id": l.event_id,
+            "event_type": l.event_type,
+            "raw_data": l.raw_data[:200],
+            "created_at": str(l.created_at)
+        })
+    return jsonify(out)
+
+@admin_bp.route("/set_gpt_count", methods=["POST"])
+@csrf.exempt
+@admin_required
+def set_gpt_count():
+    """
+    Manuell GPT-Kontingent (allowed_count) verändern.
+    JSON: { "user_id": 5, "allowed_count": 100 }
+    """
+    data = request.get_json() or {}
+    user_id = data.get("user_id")
+    allowed_count = data.get("allowed_count", 50)
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error":"User not found"}), 404
+
+    user.gpt_allowed_count = allowed_count
+    db.session.commit()
+    return jsonify({"message": f"{user.email} => GPT allowed {allowed_count}"}), 200
+
+# NEU: Delete user
+@admin_bp.route("/delete_user", methods=["POST"])
+@csrf.exempt
+@admin_required
+def delete_user():
+    """
+    Löscht einen User komplett aus der Datenbank.
+    JSON-Beispiel: { "user_id": 5 }
+    """
+    data = request.get_json() or {}
+    user_id = data.get("user_id")
+
+    if not user_id:
+        return jsonify({"error":"user_id fehlt"}), 400
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error":"User not found"}), 404
+
+    # Optional: Verhindern, dass man sich selbst löscht, oder den Admin user?
+    # if user.email == "admin@paretocalc.com":
+    #    return jsonify({"error":"Cannot delete main admin"}), 403
+
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"message": f"User {user.email} wurde gelöscht"}), 200
+
+# FILE: routes/routes_admin.py (Erweiterung)
+@admin_bp.route("/cron/trial_reminder", methods=["GET"])
+def cron_trial_reminder():
+    """
+    Durchläuft alle user, die z.B. ABO + TRIAL in 2 Tagen enden -> Email
+    """
+    # 1) Hole ABO-User
+    #    "trial_end" -> da du license_expiry in user hast
+    #    ODER du guckst in user.stripe_subscription_id -> stripe data
+    #    Wir machen hier mal nur user.license_expiry:
+    from helpers.sendgrid_helper import send_email
+
+    soon = datetime.now() + timedelta(days=2)
+
+    # Bsp: wir wollen user, die license_tier in [plus, premium], license_expiry < soon, >= now
+    # und stripe_subscription_id != None
+    users = User.query.filter(
+        User.stripe_subscription_id != None,
+        User.license_tier.in_(["plus","premium","extended"]),
+        User.license_expiry >= datetime.now(),
+        User.license_expiry <= soon
+    ).all()
+
+    cnt = 0
+    for u in users:
+        subject = "Hinweis: Deine Testphase endet in Kürze"
+        txt = f"""Hallo {u.email},
+deine Testphase oder dein Trial endet bald (am {u.license_expiry}).
+Falls du kündigen möchtest, besuche bitte dein Dashboard /account.
+Ansonsten läuft dein ABO wie geplant weiter.
 Grüße,
 Dein ParetoCalc-Team
 """
-        send_email(
-            user.email,
-            subject,
-            txt,
-            f"<p>{txt}</p>"
-        )
+        send_email(u.email, subject, txt)
+        cnt += 1
 
-        # User Experience
-        return redirect(url_for("account_bp.my_account_home"))
+    return jsonify({"message": f"Reminder sent to {cnt} user(s)."})
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-@account_bp.route("/upgrade", methods=["POST"])
+@admin_bp.route("/delete_by_email_temp", methods=["POST"])
 @csrf.exempt
-@login_required
-def upgrade_plan():
-    """
-    Falls der User z. B. von 'plus' auf 'premium' wechseln will,
-    oder 'test' => 'plus' etc.
-    => Erzeugt einen Stripe-Checkout => mode="subscription"
-       aber subscription_data={metadata=...}
-    => Dann leitet er um => /pay/success
-    => Ähnlich wie in routes_payment 'checkout-sub'
-    """
-    user_id = session["user_id"]
-    user = User.query.get(user_id)
+def delete_by_email_temp():
+    data = request.get_json() or {}
+    email = data.get("email","").strip().lower()
+
+    user = User.query.filter_by(email=email).first()
     if not user:
-        return jsonify({"error":"User not found"}),404
+        return jsonify({"error":"User not found"}), 404
 
-    data_in = request.get_json() or {}
-    which_tier = data_in.get("which_tier","premium")
-
-    # Hole price_id => env.STRIPE_PRICE_...
-    price_map = {
-        "plus": os.getenv("STRIPE_PRICE_PLUS","price_xxx"),
-        "premium": os.getenv("STRIPE_PRICE_PREMIUM","price_yyy"),
-        "extended": os.getenv("STRIPE_PRICE_EXTENDED","price_zzz"),
-    }
-    price_id = price_map.get(which_tier)
-    if not price_id:
-        return jsonify({"error": f"No price for tier={which_tier}"}),400
-
-    try:
-        # Erzeuge Session
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=["card"],
-            line_items=[{"price": price_id, "quantity":1}],
-            mode="subscription",
-            subscription_data={
-                "trial_period_days": 0,  # oder 7 => je nach logic
-                "metadata": {
-                    "user_id": str(user.id),
-                    "which_tier": which_tier
-                }
-            },
-            success_url="https://jpccalc.de/pay/success",
-            cancel_url="https://jpccalc.de/pay/cancel"
-        )
-        return jsonify({"checkout_url": checkout_session.url})
-    except stripe.error.StripeError as se:
-        return jsonify({"error": str(se)}),500
-    except Exception as ex:
-        return jsonify({"error": str(ex)}),500
-
-@account_bp.route("/2fa/toggle", methods=["POST"])
-@csrf.exempt
-@login_required
-def toggle_2fa():
-    """
-    Beispiel: User kann 2FA an-/abschalten.
-    Du hast in user.twofa_enabled ein Boolean?
-    """
-    user_id = session["user_id"]
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"error":"User not found"}),404
-
-    # toggle
-    user.twofa_enabled = not user.twofa_enabled
+    db.session.delete(user)
     db.session.commit()
-
-    # flash("2FA ist nun aktiviert" oder "...deaktiviert")
-    return redirect(url_for("account_bp.my_account_home"))
+    return jsonify({"message": f"User {user.email} wurde gelöscht"}), 200

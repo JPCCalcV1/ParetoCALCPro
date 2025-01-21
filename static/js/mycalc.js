@@ -810,62 +810,25 @@ function updateRowCalc(rowIdx, lotSize) {
  * => Füllt Tabelle => Öffnet Modal
  */
 function openMaterialModal() {
-  console.log("DEBUG: Entering openMaterialModal()");
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
-
-  console.log("DEBUG: fetch(/auth/whoami) => checking license");
-  // Lizenzstatus abfragen
-  fetch("/auth/whoami", {
-    headers:{ "X-CSRFToken": csrfToken }
+  fetch("/mycalc/material_list", {
+    headers: { "X-CSRFToken": csrfToken }
   })
-    .then(res => {
-      console.log("DEBUG: /auth/whoami response status =", res.status);
-      return res.json();
-    })
-    .then(data => {
-      console.log("DEBUG: /auth/whoami data =", data);
-      if (data.license === "extended") {
-        console.log("DEBUG: License is extended => fetching /mycalc/material_list");
-        // Materialliste laden
-        return fetch("/mycalc/material_list", {
-          method: "GET",
-          headers:{ "X-CSRFToken": csrfToken }
-        });
-      } else {
-        console.log("DEBUG: License not extended => throwing error");
-        throw new Error("Lizenz nicht ausreichend.");
+  .then(res => {
+    if (!res.ok) {
+      if (res.status === 403) {
+        throw new Error("Lizenz nicht ausreichend oder abgelaufen.");
       }
-    })
-    .then(res => {
-      console.log("DEBUG: /mycalc/material_list response status =", res.status);
-      if (res.ok) {
-        return res.json();
-      } else {
-        throw new Error("HTTP Error " + res.status);
-      }
-    })
-    .then(data => {
-      console.log("DEBUG: /mycalc/material_list => data received =", data);
-      // fülle Tabelle
-      fillMaterialTable(data);
-
-      // Modal anzeigen
-      let modalEl = document.getElementById("modalMaterial");
-      let bsModal = new bootstrap.Modal(modalEl);
-      bsModal.show();
-      console.log("DEBUG: material modal shown");
-    })
-    .catch(err => {
-      console.error("openMaterialModal error:", err);
-      alert(
-        err.message === "Lizenz nicht ausreichend."
-          ? "Ihre Lizenz reicht nicht aus, um die Materialliste zu öffnen."
-          : "Fehler beim Laden der Materialliste."
-      );
-    });
-  console.log("DEBUG: Exiting openMaterialModal()");
+      throw new Error("HTTP Error " + res.status);
+    }
+    return res.json();
+  })
+  .then(data => {
+    fillMaterialTable(data);
+    new bootstrap.Modal(document.getElementById("modalMaterial")).show();
+  })
+  .catch(err => alert(err.message));
 }
-
 /** fillMaterialTable(matArray) – füllt #tblMaterialList */
 function fillMaterialTable(matArray) {
   console.log("DEBUG: Entering fillMaterialTable() with matArray length =", matArray.length);
@@ -985,38 +948,47 @@ function openMachineModal(rowIdx) {
 
 /** openMachineListModal() => holt /mycalc/machine_list */
 function openMachineListModal() {
-  console.log("DEBUG: Entering openMachineListModal()");
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
-
-  console.log("DEBUG: fetch(/mycalc/machine_list) => GET");
   fetch("/mycalc/machine_list", {
-    method: "GET",
-    headers:{ "X-CSRFToken": csrfToken }
+    headers: { "X-CSRFToken": csrfToken }
   })
-    .then((res) => {
-      console.log("DEBUG: /mycalc/machine_list response status =", res.status);
-      if (!res.ok) {
-        if (res.status === 403) {
-          console.log("DEBUG: 403 => License not sufficient");
-          throw new Error("Lizenz nicht ausreichend. Bitte upgraden!");
-        }
-        throw new Error("Fehler beim Laden der Maschinenliste: " + res.status);
+  .then(res => {
+    if (!res.ok) {
+      if (res.status === 403) {
+        throw new Error("Lizenz nicht ausreichend oder abgelaufen.");
       }
-      return res.json();
-    })
-    .then((data) => {
-      console.log("DEBUG: /mycalc/machine_list => data received, length =", data.length);
-      fillMachineTable(data);
+      throw new Error("HTTP Error " + res.status);
+    }
+    return res.json();
+  })
+  .then(data => {
+    fillMachineTable(data);
+    new bootstrap.Modal(document.getElementById("modalMachineList")).show();
+  })
+  .catch(err => alert(err.message));
+}
 
-      const modalEl= document.getElementById("modalMachineList");
-      new bootstrap.Modal(modalEl).show();
-      console.log("DEBUG: modalMachineList shown");
-    })
-    .catch((err) => {
-      console.error("Maschinenliste Fehler:", err);
-      alert(err.message || "Maschinenliste nicht verfügbar.");
-    });
-  console.log("DEBUG: Exiting openMachineListModal()");
+
+function openLohnModal(rowIndex) {
+  console.log("rowIndex=", rowIndex);
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
+  fetch("/mycalc/lohn_list", {
+    headers: { "X-CSRFToken": csrfToken }
+  })
+  .then(res => {
+    if (!res.ok) {
+      if (res.status === 403) {
+        throw new Error("Lizenz nicht ausreichend oder abgelaufen.");
+      }
+      throw new Error("HTTP Error " + res.status);
+    }
+    return res.json();
+  })
+  .then(lohnData => {
+    fillLohnTable(lohnData);
+    new bootstrap.Modal(document.getElementById("modalLohn")).show();
+  })
+  .catch(err => alert(err.message));
 }
 
 /** fillMachineTable(machArr) => #tblMachineList */
@@ -1084,42 +1056,51 @@ function selectMachine(idx) {
 }
 
 /** =========== Lohn-Funktionen =========== */
-function openLohnModal(rowIndex) {
+function function openLohnModal(rowIndex) {
   console.log("DEBUG: Entering openLohnModal() with rowIndex =", rowIndex);
-  currentLohnRow = rowIndex;
-  const csrfToken= document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
 
-  console.log("DEBUG: fetch(/mycalc/lohn_list) => GET");
-  fetch("/mycalc/lohn_list", {
+  // 1) Wer bin ich?
+  fetch("/auth/whoami", {
     method: "GET",
-    headers:{ "X-CSRFToken": csrfToken }
+    headers: { "X-CSRFToken": csrfToken }
   })
-    .then((res) => {
-      console.log("DEBUG: /mycalc/lohn_list response status =", res.status);
-      if (!res.ok) {
-        if (res.status===403) {
-          console.log("DEBUG: 403 => License not sufficient");
-          throw new Error("Lizenz nicht ausreichend. Bitte upgraden!");
-        }
-        throw new Error("Fehler beim Laden der Lohnliste: "+ res.status);
-      }
-      return res.json();
-    })
-    .then((lohnData) => {
-      console.log("DEBUG: /mycalc/lohn_list => data received, length =", lohnData.length);
-      fillLohnTable(lohnData);
-
-      const modalEl= document.getElementById("modalLohn");
-      new bootstrap.Modal(modalEl).show();
-      console.log("DEBUG: modalLohn shown");
-    })
-    .catch((err) => {
-      console.error("Lohnliste Fehler:", err);
-      alert(err.message || "Lohnliste nicht verfügbar.");
+  .then(res => res.json())
+  .then(data => {
+    if (!data.logged_in) {
+      throw new Error("Nicht eingeloggt.");
+    }
+    if (data.license === "no_access") {
+      throw new Error("Lizenz abgelaufen.");
+    }
+    // 2) Lohnliste abrufen
+    return fetch("/mycalc/lohn_list", {
+      method: "GET",
+      headers: { "X-CSRFToken": csrfToken }
     });
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("Fehler beim Laden der Lohnliste: " + res.status);
+    }
+    return res.json();
+  })
+  .then(lohnData => {
+    // 3) Tabelle befüllen
+    fillLohnTable(lohnData);
+
+    // 4) Modal öffnen
+    currentLohnRow = rowIndex; // falls du rowIndex irgendwo brauchst
+    const modalEl = document.getElementById("modalLohn");
+    new bootstrap.Modal(modalEl).show();
+    console.log("DEBUG: modalLohn shown");
+  })
+  .catch(err => {
+    console.error("openLohnModal error:", err);
+    alert(err.message || "Lohnliste nicht verfügbar.");
+  });
   console.log("DEBUG: Exiting openLohnModal()");
 }
-
 /** fillLohnTable(lohnArr) => #tblLohnList */
 function fillLohnTable(lohnArr) {
   console.log("DEBUG: Entering fillLohnTable() with lohnArr length =", lohnArr.length);
