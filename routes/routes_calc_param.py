@@ -1,15 +1,8 @@
-# routes_calc_feinguss.py
-
-"""
-FEINGUSS-PARAMETRIC – V1-LOGIK INS BACKEND VERLAGERT
-----------------------------------------------------
-1) Lizenzauswertung (ab Premium)
-2) Rechenformeln 1:1 aus V1, nur in Python
-3) Ggf. disclaimers & Kommentare beibehalten
-"""
-
-from flask import Blueprint, request, jsonify, g
+from flask import Blueprint, request, jsonify, g, session
+from flask_login import login_required
 from core.extensions import limiter, csrf
+# ACHTUNG: Du musst hier auch dein User-Modell importieren, z.B.:
+# from your_app.models import User
 
 param_calc_bp = Blueprint('param_calc_bp', __name__)
 
@@ -45,7 +38,6 @@ def calc_feinguss():
         "msg": "..."
       }
     """
-
     if "user_id" not in session:
         return jsonify({"error": "Not logged in"}), 403
     user = User.query.get(session["user_id"])
@@ -188,7 +180,7 @@ def calc_feinguss():
         # --------------------------------------------------
         # 8) Fertigung (V1 => timePartMin, wagePerMin, etc.)
         # --------------------------------------------------
-        fertigungStundensatz = baseHourlyWage * locInfo["wageFactor"]  # Bsp: 60 *1=60
+        fertigungStundensatz = baseHourlyWage * locInfo["wageFactor"]  # z.B. 60 * 1 = 60
         wagePerMin = fertigungStundensatz / 60.0
 
         baseTimeMin = 1.0 + postProc
@@ -231,15 +223,15 @@ def calc_feinguss():
             "overheadVal":   round(overheadVal, 2),
             "profitVal":     round(profitVal, 2),
             "endPrice":      round(endPrice, 2),
-            # du kannst hier gerne noch "scrapRateReal": sRate, etc. ausgeben
+            # Weitere Felder nach Bedarf
             "msg": "Feinguss-Berechnung aus V1-Logik (Backend)."
         }), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @param_calc_bp.route('/kaltfliess', methods=['POST'])
-@login_required
 @csrf.exempt   # Falls du globales CSRF hast und dein Frontend den Token NICHT mitsendet.
 @limiter.limit("20/minute")  # optionales Rate-Limit
 def calc_kaltfliess():
@@ -399,7 +391,6 @@ def calc_kaltfliess():
         return jsonify({"error": str(e)}), 500
 
 @param_calc_bp.route('/schmieden', methods=['POST'])
-@login_required
 @csrf.exempt   # Falls du globales CSRF hast und dein Frontend den Token NICHT mitsendet.
 @limiter.limit("20/minute")  # optionales Rate-Limit
 def calc_schmieden():
@@ -546,7 +537,6 @@ def calc_schmieden():
         return jsonify({"error": str(e)}), 500
 
 @param_calc_bp.route("/pcb", methods=["POST"])
-@login_required
 @csrf.exempt   # Falls du globales CSRF hast und dein Frontend den Token NICHT mitsendet
 @limiter.limit("20/minute")  # optionales Rate-Limit
 def calc_pcb():
