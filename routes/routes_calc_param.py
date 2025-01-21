@@ -54,7 +54,7 @@ def calc_feinguss():
 
     # 2) Lizenzauswertung => mind. Premium
     lvl = g.user.license_level()
-    if lvl not in ["premium", "extended"]:
+    if lvl not in ["plus", "premium", "extended"]:
         return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
     try:
