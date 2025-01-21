@@ -32,6 +32,15 @@ price_map = {
 @payment_bp.route("/checkout-sub", methods=["POST"])
 @csrf.exempt
 def create_checkout_session_subscription():
+    """
+    Erzeugt ein Subscription-Checkout. Max. 1 ABO pro User:
+      - Killt immer das alte Abo in user.stripe_subscription_id
+      - if which_tier="plus" => 7 Tage Trial
+      - if premium/extended => kein trial_period_days
+    => Verhindert "minimum # of trial days=1" Stripe-Error
+    => Extended enthält alle Premium-Features (Jahresabo).
+    => Manuelle Teil-Refunds bei Upgrade via Stripe-Dashboard.
+    """
     user_id = session.get("user_id")
     if not user_id:
         return jsonify({"error": "Not logged in"}), 401
@@ -41,33 +50,71 @@ def create_checkout_session_subscription():
         return jsonify({"error": "User not found"}), 404
 
     data_in = request.get_json() or {}
-    which_tier = data_in.get("which_tier","plus")  # standard: plus
+    which_tier = data_in.get("which_tier", "plus")  # default plus
 
     price_id = price_map.get(which_tier)
     if not price_id:
         return jsonify({"error": f"No price for tier={which_tier}"}), 400
 
-    # Nur plus kriegt 7 Tage trial
-    trial_days = 7 if which_tier == "plus" else 0
+    # Trial nur bei plus
+    if which_tier == "plus":
+        trial_days = 7
+    else:
+        trial_days = 0
 
     try:
-        current_app.logger.info(f"[checkout-sub] user_id={user_id}, tier={which_tier}, price_id={price_id}, trial={trial_days}")
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=["card"],
-            line_items=[{"price": price_id, "quantity":1}],
-            mode="subscription",
-            subscription_data={
+        current_app.logger.info(
+            f"[checkout-sub] user_id={user_id}, tier={which_tier}, price_id={price_id}, trial={trial_days}"
+        )
+
+        # 1) Altes Abo killen, egal ob plus/premium/extended
+        #    => So existiert nur 1 ABO pro User.
+        if user.stripe_subscription_id:
+            try:
+                stripe.Subscription.delete(user.stripe_subscription_id)
+                current_app.logger.info(
+                    f"[checkout-sub] Killed old sub {user.stripe_subscription_id}"
+                )
+            except stripe.error.StripeError as e:
+                current_app.logger.warning(f"Could not delete old sub: {e}")
+
+            user.stripe_subscription_id = None
+            db.session.commit()
+
+        # 2) subscription_data
+        if trial_days > 0:
+            # plus => 7 Tage
+            subscription_data = {
                 "trial_period_days": trial_days,
                 "metadata": {
                     "user_id": str(user.id),
                     "which_tier": which_tier,
                     "mode_used": "subscription"
                 }
-            },
+            }
+        else:
+            # premium/extended => 0 => wir lassen trial_period_days ganz weg
+            subscription_data = {
+                "metadata": {
+                    "user_id": str(user.id),
+                    "which_tier": which_tier,
+                    "mode_used": "subscription"
+                }
+            }
+
+        # 3) Neues ABO => checkout
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{"price": price_id, "quantity": 1}],
+            mode="subscription",
+            subscription_data=subscription_data,
             success_url="https://jpccalc.de/pay/success",
             cancel_url="https://jpccalc.de/pay/cancel"
         )
-        current_app.logger.info(f"[checkout-sub] Created session.id={checkout_session.id}, url={checkout_session.url}")
+
+        current_app.logger.info(
+            f"[checkout-sub] Created session.id={checkout_session.id}, url={checkout_session.url}"
+        )
         return jsonify({"checkout_url": checkout_session.url}), 200
 
     except stripe.error.StripeError as e:
