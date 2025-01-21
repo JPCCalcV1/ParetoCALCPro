@@ -9,7 +9,6 @@ FEINGUSS-PARAMETRIC – V1-LOGIK INS BACKEND VERLAGERT
 """
 
 from flask import Blueprint, request, jsonify, g
-from flask_login import login_required
 from core.extensions import limiter, csrf
 
 param_calc_bp = Blueprint('param_calc_bp', __name__)
