@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_required
 from core.extensions import limiter, csrf
 
 takt_calc_bp = Blueprint('takt_calc_bp', __name__)
@@ -232,7 +231,6 @@ def calc_spritzguss():
         return jsonify({"error": str(e)}), 500
 
 @takt_calc_bp.route("/druckguss", methods=["POST"])
-@login_required
 @csrf.exempt  # Falls du globalen CSRF nutzt, und dein Frontend den Token nicht mitsendet.
 @limiter.limit("20/minute")  # optional
 def calc_druckguss():
@@ -410,7 +408,6 @@ def calc_druckguss():
 
 
 @takt_calc_bp.route("/milling", methods=["POST"])
-@login_required
 @csrf.exempt  # Falls du global CSRF aktiviert hast und dein Frontend den Token nicht mitsendet
 @limiter.limit("20/minute")  # optional
 def calc_milling():
@@ -585,7 +582,6 @@ def calc_milling():
         return jsonify({"error": str(e)}), 500
 
 @takt_calc_bp.route("/stamping", methods=["POST"])
-@login_required
 @csrf.exempt   # Falls du globalen CSRF-Schutz hast und dein Frontend den Token nicht mitsendet
 @limiter.limit("20/minute")  # optional
 def calc_stamping():
