@@ -1,6 +1,6 @@
-from flask import Blueprint, request, jsonify, g, session
-from flask_login import login_required
+from flask import Blueprint, request, jsonify, session  # session ist wichtig
 from core.extensions import limiter, csrf
+from models.user import User  # Damit du User.query.get(...) nutzen kannst
 # ACHTUNG: Du musst hier auch dein User-Modell importieren, z.B.:
 # from your_app.models import User
 
