@@ -1,244 +1,216 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <title>Upgrade / Pläne - ParetoCalc</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  {% if csrf_token %}
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-  {% endif %}
-
-  <!-- ========== BEGIN ColorAdmin One-Page-Parallax CSS ========== -->
-  <link href="/static/coloradmin/one-page-parallax/css/vendor.min.css" rel="stylesheet" />
-  <link href="/static/coloradmin/one-page-parallax/css/app.min.css" rel="stylesheet" />
-  <!-- ========== END ColorAdmin CSS ========== -->
-
-  <!-- (Optional) Dein eigenes Custom CSS -->
-  <!-- <link href="/static/css/my-upgrade-custom.css" rel="stylesheet" /> -->
+  <meta charset="UTF-8"/>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>Upgrade / Pläne</title>
+  <!-- Bootstrap 5 CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- Optional (für Icons): FontAwesome -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    /* Du kannst gerne dein eigenes kleines CSS hinzufügen, falls benötigt */
+    .pricing-card:hover {
+      transform: scale(1.02);
+      transition: 0.3s;
+    }
+    /* Akzentfarbe (falls du willst) */
+    .btn-custom-primary {
+      background-color: #0d6efd; /* Standard Bootstrap Primary */
+      color: #fff;
+      border: none;
+    }
+    .btn-custom-primary:hover {
+      background-color: #0b5ed7; /* Dunkleres Blau für Hover-Effekt */
+    }
+  </style>
 </head>
-<body class="fade" data-bs-spy="scroll" data-bs-target="#header" data-bs-offset="51">
-  <!-- BEGIN #page-container -->
-  <div id="page-container" class="fade">
 
-    <!-- BEGIN #header (Minimal-Version) -->
-    <div id="header" class="header navbar navbar-default navbar-fixed-top navbar-expand-lg">
-      <div class="container">
-        <a href="/" class="navbar-brand">
-          <span class="brand-logo"></span>
-          <span class="brand-text">
-            <span class="text-theme">Pareto</span>Calc
-          </span>
-        </a>
-        <button type="button" class="navbar-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#header-navbar">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="header-navbar">
-          <ul class="nav navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="/mycalc">MyCalc</a></li>
-            <li class="nav-item"><a class="nav-link" href="/auth/login">Login</a></li>
-          </ul>
+<body class="bg-light">
+<div class="container py-4">
+  <!-- Überschrift und Erläuterung -->
+  <h2 class="mb-3">Wähle deinen Plan</h2>
+  <p class="text-muted mb-4">
+    Alle Pläne erfordern eine Bezahlmethode (z.B. Kreditkarte).<br>
+    Je nach Tier auch 7 Tage Testphase (z.B. Premium).
+  </p>
+
+  <!-- Preis-Pakete -->
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <!-- ABO: Plus -->
+    <div class="col">
+      <div class="card pricing-card shadow-sm h-100">
+        <div class="card-body d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="card-title">Plus (z.B. 20€/Monat)</h5>
+            <p class="card-text">
+              Eingeschränkte Daten, aber günstig.
+              <br/>Typischerweise 7 Tage Testphase (optional).
+            </p>
+          </div>
+          <div>
+            <button class="btn btn-info w-100" onclick="buyPlus()">
+              Jetzt Plus buchen
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    <!-- END #header -->
 
-    <!-- Optional: Hero-Section oder Hintergrundbild, wenn gewünscht -->
-    <!-- <div class="content has-bg" style="background-image: url('/static/coloradmin/one-page-parallax/img/bg/bg-home.jpg');">
-         <div class="container">
-           <h1 class="text-white">Upgrade</h1>
-         </div>
-       </div> -->
-
-    <!-- BEGIN #pricing (Hauptinhalt) -->
-    <div id="pricing" class="content p-4" data-scrollview="true" style="margin-top: 80px;">
-      <div class="container">
-        <h2 class="content-title">Wähle deinen Plan</h2>
-        <p class="content-desc text-muted">
-          Alle Pläne erfordern eine Bezahlmethode (z.B. Kreditkarte).<br/>
-          Je nach Tier auch 7 Tage Testphase (z.B. Premium).
-        </p>
-
-        <!-- BEGIN pricing-table -->
-        <ul class="pricing-table pricing-col-3">
-          <!-- ABO: Plus -->
-          <li data-animation="true" data-animation-type="animate__fadeInUp">
-            <div class="pricing-container">
-              <h3>Plus (z.B. 20€/Monat)</h3>
-              <div class="price">
-                <div class="price-figure">
-                  <span class="price-number">20€</span>
-                  <span class="price-tenure">/ Monat</span>
-                </div>
-              </div>
-              <ul class="features">
-                <li>Eingeschränkte Daten</li>
-                <li>7 Tage Testphase</li>
-                <li>Basis-Module</li>
-              </ul>
-              <div class="footer">
-                <button class="btn btn-info btn-theme btn-block" onclick="buyPlus()">
-                  Jetzt Plus buchen
-                </button>
-              </div>
-            </div>
-          </li>
-          <!-- ABO: Premium -->
-          <li data-animation="true" data-animation-type="animate__fadeInUp" class="highlight">
-            <div class="pricing-container">
-              <h3>Premium (z.B. 50€/Monat)</h3>
-              <div class="price">
-                <div class="price-figure">
-                  <span class="price-number">50€</span>
-                  <span class="price-tenure">/ Monat</span>
-                </div>
-              </div>
-              <ul class="features">
-                <li>Alle Taktzeitrechner</li>
-                <li>GPT-Funktionen</li>
-                <li>CO₂-Analysen</li>
-                <li>24/7 Support</li>
-              </ul>
-              <div class="footer">
-                <button class="btn btn-primary btn-theme btn-block" onclick="buyPremium()">
-                  Jetzt Premium buchen
-                </button>
-              </div>
-            </div>
-          </li>
-          <!-- One-off: Extended -->
-          <li data-animation="true" data-animation-type="animate__fadeInUp">
-            <div class="pricing-container">
-              <h3>Extended (99€/Jahr)</h3>
-              <div class="price">
-                <div class="price-figure">
-                  <span class="price-number">99€</span>
-                  <span class="price-tenure">/ Jahr</span>
-                </div>
-              </div>
-              <ul class="features">
-                <li>Einmalzahlung (365 Tage)</li>
-                <li>Alle Features</li>
-                <li>Priorisierter Support</li>
-              </ul>
-              <div class="footer">
-                <button class="btn btn-warning btn-theme btn-block" onclick="buyExtended()">
-                  Extended kaufen
-                </button>
-              </div>
-            </div>
-          </li>
-        </ul>
-        <!-- end .pricing-table -->
-
-        <hr/>
-        <p>
-          <a href="/mycalc/" class="btn btn-secondary">Zurück zu MyCalc</a>
-        </p>
-
-        {% if user and user.stripe_subscription_id %}
-        <div class="alert alert-warning mt-4">
-          <p>Du hast bereits ein aktives Abo ({{ user.license_tier }}).
-            Falls du es kündigen möchtest:</p>
-          <button class="btn btn-danger" onclick="cancelSub()">Abo kündigen</button>
-          <p class="mt-2">
-            Oder gehe zu <a href="/account">deinem Dashboard</a>
-            für weitere Infos (Abrechnungsdatum, 2FA usw.).
-          </p>
+    <!-- ABO: Premium -->
+    <div class="col">
+      <div class="card pricing-card shadow-sm h-100 border-primary">
+        <div class="card-body d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="card-title text-primary">Premium (z.B. 50€/Monat)</h5>
+            <p class="card-text">
+              Alle Taktzeitrechner, GPT usw.
+              <br/>7 Tage Stripe-Trial (z.B.).
+            </p>
+          </div>
+          <div>
+            <button class="btn btn-primary w-100" onclick="buyPremium()">
+              Jetzt Premium buchen
+            </button>
+          </div>
         </div>
-        {% endif %}
       </div>
     </div>
-    <!-- END #pricing -->
 
-    <!-- BEGIN #footer (Minimal) -->
-    <div id="footer" class="footer">
-      <div class="container text-center">
-        <p class="m-0">
-          &copy; 2025 ParetoCalc | <a href="/admin/dashboard">Admin Dashboard</a>
-        </p>
+    <!-- One-off: Extended (1 Jahr) -->
+    <div class="col">
+      <div class="card pricing-card shadow-sm h-100">
+        <div class="card-body d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="card-title">Extended (z.B. 99€/Jahr)</h5>
+            <p class="card-text">
+              Alles drin, abgerechnet als OneOff für 365 Tage.
+            </p>
+          </div>
+          <div>
+            <button class="btn btn-warning w-100" onclick="buyExtended()">
+              Extended kaufen
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- END #footer -->
-
   </div>
-  <!-- END #page-container -->
 
-  <!-- ========== BEGIN ColorAdmin One-Page-Parallax JS ========== -->
-  <script src="/static/coloradmin/one-page-parallax/js/vendor.min.js"></script>
-  <script src="/static/coloradmin/one-page-parallax/js/app.min.js"></script>
-  <!-- ========== END ColorAdmin JS ========== -->
+  <hr class="my-4">
+  <p>
+    <a href="/mycalc/" class="btn btn-secondary">
+      Zurück zu MyCalc
+    </a>
+  </p>
 
-  <!-- Deine Payment-Logik -->
-  <script>
-  async function buyPlus() {
-    try {
-      const r = await fetch("/pay/checkout-sub", {
-        method: "POST",
-        headers: { "Content-Type":"application/json" },
-        body: JSON.stringify({ which_tier: "plus" })
-      });
-      const d = await r.json();
-      if(d.error) {
-        alert(d.error);
-        return;
-      }
-      window.location = d.checkout_url;
-    } catch(err) {
-      alert("Fehler: " + err);
+  <!-- Falls schon ein Abo existiert -->
+  {% if user and user.stripe_subscription_id %}
+  <div class="alert alert-warning mt-4">
+    <p>Du hast bereits ein aktives Abo ({{ user.license_tier }}).
+       Falls du es kündigen möchtest:</p>
+    <button class="btn btn-danger" onclick="cancelSub()">
+      Abo kündigen
+    </button>
+    <p class="mt-2">
+      Oder gehe zu <a href="/account">deinem Dashboard</a>
+      für weitere Infos (Abrechnungsdatum, 2FA usw.).
+    </p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Bootstrap JS -->
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script>
+/**
+ * Falls du in deinem Blueprint in payment.py diese Routen definiert hast:
+ *   @payment_bp.route("/checkout-sub", methods=["POST"])
+ *   @payment_bp.route("/checkout-oneoff", methods=["POST"])
+ * und dein Blueprint hat das Prefix "/pay":
+ *   app.register_blueprint(payment_bp, url_prefix="/pay")
+ * Dann lauten die finalen URLs:
+ *   "/pay/checkout-sub"
+ *   "/pay/checkout-oneoff"
+ *
+ * Passen sie bei Bedarf an, wenn du "/stripe/" o.ä. nutzt.
+ */
+
+async function buyPlus() {
+  try {
+    const r = await fetch("/pay/checkout-sub", {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ which_tier: "plus" })
+    });
+    const d = await r.json();
+    if(d.error) {
+      alert(d.error);
+      return;
     }
+    window.location = d.checkout_url;
+  } catch(err) {
+    alert("Fehler: " + err);
   }
+}
 
-  async function buyPremium() {
-    try {
-      const r = await fetch("/pay/checkout-sub", {
-        method: "POST",
-        headers: { "Content-Type":"application/json" },
-        body: JSON.stringify({ which_tier: "premium" })
-      });
-      const d = await r.json();
-      if(d.error) {
-        alert(d.error);
-        return;
-      }
-      window.location = d.checkout_url;
-    } catch(err) {
-      alert("Fehler: " + err);
+async function buyPremium() {
+  try {
+    const r = await fetch("/pay/checkout-sub", {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ which_tier: "premium" })
+    });
+    const d = await r.json();
+    if(d.error) {
+      alert(d.error);
+      return;
     }
+    window.location = d.checkout_url;
+  } catch(err) {
+    alert("Fehler: " + err);
   }
+}
 
-  async function buyExtended() {
-    try {
-      const r = await fetch("/pay/checkout-sub", {
-        method: "POST",
-        headers: { "Content-Type":"application/json" },
-        body: JSON.stringify({ which_tier: "extended" })
-      });
-      const d = await r.json();
-      if(d.error) {
-        alert(d.error);
-        return;
-      }
-      window.location = d.checkout_url;
-    } catch(err) {
-      alert("Fehler: " + err);
+async function buyExtended() {
+  try {
+    // OneOff => "/pay/checkout-oneoff"
+    const r = await fetch("/pay/checkout-sub", {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ which_tier: "extended" })
+    });
+    const d = await r.json();
+    if(d.error) {
+      alert(d.error);
+      return;
     }
+    window.location = d.checkout_url;
+  } catch(err) {
+    alert("Fehler: " + err);
   }
-
-  async function cancelSub(){
-    let c = confirm("Willst du wirklich kündigen?");
-    if(!c) return;
-    let resp = await fetch("/account/cancel", { method:"POST" });
-    if(resp.redirected) {
-      window.location = resp.url; // z. B. /account/
-    } else {
-      let d = await resp.json();
-      if(d.error) { alert(d.error); }
-      else location.reload();
-    }
+}
+async function cancelSub(){
+  let c = confirm("Willst du wirklich kündigen?");
+  if(!c) return;
+  let resp = await fetch("/account/cancel", { method:"POST" });
+  if(resp.redirected) {
+    window.location = resp.url; // z. B. /account/
+  } else {
+    let d = await resp.json();
+    if(d.error) { alert(d.error); }
+    else location.reload();
   }
-  </script>
+}
+</script>
 </body>
 </html>
