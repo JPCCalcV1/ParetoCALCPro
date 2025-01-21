@@ -2,195 +2,158 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <title>ParetoCalc Landing</title>
+  <title>ParetoCalc Landing (ColorAdmin One-Page Parallax)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <!-- Bootstrap 5 CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
-  <!-- Optional: FontAwesome (für Icons) -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"
-    rel="stylesheet"
-  />
-  <!-- CSRF-Token falls benötigt -->
-  <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <style>
-    body {
-      font-family: "Open Sans", sans-serif;
-      background: #f8f9fa;
-      margin: 0;
-      padding: 0;
-    }
-    .navbar {
-      background: #fff;
-      transition: background 0.3s;
-    }
-    .navbar-brand {
-      font-weight: 600;
-      color: #0d6efd; /* "Bootstrap-Blau" */
-    }
-    .navbar-nav .nav-link {
-      color: #333;
-    }
-    .navbar-nav .nav-link:hover {
-      color: #0d6efd;
-    }
-    .hero-section {
-      position: relative;
-      min-height: 80vh;
-      background: url("https://picsum.photos/1920/1080?grayscale") center center no-repeat;
-      background-size: cover;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-    }
-    .hero-section .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      max-width: 700px;
-    }
-    .hero-content h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      font-weight: 700;
-    }
-    .hero-content p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-    }
-    .footer {
-      background: #f1f3f4;
-      padding: 1rem 0;
-      text-align: center;
-    }
-  </style>
+  <!-- ========== BEGIN ColorAdmin One-Page-Parallax CSS ========== -->
+  <!-- Google Fonts (Open Sans) - in ColorAdmin-Demo, optional -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+
+  <!-- vendor.min.css -> enthält Bootstrap + FontAwesome + Animate.css etc. -->
+  <link href="/static/coloradmin/one-page-parallax/css/vendor.min.css" rel="stylesheet" />
+  <!-- app.min.css -> enthält das Hauptlayout für One-Page-Parallax -->
+  <link href="/static/coloradmin/one-page-parallax/css/app.min.css" rel="stylesheet" />
+  <!-- ========== END ColorAdmin One-Page-Parallax CSS ========== -->
+
+  <!-- Optional: Dein eigenes Custom-CSS, falls du Ergänzungen brauchst
+  <link href="/static/css/my-landing-custom.css" rel="stylesheet" />
+  -->
+
 </head>
-<body data-bs-spy="scroll" data-bs-target="#mainNavbar" data-bs-offset="70">
-  <!-- NAVBAR -->
-  <nav id="mainNavbar" class="navbar navbar-expand-lg">
-    <div class="container">
-      <!-- Link zurück zu "/" statt "/landing" -->
-      <a class="navbar-brand" href="/">ParetoCalc</a>
-      <!--
-        Wenn du /landing als Route hättest, würde es 404 geben,
-        da du in app.py "landing_bp" => route("/") nutzt.
-        Also => "/" ist dein Home.
-      -->
+<body data-bs-spy="scroll" data-bs-target="#header" data-bs-offset="51">
+  <!-- BEGIN #page-container -->
+  <div id="page-container" class="fade">
 
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarContent"
-        aria-controls="navbarContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+    <!-- BEGIN #header -->
+    <div id="header" class="header navbar navbar-default navbar-fixed-top navbar-expand-lg">
+      <!-- begin container -->
+      <div class="container">
+        <!-- begin navbar-brand -->
+        <a href="/" class="navbar-brand">
+          <span class="brand-logo"></span>
+          <span class="brand-text">
+            <span class="text-theme">Pareto</span>Calc
+          </span>
+        </a>
+        <!-- end navbar-brand -->
 
-      <div
-        class="collapse navbar-collapse justify-content-end"
-        id="navbarContent"
-      >
-        <ul class="navbar-nav">
-          <!-- Home-Link zeigt ebenfalls auf "/" -->
-          <li class="nav-item">
-            <a class="nav-link active" href="/">Home</a>
-          </li>
-          <!-- MyCalc => /mycalc -->
-          <li class="nav-item">
-            <a class="nav-link" href="/mycalc">MyCalc</a>
-          </li>
-          <!-- Upgrade => /upgrade -->
-          <li class="nav-item">
-            <a class="nav-link" href="/upgrade">Upgrade</a>
-          </li>
-          <!-- Login: check if route is /auth/login_form or /auth/login -->
-          <li class="nav-item">
-            <a class="nav-link" href="/auth/login">Login</a>
-            <!-- Falls du nur /auth/login hast,
-                 dann nimm => href="/auth/login" -->
-          </li>
-        </ul>
+        <!-- begin navbar-toggle (Hamburger) -->
+        <button type="button" class="navbar-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#header-navbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <!-- end navbar-toggle -->
+
+        <!-- begin navbar-collapse -->
+        <div class="collapse navbar-collapse" id="header-navbar">
+          <ul class="nav navbar-nav ms-auto">
+            <!--
+               Die Original-Links scrollen zu #about, #team etc.
+               Du kannst sie anpassen, um interne Routen aufzurufen, z.B. /mycalc
+            -->
+            <li class="nav-item">
+              <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/mycalc">MyCalc</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/upgrade">Upgrade</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/auth/login">Login</a>
+            </li>
+            <!-- Weitere Menu-Links, falls gewünscht -->
+          </ul>
+        </div>
+        <!-- end navbar-collapse -->
       </div>
+      <!-- end container -->
     </div>
-  </nav>
+    <!-- END #header -->
 
-  <!-- HERO SECTION -->
-  <section class="hero-section">
-    <div class="overlay"></div>
-    <div class="hero-content">
-      <h1>Willkommen bei ParetoCalc!</h1>
-      <p>
-        Das ultimative Kalkulationstool für Fertigungsprozesse,
-        Kosten, CO₂ und mehr.
-      </p>
-      <!-- Button => führt nach /auth/login_form oder /auth/login -->
-      <a href="/auth/login" class="btn btn-primary btn-lg">
-        Jetzt loslegen
-      </a>
+    <!-- BEGIN #home -->
+    <div id="home" class="content has-bg home">
+      <!-- begin content-bg -->
+      <div class="content-bg"
+           style="background-image: url('/static/coloradmin/one-page-parallax/img/bg/bg-home.jpg');"
+           data-paroller="true"
+           data-paroller-type="foreground"
+           data-paroller-factor="-0.25">
+      </div>
+      <!-- end content-bg -->
+
+      <!-- begin container -->
+      <div class="container home-content">
+        <h1>Willkommen bei ParetoCalc</h1>
+        <h3>Dein B2B Kalkulations-Tool</h3>
+        <p>
+          Kurzbeschreibung deiner App, Vorteile, Highlights.<br/>
+          Nutze das <a href="/auth/login">Login</a>, um direkt zu starten!
+        </p>
+        <a href="/auth/login" class="btn btn-theme btn-primary">Jetzt loslegen</a>
+        <a href="/upgrade" class="btn btn-theme btn-outline-white">Upgrade anzeigen</a>
+      </div>
+      <!-- end container -->
     </div>
-  </section>
+    <!-- END #home -->
 
-  <!-- MAIN CONTENT -->
-  <div class="container my-5">
-    <h2>Funktionen & Highlights</h2>
-    <p>
-      Kurzbeschreibung deiner App, Vorteile, Beispiel-Screenshots etc.
-    </p>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h5>Vielfältige Module</h5>
-            <p>Nutze Feinguss-, Schmiede-, PCB-Rechner u.v.m.</p>
+    <!-- Beispiel: #about Abschnitt -->
+    <div id="about" class="content" data-scrollview="true">
+      <div class="container" data-animation="true" data-animation-type="animate__fadeInDown">
+        <h2 class="content-title">Über ParetoCalc</h2>
+        <p class="content-desc">
+          Erkläre hier kurz, was dein Tool kann, warum es einzigartig ist usw.
+        </p>
+        <div class="row">
+          <div class="col-lg-6">
+            <!-- ... -->
+            <h3>Unsere Story</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+          </div>
+          <div class="col-lg-6">
+            <!-- ... -->
+            <h3>Unsere Vision</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h5>CO₂-Kalkulation</h5>
-            <p>Berechne Emissionen pro 100 Stück in Echtzeit.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h5>Upgrade-Optionen</h5>
-            <p>Erhalte erweiterte Funktionen dank Abo oder One-Off.</p>
-          </div>
-        </div>
+    </div>
+
+    <!-- Weitere Abschnitte: #milestone, #team, #service, #work, #pricing usw.
+         je nachdem, was du brauchst.
+         Einfach aus dem Original-Code übernehmen oder kürzen. -->
+
+    <!-- BEGIN #footer -->
+    <div id="footer" class="footer">
+      <div class="container text-center">
+        <p class="m-0">
+          &copy; 2025 ParetoCalc. Alle Rechte vorbehalten.
+          <br/>
+          <a href="/admin/dashboard">Admin Dashboard</a>
+        </p>
       </div>
     </div>
+    <!-- END #footer -->
+
+    <!-- OPTIONAL: Theme Panel, wenn du es brauchst -->
+    <!--
+      <div class="theme-panel">
+        ...
+      </div>
+    -->
+
   </div>
+  <!-- end #page-container -->
 
-  <!-- FOOTER -->
-  <div class="footer">
-    <div class="container">
-      <p class="m-0">
-        &copy; 2025 ParetoCalc |
-        <!-- Admin-Dashboard => /admin/dashboard, nicht /admin_dashboard -->
-        <a href="/admin/dashboard">Admin Dashboard</a>
-      </p>
-    </div>
-  </div>
+  <!-- ========== BEGIN ColorAdmin One-Page-Parallax JS ========== -->
+  <script src="/static/coloradmin/one-page-parallax/js/vendor.min.js"></script>
+  <script src="/static/coloradmin/one-page-parallax/js/app.min.js"></script>
+  <!-- ========== END ColorAdmin One-Page-Parallax JS ========== -->
 
-  <!-- SCRIPTS -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-  ></script>
+  <!-- Optional: Dein eigenes Landing-Script -->
+  <!-- <script src="/static/js/my-landing.js"></script> -->
+
 </body>
 </html>
