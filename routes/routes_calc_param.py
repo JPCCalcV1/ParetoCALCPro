@@ -38,15 +38,20 @@ def calc_feinguss():
         "msg": "..."
       }
     """
-    if "user_id" not in session:
-        return jsonify({"error": "Not logged in"}), 403
-    user = User.query.get(session["user_id"])
-    if not user:
-        return jsonify({"error": "User not found"}), 404
+    try:
+        # Hole die JSON-Daten aus dem Request
+        data = request.get_json()
 
-    lvl = user.license_level()
-    if lvl not in ["premium", "extended", "plus"]:
-        return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
+        if "user_id" not in session:
+            return jsonify({"error": "Not logged in"}), 403
+
+        user = User.query.get(session["user_id"])
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        lvl = user.license_level()
+        if lvl not in ["premium", "extended", "plus"]:
+            return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
         # --------------------------------------------------
         # 3) Eingaben extrahieren (V1 Namenskonvention)
