@@ -106,67 +106,92 @@ Dein ParetoCalc-Team
 @login_required
 def upgrade_plan():
     """
-    Falls der User von 'plus' auf 'premium' wechseln will etc.
-    => 1) Killt altes Abo, wenn vorhanden (keine Proration)
-    => 2) Erstellt neues Subscription-Checkout
-    => ACHTUNG: User zahlt den vollen Preis für das neue Abo,
-       du kannst manuell anteilig im Stripe-Dashboard refunden,
-       wenn du einen fairen Upgrade willst.
+    Erlaubt Up-/Downgrade des bestehenden ABO:
+      - Killt altes Abo (user.stripe_subscription_id), falls vorhanden
+      - Erzeugt neues ABO => plus => 7 Tage trial, premium/extended => 0
+      - Verhindert "No user => abort" im Webhook durch: metadata={'user_id':..., 'which_tier':...}
+      - Minimal-lösung, KEIN Extra-Feld für Extended => user hat nur EIN ABO am Ende
     """
     user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Not logged in"}), 401
+
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error":"User not found"}),404
 
     data_in = request.get_json() or {}
-    which_tier = data_in.get("which_tier","premium")
+    which_tier = data_in.get("which_tier","plus")  # 'plus', 'premium' oder 'extended'
 
-    # 1) Altes Abo killen, wenn vorhanden
-    if user.stripe_subscription_id:
-        try:
-            stripe.Subscription.delete(user.stripe_subscription_id)
-        except stripe.error.StripeError as e:
-            # optional: log warning
-            print(f"Could not delete old sub: {e}")
-        user.stripe_subscription_id = None
-        db.session.commit()
-
-    # 2) Neues Abo
+    # Price-Map anpassen an deine ENV-Variablen (Beispiele):
     price_map = {
-        "plus": os.getenv("STRIPE_PRICE_PLUS","price_xxx"),
-        "premium": os.getenv("STRIPE_PRICE_PREMIUM","price_yyy"),
-        "extended": os.getenv("STRIPE_PRICE_EXTENDED","price_zzz"),
+        "plus":     os.getenv("STRIPE_PRICE_PLUS","price_plusXYZ"),
+        "premium":  os.getenv("STRIPE_PRICE_PREMIUM","price_premXYZ"),
+        "extended": os.getenv("STRIPE_PRICE_EXTENDED","price_extXYZ"),
     }
     price_id = price_map.get(which_tier)
     if not price_id:
-        return jsonify({"error": f"No price for tier={which_tier}"}), 400
+        return jsonify({"error": f"No price for tier='{which_tier}'"}), 400
 
-    # Trial nur bei plus?
-    trial_days = 0
+    # Trial nur bei plus
     if which_tier == "plus":
         trial_days = 7
+    else:
+        trial_days = 0
 
     try:
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=["card"],
-            line_items=[{"price": price_id, "quantity":1}],
-            mode="subscription",
-            subscription_data={
+        # 1) Altes ABO killen (falls user bereits stripe_subscription_id hat)
+        if user.stripe_subscription_id:
+            try:
+                stripe.Subscription.delete(user.stripe_subscription_id)
+                current_app.logger.info(f"[upgrade_plan] Killed old sub {user.stripe_subscription_id}")
+            except stripe.error.StripeError as e:
+                current_app.logger.warning(f"Could not delete old sub: {e}")
+
+            user.stripe_subscription_id = None
+            db.session.commit()
+
+        # 2) subscription_data erstellen
+        if trial_days > 0:
+            # plus => 7 Tage => trial_period_days=7
+            subscription_data = {
                 "trial_period_days": trial_days,
                 "metadata": {
                     "user_id": str(user.id),
                     "which_tier": which_tier
                 }
-            },
+            }
+        else:
+            # premium/extended => KEIN trial => trial_period_days weglassen
+            subscription_data = {
+                "metadata": {
+                    "user_id": str(user.id),
+                    "which_tier": which_tier
+                }
+            }
+
+        # 3) Neue Subscription über Stripe-Checkout
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{"price": price_id, "quantity":1}],
+            mode="subscription",
+            subscription_data=subscription_data,
             success_url="https://jpccalc.de/pay/success",
             cancel_url="https://jpccalc.de/pay/cancel"
         )
-        return jsonify({"checkout_url": checkout_session.url})
+
+        current_app.logger.info(
+            f"[upgrade_plan] user_id={user.id}, tier={which_tier}, created new sub => session {checkout_session.id}"
+        )
+
+        return jsonify({"checkout_url": checkout_session.url}), 200
+
     except stripe.error.StripeError as se:
+        current_app.logger.exception(f"[upgrade_plan] StripeError: {se}")
         return jsonify({"error": str(se)}), 500
     except Exception as ex:
+        current_app.logger.exception(f"[upgrade_plan] Exception: {ex}")
         return jsonify({"error": str(ex)}), 500
-
 @account_bp.route("/2fa/toggle", methods=["POST"])
 @csrf.exempt
 @login_required
