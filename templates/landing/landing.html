@@ -154,6 +154,49 @@
 
   <!-- Optional: Dein eigenes Landing-Script -->
   <!-- <script src="/static/js/my-landing.js"></script> -->
+<div id="cookieBanner" style="position: fixed; bottom: 0; left: 0; right: 0;
+     background: #222; color: #fff; padding: 10px; display: none; z-index: 9999;">
+  <p style="margin: 0;">
+    Wir verwenden Cookies. Einige sind essenziell, andere helfen uns,
+    unsere Seite zu verbessern. Mit Klick auf „Alle akzeptieren“ stimmen
+    Sie der Verwendung zu.
+    <a href="/datenschutz" style="color: #fff; text-decoration: underline;">
+      Mehr Infos
+    </a>
+  </p>
+  <button id="cookieAcceptAll" class="btn btn-sm btn-success" style="margin: 5px;">Alle akzeptieren</button>
+  <button id="cookieDeclineAll" class="btn btn-sm btn-light" style="margin: 5px;">Nur essenzielle</button>
+</div>
 
+<script>
+(function(){
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    if (match) return match[2];
+  }
+
+  if(!getCookie("cookieConsent")) {
+    document.getElementById("cookieBanner").style.display = "block";
+  }
+
+  document.getElementById("cookieAcceptAll").addEventListener("click", function(){
+    document.cookie = "cookieConsent=all; path=/; max-age="+(365*24*60*60);
+    document.getElementById("cookieBanner").style.display = "none";
+    // optional: Google Analytics oder andere Tracker aktivieren
+  });
+
+  document.getElementById("cookieDeclineAll").addEventListener("click", function(){
+    document.cookie = "cookieConsent=essential; path=/; max-age="+(365*24*60*60);
+    document.getElementById("cookieBanner").style.display = "none";
+  });
+})();
+</script>
+
+<hr/>
+<footer class="text-center my-3">
+  <a href="/impressum">Impressum</a> |
+  <a href="/datenschutz">Datenschutz</a> |
+  <a href="/agb">AGB</a>
+</footer>
 </body>
 </html>
