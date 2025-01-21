@@ -43,7 +43,14 @@ def create_app():
     # CSRF & Rate-Limiter
     csrf.init_app(app)
     limiter.init_app(app)
+    # 1) LoginManager anlegen
+    login_manager = LoginManager()
+    login_manager.init_app(app)  # <-- Das sagt Flask: wir nutzen Flask-Login
 
+    @login_manager.user_loader
+    def load_user(user_id):
+        # Muss ein User-Objekt zurückgeben, wenn existiert, sonst None
+        return User.query.get(int(user_id))
     # Blueprint-Registrierung
     # Achte darauf, dass *genau* dieses payment_bp kommt, in dem /checkout-sub definiert ist
     app.register_blueprint(landing_bp)                   # kein prefix => "/"
