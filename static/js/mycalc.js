@@ -1056,7 +1056,7 @@ function selectMachine(idx) {
 }
 
 /** =========== Lohn-Funktionen =========== */
-function function openLohnModal(rowIndex) {
+function openLohnModal(rowIndex) {
   console.log("DEBUG: Entering openLohnModal() with rowIndex =", rowIndex);
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
 
