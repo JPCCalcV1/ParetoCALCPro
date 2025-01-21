@@ -8,6 +8,7 @@ from models.user import db, User
 from helpers.sendgrid_helper import send_email  # falls du sowas hast
 from functools import wraps
 from core.extensions import csrf
+from flask import current_app
 
 account_bp = Blueprint("account_bp", __name__)
 
