@@ -15,7 +15,6 @@ from core.extensions import limiter, csrf
 param_calc_bp = Blueprint('param_calc_bp', __name__)
 
 @param_calc_bp.route("/feinguss", methods=["POST"])
-@login_required
 @csrf.exempt
 @limiter.limit("20/minute")
 def calc_feinguss():
@@ -48,19 +47,15 @@ def calc_feinguss():
       }
     """
 
-    # 1) Prüfe Login
-    if not g.user:
+    if "user_id" not in session:
         return jsonify({"error": "Not logged in"}), 403
+    user = User.query.get(session["user_id"])
+    if not user:
+        return jsonify({"error": "User not found"}), 404
 
-    # 2) Lizenzauswertung => mind. Premium
-    lvl = g.user.license_level()
-    if lvl not in ["plus", "premium", "extended"]:
+    lvl = user.license_level()
+    if lvl not in ["premium", "extended", "plus"]:
         return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
-
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({"error": "No JSON body"}), 400
 
         # --------------------------------------------------
         # 3) Eingaben extrahieren (V1 Namenskonvention)
