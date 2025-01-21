@@ -9,11 +9,13 @@ FEINGUSS-PARAMETRIC – V1-LOGIK INS BACKEND VERLAGERT
 """
 
 from flask import Blueprint, request, jsonify, g
+from flask_login import login_required
 from core.extensions import limiter, csrf
 
 param_calc_bp = Blueprint('param_calc_bp', __name__)
 
 @param_calc_bp.route("/feinguss", methods=["POST"])
+@login_required
 @csrf.exempt
 @limiter.limit("20/minute")
 def calc_feinguss():
@@ -243,6 +245,7 @@ def calc_feinguss():
         return jsonify({"error": str(e)}), 500
 
 @param_calc_bp.route('/kaltfliess', methods=['POST'])
+@login_required
 @csrf.exempt   # Falls du globales CSRF hast und dein Frontend den Token NICHT mitsendet.
 @limiter.limit("20/minute")  # optionales Rate-Limit
 def calc_kaltfliess():
@@ -549,6 +552,7 @@ def calc_schmieden():
         return jsonify({"error": str(e)}), 500
 
 @param_calc_bp.route("/pcb", methods=["POST"])
+@login_required
 @csrf.exempt   # Falls du globales CSRF hast und dein Frontend den Token NICHT mitsendet
 @limiter.limit("20/minute")  # optionales Rate-Limit
 def calc_pcb():
