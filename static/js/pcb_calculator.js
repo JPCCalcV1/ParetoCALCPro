@@ -46,7 +46,7 @@ function calculatePcb() {
   console.log("PCB => Sende POST /calc/param/pcb:", payload);
 
   // 3) AJAX-Fetch
-  fetch("/mycalc/pcb", {
+  fetch("/calc/param/pcb", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

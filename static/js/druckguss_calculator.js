@@ -69,7 +69,7 @@ function calculateDruckguss() {
 
   console.log("Druckguss => Sende Payload:", payload);
 
-  fetch("/mycalc/druckguss", {
+  fetch("/calc/takt/druckguss", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
