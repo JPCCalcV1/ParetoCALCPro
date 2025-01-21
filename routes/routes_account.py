@@ -107,7 +107,7 @@ Dein ParetoCalc-Team
 def upgrade_plan():
     """
     Erlaubt Up-/Downgrade des bestehenden ABO:
-      - Killt altes Abo (user.stripe_subscription_id), falls vorhanden
+      - Killt altes A   bo (user.stripe_subscription_id), falls vorhanden
       - Erzeugt neues ABO => plus => 7 Tage trial, premium/extended => 0
       - Verhindert "No user => abort" im Webhook durch: metadata={'user_id':..., 'which_tier':...}
       - Minimal-lösung, KEIN Extra-Feld für Extended => user hat nur EIN ABO am Ende
