@@ -46,7 +46,7 @@ function openTaktzeitModal() {
   myModal.show();
   console.log("DEBUG: Exiting openTaktzeitModal()");
 }
-
+/**
 // 2. AJAX to Parametrik
 function calcParamFeinguss() {
   console.log("DEBUG: Entering calcParamFeinguss()");
@@ -167,7 +167,7 @@ function calcTaktSpritzguss() {
  * Taktzeit: Druckguss
  * Alte Route: '/calc/takt/druckguss'
  * Neue Route: '/takt_calc/druckguss'
- */
+
 function calcTaktDruckguss() {
   console.log("DEBUG: Entering calcTaktDruckguss()");
   const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
@@ -192,11 +192,7 @@ function calcTaktDruckguss() {
 }
 
 
-/**
- * Taktzeit: Zerspanung (Milling)
- * Alte Route: '/calc/takt/milling'
- * Neue Route: '/takt_calc/milling'
- */
+
 function calcTaktZerspanung() {
   console.log("DEBUG: Entering calcTaktZerspanung()");
   const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
@@ -221,11 +217,7 @@ function calcTaktZerspanung() {
 }
 
 
-/**
- * Taktzeit: Stanzen (Stamping)
- * Alte Route: '/calc/takt/stamping'
- * Neue Route: '/takt_calc/stamping'
- */
+
 function calcTaktStanzen() {
   console.log("DEBUG: Entering calcTaktStanzen()");
   const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
@@ -248,7 +240,7 @@ function calcTaktStanzen() {
   })
   .catch(err => console.error("Stanzen error:", err));
 }
-
+*/
 // 4. Hauptberechnung
 function triggerMainCalc() {
   console.log("DEBUG: Entering triggerMainCalc()");
@@ -1736,7 +1728,7 @@ function openSpritzgussModal() {
 function openDruckgussModal() {
   // Optional: Zyklus-Modal schließen, falls offen
   // closeZyklusModal();
-
+ closeZyklusModal();
   const dgModalEl = document.getElementById("modalDruckguss");
   if (!dgModalEl) {
     console.error("modalDruckguss not found!");
@@ -1749,7 +1741,7 @@ function openDruckgussModal() {
 function openMillingModal() {
   // Optional: Zykluszeit-Modal schließen, etc.
   // closeZyklusModal();
-
+ closeZyklusModal();
   const millModalEl = document.getElementById("modalMilling");
   if (!millModalEl) {
     console.error("modalMilling not found!");
@@ -1763,7 +1755,7 @@ function openMillingModal() {
 function openStampingModal() {
   // Evtl. vorher "Zykluszeit-Modal" schließen oder ParamTools schließen ...
   // closeZyklusModal();
-
+ closeZyklusModal();
   const stModalEl = document.getElementById("modalStamping");
   if (!stModalEl) {
     console.error("modalStamping not found!");
@@ -1807,7 +1799,7 @@ function openPcbModal() {
   // Falls du vorher ein Tools-Modal schließen willst (z. B. closeParamToolsModal()),
   // kannst du das hier tun, z. B.:
   // closeParamToolsModal();
-
+  closeParamToolsModal();
   const pcbEl = document.getElementById("pcbModal");
   if (!pcbEl) {
     console.error("pcbModal not found!");
