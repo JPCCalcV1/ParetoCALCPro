@@ -14,6 +14,7 @@ except ImportError:
 # Modelle & Extensions
 from models.user import db, User
 from core.extensions import csrf, limiter
+from flask_login import LoginManager  # <-- Neu hinzugefügt
 
 # Blueprints
 from routes.routes_auth import auth_bp
