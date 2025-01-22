@@ -1430,6 +1430,71 @@ function calcExtendedMachineRate() {
 
   console.log("DEBUG: Exiting calcExtendedMachineRate(), totalHour=", totalHour);
 }
+function acceptMachine() {
+  console.log("DEBUG: Entering acceptMachine() => currentMachineRow:", currentMachineRow);
+  console.log("DEBUG: Checking if window.extMachCalc is defined");
+  // 1) Prüfen, ob calcExtendedMachineRate() schon aufgerufen wurde => extMachCalc existiert
+  if (!window.extMachCalc) {
+    console.log("DEBUG: window.extMachCalc is falsy => alerting user");
+    alert("Bitte zuerst 'Berechnen' klicken!");
+    return;
+  }
+  const rows = document.querySelectorAll("#fertTable tbody tr");
+  console.log("DEBUG: rows.length =", rows.length);
+  if (currentMachineRow < 0 || currentMachineRow >= rows.length) {
+    console.error("Ungültige Zeilen-ID:", currentMachineRow);
+    alert("Es wurde keine gültige Zeile ausgewählt oder currentMachineRow ist -1.");
+    return;
+  }
+
+  const {
+    depYear, interestYear, instYear, betrYear,
+    flaecheYear, stromYear, sumYear, effHours,
+    costPerHour, co2_per_hour
+  } = window.extMachCalc;
+  console.log("DEBUG: destructured extMachCalc =", {
+    depYear, interestYear, instYear, betrYear, flaecheYear, stromYear, sumYear, effHours, costPerHour, co2_per_hour
+  });
+
+  // 2) Einzelwerte pro Stunde
+  const depHour   = effHours > 0 ? depYear      / effHours : 0;
+  const intHour   = effHours > 0 ? interestYear / effHours : 0;
+  const instHour  = effHours > 0 ? instYear     / effHours : 0;
+  const betrHour  = effHours > 0 ? betrYear     / effHours : 0;
+  const flaechHour= effHours > 0 ? flaecheYear  / effHours : 0;
+  const stromHour = effHours > 0 ? stromYear    / effHours : 0;
+  console.log("DEBUG: calcHourly =>", { depHour, intHour, instHour, betrHour, flaechHour, stromHour });
+
+  // 3) In die Textfelder
+  document.getElementById("machKaufpreisHr").value  = depHour.toFixed(2);
+  document.getElementById("machZinsHr").value       = intHour.toFixed(2);
+  document.getElementById("machInstandHr").value    = instHour.toFixed(2);
+  document.getElementById("machBetriebHr").value    = betrHour.toFixed(2);
+  document.getElementById("machFlaechenkostHr").value = flaechHour.toFixed(2);
+  document.getElementById("machStromCostHr").value  = stromHour.toFixed(2);
+  document.getElementById("machAvailHr").value      = effHours.toFixed(1) + " h eff.";
+  document.getElementById("machResult").textContent = costPerHour.toFixed(2);
+  document.getElementById("machCo2Hr").value        = co2_per_hour.toFixed(2);
+
+  // 4) Endsumme = costPerHour
+  // => in #machResult (z. B. <span id="machResult">)
+  // (bereits gesetzt oben)
+
+  // 6) In Tab3 die Zeile => cells[2] = msRate, etc.
+  const row = rows[currentMachineRow];
+  console.log("DEBUG: Setting row.cells[2].querySelector(input).value =", costPerHour.toFixed(2));
+  row.cells[2].querySelector("input").value = costPerHour.toFixed(2);   // msRate
+  console.log("DEBUG: Setting row.cells[7].querySelector(input).value =", co2_per_hour.toFixed(2));
+  row.cells[7].querySelector("input").value = co2_per_hour.toFixed(2); // co2/h
+
+  // => Modal schließen?
+  const modalEl = document.getElementById("modalMachine");
+  console.log("DEBUG: Attempting to close modalMachine");
+  let bsModal = bootstrap.Modal.getInstance(modalEl);
+  bsModal.hide();
+
+  console.log("DEBUG: Exiting acceptMachine()");
+}
 
 function updateResultTable(e) {
   console.log("DEBUG: Entering updateResultTable() with object e =", e);
