@@ -3145,9 +3145,11 @@
       </div>
 
       <div class="modal-body">
-        <!-- Optional Filter -->
+        <!-- Filterfeld -->
         <div class="mb-3">
-          <label for="matFilterInput" class="form-label">Filter (Materialname oder Verfahren)</label>
+          <label for="matFilterInput" class="form-label"
+            >Filter (Materialname oder Verfahren)</label
+          >
           <input
             type="text"
             class="form-control"
@@ -3162,11 +3164,10 @@
             <tr>
               <th style="width: 25%;">Material</th>
               <th style="width: 20%;">Verfahren</th>
-              <!-- th style="width: 20%;">Form</th> -->
               <th style="width: 15%;">Preis/kg</th>
               <th style="width: 10%;">CO₂/kg</th>
               <th>Kommentar</th>
-              <th></th>
+              <th style="width: 10%;"></th>
             </tr>
           </thead>
           <tbody>
@@ -3187,7 +3188,6 @@
     </div>
   </div>
 </div>
-
 
 
   <!-- ============= ZYKLUSZEIT-MODAL (mit 4 Verfahren) ============= -->
@@ -3753,7 +3753,6 @@
 </div>
 
 <!-- MASCHINENLISTE MODAL -->
-<!-- Maschinen-Liste Modal -->
 <div
   class="modal fade"
   id="modalMachineList"
@@ -3768,6 +3767,23 @@
       </div>
 
       <div class="modal-body">
+        <!-- NEU: Filter-Feld + Button zum Zurücksetzen -->
+        <div class="mb-3 d-flex gap-2">
+          <input
+            type="text"
+            class="form-control"
+            id="txtMachineFilter"
+            placeholder="Filter (Maschine, Verfahren, Kommentar...)"
+            oninput="applyMachineFilter()"
+          />
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            onclick="clearMachineFilter()"
+          >
+            Filter zurücksetzen
+          </button>
+        </div>
+
         <table class="table table-sm" id="tblMachineList">
           <thead>
             <tr>
@@ -3796,8 +3812,7 @@
       </div>
     </div>
   </div>
-</div>
-<!-- <input id="txtCosts100" type="text" class="form-control" /> -->
+</div><!-- <input id="txtCosts100" type="text" class="form-control" /> -->
 <!--<input id="txtCo2Per100" type="text" class="form-control" /> -->
 </div>
 <!-- Bootstrap-Bundle (JS + Popper) -->

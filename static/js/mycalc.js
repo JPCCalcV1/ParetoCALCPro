@@ -802,24 +802,29 @@ function updateRowCalc(rowIdx, lotSize) {
  * => Füllt Tabelle => Öffnet Modal
  */
 function openMaterialModal() {
-  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
+  console.log("DEBUG: Entering openMaterialModal()");
+  const csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.content || "";
+
   fetch("/mycalc/material_list", {
     headers: { "X-CSRFToken": csrfToken }
   })
-  .then(res => {
-    if (!res.ok) {
-      if (res.status === 403) {
-        throw new Error("Lizenz nicht ausreichend oder abgelaufen.");
+    .then(res => {
+      if (!res.ok) {
+        if (res.status === 403) {
+          throw new Error("Lizenz nicht ausreichend oder abgelaufen.");
+        }
+        throw new Error("HTTP Error " + res.status);
       }
-      throw new Error("HTTP Error " + res.status);
-    }
-    return res.json();
-  })
-  .then(data => {
-    fillMaterialTable(data);
-    new bootstrap.Modal(document.getElementById("modalMaterial")).show();
-  })
-  .catch(err => alert(err.message));
+      return res.json();
+    })
+    .then(data => {
+      fillMaterialTable(data);
+      // Modal anzeigen
+      new bootstrap.Modal(document.getElementById("modalMaterial")).show();
+      console.log("DEBUG: modalMaterial shown");
+    })
+    .catch(err => alert(err.message));
+  console.log("DEBUG: Exiting openMaterialModal()");
 }
 /** fillMaterialTable(matArray) – füllt #tblMaterialList */
 function fillMaterialTable(matArray) {
@@ -829,20 +834,27 @@ function fillMaterialTable(matArray) {
     console.log("DEBUG: #tblMaterialList tbody not found => returning");
     return;
   }
-
   // Tabelle leeren
   tbody.innerHTML = "";
-  window.materialData = matArray; // optional
 
+  // Global speichern => Filterfunktion
+  window.materialData = matArray;
+
+  // Jede Zeile anlegen
   matArray.forEach((m, idx) => {
-    console.log("DEBUG: In fillMaterialTable() forEach - idx =", idx, "material =", m.material);
-    const matName   = m.material       || "Unbekannt";
-    const verfahren = m.verfahrensTyp  || "";
-    const priceKg   = m.gesamtPreisEURkg?.toFixed?.(2) || "";
-    const co2Kg     = m.co2EmissionenKG?.toFixed?.(2)  || "";
-    const comm      = m.kommentar      || "";
+    const matName   = m.material      || "Unbekannt";
+    const verfahren = m.verfahrensTyp || "";
+    const priceKg   = (m.gesamtPreisEURkg ?? 0).toFixed(2);
+    const co2Kg     = (m.co2EmissionenKG  ?? 0).toFixed(2);
+    const comm      = m.kommentar     || "";
 
+    // TR erzeugen
     const tr = document.createElement("tr");
+    tr.dataset.index    = idx;           // für selectMaterial(idx)
+    tr.dataset.matName  = matName;
+    tr.dataset.matPrice = priceKg;
+    tr.dataset.matCo2   = co2Kg;
+
     tr.innerHTML = `
       <td>${matName}</td>
       <td>${verfahren}</td>
@@ -855,17 +867,29 @@ function fillMaterialTable(matArray) {
         </button>
       </td>
     `;
-    // data-Attrs
-    tr.dataset.index   = idx;
-    tr.dataset.matName = matName;
-    tr.dataset.matPrice= priceKg;
-    tr.dataset.matCo2  = co2Kg;
-
     tbody.appendChild(tr);
   });
   console.log("DEBUG: Exiting fillMaterialTable()");
 }
+function filterMaterialList() {
+  console.log("DEBUG: Entering filterMaterialList()");
+  const filterVal = document.getElementById("matFilterInput")?.value.toLowerCase() || "";
+  if (!window.materialData) {
+    console.log("DEBUG: No window.materialData => returning");
+    return;
+  }
+  console.log("DEBUG: filterVal =", filterVal);
 
+  const filtered = window.materialData.filter(m => {
+    const matN = (m.material       || "").toLowerCase();
+    const verF = (m.verfahrensTyp  || "").toLowerCase();
+    return matN.includes(filterVal) || verF.includes(filterVal);
+  });
+  console.log("DEBUG: filtered material count =", filtered.length);
+
+  fillMaterialTable(filtered);
+  console.log("DEBUG: Exiting filterMaterialList()");
+}
 /** selectMaterial(idx): schreibt in #matName, #matPrice, #matCo2 */
 function selectMaterial(idx) {
   console.log("DEBUG: Entering selectMaterial() with idx =", idx);
@@ -875,6 +899,7 @@ function selectMaterial(idx) {
     return;
   }
 
+  // => Input-Felder in Tab2
   document.getElementById("matName").value  = row.dataset.matName || "";
   document.getElementById("matPrice").value = row.dataset.matPrice||"0.00";
   document.getElementById("matCo2").value   = row.dataset.matCo2  ||"0.00";
@@ -883,8 +908,8 @@ function selectMaterial(idx) {
   const modalEl = document.getElementById("modalMaterial");
   const bsModal = bootstrap.Modal.getInstance(modalEl);
   bsModal.hide();
-  console.log("DEBUG: Material selected, modal hidden");
-  console.log("DEBUG: Exiting selectMaterial()");
+
+  console.log("DEBUG: Material selected => Exiting selectMaterial()");
 }
 function applyLohnFilter() {
   console.log("DEBUG: Entering applyLohnFilter()");
@@ -1033,38 +1058,60 @@ function fillMachineTable(machArr) {
     console.log("DEBUG: #tblMachineList tbody not found => returning");
     return;
   }
+  tbody.innerHTML = "";
 
-  tbody.innerHTML= "";
-  machArr.forEach((m, idx) => {
-    console.log("DEBUG: In fillMachineTable() forEach - idx =", idx, "machineName =", m.machineName);
-    const mName= m.machineName || "Unbekannt";
-    const verf = m.verfahren   || m.type || "";
-    const kauf = m.kaufpreis   || 0;
-    const pw   = m.power_kW    || 0;
-    const comm = m.comment     || "";
+  machArr.forEach((item, idx) => {
+    // Beispiel: item => { "machineName": "XYZ", "process": "Drehen", "kaufpreis": 100000, ... }
+    const machName   = item.machineName  || "Unbekannt";
+    const process    = item.process      || "N/A";
+    const kauf       = parseFloat(item.kaufpreis||0).toFixed(0);
+    const power      = parseFloat(item.powerKW||0).toFixed(1);
+    const comment    = item.comment      || "";
 
     const tr = document.createElement("tr");
-    tr.innerHTML=`
-      <td>${mName}</td>
-      <td>${verf}</td>
+    tr.dataset.index = idx;
+    tr.dataset.kauf  = kauf;
+    tr.dataset.power = power;
+
+    tr.innerHTML = `
+      <td>${machName}</td>
+      <td>${process}</td>
       <td>${kauf}</td>
-      <td>${pw}</td>
-      <td>${comm}</td>
+      <td>${power}</td>
+      <td>${comment}</td>
       <td>
         <button class="btn btn-sm btn-primary" onclick="selectMachine(${idx})">
           Übernehmen
         </button>
       </td>
     `;
-    tr.dataset.index= idx;
-    tr.dataset.kauf = kauf;
-    tr.dataset.power= pw;
-
     tbody.appendChild(tr);
   });
   console.log("DEBUG: Exiting fillMachineTable()");
 }
+function applyMachineFilter() {
+  console.log("DEBUG: Entering applyMachineFilter()");
+  const filterVal = (document.getElementById("txtMachineFilter").value || "")
+    .trim()
+    .toLowerCase();
 
+  const rows = document.querySelectorAll("#tblMachineList tbody tr");
+  rows.forEach(row => {
+    const rowText = row.innerText.toLowerCase();
+    if (rowText.includes(filterVal)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
+  console.log("DEBUG: Exiting applyMachineFilter()");
+}
+function clearMachineFilter() {
+  console.log("DEBUG: Entering clearMachineFilter()");
+  document.getElementById("txtMachineFilter").value = "";
+  applyMachineFilter(); // => zeigt alles wieder an
+  console.log("DEBUG: Exiting clearMachineFilter()");
+}
 /** selectMachine(idx): schreibt in #machKaufpreis, #machKW */
 function selectMachine(idx) {
   console.log("DEBUG: Entering selectMachine() with idx =", idx);
@@ -1085,10 +1132,9 @@ function selectMachine(idx) {
   const modalEl= document.getElementById("modalMachineList");
   const bsModal= bootstrap.Modal.getInstance(modalEl);
   bsModal.hide();
-  console.log("DEBUG: Machine selected, modal hidden");
-  console.log("DEBUG: Exiting selectMachine()");
-}
 
+  console.log("DEBUG: Machine selected => Exiting selectMachine()");
+}
 /** =========== Lohn-Funktionen =========== */
 function openLohnModal(rowIndex) {
   console.log("DEBUG: Entering openLohnModal() with rowIndex =", rowIndex);
@@ -2092,7 +2138,7 @@ window.doLogin      = doLogin;
 window.doLogout     = doLogout;
 window.doRegister   = doRegister;
 window.checkLicense = checkLicense;
-window.checkMaterialAccess = checkMaterialAccess;
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
