@@ -1,10 +1,229 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <title>Datenschutzerklärung</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; line-height: 1.5; }
+    h1, h2, h3 { color: #333; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 6px; }
+    th { background-color: #eee; }
+    ul { margin: 0.5em 0 1em 1.5em; }
+  </style>
 </head>
 <body>
+
+<article>
+  <h1>Datenschutzerklärung</h1>
+  <p><em>Stand: TT.MM.JJJJ</em></p>
+
+  <!-- 1. Verantwortlicher und Geltungsbereich -->
+  <h2>1. Verantwortlicher und Geltungsbereich</h2>
+  <p>
+    Verantwortlicher im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:<br>
+    <strong>Jochen Pfeffer (Einzelunternehmen)</strong><br>
+    An der Alten Ziegelei 38, 48157 Münster, Deutschland<br>
+    Telefon: +49 (0)175 3740105 <br>
+    E-Mail: <a href="mailto:info@jpccalc.de">info@jpccalc.de</a>
+  </p>
+  <p>
+    Diese Datenschutzerklärung gilt für folgende Online-Angebote (im Folgenden auch „Website“):<br>
+    • Hauptdomain: <strong>jpc-calc.de</strong><br>
+    • Weiterleitungs-Domain: <strong>jpc-value.com</strong> (ggf. verlinkte Wix-Webvisitenkarte)<br>
+    • Weitere Projektseiten wie <strong>paretocalc.com</strong> (optional)
+  </p>
+
+  <!-- 2. Grundlagen der Datenverarbeitung -->
+  <h2>2. Grundlagen der Datenverarbeitung</h2>
+  <p>
+    Wir verarbeiten personenbezogene Daten im Einklang mit den Bestimmungen der DSGVO und
+    des BDSG, sofern eine der folgenden Rechtsgrundlagen erfüllt ist:
+  </p>
+  <ul>
+    <li><strong>Einwilligung (Art. 6 Abs. 1 lit. a DSGVO)</strong> – z. B. für bestimmte Cookies oder Newsletter-Anmeldungen.</li>
+    <li><strong>Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)</strong> – z. B. bei Registrierungen oder Lizenz-Buchungen.</li>
+    <li><strong>Rechtliche Verpflichtung (Art. 6 Abs. 1 lit. c DSGVO)</strong> – z. B. Aufbewahrungsfristen.</li>
+    <li><strong>Berechtigte Interessen (Art. 6 Abs. 1 lit. f DSGVO)</strong> – z. B. Server-Logfiles, Abwehr von Missbrauch.</li>
+  </ul>
+
+  <!-- 3. Art der verarbeiteten Daten und Zwecke -->
+  <h2>3. Art der verarbeiteten Daten und Zwecke</h2>
+  <h3>3.1 Registrierungsdaten / Kontodaten</h3>
+  <ul>
+    <li>E-Mail-Adresse</li>
+    <li>Name / Firmenname (optional für B2B)</li>
+    <li>Passwort (verschlüsselt gespeichert)</li>
+  </ul>
+  <p>
+    <strong>Zweck:</strong> Bereitstellung des Nutzerkontos, Authentifizierung, Sicherheit <br>
+    <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung)
+  </p>
+
+  <h3>3.2 Zahlungsdaten</h3>
+  <p>
+    Bei kostenpflichtigen Buchungen über Stripe werden relevante Zahlungsdaten erhoben und
+    verarbeitet. Wir speichern keine vollständigen Zahlungsinformationen.
+  </p>
+  <p>
+    <strong>Zweck:</strong> Zahlungsabwicklung, Vertragserfüllung <br>
+    <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. b DSGVO
+  </p>
+
+  <h3>3.3 Kommunikationsdaten / E-Mail-Versand (SendGrid)</h3>
+  <p>
+    Wir nutzen Mailing-Dienste wie SendGrid (Twilio) für Systemnachrichten (z. B. Registrierung,
+    Passwort-Reset) oder Newsletter (nach Einwilligung).
+  </p>
+  <p>
+    <strong>Rechtsgrundlage:</strong> Systemmails: Art. 6 Abs. 1 lit. b DSGVO;
+    Newsletter: Art. 6 Abs. 1 lit. a DSGVO
+  </p>
+
+  <h3>3.4 Nutzungsdaten / Logfiles</h3>
+  <p>
+    IP-Adresse, Zeit des Zugriffs, Seitenaufrufe und Browserinformationen werden zur Fehlersuche
+    und Sicherheitszwecken protokolliert.
+  </p>
+  <p>
+    <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse)
+  </p>
+
+  <!-- 4. Hosting & Infrastruktur -->
+  <h2>4. Hosting & Infrastruktur</h2>
+  <h3>4.1 Hosting bei Render</h3>
+  <p>
+    Unsere Server und Datenbanken (z. B. Postgres) werden bei Render gehostet,
+    ggf. in der EU (Irland) oder den USA.
+  </p>
+  <p>
+    <strong>Zweck:</strong> Technische Bereitstellung des SaaS-Angebots <br>
+    <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. b DSGVO oder lit. f DSGVO
+  </p>
+
+  <h3>4.2 GitHub (Codebasis)</h3>
+  <p>
+    Der Quellcode liegt in privaten GitHub-Repositories. Personenbezogene Nutzerdaten
+    werden dort in der Regel nicht gespeichert.
+  </p>
+
+  <!-- 5. Beta-/KI-Funktionen -->
+  <h2>5. Beta-/KI-Funktionen (z. B. CustomGPT.ai)</h2>
+  <p>
+    Bestimmte Bereiche können KI-basierte Funktionen einsetzen. Dabei wird ggf. Text temporär
+    verarbeitet. Es besteht das Risiko, dass versehentlich personenbezogene Daten in Freitextfelder
+    eingegeben werden.
+  </p>
+  <p>
+    <strong>Rechtsgrundlagen:</strong>
+    - Art. 6 Abs. 1 lit. b DSGVO (Vertrag), sofern Bestandteil des Leistungsumfangs;
+    - Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse), z. B. zur Service-Verbesserung.
+  </p>
+
+  <!-- 6. Cookies & Einwilligung -->
+  <h2>6. Cookies & Einwilligung</h2>
+  <p>
+    Wir verwenden Cookies, um unsere Website nutzerfreundlicher zu gestalten.
+    Nicht notwendige Cookies (z. B. für Analyse/Tracking) setzen wir nur mit Ihrer Einwilligung
+    (Cookie-Banner). Sie können diese Einwilligung jederzeit widerrufen, etwa durch das Löschen
+    von Cookies im Browser.
+  </p>
+
+  <!-- 7. Speicherdauer & Löschung -->
+  <h2>7. Speicherdauer & Löschung</h2>
+  <p>
+    Wir speichern personenbezogene Daten nur so lange, wie dies zur Erreichung der
+    genannten Zwecke erforderlich ist, oder bis gesetzliche Aufbewahrungsfristen ablaufen.
+  </p>
+
+  <!-- 8. Ihre Rechte -->
+  <h2>8. Ihre Rechte</h2>
+  <ul>
+    <li>Auskunft (Art. 15 DSGVO)</li>
+    <li>Berichtigung (Art. 16 DSGVO)</li>
+    <li>Löschung (Art. 17 DSGVO)</li>
+    <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+    <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+    <li>Widerspruch (Art. 21 DSGVO)</li>
+    <li>Widerruf von Einwilligungen (Art. 7 Abs. 3 DSGVO)</li>
+  </ul>
+  <p>
+    Zur Ausübung dieser Rechte wenden Sie sich bitte an:
+    <a href="mailto:info@jpccalc.de">info@jpccalc.de</a>.
+  </p>
+
+  <!-- 9. Änderungen -->
+  <h2>9. Änderungen dieser Datenschutzerklärung</h2>
+  <p>
+    Wir behalten uns das Recht vor, diese Erklärung bei Bedarf anzupassen (z. B.
+    geänderte Rechtslage, neue Services). Die jeweils aktuelle Fassung wird auf
+    unserer Website veröffentlicht. Bei wesentlichen Änderungen informieren wir
+    registrierte Nutzer ggf. gesondert.
+  </p>
+
+  <hr>
+
+  <!-- ANHANG: Cookie- & Tracking-Tabelle (Kapitel 7) -->
+  <h2>Anhang: Cookies & Tracking-Tools</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Cookie / Name</th>
+        <th>Anbieter</th>
+        <th>Zweck</th>
+        <th>Speicherdauer</th>
+        <th>Rechtsgrundlage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>session_id (Beispiel)</td>
+        <td>Eigene Domain</td>
+        <td>Technisch notwendige Session, Login-Status</td>
+        <td>Session</td>
+        <td>Art. 6 Abs. 1 lit. f DSGVO</td>
+      </tr>
+      <tr>
+        <td>_ga</td>
+        <td>Google Analytics</td>
+        <td>Statistische Auswertung (Seitenverhalten)</td>
+        <td>2 Jahre</td>
+        <td>Einwilligung (Art. 6 Abs. 1 lit. a DSGVO)</td>
+      </tr>
+      <tr>
+        <td>_gid</td>
+        <td>Google Analytics</td>
+        <td>Eindeutige Nutzererkennung</td>
+        <td>24 Stunden</td>
+        <td>Einwilligung</td>
+      </tr>
+      <tr>
+        <td>IDE / test_cookie</td>
+        <td>Google Ads (DoubleClick)</td>
+        <td>Conversion Tracking, Remarketing</td>
+        <td>bis zu 2 Jahre</td>
+        <td>Einwilligung</td>
+      </tr>
+      <tr>
+        <td>bcookie / li_sugr</td>
+        <td>LinkedIn Insight</td>
+        <td>Erkennt LinkedIn-Benutzer, misst Conversions, Zielgruppen</td>
+        <td>bis zu 2 Jahre</td>
+        <td>Einwilligung</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    <em>Hinweis:</em> Für alle hier genannten Tools gilt: Sie werden (sofern nicht
+    technisch unbedingt erforderlich) nur nach Ihrer Einwilligung (Cookie-Banner) geladen.
+    Weitere Informationen entnehmen Sie bitte den jeweiligen Anbietern
+    (z. B. <a href="https://policies.google.com/privacy" target="_blank">Google Datenschutzerklärung</a>,
+    <a href="https://www.linkedin.com/legal/privacy-policy" target="_blank">LinkedIn</a>, etc.).
+  </p>
+
+
+</article>
 
 </body>
 </html>

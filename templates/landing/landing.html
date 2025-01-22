@@ -48,10 +48,6 @@
         <!-- begin navbar-collapse -->
         <div class="collapse navbar-collapse" id="header-navbar">
           <ul class="nav navbar-nav ms-auto">
-            <!--
-               Die Original-Links scrollen zu #about, #team etc.
-               Du kannst sie anpassen, um interne Routen aufzurufen, z.B. /mycalc
-            -->
             <li class="nav-item">
               <a class="nav-link" href="/">Home</a>
             </li>
@@ -104,18 +100,28 @@
       <div class="container" data-animation="true" data-animation-type="animate__fadeInDown">
         <h2 class="content-title">Über ParetoCalc</h2>
         <p class="content-desc">
-          Erkläre hier kurz, was dein Tool kann, warum es einzigartig ist usw.
+          ParetoCalc kombiniert hochpräzise Fertigungs-Kalkulationen mit KI-Unterstützung,
+          damit Unternehmen ihre Produktionskosten in Sekunden im Blick haben.
+          Schnell, transparent und auf die wesentlichen Stellhebel fokussiert.
         </p>
         <div class="row">
           <div class="col-lg-6">
-            <!-- ... -->
             <h3>Unsere Story</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+            <p>
+              Vor ein paar Jahren wollten wir selbst Bauteile fertigen und merkten,
+              wie kompliziert zuverlässige Kostenberechnungen sein können.
+              Aus diesem Bedarf entstand ParetoCalc: Ein Tool,
+              das Aufwand und Risiko drastisch reduziert.
+            </p>
           </div>
           <div class="col-lg-6">
-            <!-- ... -->
             <h3>Unsere Vision</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+            <p>
+              Wir möchten Fertigungsprozesse so zugänglich machen,
+              dass jedes Unternehmen – egal ob Automotive oder Maschinenbau –
+              schnell und sicher Kostenentscheidungen treffen kann.
+              Parametrik trifft auf KI: das ist ParetoCalc.
+            </p>
           </div>
         </div>
       </div>
@@ -137,13 +143,6 @@
     </div>
     <!-- END #footer -->
 
-    <!-- OPTIONAL: Theme Panel, wenn du es brauchst -->
-    <!--
-      <div class="theme-panel">
-        ...
-      </div>
-    -->
-
   </div>
   <!-- end #page-container -->
 
@@ -154,49 +153,50 @@
 
   <!-- Optional: Dein eigenes Landing-Script -->
   <!-- <script src="/static/js/my-landing.js"></script> -->
-<div id="cookieBanner" style="position: fixed; bottom: 0; left: 0; right: 0;
-     background: #222; color: #fff; padding: 10px; display: none; z-index: 9999;">
-  <p style="margin: 0;">
-    Wir verwenden Cookies. Einige sind essenziell, andere helfen uns,
-    unsere Seite zu verbessern. Mit Klick auf „Alle akzeptieren“ stimmen
-    Sie der Verwendung zu.
-    <a href="/datenschutz" style="color: #fff; text-decoration: underline;">
-      Mehr Infos
-    </a>
-  </p>
-  <button id="cookieAcceptAll" class="btn btn-sm btn-success" style="margin: 5px;">Alle akzeptieren</button>
-  <button id="cookieDeclineAll" class="btn btn-sm btn-light" style="margin: 5px;">Nur essenzielle</button>
-</div>
 
-<script>
-(function(){
-  function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    if (match) return match[2];
-  }
+  <div id="cookieBanner" style="position: fixed; bottom: 0; left: 0; right: 0;
+       background: #222; color: #fff; padding: 10px; display: none; z-index: 9999;">
+    <p style="margin: 0;">
+      Wir verwenden Cookies. Einige sind essenziell, andere helfen uns,
+      unsere Seite zu verbessern. Mit Klick auf „Alle akzeptieren“ stimmen
+      Sie der Verwendung zu.
+      <a href="/datenschutz" style="color: #fff; text-decoration: underline;">
+        Mehr Infos
+      </a>
+    </p>
+    <button id="cookieAcceptAll" class="btn btn-sm btn-success" style="margin: 5px;">Alle akzeptieren</button>
+    <button id="cookieDeclineAll" class="btn btn-sm btn-light" style="margin: 5px;">Nur essenzielle</button>
+  </div>
 
-  if(!getCookie("cookieConsent")) {
-    document.getElementById("cookieBanner").style.display = "block";
-  }
+  <script>
+  (function(){
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+    }
 
-  document.getElementById("cookieAcceptAll").addEventListener("click", function(){
-    document.cookie = "cookieConsent=all; path=/; max-age="+(365*24*60*60);
-    document.getElementById("cookieBanner").style.display = "none";
-    // optional: Google Analytics oder andere Tracker aktivieren
-  });
+    if(!getCookie("cookieConsent")) {
+      document.getElementById("cookieBanner").style.display = "block";
+    }
 
-  document.getElementById("cookieDeclineAll").addEventListener("click", function(){
-    document.cookie = "cookieConsent=essential; path=/; max-age="+(365*24*60*60);
-    document.getElementById("cookieBanner").style.display = "none";
-  });
-})();
-</script>
+    document.getElementById("cookieAcceptAll").addEventListener("click", function(){
+      document.cookie = "cookieConsent=all; path=/; max-age="+(365*24*60*60);
+      document.getElementById("cookieBanner").style.display = "none";
+      // optional: Google Analytics oder andere Tracker aktivieren
+    });
 
-<hr/>
-<footer class="text-center my-3">
-  <a href="/impressum">Impressum</a> |
-  <a href="/datenschutz">Datenschutz</a> |
-  <a href="/agb">AGB</a>
-</footer>
+    document.getElementById("cookieDeclineAll").addEventListener("click", function(){
+      document.cookie = "cookieConsent=essential; path=/; max-age="+(365*24*60*60);
+      document.getElementById("cookieBanner").style.display = "none";
+    });
+  })();
+  </script>
+
+  <hr/>
+  <footer class="text-center my-3">
+    <a href="/impressum">Impressum</a> |
+    <a href="/datenschutz">Datenschutz</a> |
+    <a href="/agb">AGB</a>
+  </footer>
 </body>
 </html>
