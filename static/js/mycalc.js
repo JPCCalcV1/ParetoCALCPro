@@ -886,7 +886,28 @@ function selectMaterial(idx) {
   console.log("DEBUG: Material selected, modal hidden");
   console.log("DEBUG: Exiting selectMaterial()");
 }
+function applyLohnFilter() {
+  console.log("DEBUG: Entering applyLohnFilter()");
+  const filterVal = (document.getElementById("txtLohnFilter").value || "").trim().toLowerCase();
+  const tbody = document.querySelector("#tblLohnList tbody");
+  if (!tbody) return;
 
+  Array.from(tbody.querySelectorAll("tr")).forEach(row => {
+    const rowText = row.innerText.toLowerCase();
+    if (rowText.includes(filterVal)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
+  console.log("DEBUG: Exiting applyLohnFilter()");
+}
+function clearLohnFilter() {
+  console.log("DEBUG: Entering clearLohnFilter()");
+  document.getElementById("txtLohnFilter").value = "";
+  applyLohnFilter(); // Reset => zeigt alle an
+  console.log("DEBUG: Exiting clearLohnFilter()");
+}
 /** filterMaterialList(): optionaler Filter auf window.materialData */
 function filterMaterialList() {
   console.log("DEBUG: Entering filterMaterialList()");
@@ -962,27 +983,48 @@ function openMachineListModal() {
 
 
 function openLohnModal(rowIndex) {
-  console.log("rowIndex=", rowIndex);
+  console.log("DEBUG: Entering openLohnModal() with rowIndex =", rowIndex);
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
-  fetch("/mycalc/lohn_list", {
-    headers: { "X-CSRFToken": csrfToken }
-  })
-  .then(res => {
-    if (!res.ok) {
-      if (res.status === 403) {
-        throw new Error("Lizenz nicht ausreichend oder abgelaufen.");
-      }
-      throw new Error("HTTP Error " + res.status);
-    }
-    return res.json();
-  })
-  .then(lohnData => {
-    fillLohnTable(lohnData);
-    new bootstrap.Modal(document.getElementById("modalLohn")).show();
-  })
-  .catch(err => alert(err.message));
-}
 
+  // 1) check login
+  fetch("/auth/whoami", { method: "GET", headers: { "X-CSRFToken": csrfToken } })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.logged_in) {
+        throw new Error("Nicht eingeloggt.");
+      }
+      if (data.license === "no_access") {
+        throw new Error("Lizenz abgelaufen.");
+      }
+      // 2) load /mycalc/lohn_list
+      return fetch("/mycalc/lohn_list", {
+        method: "GET",
+        headers: { "X-CSRFToken": csrfToken }
+      });
+    })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error("Fehler beim Laden der Lohnliste: " + res.status);
+      }
+      return res.json();
+    })
+    .then(lohnData => {
+      // 3) fill table
+      LOHN_DATA = lohnData;
+      fillLohnTable(lohnData);
+
+      // 4) open modal
+      currentLohnRow = rowIndex; // Speichere, für selectLohn()
+      const modalEl = document.getElementById("modalLohn");
+      new bootstrap.Modal(modalEl).show();
+      console.log("DEBUG: modalLohn shown");
+    })
+    .catch(err => {
+      console.error("openLohnModal error:", err);
+      alert(err.message || "Lohnliste nicht verfügbar.");
+    });
+  console.log("DEBUG: Exiting openLohnModal()");
+}
 /** fillMachineTable(machArr) => #tblMachineList */
 function fillMachineTable(machArr) {
   console.log("DEBUG: Entering fillMachineTable() with machArr length =", machArr.length);
@@ -1101,60 +1143,62 @@ function fillLohnTable(lohnArr) {
     console.log("DEBUG: #tblLohnList tbody not found => returning");
     return;
   }
+  tbody.innerHTML = "";
 
-  tbody.innerHTML= "";
   lohnArr.forEach((item, idx) => {
-    console.log("DEBUG: In fillLohnTable() forEach - idx =", idx, "country =", item.country);
-    const countryStr= item.country     || "Unbekannt";
-    const shiftMod  = item.shiftModel  || "N/A";
-    const allIn     = parseFloat(item.allInEURh||0).toFixed(2);
-    const comm      = item.comment     || "";
+    const countryStr= item.country    || "Unbekannt";
+    const shiftMod  = item.shiftModel || "N/A";
+    const allInVal  = parseFloat(item.allInEURh||0).toFixed(2);
+    const comment   = item.comment    || "";
 
     const tr = document.createElement("tr");
-    tr.innerHTML=`
+    tr.dataset.index    = idx;
+    tr.dataset.allIneurh= allInVal;
+    tr.innerHTML = `
       <td>${countryStr}</td>
       <td>${shiftMod}</td>
-      <td>${allIn}</td>
-      <td>${comm}</td>
+      <td>${allInVal}</td>
+      <td>${comment}</td>
       <td>
-        <button class="btn btn-sm btn-primary" onclick="selectLohn(${idx})">
-          Übernehmen
-        </button>
+        <button class="btn btn-sm btn-primary" onclick="selectLohn(${idx})">Übernehmen</button>
       </td>
     `;
-    tr.dataset.index    = idx;
-    tr.dataset.allIneurh= allIn;
     tbody.appendChild(tr);
   });
   console.log("DEBUG: Exiting fillLohnTable()");
 }
 
-
 function selectLohn(idx) {
   console.log("DEBUG: Entering selectLohn() with idx =", idx);
+
   const row = document.querySelector(`#tblLohnList tbody tr[data-index="${idx}"]`);
   if (!row) {
     console.log("DEBUG: Row not found => returning");
     return;
   }
 
-  const rate = parseFloat(row.dataset.allIneurh) || 0;
-  const ops  = parseFloat(document.getElementById("operatorsPerMachine")?.value) || 0.5;
-  const lohnGesc = rate * ops; // Gesamtlohn
-  console.log("DEBUG: Calculated lohnGesc =", lohnGesc, "(rate =", rate, ", ops =", ops, ")");
+  // All-In Stundensatz aus dataset
+  const baseRate = parseFloat(row.dataset.allIneurh) || 0;
+  const ops      = parseFloat(document.getElementById("operatorsPerMachine")?.value) || 0.5;
+  const utilPct  = parseFloat(document.getElementById("lohnUtilPct")?.value) || 85.0;
 
+  // Beispiel-Formel
+  let effRate  = (utilPct > 0) ? (baseRate / (utilPct / 100.0)) : baseRate;
+  const lohnGesc = effRate * ops;
+
+  console.log("DEBUG: Calculated lohnGesc =", lohnGesc);
+
+  // In #fertTable übernehmen
   const fertRows = document.querySelectorAll("#fertTable tbody tr");
-  console.log("DEBUG: fertRows.length =", fertRows.length);
   if (currentLohnRow >= 0 && currentLohnRow < fertRows.length) {
-    console.log("DEBUG: Valid currentLohnRow => setting cell[3] input.value =", lohnGesc.toFixed(2));
     fertRows[currentLohnRow].cells[3].querySelector("input").value = lohnGesc.toFixed(2);
-  } else {
-    console.log("DEBUG: currentLohnRow out of range => no action");
   }
 
+  // --------------------
   // Modal schließen
-  const modalEl = document.getElementById("modalLohn");
+  // --------------------
   console.log("DEBUG: Attempting to close modalLohn");
+  const modalEl = document.getElementById("modalLohn");
   const bsModal = bootstrap.Modal.getInstance(modalEl);
   bsModal.hide();
 
@@ -2041,33 +2085,6 @@ function checkMaterialAccess() {
  *  - Ruft /auth/whoami => prüft license
  *  - wenn extended => openLohnModal()
  */
-function checkLoanAccess() {
-  const csrftoken = document.querySelector('meta[name="csrf-token"]')?.content || "";
-  fetch("/auth/whoami", {
-    method: "GET",
-    headers:{ "X-CSRFToken": csrftoken }
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("DEBUG: Lizenzprüfung Lohnliste:", data);
-      if (data.logged_in && data.license === "extended") {
-        openLohnModal();
-      } else {
-        alert("Lohnliste nur in Extended-Version verfügbar. Bitte upgraden!");
-      }
-    })
-    .catch((err) => {
-      console.error("Fehler checkLoanAccess:", err);
-      alert("Ein Fehler ist aufgetreten. Bitte später erneut versuchen.");
-    });
-}
-
-/**
- * DOMContentLoaded => checkLicense() aufrufen
- */
-document.addEventListener("DOMContentLoaded", () => {
-  checkLicense();
-});
 
 // Exporte, falls nötig
 window.onAskGPT     = onAskGPT;
