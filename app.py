@@ -83,21 +83,28 @@ def create_app():
     ###################################################################
     ## BEFORE REQUEST 1: require_login
     ###################################################################
+    ####################################################################
+    ## BEFORE REQUEST 1: require_login
+    ####################################################################
     @app.before_request
     def require_login():
-        # Diese Routen dürfen auch ohne Login besucht werden
+        # Public routes OHNE "/"!
         public_routes = [
-            "/", "/auth/login", "/auth/register", "/auth/whoami",
+            "/auth/login", "/auth/register", "/auth/whoami",
             "/favicon.ico", "/robots.txt", "/pay/webhook", "/upgrade"
         ]
+
+        # Falls Pfad == "/" => ohne Login erlaubt
+        if request.path == "/":
+            return
+
+        # Alle Pfade, die NICHT in public_routes drin sind => Token-Check
         if not any(request.path.startswith(r) for r in public_routes):
-            # Neu: Prüfung, ob user_id & Token in der Session vorhanden und gültig
             user_id = session.get("user_id")
             sso_token = session.get("sso_token")
             if not user_id or not sso_token:
                 return jsonify({"error": "Not logged in"}), 401
 
-            # Abgleich mit DB
             user = User.query.get(user_id)
             if not user or user.current_session_token != sso_token:
                 session.clear()
