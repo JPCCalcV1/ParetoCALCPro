@@ -2093,7 +2093,7 @@ window.doLogout     = doLogout;
 window.doRegister   = doRegister;
 window.checkLicense = checkLicense;
 window.checkMaterialAccess = checkMaterialAccess;
-window.checkLoanAccess = checkLoanAccess;
+
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("V2 => DOMContentLoaded => combined with old V1 stuff");
