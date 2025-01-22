@@ -38,7 +38,7 @@ def create_app():
 
     app.config["SESSION_COOKIE_SECURE"] = True
     app.config["SESSION_COOKIE_HTTPONLY"] = True
-    app.config["SESSION_COOKIE_SAMESITE"] = "Strict"
+    app.config["SESSION_COOKIE_SAMESITE"] = "None"
 
     print("DEBUG DB-URL =", app.config["SQLALCHEMY_DATABASE_URI"])
 
@@ -93,8 +93,16 @@ def create_app():
     def require_login():
         # Routen, die ohne Login erreichbar sein sollen
         public_routes = [
-            "/auth/login", "/auth/register", "/auth/whoami",
-            "/favicon.ico", "/robots.txt", "/pay/webhook", "/upgrade"
+            "/auth/login",
+            "/auth/register",
+            "/auth/whoami",
+            "/favicon.ico",
+            "/robots.txt",
+            "/pay/webhook",
+            "/upgrade",
+            # UNBEDINGT dazunehmen!
+            "/pay/success",
+            "/pay/cancel"
         ]
 
         # 1) Root-Seite / ist öffentlich
