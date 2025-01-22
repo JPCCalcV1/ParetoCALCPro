@@ -3,19 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <title>ParetoCalc - Login & Registrierung</title>
-  <!-- Meta optional -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- CSRF-Token via Jinja einfügen -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
   <!-- ================== BEGIN ColorAdmin CSS ================== -->
-  <!-- 1) vendor.min.css enthält Bootstrap + externe Abhängigkeiten -->
   <link rel="stylesheet" href="/static/coloradmin/css/vendor.min.css" />
-  <!-- 2) app.min.css enthält das Haupt-Layout von ColorAdmin -->
   <link rel="stylesheet" href="/static/coloradmin/css/app.min.css" />
   <!-- ================== END ColorAdmin CSS ================== -->
-
-  <!-- Optional: Dein eigenes Custom CSS -->
-  <!-- <link rel="stylesheet" href="/static/css/my-custom.css" /> -->
-
 </head>
 <body class="pace-top">
   <!-- Loader-Element (optional) -->
@@ -31,7 +27,6 @@
 
       <!-- BEGIN login-cover (Hintergrundbild) -->
       <div class="login-cover">
-        <!-- Anpassen: Bild liegt in /static/coloradmin/img/login-bg/ -->
         <div class="login-cover-img"
              style="background-image: url('/static/coloradmin/img/login-bg-17.jpg');"
              data-id="login-cover-image">
@@ -47,7 +42,6 @@
         <div class="login-header">
           <div class="brand">
             <div class="d-flex align-items-center">
-              <!-- Hier könnte ein Logo hin, z. B. <img src="..." alt="Logo"> -->
               <span class="logo"></span>
               <b>ParetoCalc</b>
             </div>
@@ -129,22 +123,21 @@
     </div>
     <!-- END .login.login-v2 -->
 
-    <!-- OPTIONAL: Hintergrundbilder-Wechsler (Login BG List) -->
-
   </div>
   <!-- END #app -->
 
   <!-- ================== BEGIN ColorAdmin JS ================== -->
-  <!-- vendor.min.js -> enthält jQuery, Bootstrap JS, etc. -->
   <script src="/static/coloradmin/js/vendor.min.js"></script>
-  <!-- app.min.js -> enthält das Grund-Skript von ColorAdmin -->
   <script src="/static/coloradmin/js/app.min.js"></script>
-  <!-- login-v2.demo.js -> nur wenn du den Wechsel der Hintergrundbilder willst -->
-
   <!-- ================== END ColorAdmin JS ================== -->
 
-  <!-- Deine Login-/Register-Logik -->
+  <!-- Login-/Register-Logik mit X-CSRFToken -->
   <script>
+  function getCsrfToken() {
+    const metaTag = document.querySelector('meta[name="csrf-token"]');
+    return metaTag ? metaTag.getAttribute('content') : '';
+  }
+
   async function onLogin() {
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPass").value.trim();
@@ -154,16 +147,19 @@
     }
     try {
       const res = await fetch("/auth/login", {
-        method:"POST",
-        headers: {"Content-Type":"application/json"},
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCsrfToken()  // <-- WICHTIG!
+        },
         body: JSON.stringify({ email, password })
       });
       const data = await res.json();
-      if(data.error) {
+      if (data.error) {
         alert("Fehler: " + data.error);
       } else {
         alert("Login ok: " + data.license);
-        window.location="/mycalc/"; // oder /upgrade
+        window.location = "/mycalc/"; // oder /upgrade
       }
     } catch(err) {
       console.error(err);
@@ -180,16 +176,19 @@
     }
     try {
       const res = await fetch("/auth/register", {
-        method:"POST",
-        headers: {"Content-Type":"application/json"},
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCsrfToken()  // <-- WICHTIG!
+        },
         body: JSON.stringify({ email, password })
       });
       const data = await res.json();
-      if(data.error){
+      if (data.error) {
         alert("Fehler: " + data.error);
       } else {
         alert("Registrierung ok => " + data.message);
-        window.location="/upgrade";
+        window.location = "/upgrade";
       }
     } catch(err) {
       console.error(err);
@@ -197,89 +196,51 @@
     }
   }
   </script>
-<hr/>
-<div id="cookieBanner" style="position: fixed; bottom: 0; left: 0; right: 0;
-     background: #222; color: #fff; padding: 10px; display: none; z-index: 9999;">
-  <p style="margin: 0;">
-    Wir verwenden Cookies. Einige sind essenziell, andere helfen uns,
-    unsere Seite zu verbessern. Mit Klick auf „Alle akzeptieren“ stimmen
-    Sie der Verwendung zu.
-    <a href="/datenschutz" style="color: #fff; text-decoration: underline;">
-      Mehr Infos
-    </a>
-  </p>
-  <button id="cookieAcceptAll" class="btn btn-sm btn-success" style="margin: 5px;">Alle akzeptieren</button>
-  <button id="cookieDeclineAll" class="btn btn-sm btn-light" style="margin: 5px;">Nur essenzielle</button>
-</div>
 
-<script>
-(function(){
-  function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    if (match) return match[2];
-  }
+  <!-- Cookie-Banner -->
+  <div id="cookieBanner" style="position: fixed; bottom: 0; left: 0; right: 0;
+       background: #222; color: #fff; padding: 10px; display: none; z-index: 9999;">
+    <p style="margin: 0;">
+      Wir verwenden Cookies. Einige sind essenziell, andere helfen uns,
+      unsere Seite zu verbessern. Mit Klick auf „Alle akzeptieren“ stimmen
+      Sie der Verwendung zu.
+      <a href="/datenschutz" style="color: #fff; text-decoration: underline;">
+        Mehr Infos
+      </a>
+    </p>
+    <button id="cookieAcceptAll" class="btn btn-sm btn-success" style="margin: 5px;">Alle akzeptieren</button>
+    <button id="cookieDeclineAll" class="btn btn-sm btn-light" style="margin: 5px;">Nur essenzielle</button>
+  </div>
 
-  if(!getCookie("cookieConsent")) {
-    document.getElementById("cookieBanner").style.display = "block";
-  }
+  <script>
+  (function(){
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+    }
 
-  document.getElementById("cookieAcceptAll").addEventListener("click", function(){
-    document.cookie = "cookieConsent=all; path=/; max-age="+(365*24*60*60);
-    document.getElementById("cookieBanner").style.display = "none";
-    // optional: Google Analytics oder andere Tracker aktivieren
-  });
+    if(!getCookie("cookieConsent")) {
+      document.getElementById("cookieBanner").style.display = "block";
+    }
 
-  document.getElementById("cookieDeclineAll").addEventListener("click", function(){
-    document.cookie = "cookieConsent=essential; path=/; max-age="+(365*24*60*60);
-    document.getElementById("cookieBanner").style.display = "none";
-  });
-})();
-</script>
+    document.getElementById("cookieAcceptAll").addEventListener("click", function(){
+      document.cookie = "cookieConsent=all; path=/; max-age="+(365*24*60*60);
+      document.getElementById("cookieBanner").style.display = "none";
+      // optional: Google Analytics oder andere Tracker aktivieren
+    });
 
-<hr/>
-<div id="cookieBanner" style="position: fixed; bottom: 0; left: 0; right: 0;
-     background: #222; color: #fff; padding: 10px; display: none; z-index: 9999;">
-  <p style="margin: 0;">
-    Wir verwenden Cookies. Einige sind essenziell, andere helfen uns,
-    unsere Seite zu verbessern. Mit Klick auf „Alle akzeptieren“ stimmen
-    Sie der Verwendung zu.
-    <a href="/datenschutz" style="color: #fff; text-decoration: underline;">
-      Mehr Infos
-    </a>
-  </p>
-  <button id="cookieAcceptAll" class="btn btn-sm btn-success" style="margin: 5px;">Alle akzeptieren</button>
-  <button id="cookieDeclineAll" class="btn btn-sm btn-light" style="margin: 5px;">Nur essenzielle</button>
-</div>
+    document.getElementById("cookieDeclineAll").addEventListener("click", function(){
+      document.cookie = "cookieConsent=essential; path=/; max-age="+(365*24*60*60);
+      document.getElementById("cookieBanner").style.display = "none";
+    });
+  })();
+  </script>
 
-<script>
-(function(){
-  function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    if (match) return match[2];
-  }
-
-  if(!getCookie("cookieConsent")) {
-    document.getElementById("cookieBanner").style.display = "block";
-  }
-
-  document.getElementById("cookieAcceptAll").addEventListener("click", function(){
-    document.cookie = "cookieConsent=all; path=/; max-age="+(365*24*60*60);
-    document.getElementById("cookieBanner").style.display = "none";
-    // optional: Google Analytics oder andere Tracker aktivieren
-  });
-
-  document.getElementById("cookieDeclineAll").addEventListener("click", function(){
-    document.cookie = "cookieConsent=essential; path=/; max-age="+(365*24*60*60);
-    document.getElementById("cookieBanner").style.display = "none";
-  });
-})();
-</script>
-
-<hr/>
-<footer class="text-center my-3">
-  <a href="/impressum">Impressum</a> |
-  <a href="/datenschutz">Datenschutz</a> |
-  <a href="/agb">AGB</a>
-</footer>
+  <hr/>
+  <footer class="text-center my-3">
+    <a href="/impressum">Impressum</a> |
+    <a href="/datenschutz">Datenschutz</a> |
+    <a href="/agb">AGB</a>
+  </footer>
 </body>
 </html>
