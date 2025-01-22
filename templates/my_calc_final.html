@@ -3873,27 +3873,30 @@
 </div>
 
 <script>
-(function(){
-  function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    if (match) return match[2];
-  }
+window.addEventListener("DOMContentLoaded", () => {
+  checkLicense(); // oder checkUserLogin();
+});
+  (function () {
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+    }
 
-  if(!getCookie("cookieConsent")) {
-    document.getElementById("cookieBanner").style.display = "block";
-  }
+    if (!getCookie("cookieConsent")) {
+      document.getElementById("cookieBanner").style.display = "block";
+    }
 
-  document.getElementById("cookieAcceptAll").addEventListener("click", function(){
-    document.cookie = "cookieConsent=all; path=/; max-age="+(365*24*60*60);
-    document.getElementById("cookieBanner").style.display = "none";
-    // optional: Google Analytics oder andere Tracker aktivieren
-  });
+    document.getElementById("cookieAcceptAll").addEventListener("click", function () {
+      document.cookie = "cookieConsent=all; path=/; max-age=" + (365 * 24 * 60 * 60);
+      document.getElementById("cookieBanner").style.display = "none";
+      // optional: Google Analytics oder andere Tracker aktivieren
+    });
 
-  document.getElementById("cookieDeclineAll").addEventListener("click", function(){
-    document.cookie = "cookieConsent=essential; path=/; max-age="+(365*24*60*60);
-    document.getElementById("cookieBanner").style.display = "none";
-  });
-})();
+    document.getElementById("cookieDeclineAll").addEventListener("click", function () {
+      document.cookie = "cookieConsent=essential; path=/; max-age=" + (365 * 24 * 60 * 60);
+      document.getElementById("cookieBanner").style.display = "none";
+    });
+  })();
 </script>
 
 <hr/>
