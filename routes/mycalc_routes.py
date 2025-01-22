@@ -66,11 +66,11 @@ def get_machine_list():
         return jsonify({"error": "Lizenz abgelaufen"}), 403
 
     if lvl in ["plus"]:
-        filename = "materialListe_plus.json"
+        filename = "machines_test.json"
     elif lvl == "premium":
-        filename = "materialListe_premium.json"
+        filename = "machines_premium.json"
     elif lvl == "extended":
-        filename = "materialListe_extended.json"
+        filename = "machines_extended.json"
     else:
         return jsonify({"error": "Lizenz nicht ausreichend"}), 403
 
@@ -98,11 +98,11 @@ def get_lohn_list():
         return jsonify({"error": "Lizenz abgelaufen"}), 403
 
     if lvl in ["plus"]:
-        filename = "materialListe_plus.json"
+        filename = "lohnliste_plus.json"
     elif lvl == "premium":
-        filename = "materialListe_premium.json"
+        filename = "lohnliste_premium.json"
     elif lvl == "extended":
-        filename = "materialListe_extended.json"
+        filename = "lohnliste_extended.json"
     else:
         return jsonify({"error": "Lizenz nicht ausreichend"}), 403
 
