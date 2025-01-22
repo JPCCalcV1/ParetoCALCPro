@@ -144,7 +144,11 @@
 </script>
 
 <script>
+  // NEU: CSRF-Token aus dem <meta>-Tag auslesen.
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
   function fetchUsers() {
+    // GET-Request, hier brauchst du den Token nicht unbedingt mitsenden
     fetch("/admin/users")
       .then(r => r.json())
       .then(data => renderUserTable(data))
@@ -185,10 +189,14 @@
     document.getElementById("userTable").innerHTML = html;
   }
 
+  // NEU: Hier POST-Request mit "X-CSRFToken" im Header
   function setLicense(userId, tier) {
     fetch("/admin/set_license", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken
+      },
       body: JSON.stringify({ user_id: userId, license_tier: tier })
     })
     .then(r => r.json())
@@ -202,12 +210,15 @@
     .catch(err => alert("Fehler: " + err));
   }
 
-  // NEU: Delete user
+  // NEU: Delete user - auch hier mit CSRF-Header
   function deleteUser(userId) {
     if(!confirm(`User mit ID=${userId} wirklich löschen?`)) return;
     fetch("/admin/delete_user", {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken
+      },
       body: JSON.stringify({ user_id: userId })
     })
     .then(r => r.json())
@@ -221,6 +232,7 @@
     .catch(err => alert("Fehler: " + err));
   }
 
+  // NEU: Add-on setzen - ebenso POST, also CSRF-Header
   function setAddon(ev) {
     ev.preventDefault();
     let userId = parseInt(document.getElementById("addonUserId").value);
@@ -228,7 +240,10 @@
 
     fetch("/admin/addon/set", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken
+      },
       body: JSON.stringify({ user_id: userId, addon: addon })
     })
     .then(r => r.json())
@@ -240,7 +255,7 @@
     .catch(err => alert("Fehler: " + err));
   }
 
-  // Stripe-Events
+  // Stripe-Events (GET-Request, hier kein CSRF nötig)
   function fetchStripeEvents() {
     fetch("/admin/stripe_events")
       .then(r => r.json())
@@ -266,6 +281,5 @@
     html += "</tbody></table>";
     document.getElementById("stripeEventTable").innerHTML = html;
   }
-</script>
-</body>
+</script></body>
 </html>
