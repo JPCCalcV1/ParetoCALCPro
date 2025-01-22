@@ -183,34 +183,33 @@ def stripe_webhook():
     ## 1) checkout.session.completed
     ########################################
     if etype == "checkout.session.completed":
-        meta = data_obj.get("metadata", {})
+        sub_id = data_obj.get("subscription")  # z. B. "sub_ABC123"
+        if not sub_id:
+            current_app.logger.warning("[webhook:session.completed] No subscription => abort")
+            return jsonify({"status": "ok"}), 200
+
+        # Subscription-Objekt abrufen, dort stehen i. d. R. die metadata
+        sub_obj = stripe.Subscription.retrieve(sub_id)
+        meta = sub_obj.get("metadata", {})
         which_tier = meta.get("which_tier", "plus")
-        mode_used = meta.get("mode_used", "subscription")  # "subscription" oder "payment"
+        mode_used = meta.get("mode_used", "subscription")
+
+        # user abfragen
         user = get_user_from_metadata(meta)
         if not user:
             current_app.logger.warning("[webhook:session.completed] No user => abort")
-            return jsonify({"status":"ok"}), 200
+            return jsonify({"status": "ok"}), 200
 
         old_tier = user.license_tier
 
         if mode_used == "subscription":
-            # ABO => z.B. license_tier = which_tier
-            # Falls du direkt license_expiry = now()+7 setzt,
-            # kann man machen, aber Stripe managt die Trial.
             user.license_tier = which_tier
-
-            sub_id = data_obj.get("subscription")
-            if sub_id:
-                user.stripe_subscription_id = sub_id
-
+            user.stripe_subscription_id = sub_id
         elif mode_used == "payment":
-            # Falls du OneOff noch drin hast => +365
             user.license_tier = which_tier
             user.license_expiry = datetime.now() + timedelta(days=365)
         else:
-            current_app.logger.warning(
-                f"[webhook:session.completed] unknown mode={mode_used}, ignoring"
-            )
+            current_app.logger.warning(f"[webhook:session.completed] unknown mode={mode_used}, ignoring")
 
         db.session.commit()
         new_log.user_id = user.id
