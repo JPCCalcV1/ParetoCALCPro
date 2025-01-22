@@ -3146,18 +3146,29 @@
 
       <div class="modal-body">
         <!-- Filterfeld -->
-        <div class="mb-3">
-          <label for="matFilterInput" class="form-label"
-            >Filter (Materialname oder Verfahren)</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="matFilterInput"
-            placeholder="z.B. 'AlSi9' oder 'Guss'"
-            oninput="filterMaterialList()"
-          />
-        </div>
+        <div class="mb-3 d-flex gap-2">
+  <div class="flex-grow-1">
+    <label for="matFilterInput" class="form-label"
+      >Filter (Materialname oder Verfahren)</label
+    >
+    <input
+      type="text"
+      class="form-control"
+      id="matFilterInput"
+      placeholder="z.B. 'AlSi9' oder 'Guss'"
+      oninput="filterMaterialList()"
+    />
+  </div>
+  <div class="align-self-end">
+    <button
+      class="btn btn-sm btn-outline-secondary"
+      onclick="clearMaterialFilter()"
+      style="margin-top: 1.8rem;" <!-- optional zum Ausrichten -->
+    >
+      Filter zurücksetzen
+    </button>
+  </div>
+</div>
 
         <table class="table table-sm" id="tblMaterialList">
           <thead>

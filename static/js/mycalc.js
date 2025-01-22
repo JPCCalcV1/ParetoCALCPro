@@ -911,6 +911,12 @@ function selectMaterial(idx) {
 
   console.log("DEBUG: Material selected => Exiting selectMaterial()");
 }
+function clearMaterialFilter() {
+  console.log("DEBUG: Entering clearMaterialFilter()");
+  document.getElementById("matFilterInput").value = "";
+  filterMaterialList(); // => zeigt alle wieder an
+  console.log("DEBUG: Exiting clearMaterialFilter()");
+}
 function applyLohnFilter() {
   console.log("DEBUG: Entering applyLohnFilter()");
   const filterVal = (document.getElementById("txtLohnFilter").value || "").trim().toLowerCase();
