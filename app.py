@@ -36,6 +36,10 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+    app.config["SESSION_COOKIE_SECURE"] = True
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "Strict"
+
     print("DEBUG DB-URL =", app.config["SQLALCHEMY_DATABASE_URI"])
 
     db.init_app(app)
@@ -86,11 +90,18 @@ def create_app():
             "/", "/auth/login", "/auth/register", "/auth/whoami",
             "/favicon.ico", "/robots.txt", "/pay/webhook", "/upgrade"
         ]
-        # Falls wir in DEINE Payment-Routen reinwollen, MUSS man eingeloggt sein
-        # ABER: /pay/webhook MUSS öffentlich sein, daher in public_routes
         if not any(request.path.startswith(r) for r in public_routes):
-            if not session.get("user_id"):
+            # Neu: Prüfung, ob user_id & Token in der Session vorhanden und gültig
+            user_id = session.get("user_id")
+            sso_token = session.get("sso_token")
+            if not user_id or not sso_token:
                 return jsonify({"error": "Not logged in"}), 401
+
+            # Abgleich mit DB
+            user = User.query.get(user_id)
+            if not user or user.current_session_token != sso_token:
+                session.clear()
+                return redirect("/auth/login")
 
     ###################################################################
     ## BEFORE REQUEST 2: check_license

@@ -15,7 +15,7 @@ from helpers.sendgrid_helper import send_email
 auth_bp = Blueprint("auth_bp", __name__)
 
 @auth_bp.route("/register", methods=["POST"])
-@csrf.exempt
+@limiter.limit("5 per 15 minutes")
 def register():
     """
     Registriert einen neuen User.
@@ -57,7 +57,6 @@ def register():
     return jsonify({"message":"Registrierung ok", "next":"/upgrade"})
 
 @auth_bp.route("/login", methods=["GET", "POST"])
-@csrf.exempt
 @limiter.limit("5 per 15 minutes")  # Rate-Limit: max. 5 Logins in 15 Min
 def login():
     if request.method == "GET":
@@ -80,16 +79,20 @@ def login():
         return jsonify({"error": "Wrong user/pass"}), 401
 
     # Session
+    # Vorher: # Session
+    # Jetzt: Anti-Session-Fixation + Neuer Token
+    session.clear()  # Wichtig: Session leeren, damit kein alter Cookie übernommen wird
+
     new_token = str(uuid.uuid4())
     user.current_session_token = new_token
     db.session.commit()
 
     session["user_id"] = user.id
     session["sso_token"] = new_token
+
     return jsonify({"message": "Login ok", "license": user.license_level()})
 
 @auth_bp.route("/logout", methods=["POST"])
-@csrf.exempt
 def logout():
     if "user_id" in session:
         uid = session["user_id"]
