@@ -3324,9 +3324,9 @@
   + Buttons "Berechnen", "Übernehmen", "Schließen"
 -->
 
-<!-- BEGIN: Neuer Maschinenstundensatz-Modal -->
+<!-- BEGIN: Maschinenstundensatz-Modal mit Tausender-Punkten & Dedicated-Prozent -->
 <div class="modal fade" id="modalMachine" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg"> <!-- modal-lg: mehr Breite -->
+  <div class="modal-dialog modal-lg"> <!-- Größere Breite -->
     <div class="modal-content">
 
       <div class="modal-header">
@@ -3345,7 +3345,10 @@
               id="machKaufpreis"
               value="100000"
             />
-            <button class="btn btn-sm btn-outline-info ms-2" onclick="openMachineListModal()">
+            <button
+              class="btn btn-sm btn-outline-info ms-2"
+              onclick="openMachineListModal()"
+            >
               Aus Liste...
             </button>
           </div>
@@ -3373,7 +3376,7 @@
             />
           </div>
           <div class="col-sm-3">
-            <!-- leer oder optionaler Output -->
+            <!-- Leer -->
           </div>
         </div>
 
@@ -3412,24 +3415,35 @@
             />
           </div>
           <div class="col-sm-3">
-            <!-- optional -->
+            <!-- Leer -->
           </div>
         </div>
 
-        <!-- Dedicated Machine (Teilauslastung) -->
+        <!-- Dedicated Machine (Checkbox & Prozentsatz) -->
         <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Dedicated Machine?</label>
+          <label class="col-sm-5 col-form-label">Dedicated?</label>
           <div class="col-sm-4 d-flex align-items-center">
             <input
               type="checkbox"
-              class="form-check-input"
+              class="form-check-input me-2"
               id="chkDedicated"
-              style="margin-right:8px;"
+              onchange="toggleDedicatedPct()"
             />
-            <small>(halbe effektive Stunden)</small>
+            <input
+              type="number"
+              class="form-control"
+              id="machDedicatedPct"
+              value="100"
+              step="1"
+              min="1"
+              max="100"
+              style="width:80px;"
+              disabled
+            />
+            <span class="ms-2">%</span>
           </div>
           <div class="col-sm-3">
-            <!-- leer -->
+            <!-- Leer -->
           </div>
         </div>
 
@@ -3445,7 +3459,7 @@
             />
           </div>
           <div class="col-sm-3">
-            <!-- optional -->
+            <!-- Leer -->
           </div>
         </div>
         <div class="row mb-2">
@@ -3482,7 +3496,7 @@
             />
           </div>
           <div class="col-sm-3">
-            <!-- leer -->
+            <!-- Leer -->
           </div>
         </div>
         <div class="row mb-2">
@@ -3496,7 +3510,7 @@
             />
           </div>
           <div class="col-sm-3">
-            <!-- leer -->
+            <!-- Leer -->
           </div>
         </div>
         <div class="row mb-2">
@@ -3533,7 +3547,7 @@
             />
           </div>
           <div class="col-sm-3">
-            <!-- leer -->
+            <!-- Leer -->
           </div>
         </div>
         <div class="row mb-2">
@@ -3560,7 +3574,7 @@
 
         <!-- Instandhaltung + Betriebskosten -->
         <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Instandhaltung (% v. Kaufpr.)</label>
+          <label class="col-sm-5 col-form-label">Instandhaltung (% v. KP)</label>
           <div class="col-sm-4">
             <input
               type="number"
@@ -3581,7 +3595,7 @@
           </div>
         </div>
         <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Betriebskosten (% v. Kaufpr.)</label>
+          <label class="col-sm-5 col-form-label">Betriebskosten (% v. KP)</label>
           <div class="col-sm-4">
             <input
               type="number"
@@ -3599,22 +3613,6 @@
               placeholder="€/h"
               readonly
             />
-          </div>
-        </div>
-
-        <!-- Sonstige Jahreskosten -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Sonstige Jahreskosten (€)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machExtraCost"
-              value="0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <!-- leer -->
           </div>
         </div>
 
@@ -3636,13 +3634,13 @@
 
       <div class="modal-footer">
         <div class="me-3">
-          Jahreskosten (€):
+          Jahreskosten:
           <input
             type="text"
             class="form-control d-inline-block"
             id="machSumYear"
-            style="width:120px;"
-            value="0.00"
+            style="width:140px;"
+            value="0"
             readonly
           />
         </div>
@@ -3681,8 +3679,7 @@
     </div>
   </div>
 </div>
-<!-- END: Neuer Maschinenstundensatz-Modal -->
-
+<!-- END: Maschinenstundensatz-Modal -->
 <!-- LOHN-LISTE MODAL -->
 <div
   class="modal fade"

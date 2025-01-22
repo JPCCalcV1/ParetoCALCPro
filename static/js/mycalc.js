@@ -1257,142 +1257,205 @@ function selectLohn(idx) {
 //  - Rechnet Jahreskosten + €/h
 //  - Speichert Ergebnisse in globale (oder gibt sie zurück)
 // ---------------------------------------------
+/**
+ * parseFloatAllowZero() – parst eine Zahl oder gibt fallback zurück,
+ *   ABER 0 bleibt 0 und führt NICHT zum fallback.
+ */
+function parseFloatAllowZero(str, fallbackVal) {
+  const val = parseFloat(str);
+  if (isNaN(val)) {
+    return fallbackVal; // Nur bei wirklichem NaN
+  }
+  return val; // 0 bleibt 0
+}
+
+/**
+ * formatIntCurrency(value):
+ *  - Tausender-Punkte (de-DE)
+ *  - Keine Nachkommastellen
+ *  - " €" am Ende
+ */
+function formatIntCurrency(value) {
+  return (
+    value.toLocaleString("de-DE", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }) + " €"
+  );
+}
+
+/**
+ * formatHourCurrency(value):
+ *  - Tausender-Punkte (de-DE)
+ *  - 2 Nachkommastellen
+ *  - " €" am Ende
+ */
+function formatHourCurrency(value) {
+  return (
+    value.toLocaleString("de-DE", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }) + " €"
+  );
+}
+
+/**
+ * toggleDedicatedPct() – wird aufgerufen, wenn Checkbox "Dedicated?" (chkDedicated)
+ *   geändert wird. Aktiviert/Deaktiviert das Eingabefeld für den Ded.-Prozentsatz.
+ */
+function toggleDedicatedPct() {
+  const cb = document.getElementById("chkDedicated");
+  const pctField = document.getElementById("machDedicatedPct");
+  if (cb.checked) {
+    pctField.disabled = false;
+  } else {
+    pctField.disabled = true;
+    pctField.value = "100";
+  }
+}
+
+/**
+ * calcExtendedMachineRate() – Hauptfunktion zur Berechnung
+ *   des Maschinenstundensatzes mit Dedicated-Faktor & Tausenderformat.
+ */
 function calcExtendedMachineRate() {
   console.log("DEBUG: Entering calcExtendedMachineRate()");
 
-  // 1) Felder aus dem DOM auslesen
-  const kaufpreis   = parseFloat(document.getElementById("machKaufpreis").value)   || 100000;
-  const instCost    = parseFloat(document.getElementById("machInstCost").value)    || 0;
-  const jahre       = parseFloat(document.getElementById("machNutzdauer").value)   || 5;
-  const auslast     = parseFloat(document.getElementById("machAuslast").value)     || 6000;
-  const availPct    = parseFloat(document.getElementById("machAvailPct").value)    || 85;
-  const dedicated   = document.getElementById("chkDedicated").checked;
+  // 1) Felder aus dem DOM – parseFloatAllowZero()
+  const kaufpreis   = parseFloatAllowZero(document.getElementById("machKaufpreis").value,   100000);
+  const instCost    = parseFloatAllowZero(document.getElementById("machInstCost").value,    0);
+  const jahre       = parseFloatAllowZero(document.getElementById("machNutzdauer").value,   5);
+  const auslast     = parseFloatAllowZero(document.getElementById("machAuslast").value,     6000);
+  const availPct    = parseFloatAllowZero(document.getElementById("machAvailPct").value,    85);
 
-  const kw          = parseFloat(document.getElementById("machKW").value)          || 100.0;
-  const stromPct    = parseFloat(document.getElementById("machStromPct").value)    || 80.0;
-  const stromCost   = parseFloat(document.getElementById("machStromCost").value)   || 0.20;
+  const chkDedicated= document.getElementById("chkDedicated").checked;
+  const dedicatedPct= parseFloatAllowZero(document.getElementById("machDedicatedPct").value, 100);
 
-  const flaecheBedarf = parseFloat(document.getElementById("machFlaecheBedarf").value) || 20.0;
-  const flaecheCost   = parseFloat(document.getElementById("machFlaechenkost").value)  || 7.0;
+  const kw          = parseFloatAllowZero(document.getElementById("machKW").value,          100.0);
+  const stromPct    = parseFloatAllowZero(document.getElementById("machStromPct").value,    80.0);
+  const stromCost   = parseFloatAllowZero(document.getElementById("machStromCost").value,   0.20);
 
-  const instPct    = parseFloat(document.getElementById("machInstandPct").value)   || 3.0;
-  const betrPct    = parseFloat(document.getElementById("machBetriebPct").value)   || 2.0;
-  const extraCost  = parseFloat(document.getElementById("machExtraCost").value)    || 0;
+  const flaecheBedarf = parseFloatAllowZero(document.getElementById("machFlaecheBedarf").value, 20.0);
+  const flaecheCost   = parseFloatAllowZero(document.getElementById("machFlaechenkost").value,  7.0);
 
-  // Neu: Zinssatz (manuell)
-  const inputZins  = parseFloat(document.getElementById("machZinssatz").value)     || 3.0;
+  const instPct    = parseFloatAllowZero(document.getElementById("machInstandPct").value,   3.0);
+  const betrPct    = parseFloatAllowZero(document.getElementById("machBetriebPct").value,   2.0);
+
+  // Neu: Zinssatz (z. B. 3 => 3%)
+  const inputZins  = parseFloatAllowZero(document.getElementById("machZinssatz").value,     3.0);
   const zinssatz   = inputZins / 100.0;
 
-  console.log("DEBUG: Read inputs =>", {
-    kaufpreis, instCost, jahre, auslast, availPct, dedicated,
+  console.log("DEBUG: Input Values =>", {
+    kaufpreis, instCost, jahre, auslast, availPct, chkDedicated, dedicatedPct,
     kw, stromPct, stromCost,
     flaecheBedarf, flaecheCost,
-    instPct, betrPct, extraCost,
+    instPct, betrPct,
     zinssatz
   });
 
-  // 2) Jahreskosten-Bausteine
-  // (A) Abschreibung pro Jahr (Kauf + Installation)
-  const depreciationYear = (kaufpreis + instCost) / jahre;
-
-  // (B) Zinsen (Durchschnittlicher Kapitaleinsatz = 50% vom Kauf+Install)
+  // 2) Fixkosten pro Jahr
+  // (A) Abschreibung: (Kauf + Install) / jahre
+  const depYear = (kaufpreis + instCost) / jahre;
+  // (B) Zinsen (50% vom (Kauf+Install) * Zinssatz)
   const interestYear = (kaufpreis + instCost) * 0.5 * zinssatz;
-
-  // (C) Instandhaltung pro Jahr
+  // (C) Instandhaltung
   const instYear = kaufpreis * (instPct / 100.0);
-
-  // (D) Betriebskosten pro Jahr
+  // (D) Betriebskosten
   const betrYear = kaufpreis * (betrPct / 100.0);
-
-  // (E) Flächenkosten pro Jahr (m² * €/m² * 12)
+  // (E) Fläche (m² * €/m²/Monat * 12)
   const flaecheYear = flaecheBedarf * flaecheCost * 12;
 
-  // (F) Stromkosten
-  const usedKW   = kw * (stromPct / 100.0);   // effektive kW
-  const stromHour= usedKW * stromCost;        // €/Betriebsstunde
-  // Standard: stromYear = stromHour * Auslastung
-  // => Wenn Dedicated = evtl. halbe Laufzeit, je nach Modell.
-  //   Minimal: wir multiplizieren erst mal fix mit auslast:
-  let stromYear  = stromHour * auslast;
+  // Summe fixe Jahreskosten (ohne Strom)
+  let fixYear = depYear + interestYear + instYear + betrYear + flaecheYear;
 
-  // (G) Sonstige Jahreskosten
-  // => vom User manuell eingetragen
-  const otherYear = extraCost;
+  // 3) Variable Kosten (Strom) pro Jahr
+  //    Strom orientiert sich an den tatsächlichen Laufstunden.
+  const usedKW   = kw * (stromPct / 100.0); // effektive kW
+  const stromHour= usedKW * stromCost;      // €/h
+  // Standard: wir nehmen "Basis-Laufstunden" = auslast * (availPct/100)
+  const baseEffHours = auslast * (availPct / 100.0);
+  // => varYear
+  let varYear = stromHour * baseEffHours;
 
-  // 3) Effektive Stunden = Auslast * Verfügbarkeit
-  let effHours = auslast * (availPct / 100.0);
-  if (dedicated) {
-    console.log("DEBUG: Dedicated => halbe Stunden");
-    effHours *= 0.5;
-
-    // Optional: halbe Stromkosten, wenn Maschine wirklich nur 50% real laeuft:
-    stromYear *= 0.5;
+  // 4) Dedicated-Prozentsatz (falls Checkbox aktiv)
+  //    - Wir reduzieren die anrechenbaren Fixkosten + die Laufstunden + die variablen Kosten
+  //      auf (dedicatedPct / 100).
+  let usageFactor = 1.0;
+  if (chkDedicated) {
+    usageFactor = dedicatedPct / 100.0; // z. B. 0.5, wenn 50% eingetragen
   }
 
-  console.log("DEBUG: depreciationYear=", depreciationYear,
-              "interestYear=", interestYear,
-              "instYear=", instYear, "betrYear=", betrYear,
-              "flaecheYear=", flaecheYear, "stromYear=", stromYear,
-              "otherYear=", otherYear,
-              "effHours=", effHours);
+  // a) Fixkosten anteilig
+  fixYear *= usageFactor;
+  // b) Laufstunden
+  const effHours = baseEffHours * usageFactor;
+  // c) Variable Kosten
+  varYear *= usageFactor;
 
-  // 4) Summe aller Jahreskosten
-  const sumYear = depreciationYear
-                + interestYear
-                + instYear
-                + betrYear
-                + flaecheYear
-                + stromYear
-                + otherYear;
+  console.log("DEBUG: fixYear=", fixYear, "varYear=", varYear, "effHours=", effHours);
 
-  // 5) Maschinenkosten pro Stunde
+  // 5) Gesamte Jahreskosten
+  const sumYear = fixYear + varYear;
+
+  // 6) Kosten pro Stunde (nur wenn effHours > 0)
   let costPerHour = 0;
   if (effHours > 0) {
     costPerHour = sumYear / effHours;
   }
 
-  // 6) CO₂ pro Stunde (Dummy: 0.38 kg/kWh)
+  // 7) CO₂ pro Stunde (Dummy: 0.38 kg pro kWh)
   const co2_per_hour = usedKW * 0.38;
 
-  // 7) Ausgabe in Felder + globales Objekt
-  // 7a) Zwischenergebnisse stundenbezogen
-  document.getElementById("machKaufpreisHr").value  =
-    (effHours > 0 ? (depreciationYear / effHours).toFixed(2) : "0.00");
-  document.getElementById("machZinsHr").value       =
-    (effHours > 0 ? (interestYear / effHours).toFixed(2)     : "0.00");
-  document.getElementById("machInstandHr").value    =
-    (effHours > 0 ? (instYear / effHours).toFixed(2)         : "0.00");
-  document.getElementById("machBetriebHr").value    =
-    (effHours > 0 ? (betrYear / effHours).toFixed(2)         : "0.00");
+  // 8) Ausgabe in Felder
+  // 8a) Auf Stunden umgelegt => 2 Nachkommastellen + " €"
+  document.getElementById("machKaufpreisHr").value =
+    effHours > 0 ? formatHourCurrency(depYear / effHours) : "0,00 €";
+  document.getElementById("machZinsHr").value =
+    effHours > 0 ? formatHourCurrency(interestYear / effHours) : "0,00 €";
+  document.getElementById("machInstandHr").value =
+    effHours > 0 ? formatHourCurrency(instYear / effHours) : "0,00 €";
+  document.getElementById("machBetriebHr").value =
+    effHours > 0 ? formatHourCurrency(betrYear / effHours) : "0,00 €";
   document.getElementById("machFlaechenkostHr").value =
-    (effHours > 0 ? (flaecheYear / effHours).toFixed(2)      : "0.00");
-  document.getElementById("machStromCostHr").value  =
-    (effHours > 0 ? (stromYear / effHours).toFixed(2)        : "0.00");
-  document.getElementById("machAvailHr").value      =
-    effHours.toFixed(1) + " h eff.";
-  document.getElementById("machCo2Hr").value        =
-    co2_per_hour.toFixed(2);
+    effHours > 0 ? formatHourCurrency(flaecheYear / effHours) : "0,00 €";
+  document.getElementById("machStromCostHr").value =
+    effHours > 0 ? formatHourCurrency(varYear / effHours) : "0,00 €";
 
-  // 7b) Summe p.a. und cost/h
-  document.getElementById("machSumYear").value      = sumYear.toFixed(2);
-  document.getElementById("machResult").textContent = costPerHour.toFixed(2);
+  // 8b) Effektive Stunden
+  document.getElementById("machAvailHr").value =
+    effHours.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) +
+    " h eff.";
 
-  // 7c) Speichern in globaler Variable (falls du acceptMachine() brauchst)
+  // 8c) CO₂ (2 Nachkommastellen, kg/h => kein €-Zeichen)
+  document.getElementById("machCo2Hr").value =
+    co2_per_hour.toLocaleString("de-DE", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+  // 8d) Jahreskosten (tausender-Punkte, keine Nachkommastellen + " €")
+  document.getElementById("machSumYear").value = formatIntCurrency(sumYear);
+
+  // 8e) Maschinenkosten (€/h)
+  document.getElementById("machResult").textContent = formatHourCurrency(costPerHour);
+
+  // 9) Speichern in globaler Variable (für acceptMachine() o. Ä.)
   window.extMachCalc = {
-    depYear: depreciationYear,
+    depYear,
     interestYear,
     instYear,
     betrYear,
     flaecheYear,
-    stromYear,
-    otherYear,
+    fixYear,
+    varYear,
     sumYear,
     effHours,
     costPerHour,
-    co2_per_hour
+    co2_per_hour,
+    usageFactor
   };
 
-  console.log("DEBUG: Exiting calcExtendedMachineRate(), costPerHour=", costPerHour);
+  console.log("DEBUG: Exiting calcExtendedMachineRate()", window.extMachCalc);
 }
 
 function acceptMachine() {
