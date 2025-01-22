@@ -131,9 +131,7 @@ function updateSchmiedenUI(data) {
        <br/>Maschine= ${data.mach_co2?.toFixed(2)} kg
        <br/><b>Total= ${data.co2_sum?.toFixed(2)} kg/Teil</b>
     </p>
-    <p style="font-size:0.8rem;color:#666;">
-      debug: ${JSON.stringify(data.debug)}
-    </p>
+
   `;
   textDiv.innerHTML= html;
 

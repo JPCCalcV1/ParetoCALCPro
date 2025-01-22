@@ -108,7 +108,7 @@ function updatePcbUI(data) {
        Bestückungs-CO₂: ${data.assembly_co2?.toFixed(3) ?? "--"} kg/Stk<br/>
        <b>Gesamt-CO₂: ${data.total_co2_board?.toFixed(3) ?? "--"} kg/Stk</b>
     </p>
-    <p style="font-size:0.8rem; color:#666;">debug: ${JSON.stringify(data.debug)}</p>
+
   `;
   textDiv.innerHTML = html;
 
