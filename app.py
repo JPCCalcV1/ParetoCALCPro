@@ -86,19 +86,26 @@ def create_app():
     ####################################################################
     ## BEFORE REQUEST 1: require_login
     ####################################################################
+    ###################################################################
+    ## BEFORE REQUEST 1: require_login
+    ###################################################################
     @app.before_request
     def require_login():
-        # Public routes OHNE "/"!
+        # Routen, die ohne Login erreichbar sein sollen
         public_routes = [
             "/auth/login", "/auth/register", "/auth/whoami",
             "/favicon.ico", "/robots.txt", "/pay/webhook", "/upgrade"
         ]
 
-        # Falls Pfad == "/" => ohne Login erlaubt
+        # 1) Root-Seite / ist öffentlich
         if request.path == "/":
             return
 
-        # Alle Pfade, die NICHT in public_routes drin sind => Token-Check
+        # 2) STATIC-Dateien /static/... sind öffentlich
+        if request.path.startswith("/static/"):
+            return
+
+        # 3) Alle Pfade, die NICHT in public_routes drin sind => Token-Check
         if not any(request.path.startswith(r) for r in public_routes):
             user_id = session.get("user_id")
             sso_token = session.get("sso_token")
