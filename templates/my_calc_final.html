@@ -3324,9 +3324,9 @@
   + Buttons "Berechnen", "Übernehmen", "Schließen"
 -->
 
-<!-- Maschinenstundensatz – Erweitert -->
+<!-- BEGIN: Neuer Maschinenstundensatz-Modal -->
 <div class="modal fade" id="modalMachine" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-lg"> <!-- modal-lg: mehr Breite -->
     <div class="modal-content">
 
       <div class="modal-header">
@@ -3335,7 +3335,7 @@
       </div>
 
       <div class="modal-body">
-        <!-- 1) Kaufpreis -->
+        <!-- Kaufpreis + Button "Aus Liste..." + Abschreibung pro Stunde -->
         <div class="row mb-2">
           <label class="col-sm-5 col-form-label">Kaufpreis (€)</label>
           <div class="col-sm-4 d-flex">
@@ -3361,11 +3361,33 @@
           </div>
         </div>
 
-        <!-- 1a) Zins pro Stunde (NEU) -->
+        <!-- Installationskosten -->
         <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Zins (3% p.a.)</label>
+          <label class="col-sm-5 col-form-label">Installationskosten (€)</label>
           <div class="col-sm-4">
-            <!-- leer, da wir Zins% fix => 3% -->
+            <input
+              type="number"
+              class="form-control"
+              id="machInstCost"
+              value="0"
+            />
+          </div>
+          <div class="col-sm-3">
+            <!-- leer oder optionaler Output -->
+          </div>
+        </div>
+
+        <!-- Zinssatz + Zins pro Stunde -->
+        <div class="row mb-2">
+          <label class="col-sm-5 col-form-label">Zinssatz (%)</label>
+          <div class="col-sm-4">
+            <input
+              type="number"
+              class="form-control"
+              id="machZinssatz"
+              step="0.1"
+              value="3.0"
+            />
           </div>
           <div class="col-sm-3">
             <input
@@ -3378,7 +3400,7 @@
           </div>
         </div>
 
-        <!-- 2) Nutzungsdauer -->
+        <!-- Nutzungsdauer -->
         <div class="row mb-2">
           <label class="col-sm-5 col-form-label">Nutzungsdauer (Jahre)</label>
           <div class="col-sm-4">
@@ -3390,11 +3412,28 @@
             />
           </div>
           <div class="col-sm-3">
-            <!-- optional: nutzdauerHr? -->
+            <!-- optional -->
           </div>
         </div>
 
-        <!-- 3) Jahresauslastung (h/Jahr) -->
+        <!-- Dedicated Machine (Teilauslastung) -->
+        <div class="row mb-2">
+          <label class="col-sm-5 col-form-label">Dedicated Machine?</label>
+          <div class="col-sm-4 d-flex align-items-center">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="chkDedicated"
+              style="margin-right:8px;"
+            />
+            <small>(halbe effektive Stunden)</small>
+          </div>
+          <div class="col-sm-3">
+            <!-- leer -->
+          </div>
+        </div>
+
+        <!-- Jahresauslastung + Verfügbarkeit -->
         <div class="row mb-2">
           <label class="col-sm-5 col-form-label">Jahresauslastung (h/Jahr)</label>
           <div class="col-sm-4">
@@ -3406,152 +3445,9 @@
             />
           </div>
           <div class="col-sm-3">
-            <!-- optional: -->
+            <!-- optional -->
           </div>
         </div>
-
-        <!-- 4) Anschlusswert (kW) -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Anschlusswert (kW)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machKW"
-              value="100"
-            />
-          </div>
-          <div class="col-sm-3">
-            <!-- leer -->
-          </div>
-        </div>
-
-        <!-- 5) Realer Stromverbrauch (%) -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Realer Stromverbrauch (%)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machStromPct"
-              value="80.0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <!-- leer -->
-          </div>
-        </div>
-
-        <!-- 6) Stromkosten (€/kWh) -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Stromkosten (€/kWh)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machStromCost"
-              step="0.01"
-              value="0.20"
-            />
-          </div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machStromCostHr"
-              placeholder="€/h"
-              readonly
-            />
-          </div>
-        </div>
-
-        <!-- 7) Flächenbedarf (m²) -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Flächenbedarf (m²)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machFlaecheBedarf"
-              step="1"
-              value="20"
-            />
-          </div>
-          <div class="col-sm-3">
-            <!-- leer -->
-          </div>
-        </div>
-
-        <!-- 8) Flächenkosten (€/m²/Monat) -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Flächenkosten (€/m²/Monat)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machFlaechenkost"
-              step="0.01"
-              value="7.0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machFlaechenkostHr"
-              placeholder="€/h"
-              readonly
-            />
-          </div>
-        </div>
-
-        <!-- 9) Instandhaltung (% Kaufpreis) -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Instandhaltung (% Kaufpreis)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machInstandPct"
-              step="0.1"
-              value="3.0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machInstandHr"
-              placeholder="€/h"
-              readonly
-            />
-          </div>
-        </div>
-
-        <!-- 10) Betriebskosten (% Kaufpreis) -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Betriebskosten (% Kaufpreis)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machBetriebPct"
-              step="0.1"
-              value="2.0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machBetriebHr"
-              placeholder="€/h"
-              readonly
-            />
-          </div>
-        </div>
-
-        <!-- 11) Anlagenverfügbarkeit (%) -->
         <div class="row mb-2">
           <label class="col-sm-5 col-form-label">Anlagenverfügbarkeit (%)</label>
           <div class="col-sm-4">
@@ -3574,7 +3470,155 @@
           </div>
         </div>
 
-        <!-- Optional: CO2 pro hour -->
+        <!-- Anschlusswert (kW) + Stromverbrauch (%) + Stromkosten/kWh -->
+        <div class="row mb-2">
+          <label class="col-sm-5 col-form-label">Anschlusswert (kW)</label>
+          <div class="col-sm-4">
+            <input
+              type="number"
+              class="form-control"
+              id="machKW"
+              value="100"
+            />
+          </div>
+          <div class="col-sm-3">
+            <!-- leer -->
+          </div>
+        </div>
+        <div class="row mb-2">
+          <label class="col-sm-5 col-form-label">Realer Stromverbrauch (%)</label>
+          <div class="col-sm-4">
+            <input
+              type="number"
+              class="form-control"
+              id="machStromPct"
+              value="80.0"
+            />
+          </div>
+          <div class="col-sm-3">
+            <!-- leer -->
+          </div>
+        </div>
+        <div class="row mb-2">
+          <label class="col-sm-5 col-form-label">Stromkosten (€/kWh)</label>
+          <div class="col-sm-4">
+            <input
+              type="number"
+              class="form-control"
+              id="machStromCost"
+              step="0.01"
+              value="0.20"
+            />
+          </div>
+          <div class="col-sm-3">
+            <input
+              type="text"
+              class="form-control"
+              id="machStromCostHr"
+              placeholder="€/h"
+              readonly
+            />
+          </div>
+        </div>
+
+        <!-- Flächenbedarf + Flächenkosten -->
+        <div class="row mb-2">
+          <label class="col-sm-5 col-form-label">Flächenbedarf (m²)</label>
+          <div class="col-sm-4">
+            <input
+              type="number"
+              class="form-control"
+              id="machFlaecheBedarf"
+              value="20"
+            />
+          </div>
+          <div class="col-sm-3">
+            <!-- leer -->
+          </div>
+        </div>
+        <div class="row mb-2">
+          <label class="col-sm-5 col-form-label">Flächenkosten (€/m²/Monat)</label>
+          <div class="col-sm-4">
+            <input
+              type="number"
+              class="form-control"
+              id="machFlaechenkost"
+              step="0.01"
+              value="7.0"
+            />
+          </div>
+          <div class="col-sm-3">
+            <input
+              type="text"
+              class="form-control"
+              id="machFlaechenkostHr"
+              placeholder="€/h"
+              readonly
+            />
+          </div>
+        </div>
+
+        <!-- Instandhaltung + Betriebskosten -->
+        <div class="row mb-2">
+          <label class="col-sm-5 col-form-label">Instandhaltung (% v. Kaufpr.)</label>
+          <div class="col-sm-4">
+            <input
+              type="number"
+              class="form-control"
+              id="machInstandPct"
+              step="0.1"
+              value="3.0"
+            />
+          </div>
+          <div class="col-sm-3">
+            <input
+              type="text"
+              class="form-control"
+              id="machInstandHr"
+              placeholder="€/h"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="row mb-2">
+          <label class="col-sm-5 col-form-label">Betriebskosten (% v. Kaufpr.)</label>
+          <div class="col-sm-4">
+            <input
+              type="number"
+              class="form-control"
+              id="machBetriebPct"
+              step="0.1"
+              value="2.0"
+            />
+          </div>
+          <div class="col-sm-3">
+            <input
+              type="text"
+              class="form-control"
+              id="machBetriebHr"
+              placeholder="€/h"
+              readonly
+            />
+          </div>
+        </div>
+
+        <!-- Sonstige Jahreskosten -->
+        <div class="row mb-2">
+          <label class="col-sm-5 col-form-label">Sonstige Jahreskosten (€)</label>
+          <div class="col-sm-4">
+            <input
+              type="number"
+              class="form-control"
+              id="machExtraCost"
+              value="0"
+            />
+          </div>
+          <div class="col-sm-3">
+            <!-- leer -->
+          </div>
+        </div>
+
+        <!-- CO₂ -->
         <div class="row mb-2">
           <label class="col-sm-5 col-form-label">CO₂ (kg/h)</label>
           <div class="col-sm-4"></div>
@@ -3588,43 +3632,22 @@
             />
           </div>
         </div>
-
-        <!-- (Optional) Lohn-Felder, falls du Lohn 1:1 einrechnen willst. -->
-        <!-- <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Bediener-Lohn (€/h)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machLohnRate"
-              value="35"
-            />
-          </div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machLohnHr"
-              placeholder="€/h"
-              readonly
-            />
-          </div>
-        </div>
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Anz. Bediener</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machOperators"
-              value="1.0"
-            />
-          </div>
-          <div class="col-sm-3"></div>
-        </div> -->
-      </div>
+      </div> <!-- Ende modal-body -->
 
       <div class="modal-footer">
+        <div class="me-3">
+          Jahreskosten (€):
+          <input
+            type="text"
+            class="form-control d-inline-block"
+            id="machSumYear"
+            style="width:120px;"
+            value="0.00"
+            readonly
+          />
+        </div>
+
+        <!-- Button: Rechnen -->
         <button
           type="button"
           class="btn btn-primary"
@@ -3632,6 +3655,7 @@
         >
           Berechnen
         </button>
+        <!-- Button: Übernehmen -->
         <button
           type="button"
           class="btn btn-success"
@@ -3639,6 +3663,7 @@
         >
           Übernehmen
         </button>
+        <!-- Button: Schließen -->
         <button
           type="button"
           class="btn btn-secondary"
@@ -3647,17 +3672,16 @@
           Schließen
         </button>
 
-
         <span class="ms-3">
-          Maschinenkosten (€/h) gesamt:
+          Maschinenkosten (€/h):
           <b id="machResult">--</b>
         </span>
-      </div>
+      </div> <!-- Ende modal-footer -->
 
     </div>
   </div>
-</div><!-- LOHN-LISTE MODAL -->
-
+</div>
+<!-- END: Neuer Maschinenstundensatz-Modal -->
 
 <!-- LOHN-LISTE MODAL -->
 <div
