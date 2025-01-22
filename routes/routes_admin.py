@@ -22,32 +22,7 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated
 
-@admin_bp.route("/create_admin_temp", methods=["POST"])
-@csrf.exempt
-def create_admin_temp():
-    """
-    Erstellt schnell einen Admin-User.
-    JSON-Beispiel: { "email":"admin@paretocalc.com", "password":"abc123" }
-    """
-    data = request.get_json() or {}
-    email = data.get("email","").strip().lower()
-    raw_pw = data.get("password","")
 
-    if not email or not raw_pw:
-        return jsonify({"error":"Email/Pass fehlt"}), 400
-
-    existing = User.query.filter_by(email=email).first()
-    if existing:
-        return jsonify({"error":"User existiert bereits"}), 400
-
-    new_user = User(email, raw_pw)
-    # Admin = license_tier = "extended", 1 Jahr
-    new_user.license_tier = "extended"
-    new_user.license_expiry = datetime.now() + timedelta(days=365)
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify({"message": f"Admin {email} angelegt"}), 200
 
 @admin_bp.route("/dashboard", methods=["GET"])
 @admin_required
@@ -80,7 +55,6 @@ def list_users():
     return jsonify(out)
 
 @admin_bp.route("/set_license", methods=["POST"])
-@csrf.exempt
 @admin_required
 def set_license():
     """
@@ -114,7 +88,6 @@ def set_license():
     return jsonify({"message": f"{user.email} => {tier}"}), 200
 
 @admin_bp.route("/addon/set", methods=["POST"])
-@csrf.exempt
 @admin_required
 def set_addon():
     """
@@ -155,7 +128,6 @@ def list_stripe_events():
     return jsonify(out)
 
 @admin_bp.route("/set_gpt_count", methods=["POST"])
-@csrf.exempt
 @admin_required
 def set_gpt_count():
     """
@@ -176,7 +148,6 @@ def set_gpt_count():
 
 # NEU: Delete user
 @admin_bp.route("/delete_user", methods=["POST"])
-@csrf.exempt
 @admin_required
 def delete_user():
     """
@@ -203,6 +174,7 @@ def delete_user():
 
 # FILE: routes/routes_admin.py (Erweiterung)
 @admin_bp.route("/cron/trial_reminder", methods=["GET"])
+@admin_required
 def cron_trial_reminder():
     """
     Durchläuft alle user, die z.B. ABO + TRIAL in 2 Tagen enden -> Email
@@ -239,16 +211,3 @@ Dein ParetoCalc-Team
 
     return jsonify({"message": f"Reminder sent to {cnt} user(s)."})
 
-@admin_bp.route("/delete_by_email_temp", methods=["POST"])
-@csrf.exempt
-def delete_by_email_temp():
-    data = request.get_json() or {}
-    email = data.get("email","").strip().lower()
-
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        return jsonify({"error":"User not found"}), 404
-
-    db.session.delete(user)
-    db.session.commit()
-    return jsonify({"message": f"User {user.email} wurde gelöscht"}), 200
