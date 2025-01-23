@@ -167,34 +167,43 @@
     }
   }
 
-  async function onRegister() {
-    const email = document.getElementById("regEmail").value.trim();
-    const password = document.getElementById("regPass").value.trim();
-    if(!email || !password){
-      alert("Bitte Email/Passwort eingeben!");
-      return;
-    }
-    try {
-      const res = await fetch("/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": getCsrfToken()  // <-- WICHTIG!
-        },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (data.error) {
-        alert("Fehler: " + data.error);
-      } else {
-        alert("Registrierung ok => " + data.message);
-        window.location = "/upgrade";
-      }
-    } catch(err) {
-      console.error(err);
-      alert("Registrierung fehlgeschlagen!");
-    }
+async function onRegister() {
+  const email = document.getElementById("regEmail").value.trim();
+  const password = document.getElementById("regPass").value.trim();
+  if(!email || !password){
+    alert("Bitte Email/Passwort eingeben!");
+    return;
   }
+  try {
+    // 1) Optional: next=... aus der URL abfragen
+    const nextParam = new URLSearchParams(window.location.search).get("next");
+
+    const res = await fetch("/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCsrfToken()  // <-- falls du CSRF einsetzt
+      },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (data.error) {
+      alert("Fehler: " + data.error);
+    } else {
+      alert("Registrierung ok => " + data.message);
+      // 2) Falls `nextParam` existiert, dorthin => z.B. "/#upgrade"
+      if (nextParam) {
+        window.location = nextParam;
+      } else {
+        // 3) Standard-Fallback, falls kein next=... => /upgrade
+        window.location = "/landing";
+      }
+    }
+  } catch(err) {
+    console.error(err);
+    alert("Registrierung fehlgeschlagen!");
+  }
+}
   </script>
 
   <!-- Cookie-Banner -->
