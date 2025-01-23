@@ -2139,7 +2139,7 @@ function doLogout() {
   })
     .then((res) => res.json())
     .then(() => {
-      window.location.href = "/landing";
+      window.location.href = "/";
     })
     .catch((err) => {
       alert("Logout fehlgeschlagen: " + err);
