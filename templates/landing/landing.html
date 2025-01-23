@@ -7,111 +7,99 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
   <!-- ========== BEGIN ColorAdmin One-Page-Parallax CSS ========== -->
-  <!-- Google Fonts (Open Sans) - in ColorAdmin-Demo, optional -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-
-  <!-- vendor.min.css -> enthält Bootstrap + FontAwesome + Animate.css etc. -->
   <link href="/static/coloradmin/one-page-parallax/css/vendor.min.css" rel="stylesheet" />
-  <!-- app.min.css -> enthält das Hauptlayout für One-Page-Parallax -->
   <link href="/static/coloradmin/one-page-parallax/css/app.min.css" rel="stylesheet" />
   <!-- ========== END ColorAdmin One-Page-Parallax CSS ========== -->
 
-  <!-- Optional: Dein eigenes Custom-CSS, falls du Ergänzungen brauchst
-  <link href="/static/css/my-landing-custom.css" rel="stylesheet" />
-  -->
-
+  <!-- Optional: eigenes CSS -->
+  <style>
+    /* Beispiel: Hover-Effekt auf den "work"-Bildern */
+    .work .image img:hover {
+      transform: scale(1.05);
+      transition: 0.3s;
+    }
+    .pricing-card:hover {
+      transform: scale(1.02);
+      transition: 0.3s;
+    }
+  </style>
 </head>
 <body data-bs-spy="scroll" data-bs-target="#header" data-bs-offset="51">
+
   <!-- BEGIN #page-container -->
   <div id="page-container" class="fade">
 
-    <!-- BEGIN #header -->
+    <!-- ============================
+         NAVIGATION
+    ============================ -->
     <div id="header" class="header navbar navbar-default navbar-fixed-top navbar-expand-lg">
-      <!-- begin container -->
       <div class="container">
-        <!-- begin navbar-brand -->
         <a href="/" class="navbar-brand">
           <span class="brand-logo"></span>
           <span class="brand-text">
             <span class="text-theme">Pareto</span>Calc
           </span>
         </a>
-        <!-- end navbar-brand -->
-
-        <!-- begin navbar-toggle (Hamburger) -->
         <button type="button" class="navbar-toggle collapsed" data-bs-toggle="collapse" data-bs-target="#header-navbar">
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <!-- end navbar-toggle -->
-
-        <!-- begin navbar-collapse -->
         <div class="collapse navbar-collapse" id="header-navbar">
           <ul class="nav navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="/">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/mycalc">MyCalc</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/upgrade">Upgrade</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/auth/login">Login</a>
-            </li>
-            <!-- Weitere Menu-Links, falls gewünscht -->
+            <li class="nav-item"><a class="nav-link" href="#home" data-click="scroll-to-target">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#about" data-click="scroll-to-target">Über Uns</a></li>
+            <li class="nav-item"><a class="nav-link" href="#screenshots" data-click="scroll-to-target">Screenshots</a></li>
+            <li class="nav-item"><a class="nav-link" href="#upgrade" data-click="scroll-to-target">Upgrade</a></li>
+            <li class="nav-item"><a class="nav-link" href="/auth/login">Login</a></li>
+            <!-- Du kannst /mycalc usw. als Link behalten, falls du willst -->
           </ul>
         </div>
-        <!-- end navbar-collapse -->
       </div>
-      <!-- end container -->
     </div>
     <!-- END #header -->
 
-    <!-- BEGIN #home -->
+    <!-- ============================
+         SECTION: #home (Hero)
+    ============================ -->
     <div id="home" class="content has-bg home">
-      <!-- begin content-bg -->
       <div class="content-bg"
            style="background-image: url('/static/coloradmin/one-page-parallax/img/bg/bg-home.jpg');"
            data-paroller="true"
            data-paroller-type="foreground"
            data-paroller-factor="-0.25">
       </div>
-      <!-- end content-bg -->
-
-      <!-- begin container -->
       <div class="container home-content">
         <h1>Willkommen bei ParetoCalc</h1>
         <h3>Dein B2B Kalkulations-Tool</h3>
-        <p>
-
+        <p class="my-3">
+          Mit KI-Unterstützung in Sekundenschnelle<br/>
+          Produktionskosten kalkulieren und optimieren!
         </p>
         <a href="/auth/login" class="btn btn-theme btn-primary">Jetzt loslegen</a>
-        <a href="/upgrade" class="btn btn-theme btn-outline-white">Upgrade anzeigen</a>
+        <a href="#upgrade" class="btn btn-theme btn-outline-white" data-click="scroll-to-target">Upgrade anzeigen</a>
       </div>
-      <!-- end container -->
     </div>
     <!-- END #home -->
 
-    <!-- Beispiel: #about Abschnitt -->
+    <!-- ============================
+         SECTION: #about
+    ============================ -->
     <div id="about" class="content" data-scrollview="true">
       <div class="container" data-animation="true" data-animation-type="animate__fadeInDown">
         <h2 class="content-title">Über ParetoCalc</h2>
         <p class="content-desc">
           ParetoCalc kombiniert hochpräzise Fertigungs-Kalkulationen mit KI-Unterstützung,
           damit Unternehmen ihre Produktionskosten in Sekunden im Blick haben.
-          Schnell, transparent und auf die wesentlichen Stellhebel fokussiert.
         </p>
         <div class="row">
           <div class="col-lg-6">
             <h3>Unsere Story</h3>
             <p>
               Vor ein paar Jahren wollten wir selbst Bauteile fertigen und merkten,
-              wie kompliziert zuverlässige Kostenberechnungen sein können.
-              Aus diesem Bedarf entstand ParetoCalc: Ein Tool,
-              das Aufwand und Risiko drastisch reduziert.
+              wie kompliziert zuverlässige Kalkulationen sein können.
+              Daraus entstand ParetoCalc: Ein Tool, das Aufwand und Risiko reduziert.
             </p>
           </div>
           <div class="col-lg-6">
@@ -119,7 +107,7 @@
             <p>
               Wir möchten Fertigungsprozesse so zugänglich machen,
               dass jedes Unternehmen – egal ob Automotive oder Maschinenbau –
-              schnell und sicher Kostenentscheidungen treffen kann.
+              schnell und sicher Entscheidungen treffen kann.
               Parametrik trifft auf KI: das ist ParetoCalc.
             </p>
           </div>
@@ -127,11 +115,186 @@
       </div>
     </div>
 
-    <!-- Weitere Abschnitte: #milestone, #team, #service, #work, #pricing usw.
-         je nachdem, was du brauchst.
-         Einfach aus dem Original-Code übernehmen oder kürzen. -->
+    <!-- ============================
+         SECTION: #screenshots
+    ============================ -->
+    <div id="screenshots" class="content" data-scrollview="true">
+      <div class="container" data-animation="true" data-animation-type="animate__fadeInDown">
+        <h2 class="content-title">Produkt-Screenshots</h2>
+        <p class="content-desc">
+          Hier ein Einblick in unsere Anwendung.
+        </p>
+        <div class="row row-space-10">
+          <!-- 8 Bilder, je .col-md-3, .col-sm-6 -->
+          <div class="col-md-3 col-sm-6">
+            <div class="work">
+              <div class="image">
+                <img src="/static/img/mycalc_screenshot1.jpg" alt="Screenshot 1" />
+              </div>
+              <div class="desc">
+                <span class="desc-title">Spritzguss</span>
+                <span class="desc-text">Kalkuliere Zykluszeit & Kosten</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="work">
+              <div class="image">
+                <img src="/static/img/mycalc_screenshot2.jpg" alt="Screenshot 2" />
+              </div>
+              <div class="desc">
+                <span class="desc-title">Parametrik</span>
+                <span class="desc-text">Feinguss, Kaltfließpressen ...</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="work">
+              <div class="image">
+                <img src="/static/img/mycalc_screenshot3.jpg" alt="Screenshot 3" />
+              </div>
+              <div class="desc">
+                <span class="desc-title">KI-Assistent</span>
+                <span class="desc-text">GPT-basierte Tipps</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="work">
+              <div class="image">
+                <img src="/static/img/mycalc_screenshot4.jpg" alt="Screenshot 4" />
+              </div>
+              <div class="desc">
+                <span class="desc-title">Baugruppen</span>
+                <span class="desc-text">Summen, Stücklisten ...</span>
+              </div>
+            </div>
+          </div>
+          <!-- 4 weitere -->
+          <div class="col-md-3 col-sm-6">
+            <div class="work">
+              <div class="image">
+                <img src="/static/img/mycalc_screenshot5.jpg" alt="Screenshot 5" />
+              </div>
+              <div class="desc">
+                <span class="desc-title">Materialdaten</span>
+                <span class="desc-text">Preise, CO2-Footprint</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="work">
+              <div class="image">
+                <img src="/static/img/mycalc_screenshot6.jpg" alt="Screenshot 6" />
+              </div>
+              <div class="desc">
+                <span class="desc-title">Maschinenliste</span>
+                <span class="desc-text">Kosten, Energie</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="work">
+              <div class="image">
+                <img src="/static/img/mycalc_screenshot7.jpg" alt="Screenshot 7" />
+              </div>
+              <div class="desc">
+                <span class="desc-title">Login-Bereich</span>
+                <span class="desc-text">Account & Einstellungen</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="work">
+              <div class="image">
+                <img src="/static/img/mycalc_screenshot8.jpg" alt="Screenshot 8" />
+              </div>
+              <div class="desc">
+                <span class="desc-title">Zukunft</span>
+                <span class="desc-text">Weitere Features</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <!-- BEGIN #footer -->
+    <!-- ============================
+         SECTION: #upgrade (Pricing)
+    ============================ -->
+    <div id="upgrade" class="content bg-light" data-scrollview="true">
+      <div class="container py-4" data-animation="true" data-animation-type="animate__fadeInUp">
+        <h2 class="content-title">Upgrade / Pläne</h2>
+        <p class="content-desc">
+          Alle Pläne erfordern eine Bezahlmethode (z.B. Kreditkarte).
+          Je nach Tier auch 7 Tage Testphase (z.B. Premium).
+        </p>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <!-- ABO: Plus -->
+          <div class="col">
+            <div class="card pricing-card shadow-sm h-100">
+              <div class="card-body d-flex flex-column justify-content-between">
+                <div>
+                  <h5 class="card-title">Plus (z.B. 20€/Monat)</h5>
+                  <p class="card-text">
+                    Eingeschränkte Daten, aber günstig.<br/>
+                    Typ. 7 Tage Testphase (optional).
+                  </p>
+                </div>
+                <div>
+                  <button class="btn btn-info w-100" onclick="buyPlus()">
+                    Jetzt Plus buchen
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ABO: Premium -->
+          <div class="col">
+            <div class="card pricing-card shadow-sm h-100 border-primary">
+              <div class="card-body d-flex flex-column justify-content-between">
+                <div>
+                  <h5 class="card-title text-primary">Premium (z.B. 50€/Monat)</h5>
+                  <p class="card-text">
+                    Alle Taktzeitrechner, GPT usw.<br/>
+                    7 Tage Stripe-Trial (z.B.).
+                  </p>
+                </div>
+                <div>
+                  <button class="btn btn-primary w-100" onclick="buyPremium()">
+                    Jetzt Premium buchen
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ABO: Extended -->
+          <div class="col">
+            <div class="card pricing-card shadow-sm h-100">
+              <div class="card-body d-flex flex-column justify-content-between">
+                <div>
+                  <h5 class="card-title">Extended (z.B. 99€/Jahr)</h5>
+                  <p class="card-text">
+                    Alles drin, abgerechnet als OneOff für 365 Tage.
+                  </p>
+                </div>
+                <div>
+                  <button class="btn btn-warning w-100" onclick="buyExtended()">
+                    Extended kaufen
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- .row -->
+      </div><!-- .container -->
+    </div>
+    <!-- END #upgrade -->
+
+    <!-- ============================
+         FOOTER
+    ============================ -->
     <div id="footer" class="footer">
       <div class="container text-center">
         <p class="m-0">
@@ -141,19 +304,30 @@
         </p>
       </div>
     </div>
-    <!-- END #footer -->
-
   </div>
   <!-- end #page-container -->
 
-  <!-- ========== BEGIN ColorAdmin One-Page-Parallax JS ========== -->
+  <!-- ================== BEGIN ColorAdmin JS ================== -->
   <script src="/static/coloradmin/one-page-parallax/js/vendor.min.js"></script>
   <script src="/static/coloradmin/one-page-parallax/js/app.min.js"></script>
-  <!-- ========== END ColorAdmin One-Page-Parallax JS ========== -->
+  <!-- ================== END ColorAdmin JS ================== -->
 
-  <!-- Optional: Dein eigenes Landing-Script -->
-  <!-- <script src="/static/js/my-landing.js"></script> -->
+  <!-- Upgrade-Button-Funktionen -->
+  <script>
+  async function buyPlus(){
+    // Falls nicht eingeloggt => /auth/login?next=/#upgrade oder so
+    // Oder direkt fetch("/pay/checkout-sub", { tier:'plus' })...
+    alert("Hier Demo: buyPlus()");
+  }
+  async function buyPremium(){
+    alert("buyPremium() ...");
+  }
+  async function buyExtended(){
+    alert("buyExtended() ...");
+  }
+  </script>
 
+  <!-- Cookie-Banner etc. -->
   <div id="cookieBanner" style="position: fixed; bottom: 0; left: 0; right: 0;
        background: #222; color: #fff; padding: 10px; display: none; z-index: 9999;">
     <p style="margin: 0;">
@@ -168,38 +342,41 @@
     <button id="cookieDeclineAll" class="btn btn-sm btn-light" style="margin: 5px;">Nur essenzielle</button>
   </div>
 
-  <script>
-  window.addEventListener("DOMContentLoaded", () => {
+
+<script>
+window.addEventListener("DOMContentLoaded", () => {
   checkLicense(); // oder checkUserLogin();
 });
-  (function(){
+  (function () {
     function getCookie(name) {
       const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
       if (match) return match[2];
     }
 
-    if(!getCookie("cookieConsent")) {
+    if (!getCookie("cookieConsent")) {
       document.getElementById("cookieBanner").style.display = "block";
     }
 
-    document.getElementById("cookieAcceptAll").addEventListener("click", function(){
-      document.cookie = "cookieConsent=all; path=/; max-age="+(365*24*60*60);
+    document.getElementById("cookieAcceptAll").addEventListener("click", function () {
+      document.cookie = "cookieConsent=all; path=/; max-age=" + (365 * 24 * 60 * 60);
       document.getElementById("cookieBanner").style.display = "none";
       // optional: Google Analytics oder andere Tracker aktivieren
     });
 
-    document.getElementById("cookieDeclineAll").addEventListener("click", function(){
-      document.cookie = "cookieConsent=essential; path=/; max-age="+(365*24*60*60);
+    document.getElementById("cookieDeclineAll").addEventListener("click", function () {
+      document.cookie = "cookieConsent=essential; path=/; max-age=" + (365 * 24 * 60 * 60);
       document.getElementById("cookieBanner").style.display = "none";
     });
   })();
-  </script>
+</script>
 
-  <hr/>
-  <footer class="text-center my-3">
-    <a href="/impressum">Impressum</a> |
-    <a href="/datenschutz">Datenschutz</a> |
-    <a href="/agb">AGB</a>
-  </footer>
+<hr/>
+<footer class="text-center my-3">
+  <a href="/impressum">Impressum</a> |
+  <a href="/datenschutz">Datenschutz</a> |
+  <a href="/agb">AGB</a>
+</footer>
+
 </body>
 </html>
+
