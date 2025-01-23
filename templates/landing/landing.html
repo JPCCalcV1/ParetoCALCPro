@@ -344,8 +344,7 @@
 window.addEventListener("DOMContentLoaded", () => {
   checkLicense(); // oder checkUserLogin();
 });
-// If user not logged in => redirect to /auth/login?next=%2F%23upgrade
-window.location = "/auth/login?next=%2F%23upgrade";
+
 async function buyPlus() {
       // 1) whoami checken (Prüfen, ob User eingeloggt ist)
       let whoRes = await fetch("/auth/whoami");
