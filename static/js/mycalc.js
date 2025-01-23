@@ -2120,7 +2120,7 @@ function doLogout() {
   })
     .then((res) => res.json())
     .then(() => {
-      window.location.href = "/auth/login";
+      window.location.href = "/landing";
     })
     .catch((err) => {
       alert("Logout fehlgeschlagen: " + err);

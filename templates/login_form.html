@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -146,6 +147,9 @@
       return;
     }
     try {
+      // next=... aus der URL abfragen
+      const nextParam = new URLSearchParams(window.location.search).get("next");
+
       const res = await fetch("/auth/login", {
         method: "POST",
         headers: {
@@ -159,7 +163,12 @@
         alert("Fehler: " + data.error);
       } else {
         alert("Login ok: " + data.license);
-        window.location = "/mycalc/"; // oder /upgrade
+        // Bei Erfolg: Falls nextParam vorhanden => dorthin, sonst Standard
+        if (nextParam) {
+          window.location = nextParam;
+        } else {
+          window.location = "/mycalc/"; // oder /upgrade
+        }
       }
     } catch(err) {
       console.error(err);
@@ -167,43 +176,43 @@
     }
   }
 
-async function onRegister() {
-  const email = document.getElementById("regEmail").value.trim();
-  const password = document.getElementById("regPass").value.trim();
-  if(!email || !password){
-    alert("Bitte Email/Passwort eingeben!");
-    return;
-  }
-  try {
-    // 1) Optional: next=... aus der URL abfragen
-    const nextParam = new URLSearchParams(window.location.search).get("next");
-
-    const res = await fetch("/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCsrfToken()  // <-- falls du CSRF einsetzt
-      },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json();
-    if (data.error) {
-      alert("Fehler: " + data.error);
-    } else {
-      alert("Registrierung ok => " + data.message);
-      // 2) Falls `nextParam` existiert, dorthin => z.B. "/#upgrade"
-      if (nextParam) {
-        window.location = nextParam;
-      } else {
-        // 3) Standard-Fallback, falls kein next=... => /upgrade
-        window.location = "/landing";
-      }
+  async function onRegister() {
+    const email = document.getElementById("regEmail").value.trim();
+    const password = document.getElementById("regPass").value.trim();
+    if(!email || !password){
+      alert("Bitte Email/Passwort eingeben!");
+      return;
     }
-  } catch(err) {
-    console.error(err);
-    alert("Registrierung fehlgeschlagen!");
+    try {
+      // 1) Optional: next=... aus der URL abfragen
+      const nextParam = new URLSearchParams(window.location.search).get("next");
+
+      const res = await fetch("/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCsrfToken()  // <-- WICHTIG!
+        },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (data.error) {
+        alert("Fehler: " + data.error);
+      } else {
+        alert("Registrierung ok => " + data.message);
+        // Falls `nextParam` existiert, dorthin => z. B. "/#upgrade"
+        if (nextParam) {
+          window.location = nextParam;
+        } else {
+          // Standard-Fallback, falls kein next=... => /landing
+          window.location = "/landing";
+        }
+      }
+    } catch(err) {
+      console.error(err);
+      alert("Registrierung fehlgeschlagen!");
+    }
   }
-}
   </script>
 
   <!-- Cookie-Banner -->
@@ -223,8 +232,8 @@ async function onRegister() {
 
   <script>
   window.addEventListener("DOMContentLoaded", () => {
-  checkLicense(); // oder checkUserLogin();
-});
+    checkLicense(); // oder checkUserLogin();
+  });
   (function(){
     function getCookie(name) {
       const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -256,3 +265,4 @@ async function onRegister() {
   </footer>
 </body>
 </html>
+```
