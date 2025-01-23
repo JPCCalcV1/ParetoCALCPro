@@ -12,6 +12,7 @@ from models.user import db, User
 from core.extensions import csrf, limiter
 from werkzeug.security import generate_password_hash, check_password_hash
 from helpers.sendgrid_helper import send_email
+
 auth_bp = Blueprint("auth_bp", __name__)
 
 @auth_bp.route("/register", methods=["POST"])
@@ -56,20 +57,25 @@ def register():
     # Weiterleitung => /upgrade => der User kann direkt Checkout starten
     return jsonify({"message":"Registrierung ok", "next":"/upgrade"})
 
+
 @auth_bp.route("/login", methods=["GET", "POST"])
 @limiter.limit("5 per 15 minutes")  # Rate-Limit: max. 5 Logins in 15 Min
 def login():
     if request.method == "GET":
+        # Gib einfach das Login-Template zurück (HTML-Form)
         return render_template("login_form.html")
 
     # POST => JSON oder form
     if request.form and "email" in request.form:
         email = request.form["email"].strip().lower()
         password = request.form["password"]
+        # Falls du z. B. in deinem login_form.html ein <input name="next" /> nutzt:
+        next_param = request.form.get("next", "")
     else:
         data = request.get_json() or {}
         email = data.get("email", "").strip().lower()
         password = data.get("password", "")
+        next_param = data.get("next", "")
 
     if not email or not password:
         return jsonify({"error": "Email/Pass fehlt"}), 400
@@ -78,9 +84,7 @@ def login():
     if not user or not check_password_hash(user.password_hash, password):
         return jsonify({"error": "Wrong user/pass"}), 401
 
-    # Session
-    # Vorher: # Session
-    # Jetzt: Anti-Session-Fixation + Neuer Token
+    # Session: Anti-Session-Fixation + Neuer Token
     session.clear()  # Wichtig: Session leeren, damit kein alter Cookie übernommen wird
 
     new_token = str(uuid.uuid4())
@@ -90,7 +94,13 @@ def login():
     session["user_id"] = user.id
     session["sso_token"] = new_token
 
-    return jsonify({"message": "Login ok", "license": user.license_level()})
+    # Zusätzlich "next_param" im JSON zurückgeben, falls vorhanden
+    return jsonify({
+        "message": "Login ok",
+        "license": user.license_level(),
+        "next": next_param  # <-- Falls dein Frontend auf "next" reagiert
+    })
+
 
 @auth_bp.route("/logout", methods=["POST"])
 def logout():
@@ -102,6 +112,7 @@ def logout():
             db.session.commit()
     session.clear()
     return jsonify({"message": "Logout ok"}), 200
+
 
 @auth_bp.route("/whoami", methods=["GET"])
 def whoami():

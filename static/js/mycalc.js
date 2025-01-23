@@ -1802,6 +1802,15 @@ function exportBaugruppenAsCSV() {
     alert("Keine Einträge in der Baugruppenliste.");
     return;
   }
+
+  // Lizenz abfragen
+  const lic = window.currentUser?.license || "unknown";
+  if (lic === "plus" || lic === "test") {
+    alert("Dein aktuelles Abo erlaubt keinen CSV-Export. Bitte upgrade auf Premium oder Extended.");
+    return;
+  }
+
+  // CSV-String aufbauen
   let csvStr = "Bauteilname;Verfahren;MatEinzel;MatGemein;Fremd;Mach;Lohn;FGK;Herstell;SGA;Profit;Total;CO2_100\n";
   for (const it of baugruppenItems) {
     csvStr += [
@@ -1820,6 +1829,8 @@ function exportBaugruppenAsCSV() {
       (it.co2_100    ?? 0).toFixed(2),
     ].join(";") + "\n";
   }
+
+  // Blob erzeugen und Download-Link klicken
   const blob = new Blob([csvStr], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
 
@@ -2034,8 +2045,12 @@ function onAskGPT(inputId, outputId) {
       out.textContent = reply;
     })
     .catch((err) => {
-      out.textContent = "Fehler: " + err.message;
-      console.error("onAskGPT error:", err);
+      if (err.message === "GPT usage limit exceeded") {
+        alert("Dein GPT-Kontingent ist aufgebraucht. Bitte upgrade dein Abo!");
+      } else {
+        console.error("onAskGPT error:", err);
+        out.textContent = "Fehler: " + err.message;
+      }
     });
 }
 
@@ -2058,6 +2073,10 @@ function askCustomGPT(userQuestion) {
   })
     .then((res) => {
       if (!res.ok) {
+              // Hier können wir zusätzlich checken:
+        if (res.status === 403) {
+          throw new Error("GPT usage limit exceeded");
+        }
         throw new Error("GPT request error: " + res.status);
       }
       return res.json();

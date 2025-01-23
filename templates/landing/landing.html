@@ -21,6 +21,16 @@
 
 </head>
 <body data-bs-spy="scroll" data-bs-target="#header" data-bs-offset="51">
+<!-- In landing_page.html (ganz oben oder im Body) -->
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  if(params.has("msg")) {
+    // Du kannst stattdessen auch ein Toast oder ein Alert-Box anzeigen
+    alert("Hinweis: " + params.get("msg"));
+  }
+});
+</script>
   <!-- BEGIN #page-container -->
   <div id="page-container" class="fade">
 
@@ -469,5 +479,3 @@ async function buyPlus() {
 
 </body>
 </html>
-
-

@@ -57,9 +57,8 @@ def create_app():
     def load_user(user_id):
         # Muss ein User-Objekt zurückgeben, wenn existiert, sonst None
         return User.query.get(int(user_id))
-    # Blueprint-Registrierung
-    # Achte darauf, dass *genau* dieses payment_bp kommt, in dem /checkout-sub definiert ist
-    app.register_blueprint(landing_bp)                   # kein prefix => "/"
+    # --- Blueprints ---
+    app.register_blueprint(landing_bp)  # => "/"
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(payment_bp, url_prefix="/pay")
     app.register_blueprint(admin_bp, url_prefix="/admin")
@@ -69,29 +68,25 @@ def create_app():
     app.register_blueprint(account_bp, url_prefix="/account")
     app.register_blueprint(legal_bp, url_prefix="")
 
+    # OPTIONAL: Falls du die alte /upgrade-Seite gar nicht mehr willst,
+    # kannst du sie einfach weglassen oder eine "Redirect-Route" bauen:
+    @app.route("/upgrade")
+    def upgrade_redirect():
+        # Sende User zur Landing-Page, Absprung #pricing
+        return redirect("/#pricing")
+
+    # Oder entferne "/upgrade" einfach komplett, wenn gar nicht mehr benötigt
+
     @app.route("/")
     def landing_page():
         return render_template("landing_page.html")
 
-    @app.route("/upgrade", methods=["GET"])
-    def show_upgrade():
-        """Zeigt deine Upgrade-Seite an.
-        Hier klickt der User ggf. auf ein Subscription-Button,
-        welcher ein POST /pay/checkout-sub auslöst."""
-        return render_template("upgrade_page.html")
-
-    ###################################################################
-    ## BEFORE REQUEST 1: require_login
-    ###################################################################
-    ####################################################################
-    ## BEFORE REQUEST 1: require_login
-    ####################################################################
-    ###################################################################
-    ## BEFORE REQUEST 1: require_login
-    ###################################################################
+    # ---------------------------
+    # 1) BEFORE_REQUEST: require_login
+    # ---------------------------
     @app.before_request
     def require_login():
-        # Routen, die ohne Login erreichbar sein sollen
+        # Public routes - alles, was ohne Login erreichbar sein soll:
         public_routes = [
             "/auth/login",
             "/auth/register",
@@ -99,53 +94,57 @@ def create_app():
             "/favicon.ico",
             "/robots.txt",
             "/pay/webhook",
-            "/upgrade",
-            # UNBEDINGT dazunehmen!
             "/pay/success",
-            "/pay/cancel"
+            "/pay/cancel",
+            "/",  # Landing
+            "/static/",  # statische Assets
         ]
+        # => alle Pfade, die mit obigen Strings beginnen, sind öffentlich
 
-        # 1) Root-Seite / ist öffentlich
-        if request.path == "/":
+        path = request.path
+
+        # 1) Check, ob path PUBLIC ist => return (kein Zwangslogin)
+        #    => Sonderfall: if path.startswith("/static/") => return
+        if path == "/" or path.startswith("/static/"):
+            return
+        if any(path.startswith(r) for r in public_routes):
             return
 
-        # 2) STATIC-Dateien /static/... sind öffentlich
-        if request.path.startswith("/static/"):
-            return
+        # 2) Sonst => user_id + sso_token checken
+        user_id = session.get("user_id")
+        sso_token = session.get("sso_token")
+        if not user_id or not sso_token:
+            # Hier KEIN 401 => Lieber redirect zur Landing
+            return redirect("/?msg=not-logged-in")
 
-        # 3) Alle Pfade, die NICHT in public_routes drin sind => Token-Check
-        if not any(request.path.startswith(r) for r in public_routes):
-            user_id = session.get("user_id")
-            sso_token = session.get("sso_token")
-            if not user_id or not sso_token:
-                return jsonify({"error": "Not logged in"}), 401
+        user = User.query.get(user_id)
+        if not user or user.current_session_token != sso_token:
+            # Jemand hat sich mit dem gleichen Account in einem anderen Browser eingeloggt
+            session.clear()
+            return redirect("/?msg=session-invalid")
 
-            user = User.query.get(user_id)
-            if not user or user.current_session_token != sso_token:
-                session.clear()
-                return redirect("/auth/login")
-
-    ###################################################################
-    ## BEFORE REQUEST 2: check_license
-    ###################################################################
+    # ---------------------------
+    # 2) BEFORE_REQUEST: check_license
+    # ---------------------------
     @app.before_request
     def check_license():
-        # Nur /mycalc braucht 'echtes' Abo => Abfangen
-        if request.path.startswith("/mycalc"):
+        """
+        Gilt NUR für /mycalc-Routen -> Nur wenn Abo != 'test' und != 'no_access'
+        """
+        path = request.path
+        if path.startswith("/mycalc"):
             user_id = session.get("user_id")
             if not user_id:
-                # Wenn nicht eingeloggt => redirect => /auth/login
-                return redirect("/auth/login")
+                return redirect("/auth/login?msg=need-login")
             user = User.query.get(user_id)
             if not user:
-                # Fallback
-                return redirect("/auth/login")
-            # Falls "test" => ab zum Upgrade
-            if user.license_tier == "test":
-                return redirect("/upgrade?msg=Bitte%20ein%20Abo%20abschliessen!")
-            # Falls "no_access" => ab zum Upgrade
-            if user.license_level() == "no_access":
-                return redirect("/upgrade?msg=Zugang%20abgelaufen!")
+                return redirect("/auth/login?msg=user-missing")
+
+            # "test" => ab zum Landing + #pricing
+            # "no_access" => ab zum Landing + #pricing
+            # license_level() gibt "no_access" zurück, wenn abgelaufen
+            if user.license_tier == "test" or user.license_level() == "no_access":
+                return redirect("/#pricing?msg=abo-required")
 
     return app
 
