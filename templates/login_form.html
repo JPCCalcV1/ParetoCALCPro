@@ -179,19 +179,19 @@
   async function onRegister() {
     const email = document.getElementById("regEmail").value.trim();
     const password = document.getElementById("regPass").value.trim();
-    if(!email || !password){
+    if (!email || !password) {
       alert("Bitte Email/Passwort eingeben!");
       return;
     }
     try {
-      // 1) Optional: next=... aus der URL abfragen
+      // next=... aus der URL abfragen
       const nextParam = new URLSearchParams(window.location.search).get("next");
 
       const res = await fetch("/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": getCsrfToken()  // <-- WICHTIG!
+          "X-CSRFToken": getCsrfToken()
         },
         body: JSON.stringify({ email, password })
       });
@@ -200,11 +200,10 @@
         alert("Fehler: " + data.error);
       } else {
         alert("Registrierung ok => " + data.message);
-        // Falls `nextParam` existiert, dorthin => z. B. "/#upgrade"
+        // Falls nextParam existiert => dorthin, sonst /landing
         if (nextParam) {
           window.location = nextParam;
         } else {
-          // Standard-Fallback, falls kein next=... => /landing
           window.location = "/landing";
         }
       }
