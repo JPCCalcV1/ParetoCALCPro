@@ -276,5 +276,1788 @@
       "shiftZuschlagPercent": 0.20,
       "allInEURh": 11.76,
       "comment": "7*(1+0.40)*(1+0.20)=11.76"
-    }
+    },
+    {
+      "country": "Lobringen - Cheap (Hinterland)",
+      "shiftModel": "3-shift",
+      "baseWageGrossEURh": 10,
+      "lohnNebenkostenPercent": 0.25,
+      "shiftZuschlagPercent": 0.15,
+      "allInEURh": 14.38,
+      "comment": "10*(1+0.25)*(1+0.15) = 10*1.25*1.15 ≈ 14.38"
+    },
+    {
+      "country": "Lobringen - Cheap (Hinterland)",
+      "shiftModel": "2-shift",
+      "baseWageGrossEURh": 10,
+      "lohnNebenkostenPercent": 0.25,
+      "shiftZuschlagPercent": 0.10,
+      "allInEURh": 13.75,
+      "comment": "10*(1+0.25)*(1+0.10) = 10*1.25*1.10 ≈ 13.75"
+    },
+    {
+      "country": "Lobringen - Cheap (Hinterland)",
+      "shiftModel": "1-shift",
+      "baseWageGrossEURh": 10,
+      "lohnNebenkostenPercent": 0.25,
+      "shiftZuschlagPercent": 0.00,
+      "allInEURh": 12.50,
+      "comment": "10*(1+0.25)*(1+0.00) = 10*1.25*1.00 = 12.50"
+    },
+    {
+      "country": "Lobringen - Expensive (Metropole)",
+      "shiftModel": "3-shift",
+      "baseWageGrossEURh": 16,
+      "lohnNebenkostenPercent": 0.25,
+      "shiftZuschlagPercent": 0.15,
+      "allInEURh": 23.00,
+      "comment": "16*(1+0.25)*(1+0.15) = 16*1.25*1.15 ≈ 23.00"
+    },
+    {
+      "country": "Lobringen - Expensive (Metropole)",
+      "shiftModel": "2-shift",
+      "baseWageGrossEURh": 16,
+      "lohnNebenkostenPercent": 0.25,
+      "shiftZuschlagPercent": 0.10,
+      "allInEURh": 22.00,
+      "comment": "16*(1+0.25)*(1+0.10) = 16*1.25*1.10 ≈ 22.00"
+    },
+    {
+      "country": "Lobringen - Expensive (Metropole)",
+      "shiftModel": "1-shift",
+      "baseWageGrossEURh": 16,
+      "lohnNebenkostenPercent": 0.25,
+      "shiftZuschlagPercent": 0.00,
+      "allInEURh": 20.00,
+      "comment": "16*(1+0.25)*(1+0.00) = 16*1.25*1.00 = 20.00"
+    },
+    {
+      "country": "Lobringen - Avg",
+      "shiftModel": "3-shift",
+      "baseWageGrossEURh": 12,
+      "lohnNebenkostenPercent": 0.25,
+      "shiftZuschlagPercent": 0.15,
+      "allInEURh": 17.25,
+      "comment": "12*(1+0.25)*(1+0.15) = 12*1.25*1.15 ≈ 17.25"
+    },
+    {
+      "country": "Lobringen - Avg",
+      "shiftModel": "2-shift",
+      "baseWageGrossEURh": 12,
+      "lohnNebenkostenPercent": 0.25,
+      "shiftZuschlagPercent": 0.10,
+      "allInEURh": 16.50,
+      "comment": "12*(1+0.25)*(1+0.10) = 12*1.25*1.10 ≈ 16.50"
+    },
+    {
+      "country": "Lobringen - Avg",
+      "shiftModel": "1-shift",
+      "baseWageGrossEURh": 12,
+      "lohnNebenkostenPercent": 0.25,
+      "shiftZuschlagPercent": 0.00,
+      "allInEURh": 15.00,
+      "comment": "12*(1+0.25)*(1+0.00) = 12*1.25 = 15.00"
+    },
+
+  {
+    "country": "Austria - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 26.00,
+    "comment": "20*(1+0.30)*(1+0.00) = 20*1.30*1.00 ≈ 26.00"
+  },
+  {
+    "country": "Austria - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 28.60,
+    "comment": "20*(1+0.30)*(1+0.10) = 20*1.30*1.10 ≈ 28.60"
+  },
+  {
+    "country": "Austria - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 29.90,
+    "comment": "20*(1+0.30)*(1+0.15) = 20*1.30*1.15 ≈ 29.90"
+  },
+  {
+    "country": "Austria - Expensive (Vienna)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 31.20,
+    "comment": "24*(1+0.30)*(1+0.00) = 24*1.30*1.00 ≈ 31.20"
+  },
+  {
+    "country": "Austria - Expensive (Vienna)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 34.32,
+    "comment": "24*(1+0.30)*(1+0.10) = 24*1.30*1.10 ≈ 34.32"
+  },
+  {
+    "country": "Austria - Expensive (Vienna)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 35.88,
+    "comment": "24*(1+0.30)*(1+0.15) = 24*1.30*1.15 ≈ 35.88"
+  },
+  {
+    "country": "Austria - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 23.40,
+    "comment": "18*(1+0.30)*(1+0.00) = 18*1.30*1.00 ≈ 23.40"
+  },
+  {
+    "country": "Austria - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 25.74,
+    "comment": "18*(1+0.30)*(1+0.10) = 18*1.30*1.10 ≈ 25.74"
+  },
+  {
+    "country": "Austria - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 26.91,
+    "comment": "18*(1+0.30)*(1+0.15) = 18*1.30*1.15 ≈ 26.91"
+  },
+  {
+    "country": "UAE - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 11.20,
+    "comment": "10*(1+0.12)*(1+0.00) ≈ 11.20"
+  },
+  {
+    "country": "UAE - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 12.32,
+    "comment": "10*(1+0.12)*(1+0.10) ≈ 12.32"
+  },
+  {
+    "country": "UAE - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 13.16,
+    "comment": "10*(1+0.12)*(1+0.15) ≈ 13.16"
+  },
+  {
+    "country": "UAE - Expensive (Dubai)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 12,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 13.44,
+    "comment": "12*(1+0.12)*(1+0.00) ≈ 13.44"
+  },
+  {
+    "country": "UAE - Expensive (Dubai)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 12,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 15.02,
+    "comment": "12*(1+0.12)*(1+0.10) ≈ 15.02"
+  },
+  {
+    "country": "UAE - Expensive (Dubai)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 12,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 16.28,
+    "comment": "12*(1+0.12)*(1+0.15) ≈ 16.28"
+  },
+  {
+    "country": "UAE - Cheap (Free Zone / rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 8,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 8.96,
+    "comment": "8*(1+0.12)*(1+0.00) ≈ 8.96"
+  },
+  {
+    "country": "UAE - Cheap (Free Zone / rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 8,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 9.86,
+    "comment": "8*(1+0.12)*(1+0.10) ≈ 9.86"
+  },
+  {
+    "country": "UAE - Cheap (Free Zone / rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 8,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 10.57,
+    "comment": "8*(1+0.12)*(1+0.15) ≈ 10.57"
+  },
+  {
+    "country": "South Africa - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.20,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 6.00,
+    "comment": "5*(1+0.20)*(1+0.00) ≈ 6.00"
+  },
+  {
+    "country": "South Africa - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.20,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 6.60,
+    "comment": "5*(1+0.20)*(1+0.10) ≈ 6.60"
+  },
+  {
+    "country": "South Africa - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.20,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 6.90,
+    "comment": "5*(1+0.20)*(1+0.15) ≈ 6.90"
+  },
+  {
+    "country": "South Africa - Expensive (Gauteng)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.20,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 8.40,
+    "comment": "7*(1+0.20)*(1+0.00) ≈ 8.40"
+  },
+  {
+    "country": "South Africa - Expensive (Gauteng)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.20,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 9.24,
+    "comment": "7*(1+0.20)*(1+0.10) ≈ 9.24"
+  },
+  {
+    "country": "South Africa - Expensive (Gauteng)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.20,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 9.66,
+    "comment": "7*(1+0.20)*(1+0.15) ≈ 9.66"
+  },
+  {
+    "country": "South Africa - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.20,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 4.80,
+    "comment": "4*(1+0.20)*(1+0.00) ≈ 4.80"
+  },
+  {
+    "country": "South Africa - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.20,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 5.28,
+    "comment": "4*(1+0.20)*(1+0.10) ≈ 5.28"
+  },
+  {
+    "country": "South Africa - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.20,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 5.52,
+    "comment": "4*(1+0.20)*(1+0.15) ≈ 5.52"
+  },
+  {
+    "country": "Vietnam - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 2,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 2.36,
+    "comment": "2*(1+0.18)*(1+0.00) ≈ 2.36"
+  },
+  {
+    "country": "Vietnam - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 2,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 2.60,
+    "comment": "2*(1+0.18)*(1+0.10) ≈ 2.60"
+  },
+  {
+    "country": "Vietnam - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 2,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 2.69,
+    "comment": "2*(1+0.18)*(1+0.15) ≈ 2.69"
+  },
+  {
+    "country": "Vietnam - Expensive (Ho Chi Minh)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 3.54,
+    "comment": "3*(1+0.18)*(1+0.00) ≈ 3.54"
+  },
+  {
+    "country": "Vietnam - Expensive (Ho Chi Minh)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 3.90,
+    "comment": "3*(1+0.18)*(1+0.10) ≈ 3.90"
+  },
+  {
+    "country": "Vietnam - Expensive (Ho Chi Minh)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 4.09,
+    "comment": "3*(1+0.18)*(1+0.15) ≈ 4.09"
+  },
+  {
+    "country": "Vietnam - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 1.5,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 1.77,
+    "comment": "1.5*(1+0.18)*(1+0.00) ≈ 1.77"
+  },
+  {
+    "country": "Vietnam - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 1.5,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 1.95,
+    "comment": "1.5*(1+0.18)*(1+0.10) ≈ 1.95"
+  },
+  {
+    "country": "Vietnam - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 1.5,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 2.03,
+    "comment": "1.5*(1+0.18)*(1+0.15) ≈ 2.03"
+  },
+  {
+    "country": "Thailand - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 4.56,
+    "comment": "4*(1+0.14)*(1+0.00) ≈ 4.56"
+  },
+  {
+    "country": "Thailand - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 5.02,
+    "comment": "4*(1+0.14)*(1+0.10) ≈ 5.02"
+  },
+  {
+    "country": "Thailand - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 5.27,
+    "comment": "4*(1+0.14)*(1+0.15) ≈ 5.27"
+  },
+  {
+    "country": "Thailand - Expensive (Bangkok)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 6,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 6.84,
+    "comment": "6*(1+0.14)*(1+0.00) ≈ 6.84"
+  },
+  {
+    "country": "Thailand - Expensive (Bangkok)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 6,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 7.52,
+    "comment": "6*(1+0.14)*(1+0.10) ≈ 7.52"
+  },
+  {
+    "country": "Thailand - Expensive (Bangkok)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 6,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 7.95,
+    "comment": "6*(1+0.14)*(1+0.15) ≈ 7.95"
+  },
+  {
+    "country": "Thailand - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 3.42,
+    "comment": "3*(1+0.14)*(1+0.00) ≈ 3.42"
+  },
+  {
+    "country": "Thailand - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 3.76,
+    "comment": "3*(1+0.14)*(1+0.10) ≈ 3.76"
+  },
+  {
+    "country": "Thailand - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 3.94,
+    "comment": "3*(1+0.14)*(1+0.15) ≈ 3.94"
+  },
+  {
+    "country": "Turkey - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 6.50,
+    "comment": "5*(1+0.30)*(1+0.00) ≈ 6.50"
+  },
+  {
+    "country": "Turkey - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 7.15,
+    "comment": "5*(1+0.30)*(1+0.10) ≈ 7.15"
+  },
+  {
+    "country": "Turkey - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 7.48,
+    "comment": "5*(1+0.30)*(1+0.15) ≈ 7.48"
+  },
+  {
+    "country": "Turkey - Expensive (Istanbul)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 9.10,
+    "comment": "7*(1+0.30)*(1+0.00) ≈ 9.10"
+  },
+  {
+    "country": "Turkey - Expensive (Istanbul)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 10.01,
+    "comment": "7*(1+0.30)*(1+0.10) ≈ 10.01"
+  },
+  {
+    "country": "Turkey - Expensive (Istanbul)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 10.51,
+    "comment": "7*(1+0.30)*(1+0.15) ≈ 10.51"
+  },
+  {
+    "country": "Turkey - Cheap (Anatolia)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 5.20,
+    "comment": "4*(1+0.30)*(1+0.00) ≈ 5.20"
+  },
+  {
+    "country": "Turkey - Cheap (Anatolia)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 5.72,
+    "comment": "4*(1+0.30)*(1+0.10) ≈ 5.72"
+  },
+  {
+    "country": "Turkey - Cheap (Anatolia)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 6.00,
+    "comment": "4*(1+0.30)*(1+0.15) ≈ 6.00"
+  },
+  {
+    "country": "Slovakia - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 8,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 10.16,
+    "comment": "8*(1+0.27)*(1+0.00) ≈ 10.16"
+  },
+  {
+    "country": "Slovakia - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 8,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 11.17,
+    "comment": "8*(1+0.27)*(1+0.10) ≈ 11.17"
+  },
+  {
+    "country": "Slovakia - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 8,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 11.66,
+    "comment": "8*(1+0.27)*(1+0.15) ≈ 11.66"
+  },
+  {
+    "country": "Slovakia - Expensive (Bratislava)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 12.70,
+    "comment": "10*(1+0.27)*(1+0.00) ≈ 12.70"
+  },
+  {
+    "country": "Slovakia - Expensive (Bratislava)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 13.97,
+    "comment": "10*(1+0.27)*(1+0.10) ≈ 13.97"
+  },
+  {
+    "country": "Slovakia - Expensive (Bratislava)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 14.88,
+    "comment": "10*(1+0.27)*(1+0.15) ≈ 14.88"
+  },
+  {
+    "country": "Slovakia - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 8.89,
+    "comment": "7*(1+0.27)*(1+0.00) ≈ 8.89"
+  },
+  {
+    "country": "Slovakia - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 9.78,
+    "comment": "7*(1+0.27)*(1+0.10) ≈ 9.78"
+  },
+  {
+    "country": "Slovakia - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 10.31,
+    "comment": "7*(1+0.27)*(1+0.15) ≈ 10.31"
+  },
+  {
+    "country": "Hungary - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.29,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 9.03,
+    "comment": "7*(1+0.29)*(1+0.00) ≈ 9.03"
+  },
+  {
+    "country": "Hungary - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.29,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 9.93,
+    "comment": "7*(1+0.29)*(1+0.10) ≈ 9.93"
+  },
+  {
+    "country": "Hungary - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.29,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 10.38,
+    "comment": "7*(1+0.29)*(1+0.15) ≈ 10.38"
+  },
+  {
+    "country": "Hungary - Expensive (Budapest)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 9,
+    "lohnNebenkostenPercent": 0.29,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 11.61,
+    "comment": "9*(1+0.29)*(1+0.00) ≈ 11.61"
+  },
+  {
+    "country": "Hungary - Expensive (Budapest)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 9,
+    "lohnNebenkostenPercent": 0.29,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 12.77,
+    "comment": "9*(1+0.29)*(1+0.10) ≈ 12.77"
+  },
+  {
+    "country": "Hungary - Expensive (Budapest)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 9,
+    "lohnNebenkostenPercent": 0.29,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 13.41,
+    "comment": "9*(1+0.29)*(1+0.15) ≈ 13.41"
+  },
+  {
+    "country": "Hungary - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 6,
+    "lohnNebenkostenPercent": 0.29,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 7.74,
+    "comment": "6*(1+0.29)*(1+0.00) ≈ 7.74"
+  },
+  {
+    "country": "Hungary - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 6,
+    "lohnNebenkostenPercent": 0.29,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 8.51,
+    "comment": "6*(1+0.29)*(1+0.10) ≈ 8.51"
+  },
+  {
+    "country": "Hungary - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 6,
+    "lohnNebenkostenPercent": 0.29,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 8.99,
+    "comment": "6*(1+0.29)*(1+0.15) ≈ 8.99"
+  },
+  {
+    "country": "Denmark - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 26.88,
+    "comment": "24*(1+0.12)*(1+0.00) ≈ 26.88"
+  },
+  {
+    "country": "Denmark - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 29.57,
+    "comment": "24*(1+0.12)*(1+0.10) ≈ 29.57"
+  },
+  {
+    "country": "Denmark - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 31.12,
+    "comment": "24*(1+0.12)*(1+0.15) ≈ 31.12"
+  },
+  {
+    "country": "Denmark - Expensive (Copenhagen)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 28,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 31.36,
+    "comment": "28*(1+0.12)*(1+0.00) ≈ 31.36"
+  },
+  {
+    "country": "Denmark - Expensive (Copenhagen)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 28,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 35.05,
+    "comment": "28*(1+0.12)*(1+0.10) ≈ 35.05"
+  },
+  {
+    "country": "Denmark - Expensive (Copenhagen)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 28,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 36.67,
+    "comment": "28*(1+0.12)*(1+0.15) ≈ 36.67"
+  },
+  {
+    "country": "Denmark - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 22.40,
+    "comment": "20*(1+0.12)*(1+0.00) ≈ 22.40"
+  },
+  {
+    "country": "Denmark - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 24.64,
+    "comment": "20*(1+0.12)*(1+0.10) ≈ 24.64"
+  },
+  {
+    "country": "Denmark - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 25.76,
+    "comment": "20*(1+0.12)*(1+0.15) ≈ 25.76"
+  },
+  {
+    "country": "Norway - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 28.32,
+    "comment": "24*(1+0.18)*(1+0.00) ≈ 28.32"
+  },
+  {
+    "country": "Norway - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 31.15,
+    "comment": "24*(1+0.18)*(1+0.10) ≈ 31.15"
+  },
+  {
+    "country": "Norway - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 32.71,
+    "comment": "24*(1+0.18)*(1+0.15) ≈ 32.71"
+  },
+  {
+    "country": "Norway - Expensive (Oslo)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 28,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 33.04,
+    "comment": "28*(1+0.18)*(1+0.00) ≈ 33.04"
+  },
+  {
+    "country": "Norway - Expensive (Oslo)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 28,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 36.35,
+    "comment": "28*(1+0.18)*(1+0.10) ≈ 36.35"
+  },
+  {
+    "country": "Norway - Expensive (Oslo)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 28,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 38.17,
+    "comment": "28*(1+0.18)*(1+0.15) ≈ 38.17"
+  },
+  {
+    "country": "Norway - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 23.60,
+    "comment": "20*(1+0.18)*(1+0.00) ≈ 23.60"
+  },
+  {
+    "country": "Norway - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 25.96,
+    "comment": "20*(1+0.18)*(1+0.10) ≈ 25.96"
+  },
+  {
+    "country": "Norway - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.18,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 27.34,
+    "comment": "20*(1+0.18)*(1+0.15) ≈ 27.34"
+  },
+  {
+    "country": "Sweden - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 21,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 27.30,
+    "comment": "21*(1+0.30)*(1+0.00) ≈ 27.30"
+  },
+  {
+    "country": "Sweden - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 21,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 30.03,
+    "comment": "21*(1+0.30)*(1+0.10) ≈ 30.03"
+  },
+  {
+    "country": "Sweden - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 21,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 31.39,
+    "comment": "21*(1+0.30)*(1+0.15) ≈ 31.39"
+  },
+  {
+    "country": "Sweden - Expensive (Stockholm)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 26,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 33.80,
+    "comment": "26*(1+0.30)*(1+0.00) ≈ 33.80"
+  },
+  {
+    "country": "Sweden - Expensive (Stockholm)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 26,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 37.18,
+    "comment": "26*(1+0.30)*(1+0.10) ≈ 37.18"
+  },
+  {
+    "country": "Sweden - Expensive (Stockholm)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 26,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 38.60,
+    "comment": "26*(1+0.30)*(1+0.15) ≈ 38.60"
+  },
+  {
+    "country": "Sweden - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 23.40,
+    "comment": "18*(1+0.30)*(1+0.00) ≈ 23.40"
+  },
+  {
+    "country": "Sweden - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 25.74,
+    "comment": "18*(1+0.30)*(1+0.10) ≈ 25.74"
+  },
+  {
+    "country": "Sweden - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.30,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 27.27,
+    "comment": "18*(1+0.30)*(1+0.15) ≈ 27.27"
+  },
+  {
+    "country": "Belgium - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 26.40,
+    "comment": "20*(1+0.32)*(1+0.00) ≈ 26.40"
+  },
+  {
+    "country": "Belgium - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 29.04,
+    "comment": "20*(1+0.32)*(1+0.10) ≈ 29.04"
+  },
+  {
+    "country": "Belgium - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 20,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 30.36,
+    "comment": "20*(1+0.32)*(1+0.15) ≈ 30.36"
+  },
+  {
+    "country": "Belgium - Expensive (Brussels)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 31.68,
+    "comment": "24*(1+0.32)*(1+0.00) ≈ 31.68"
+  },
+  {
+    "country": "Belgium - Expensive (Brussels)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 34.85,
+    "comment": "24*(1+0.32)*(1+0.10) ≈ 34.85"
+  },
+  {
+    "country": "Belgium - Expensive (Brussels)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 24,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 36.42,
+    "comment": "24*(1+0.32)*(1+0.15) ≈ 36.42"
+  },
+  {
+    "country": "Belgium - Cheap (Wallonia rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 23.76,
+    "comment": "18*(1+0.32)*(1+0.00) ≈ 23.76"
+  },
+  {
+    "country": "Belgium - Cheap (Wallonia rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 26.14,
+    "comment": "18*(1+0.32)*(1+0.10) ≈ 26.14"
+  },
+  {
+    "country": "Belgium - Cheap (Wallonia rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 27.53,
+    "comment": "18*(1+0.32)*(1+0.15) ≈ 27.53"
+  },
+  {
+    "country": "Netherlands - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 19,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 24.13,
+    "comment": "19*(1+0.27)*(1+0.00) ≈ 24.13"
+  },
+  {
+    "country": "Netherlands - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 19,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 26.54,
+    "comment": "19*(1+0.27)*(1+0.10) ≈ 26.54"
+  },
+  {
+    "country": "Netherlands - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 19,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 28.02,
+    "comment": "19*(1+0.27)*(1+0.15) ≈ 28.02"
+  },
+  {
+    "country": "Netherlands - Expensive (Randstad)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 23,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 29.21,
+    "comment": "23*(1+0.27)*(1+0.00) ≈ 29.21"
+  },
+  {
+    "country": "Netherlands - Expensive (Randstad)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 23,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 32.13,
+    "comment": "23*(1+0.27)*(1+0.10) ≈ 32.13"
+  },
+  {
+    "country": "Netherlands - Expensive (Randstad)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 23,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 33.90,
+    "comment": "23*(1+0.27)*(1+0.15) ≈ 33.90"
+  },
+  {
+    "country": "Netherlands - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 17,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 21.59,
+    "comment": "17*(1+0.27)*(1+0.00) ≈ 21.59"
+  },
+  {
+    "country": "Netherlands - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 17,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 23.75,
+    "comment": "17*(1+0.27)*(1+0.10) ≈ 23.75"
+  },
+  {
+    "country": "Netherlands - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 17,
+    "lohnNebenkostenPercent": 0.27,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 25.09,
+    "comment": "17*(1+0.27)*(1+0.15) ≈ 25.09"
+  },
+  {
+    "country": "Taiwan - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 12,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 13.44,
+    "comment": "12*(1+0.12)*(1+0.00) ≈ 13.44"
+  },
+  {
+    "country": "Taiwan - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 12,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 14.78,
+    "comment": "12*(1+0.12)*(1+0.10) ≈ 14.78"
+  },
+  {
+    "country": "Taiwan - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 12,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 15.70,
+    "comment": "12*(1+0.12)*(1+0.15) ≈ 15.70"
+  },
+  {
+    "country": "Taiwan - Expensive (Taipei)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 16,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 17.92,
+    "comment": "16*(1+0.12)*(1+0.00) ≈ 17.92"
+  },
+  {
+    "country": "Taiwan - Expensive (Taipei)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 16,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 19.71,
+    "comment": "16*(1+0.12)*(1+0.10) ≈ 19.71"
+  },
+  {
+    "country": "Taiwan - Expensive (Taipei)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 16,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 20.70,
+    "comment": "16*(1+0.12)*(1+0.15) ≈ 20.70"
+  },
+  {
+    "country": "Taiwan - Cheap (South)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 11.20,
+    "comment": "10*(1+0.12)*(1+0.00) ≈ 11.20"
+  },
+  {
+    "country": "Taiwan - Cheap (South)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 12.32,
+    "comment": "10*(1+0.12)*(1+0.10) ≈ 12.32"
+  },
+  {
+    "country": "Taiwan - Cheap (South)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 12.88,
+    "comment": "10*(1+0.12)*(1+0.15) ≈ 12.88"
+  },
+  {
+    "country": "Portugal - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 13.20,
+    "comment": "10*(1+0.32)*(1+0.00) ≈ 13.20"
+  },
+  {
+    "country": "Portugal - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 14.52,
+    "comment": "10*(1+0.32)*(1+0.10) ≈ 14.52"
+  },
+  {
+    "country": "Portugal - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 10,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 15.25,
+    "comment": "10*(1+0.32)*(1+0.15) ≈ 15.25"
+  },
+  {
+    "country": "Portugal - Expensive (Lissabon)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 14,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 18.48,
+    "comment": "14*(1+0.32)*(1+0.00) ≈ 18.48"
+  },
+  {
+    "country": "Portugal - Expensive (Lissabon)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 14,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 20.33,
+    "comment": "14*(1+0.32)*(1+0.10) ≈ 20.33"
+  },
+  {
+    "country": "Portugal - Expensive (Lissabon)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 14,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 21.38,
+    "comment": "14*(1+0.32)*(1+0.15) ≈ 21.38"
+  },
+  {
+    "country": "Portugal - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 9,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 11.88,
+    "comment": "9*(1+0.32)*(1+0.00) ≈ 11.88"
+  },
+  {
+    "country": "Portugal - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 9,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 13.07,
+    "comment": "9*(1+0.32)*(1+0.10) ≈ 13.07"
+  },
+  {
+    "country": "Portugal - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 9,
+    "lohnNebenkostenPercent": 0.32,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 13.82,
+    "comment": "9*(1+0.32)*(1+0.15) ≈ 13.82"
+  },
+  {
+    "country": "Spain - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 14,
+    "lohnNebenkostenPercent": 0.36,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 19.04,
+    "comment": "14*(1+0.36)*(1+0.00) ≈ 19.04"
+  },
+  {
+    "country": "Spain - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 14,
+    "lohnNebenkostenPercent": 0.36,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 20.95,
+    "comment": "14*(1+0.36)*(1+0.10) ≈ 20.95"
+  },
+  {
+    "country": "Spain - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 14,
+    "lohnNebenkostenPercent": 0.36,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 22.00,
+    "comment": "14*(1+0.36)*(1+0.15) ≈ 22.00"
+  },
+  {
+    "country": "Spain - Expensive (Madrid)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.36,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 24.48,
+    "comment": "18*(1+0.36)*(1+0.00) ≈ 24.48"
+  },
+  {
+    "country": "Spain - Expensive (Madrid)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.36,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 26.93,
+    "comment": "18*(1+0.36)*(1+0.10) ≈ 26.93"
+  },
+  {
+    "country": "Spain - Expensive (Madrid)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.36,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 28.52,
+    "comment": "18*(1+0.36)*(1+0.15) ≈ 28.52"
+  },
+  {
+    "country": "Spain - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 12,
+    "lohnNebenkostenPercent": 0.36,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 16.32,
+    "comment": "12*(1+0.36)*(1+0.00) ≈ 16.32"
+  },
+  {
+    "country": "Spain - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 12,
+    "lohnNebenkostenPercent": 0.36,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 17.95,
+    "comment": "12*(1+0.36)*(1+0.10) ≈ 17.95"
+  },
+  {
+    "country": "Spain - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 12,
+    "lohnNebenkostenPercent": 0.36,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 19.09,
+    "comment": "12*(1+0.36)*(1+0.15) ≈ 19.09"
+  },
+  {
+    "country": "Romania - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.28,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 6.40,
+    "comment": "5*(1+0.28)*(1+0.00) ≈ 6.40"
+  },
+  {
+    "country": "Romania - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.28,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 7.04,
+    "comment": "5*(1+0.28)*(1+0.10) ≈ 7.04"
+  },
+  {
+    "country": "Romania - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.28,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 7.40,
+    "comment": "5*(1+0.28)*(1+0.15) ≈ 7.40"
+  },
+  {
+    "country": "Romania - Expensive (Bukarest)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.28,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 8.96,
+    "comment": "7*(1+0.28)*(1+0.00) ≈ 8.96"
+  },
+  {
+    "country": "Romania - Expensive (Bukarest)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.28,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 9.86,
+    "comment": "7*(1+0.28)*(1+0.10) ≈ 9.86"
+  },
+  {
+    "country": "Romania - Expensive (Bukarest)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 7,
+    "lohnNebenkostenPercent": 0.28,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 10.37,
+    "comment": "7*(1+0.28)*(1+0.15) ≈ 10.37"
+  },
+  {
+    "country": "Romania - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.28,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 5.12,
+    "comment": "4*(1+0.28)*(1+0.00) ≈ 5.12"
+  },
+  {
+    "country": "Romania - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.28,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 5.63,
+    "comment": "4*(1+0.28)*(1+0.10) ≈ 5.63"
+  },
+  {
+    "country": "Romania - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.28,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 5.88,
+    "comment": "4*(1+0.28)*(1+0.15) ≈ 5.88"
+  },
+  {
+    "country": "Malaysia - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 4.48,
+    "comment": "4*(1+0.12)*(1+0.00) ≈ 4.48"
+  },
+  {
+    "country": "Malaysia - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 4.93,
+    "comment": "4*(1+0.12)*(1+0.10) ≈ 4.93"
+  },
+  {
+    "country": "Malaysia - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 4,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 5.17,
+    "comment": "4*(1+0.12)*(1+0.15) ≈ 5.17"
+  },
+  {
+    "country": "Malaysia - Expensive (Klang Valley)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 6,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 6.72,
+    "comment": "6*(1+0.12)*(1+0.00) ≈ 6.72"
+  },
+  {
+    "country": "Malaysia - Expensive (Klang Valley)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 6,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 7.39,
+    "comment": "6*(1+0.12)*(1+0.10) ≈ 7.39"
+  },
+  {
+    "country": "Malaysia - Expensive (Klang Valley)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 6,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 7.74,
+    "comment": "6*(1+0.12)*(1+0.15) ≈ 7.74"
+  },
+  {
+    "country": "Malaysia - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 3.36,
+    "comment": "3*(1+0.12)*(1+0.00) ≈ 3.36"
+  },
+  {
+    "country": "Malaysia - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 3.70,
+    "comment": "3*(1+0.12)*(1+0.10) ≈ 3.70"
+  },
+  {
+    "country": "Malaysia - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.12,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 3.87,
+    "comment": "3*(1+0.12)*(1+0.15) ≈ 3.87"
+  },
+  {
+    "country": "India - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.22,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 3.66,
+    "comment": "3*(1+0.22)*(1+0.00) ≈ 3.66"
+  },
+  {
+    "country": "India - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.22,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 4.03,
+    "comment": "3*(1+0.22)*(1+0.10) ≈ 4.03"
+  },
+  {
+    "country": "India - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 3,
+    "lohnNebenkostenPercent": 0.22,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 4.23,
+    "comment": "3*(1+0.22)*(1+0.15) ≈ 4.23"
+  },
+  {
+    "country": "India - Expensive (IT-Hub)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.22,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 6.10,
+    "comment": "5*(1+0.22)*(1+0.00) ≈ 6.10"
+  },
+  {
+    "country": "India - Expensive (IT-Hub)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.22,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 6.71,
+    "comment": "5*(1+0.22)*(1+0.10) ≈ 6.71"
+  },
+  {
+    "country": "India - Expensive (IT-Hub)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 5,
+    "lohnNebenkostenPercent": 0.22,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 7.09,
+    "comment": "5*(1+0.22)*(1+0.15) ≈ 7.09"
+  },
+  {
+    "country": "India - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 2,
+    "lohnNebenkostenPercent": 0.22,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 2.44,
+    "comment": "2*(1+0.22)*(1+0.00) ≈ 2.44"
+  },
+  {
+    "country": "India - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 2,
+    "lohnNebenkostenPercent": 0.22,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 2.68,
+    "comment": "2*(1+0.22)*(1+0.10) ≈ 2.68"
+  },
+  {
+    "country": "India - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 2,
+    "lohnNebenkostenPercent": 0.22,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 2.83,
+    "comment": "2*(1+0.22)*(1+0.15) ≈ 2.83"
+  },
+  {
+    "country": "Australia - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 22,
+    "lohnNebenkostenPercent": 0.10,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 24.20,
+    "comment": "22*(1+0.10)*(1+0.00) ≈ 24.20"
+  },
+  {
+    "country": "Australia - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 22,
+    "lohnNebenkostenPercent": 0.10,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 26.62,
+    "comment": "22*(1+0.10)*(1+0.10) ≈ 26.62"
+  },
+  {
+    "country": "Australia - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 22,
+    "lohnNebenkostenPercent": 0.10,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 28.14,
+    "comment": "22*(1+0.10)*(1+0.15) ≈ 28.14"
+  },
+  {
+    "country": "Australia - Expensive (Sydney)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 25,
+    "lohnNebenkostenPercent": 0.10,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 27.50,
+    "comment": "25*(1+0.10)*(1+0.00) ≈ 27.50"
+  },
+  {
+    "country": "Australia - Expensive (Sydney)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 25,
+    "lohnNebenkostenPercent": 0.10,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 30.25,
+    "comment": "25*(1+0.10)*(1+0.10) ≈ 30.25"
+  },
+  {
+    "country": "Australia - Expensive (Sydney)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 25,
+    "lohnNebenkostenPercent": 0.10,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 31.63,
+    "comment": "25*(1+0.10)*(1+0.15) ≈ 31.63"
+  },
+  {
+    "country": "Australia - Cheap (regional)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.10,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 19.80,
+    "comment": "18*(1+0.10)*(1+0.00) ≈ 19.80"
+  },
+  {
+    "country": "Australia - Cheap (regional)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.10,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 21.78,
+    "comment": "18*(1+0.10)*(1+0.10) ≈ 21.78"
+  },
+  {
+    "country": "Australia - Cheap (regional)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.10,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 22.77,
+    "comment": "18*(1+0.10)*(1+0.15) ≈ 22.77"
+  },
+  {
+    "country": "Canada - Avg",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 20.52,
+    "comment": "18*(1+0.14)*(1+0.00) ≈ 20.52"
+  },
+  {
+    "country": "Canada - Avg",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 22.57,
+    "comment": "18*(1+0.14)*(1+0.10) ≈ 22.57"
+  },
+  {
+    "country": "Canada - Avg",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 18,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 23.70,
+    "comment": "18*(1+0.14)*(1+0.15) ≈ 23.70"
+  },
+  {
+    "country": "Canada - Expensive (Ontario)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 22,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 25.08,
+    "comment": "22*(1+0.14)*(1+0.00) ≈ 25.08"
+  },
+  {
+    "country": "Canada - Expensive (Ontario)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 22,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 27.59,
+    "comment": "22*(1+0.14)*(1+0.10) ≈ 27.59"
+  },
+  {
+    "country": "Canada - Expensive (Ontario)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 22,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 28.97,
+    "comment": "22*(1+0.14)*(1+0.15) ≈ 28.97"
+  },
+  {
+    "country": "Canada - Cheap (rural)",
+    "shiftModel": "1-shift",
+    "baseWageGrossEURh": 15,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.00,
+    "allInEURh": 17.10,
+    "comment": "15*(1+0.14)*(1+0.00) ≈ 17.10"
+  },
+  {
+    "country": "Canada - Cheap (rural)",
+    "shiftModel": "2-shift",
+    "baseWageGrossEURh": 15,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.10,
+    "allInEURh": 18.81,
+    "comment": "15*(1+0.14)*(1+0.10) ≈ 18.81"
+  },
+  {
+    "country": "Canada - Cheap (rural)",
+    "shiftModel": "3-shift",
+    "baseWageGrossEURh": 15,
+    "lohnNebenkostenPercent": 0.14,
+    "shiftZuschlagPercent": 0.15,
+    "allInEURh": 19.73,
+    "comment": "15*(1+0.14)*(1+0.15) ≈ 19.73"
+  }
   ]
