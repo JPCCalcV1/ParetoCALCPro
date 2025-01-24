@@ -2313,3 +2313,74 @@ document.addEventListener("DOMContentLoaded", () => {
 
   console.log("DEBUG: DOMContentLoaded end (fusion done).");
 });
+async function checkLicenseThen(fnIfOk) {
+  try {
+    const res = await fetch("/auth/whoami", { method: "GET" });
+    const data = await res.json();
+
+    // Falls nicht eingeloggt => Umleiten zum Login
+    if (!data.logged_in) {
+      alert("Bitte einloggen (Upgrade-Feature).");
+      window.location.href = "/auth/login";
+      return;
+    }
+
+    // Lizenzprüfung: Nur "premium" oder "extended" erlaubt
+    if (!["premium","extended"].includes(data.license)) {
+      alert("Dieses Feature erfordert Premium oder Extended. Bitte Upgrade!");
+      return;
+    }
+
+    // Falls alles OK => eigentliche Funktion ausführen
+    fnIfOk();
+
+  } catch(err) {
+    console.error(err);
+    alert("Lizenzprüfung fehlgeschlagen. Bitte erneut versuchen.");
+  }
+}
+
+/* ========================
+   3) "Safe"-Funktionen für Modal-Öffner
+   ======================== */
+function openDruckgussModalSafe() {
+  checkLicenseThen(() => {
+    openDruckgussModal();
+  });
+}
+
+function openMillingModalSafe() {
+  checkLicenseThen(() => {
+    openMillingModal();
+  });
+}
+
+function openStampingModalSafe() {
+  checkLicenseThen(() => {
+    openStampingModal();
+  });
+}
+
+function openFeingussModalSafe() {
+  checkLicenseThen(() => {
+    openFeingussModal();
+  });
+}
+
+function openSchmiedenModalSafe() {
+  checkLicenseThen(() => {
+    openSchmiedenModal();
+  });
+}
+
+function openKaltfliessModalSafe() {
+  checkLicenseThen(() => {
+    openKaltfliessModal();
+  });
+}
+
+function openPcbModalSafe() {
+  checkLicenseThen(() => {
+    openPcbModal();
+  });
+}
