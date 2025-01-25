@@ -177,8 +177,8 @@ def upgrade_plan():
             line_items=[{"price": price_id, "quantity":1}],
             mode="subscription",
             subscription_data=subscription_data,
-            success_url="https://jpccalc.de/pay/success",
-            cancel_url="https://jpccalc.de/pay/cancel"
+            success_url="https://paretocalc.com/pay/success",
+            cancel_url="https://paretocalc.com/pay/cancel"
         )
 
         current_app.logger.info(
