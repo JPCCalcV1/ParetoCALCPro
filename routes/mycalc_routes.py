@@ -165,7 +165,7 @@ def calc_labor():
 
 @mycalc_bp.route("/", methods=["GET"])
 def show_calc_page():
-    return render_template("my_calc_final.html")
+    return render_template("my_calc_coloradmin.html")
 
 
 @mycalc_bp.route("/taktzeit", methods=["POST"])

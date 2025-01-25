@@ -2,13 +2,19 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>JPC CALCV1</title>
-  <!-- Bootstrap 5 CSS (CDN) -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+  <title>JPC CALC V2.0 (ColorAdmin)</title>
+
+  <!-- ================== BEGIN ColorAdmin core CSS ================== -->
+  <!-- Statt Bootstrap-CDN nutzen wir ColorAdmin (enthält Bootstrap + FontAwesome) -->
+  <link href="/static/coloradmin/css/vendor.min.css" rel="stylesheet" />
+  <link href="/static/coloradmin/css/app.min.css" rel="stylesheet" />
+  <!-- ================== END ColorAdmin core CSS ================== -->
+
+  <!-- Behalte dein Custom-Style (leicht angepasst, falls nötig) -->
   <style>
+    /* -----------------------------
+       Deins: Aus deinem <style> Block
+       ----------------------------- */
     body {
       font-size: 14px;
       background-color: #f8f9fa;
@@ -107,375 +113,452 @@
         padding: 0.4rem 0.8rem;
       }
     }
-
     /* Entfernte "Rumtricksereien" für Tab 5, nur minimaler Abstand */
     /* Stattdessen nutzen wir die p-3-Klasse im Tab-Container selbst. */
+
+    /* Evtl. kleinere Anpassung, damit Sidebar & Header sauber aussehen */
+    .app-header {
+      min-height: 60px; /* minimal höher für Logo/Bereich */
+    }
   </style>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+  <!-- Deine CSRF oder weitere Meta -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-
 <body>
-<div class="container my-3">
-  <!-- HEADER -->
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <img src="{{ url_for('static', filename='img/jpc.jpeg') }}" alt="Logo" height="80" />
+<!-- BEGIN #app -->
+<div id="app" class="app">
+
+  <!-- BEGIN app-header -->
+  <!-- Top-Header mit Logo, Kosten/CO₂, Login/Logout usw. -->
+  <div id="header" class="app-header">
+    <!-- NAV / Branding-Bereich -->
+    <div class="navbar-header">
+      <!-- Dein Logo -->
+      <a href="/" class="navbar-brand text-wrap">
+        <img src="{{ url_for('static', filename='img/jpc.jpeg') }}"
+             alt="Logo"
+             style="height:40px; max-height:40px;"
+        />
+        <!-- kleiner Abstand, dein Titel -->
+        <span class="ms-2">JPC CALC V2.0</span>
+      </a>
+      <!-- Burger-Button, um Sidebar einzuklappen -->
+      <button type="button" class="navbar-mobile-toggler" data-toggle="app-sidebar" data-dismiss="app-sidebar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
     </div>
+    <!-- Rechts vom Navbar -->
+    <div class="navbar-nav">
+      <!-- Beispiel: Kosten & CO₂ Felder inline -->
+      <div class="navbar-item d-flex align-items-center">
+        <!-- Kosten / CO2 -->
+        <form class="d-inline-block me-3">
+          <label class="me-1 fw-bold">Kosten/100 (€):</label>
+          <input
+            type="text"
+            id="txtCosts100"
+            class="form-control form-control-sm d-inline-block me-3"
+            style="width: 70px;"
+            readonly
+          />
+          <label class="me-1 fw-bold">CO₂/100(kg):</label>
+          <input
+            type="text"
+            id="txtCo2Per100"
+            class="form-control form-control-sm d-inline-block"
+            style="width: 70px;"
+            readonly
+          />
+        </form>
 
-    <!-- Rechter Bereich: Titel, Kosten/CO₂, Login/Logout, Extended kaufen -->
-    <div class="text-end">
-      <h4 class="mb-0">JPC CALC V2.0</h4>
-      <div class="mt-3">
-        <!-- Hier haben wir die vorhandenen Kosten-/CO₂-Felder + neue Login/Logout-Felder + Extended-Button in einer Zeile -->
-        <div class="d-flex justify-content-end align-items-center">
-
-          <!-- Kosten/CO₂ -->
-          <div class="text-end me-3">
-            <form class="d-inline-block">
-              <label class="me-1 fw-bold">Kosten/100 (€):</label>
-              <input
-                type="text"
-                id="txtCosts100"
-                class="form-control form-control-sm d-inline-block me-4"
-                style="width: 70px;"
-                readonly
-              />
-              <label class="me-1 fw-bold">CO₂/100(kg):</label>
-              <input
-                type="text"
-                id="txtCo2Per100"
-                class="form-control form-control-sm d-inline-block"
-                style="width: 70px;"
-                readonly
-              />
-            </form>
-          </div>
-
-          <!-- Login-Bereich -->
-
-
-          <!-- User-Info und Logout -->
-          <div id="userInfo" style="display:none;" class="d-inline-block me-3">
-           <span id="spanUserEmail"></span>
-            <button class="btn btn-sm btn-primary small-text" onclick="doLogout()">
-              Logout
-            </button>
-          </div>
-
-         <button onclick="window.location.href='/account/'">
-  Zu meinem Account
-</button>
+        <!-- User-Info (wird ggf. per JS ein-/ausgeblendet) -->
+        <div id="userInfo" style="display:none;" class="me-3">
+          <span id="spanUserEmail"></span>
+          <button class="btn btn-sm btn-primary small-text" onclick="doLogout()">
+            Logout
+          </button>
         </div>
+
+        <!-- Account-Button -->
+        <button class="btn btn-sm btn-info"
+                onclick="window.location.href='/account/'">
+          Zu meinem Account
+        </button>
       </div>
     </div>
   </div>
+  <!-- END app-header -->
 
-  <!-- Tabs-Navigation -->
-  <ul class="nav nav-tabs" id="calcTab" role="tablist">
-    <!-- Tab 1 -->
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link active"
-        id="tab1-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#tab1"
-        type="button"
-        role="tab"
-        aria-controls="tab1"
-        aria-selected="true"
-      >
-        1) Projektübersicht
-      </button>
-    </li>
-    <!-- Tab 2 -->
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link"
-        id="tab2-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#tab2"
-        type="button"
-        role="tab"
-        aria-controls="tab2"
-        aria-selected="false"
-      >
-        2) Material
-      </button>
-    </li>
-    <!-- Tab 3 -->
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link"
-        id="tab3-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#tab3"
-        type="button"
-        role="tab"
-        aria-controls="tab3"
-        aria-selected="false"
-      >
-        3) Fertigung
-      </button>
-    </li>
-    <!-- Tab 4 -->
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link"
-        id="tab4-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#tab4"
-        type="button"
-        role="tab"
-        aria-controls="tab4"
-        aria-selected="false"
-      >
-        4) Ergebnis
-      </button>
-    </li>
-    <!-- Tab 5 -->
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link"
-        id="tab5-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#tab5"
-        type="button"
-        role="tab"
-        aria-controls="tab5"
-        aria-selected="false"
-      >
-        5) Baugruppe
-      </button>
-    </li>
-  </ul>
+  <!-- BEGIN app-sidebar (klappbare Sidebar) -->
+  <div id="sidebar" class="app-sidebar">
+    <!-- Scroll-Wrapper, falls Sidebar sehr lang ist -->
+    <div class="app-sidebar-content" data-scrollbar="true" data-height="100%">
+      <!-- Deine Sidebar-Nav -->
+      <div class="menu">
+        <div class="menu-header">Navigation</div>
+        <div class="nav">
+          <!-- Beispiel: Dashboard-Link -->
+          <div class="nav-item">
+            <a href="javascript:;" class="nav-link">
+              <i class="fa fa-home nav-icon"></i>
+              <span class="nav-text">Dashboard</span>
+            </a>
+          </div>
 
-  <!-- Tabs-Inhalt -->
-  <!-- Tabs-Inhalt -->
-<!-- Tabs-Inhalt -->
-  <div
-    class="tab-content"
-    id="myTabContent"
-    style="min-height: 300px; margin-top: 1rem;"
-  >
-    <!-- Tab 1: Parametric Tools -->
-    <div
-      class="tab-pane fade p-3"
-      id="tab1"
-      role="tabpanel"
-      aria-labelledby="tab1-tab"
-    >
+          <!-- MyCalc (aktuell) -->
+          <div class="nav-item">
+            <a href="javascript:;" class="nav-link active">
+              <i class="fa fa-calculator nav-icon"></i>
+              <span class="nav-text">MyCalc</span>
+            </a>
+          </div>
 
-      <h5>Parametric Tools</h5>
-      <div class="row mb-2">
-        <label for="txtProjectName" class="col-sm-3 col-form-label"
-          >Projektname</label
-        >
-        <div class="col-sm-5">
-          <input
-            type="text"
-            class="form-control"
-            id="txtProjectName"
-            placeholder="Projekt ABC"
-          />
+          <!-- Optional: Weitere Menüpunkte -->
+          <div class="nav-item">
+            <a href="/account/" class="nav-link">
+              <i class="fa fa-user nav-icon"></i>
+              <span class="nav-text">Account</span>
+            </a>
+          </div>
+
+          <!-- Später: Branchenprofile, etc. -->
+          <!-- ... -->
         </div>
       </div>
-      <div class="row mb-2">
-        <label for="txtPartName" class="col-sm-3 col-form-label"
-          >Bauteilname</label
-        >
-        <div class="col-sm-5">
-          <input
-            type="text"
-            class="form-control"
-            id="txtPartName"
-            placeholder="Bauteil X"
-          />
-        </div>
-      </div>
-      <div class="row mb-2">
-        <label for="annualQty" class="col-sm-3 col-form-label"
-          >Jahresstückzahl</label
-        >
-        <div class="col-sm-3">
-          <input type="number" class="form-control" id="annualQty" value="1000" />
-        </div>
-      </div>
-      <div class="row mb-2">
-        <label for="lotSize" class="col-sm-3 col-form-label">Losgröße</label>
-        <div class="col-sm-3">
-          <input type="number" class="form-control" id="lotSize" value="100" />
-        </div>
-      </div>
-      <div class="row mb-2">
-        <label for="scrapPct" class="col-sm-3 col-form-label"
-          >Globaler Ausschuss (%)</label
-        >
-        <div class="col-sm-3">
-          <input
-            type="number"
-            step="0.1"
-            class="form-control"
-            id="scrapPct"
-            value="5.0"
-          />
-        </div>
-      </div>
-      <div class="row mb-2">
-        <label for="sgaPct" class="col-sm-3 col-form-label">SG&A (%)</label>
-        <div class="col-sm-3">
-          <input
-            type="number"
-            step="0.1"
-            class="form-control"
-            id="sgaPct"
-            value="10.0"
-          />
-        </div>
-      </div>
-      <div class="row mb-2">
-        <label for="profitPct" class="col-sm-3 col-form-label"
-          >Profit (%)</label
-        >
-        <div class="col-sm-3">
-          <input
-            type="number"
-            step="0.1"
-            class="form-control"
-            id="profitPct"
-            value="5.0"
-          />
-        </div>
-      </div>
-      <div class="row mb-2">
-        <label for="yearSpin" class="col-sm-3 col-form-label"
-          >Kalkulationsjahr</label
-        >
-        <div class="col-sm-3">
-          <input type="number" class="form-control" id="yearSpin" value="2024" />
-        </div>
-      </div>
-      <div class="row mb-2">
-        <label for="zielPrice" class="col-sm-3 col-form-label"
-          >Zielpreis / 100 Stk</label
-        >
-        <div class="col-sm-3">
-          <input
-            type="number"
-            step="0.01"
-            class="form-control"
-            id="zielPrice"
-            value="200.00"
-          />
-        </div>
-      </div>
-      <button class="btn btn-primary mt-3" onclick="openParamToolsModal()">
-        Parametric Tools
-      </button>
     </div>
+    <!-- Sidebar-Hintergrund (wenn eingeklappt) -->
+    <button class="app-sidebar-mobile-backdrop" data-dismiss="sidebar"></button>
+  </div>
+  <!-- END app-sidebar -->
 
-    <!-- ====================
-         TAB 2: Material
-         ==================== -->
-    <div
-      class="tab-pane fade p-3"
-      id="tab2"
-      role="tabpanel"
-      aria-labelledby="tab2-tab"
-    >
-      <h5>Material</h5>
-      <button class="btn btn-secondary mb-3" onclick="openMaterialModal()">
-        Materialliste laden
-      </button>
+  <!-- BEGIN #content -->
+  <!-- Hier hinein packen wir 1:1 den Inhalt (Tabs, etc.) -->
+  <div id="content" class="app-content p-3">
+    <!-- Container optional, aber wir lassen’s für Ordnung -->
+    <div class="container-fluid">
+      <!-- Tabs-Navigation -->
+      <ul class="nav nav-tabs" id="calcTab" role="tablist">
+        <!-- Tab 1 -->
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="tab1-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#tab1"
+            type="button"
+            role="tab"
+            aria-controls="tab1"
+            aria-selected="true"
+          >
+            1) Projektübersicht
+          </button>
+        </li>
+        <!-- Tab 2 -->
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="tab2-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#tab2"
+            type="button"
+            role="tab"
+            aria-controls="tab2"
+            aria-selected="false"
+          >
+            2) Material
+          </button>
+        </li>
+        <!-- Tab 3 -->
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="tab3-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#tab3"
+            type="button"
+            role="tab"
+            aria-controls="tab3"
+            aria-selected="false"
+          >
+            3) Fertigung
+          </button>
+        </li>
+        <!-- Tab 4 -->
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="tab4-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#tab4"
+            type="button"
+            role="tab"
+            aria-controls="tab4"
+            aria-selected="false"
+          >
+            4) Ergebnis
+          </button>
+        </li>
+        <!-- Tab 5 -->
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="tab5-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#tab5"
+            type="button"
+            role="tab"
+            aria-controls="tab5"
+            aria-selected="false"
+          >
+            5) Baugruppe
+          </button>
+        </li>
+      </ul>
 
+      <!-- Tabs-Inhalt -->
+      <div
+        class="tab-content"
+        id="myTabContent"
+        style="min-height: 300px; margin-top: 1rem;"
+      >
+        <!-- ====================
+             TAB 1: Parametric Tools
+             ==================== -->
+        <div
+          class="tab-pane fade show active p-3"
+          id="tab1"
+          role="tabpanel"
+          aria-labelledby="tab1-tab"
+        >
+          <h5>Parametric Tools</h5>
+          <div class="row mb-2">
+            <label for="txtProjectName" class="col-sm-3 col-form-label"
+              >Projektname</label
+            >
+            <div class="col-sm-5">
+              <input
+                type="text"
+                class="form-control"
+                id="txtProjectName"
+                placeholder="Projekt ABC"
+              />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label for="txtPartName" class="col-sm-3 col-form-label"
+              >Bauteilname</label
+            >
+            <div class="col-sm-5">
+              <input
+                type="text"
+                class="form-control"
+                id="txtPartName"
+                placeholder="Bauteil X"
+              />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label for="annualQty" class="col-sm-3 col-form-label"
+              >Jahresstückzahl</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                class="form-control"
+                id="annualQty"
+                value="1000"
+              />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label for="lotSize" class="col-sm-3 col-form-label"
+              >Losgröße</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                class="form-control"
+                id="lotSize"
+                value="100"
+              />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label for="scrapPct" class="col-sm-3 col-form-label"
+              >Globaler Ausschuss (%)</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                step="0.1"
+                class="form-control"
+                id="scrapPct"
+                value="5.0"
+              />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label for="sgaPct" class="col-sm-3 col-form-label"
+              >SG&A (%)</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                step="0.1"
+                class="form-control"
+                id="sgaPct"
+                value="10.0"
+              />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label for="profitPct" class="col-sm-3 col-form-label"
+              >Profit (%)</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                step="0.1"
+                class="form-control"
+                id="profitPct"
+                value="5.0"
+              />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label for="yearSpin" class="col-sm-3 col-form-label"
+              >Kalkulationsjahr</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                class="form-control"
+                id="yearSpin"
+                value="2024"
+              />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label for="zielPrice" class="col-sm-3 col-form-label"
+              >Zielpreis / 100 Stk</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                step="0.01"
+                class="form-control"
+                id="zielPrice"
+                value="200.00"
+              />
+            </div>
+          </div>
+          <button class="btn btn-primary mt-3" onclick="openParamToolsModal()">
+            Parametric Tools
+          </button>
+        </div>
+        <!-- END Tab1 -->
 
+        <!-- ====================
+             TAB 2: Material
+             ==================== -->
+        <div
+          class="tab-pane fade p-3"
+          id="tab2"
+          role="tabpanel"
+          aria-labelledby="tab2-tab"
+        >
+          <h5>Material</h5>
+          <button class="btn btn-secondary mb-3" onclick="openMaterialModal()">
+            Materialliste laden
+          </button>
+          <!-- Felder in Tab2 -->
+          <div class="mb-2 row">
+            <label class="col-sm-3 col-form-label" for="matName"
+              >Materialname</label
+            >
+            <div class="col-sm-4">
+              <input
+                type="text"
+                class="form-control"
+                id="matName"
+                value="Aluminium"
+              />
+            </div>
+          </div>
+          <div class="mb-2 row">
+            <label class="col-sm-3 col-form-label" for="matPrice"
+              >Materialpreis (€/kg)</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                class="form-control"
+                step="0.01"
+                id="matPrice"
+                value="2.0"
+              />
+            </div>
+          </div>
+          <div class="mb-2 row">
+            <label class="col-sm-3 col-form-label" for="matCo2"
+              >Material-CO₂ (kg/kg)</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                class="form-control"
+                step="0.1"
+                id="matCo2"
+                value="2.0"
+              />
+            </div>
+          </div>
+          <div class="mb-2 row">
+            <label class="col-sm-3 col-form-label" for="matGK"
+              >Material-GK (%)</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                class="form-control"
+                step="0.1"
+                id="matGK"
+                value="5.0"
+              />
+            </div>
+          </div>
+          <div class="mb-2 row">
+            <label class="col-sm-3 col-form-label" for="matWeight"
+              >Bauteilgewicht (kg)</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                class="form-control"
+                step="0.01"
+                id="matWeight"
+                value="0.2"
+              />
+            </div>
+          </div>
+          <div class="mb-2 row">
+            <label class="col-sm-3 col-form-label" for="fremdValue"
+              >Fremdzukauf (€)</label
+            >
+            <div class="col-sm-3">
+              <input
+                type="number"
+                class="form-control"
+                step="0.01"
+                id="fremdValue"
+                value="0.0"
+              />
+            </div>
+          </div>
 
-      <!-- Felder in Tab2 -->
-      <div class="mb-2 row">
-        <label class="col-sm-3 col-form-label" for="matName"
-          >Materialname</label
-        >
-        <div class="col-sm-4">
-          <input
-            type="text"
-            class="form-control"
-            id="matName"
-            value="Aluminium"
-          />
+          <button class="btn btn-primary mt-3" onclick="calcAll()">Berechnen</button>
         </div>
-      </div>
-      <div class="mb-2 row">
-        <label class="col-sm-3 col-form-label" for="matPrice"
-          >Materialpreis (€/kg)</label
-        >
-        <div class="col-sm-3">
-          <input
-            type="number"
-            class="form-control"
-            step="0.01"
-            id="matPrice"
-            value="2.0"
-          />
-        </div>
-      </div>
-      <div class="mb-2 row">
-        <label class="col-sm-3 col-form-label" for="matCo2"
-          >Material-CO₂ (kg/kg)</label
-        >
-        <div class="col-sm-3">
-          <input
-            type="number"
-            class="form-control"
-            step="0.1"
-            id="matCo2"
-            value="2.0"
-          />
-        </div>
-      </div>
-      <div class="mb-2 row">
-        <label class="col-sm-3 col-form-label" for="matGK"
-          >Material-GK (%)</label
-        >
-        <div class="col-sm-3">
-          <input
-            type="number"
-            class="form-control"
-            step="0.1"
-            id="matGK"
-            value="5.0"
-          />
-        </div>
-      </div>
-      <div class="mb-2 row">
-        <label class="col-sm-3 col-form-label" for="matWeight"
-          >Bauteilgewicht (kg)</label
-        >
-        <div class="col-sm-3">
-          <input
-            type="number"
-            class="form-control"
-            step="0.01"
-            id="matWeight"
-            value="0.2"
-          />
-        </div>
-      </div>
-      <div class="mb-2 row">
-        <label class="col-sm-3 col-form-label" for="fremdValue"
-          >Fremdzukauf (€)</label
-        >
-        <div class="col-sm-3">
-          <input
-            type="number"
-            class="form-control"
-            step="0.01"
-            id="fremdValue"
-            value="0.0"
-          />
-        </div>
-      </div>
-
-      <button class="btn btn-primary mt-3" onclick="calcAll()">Berechnen</button>
-    </div>
     <!-- ====================
          TAB 3: Fertigung
          ==================== -->
@@ -766,14 +849,9 @@
       </div>
     </div>
 
-    <!-- Bootstrap 5 JS (CDN) -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-    ></script>
-    <!-- Falls du Chart.js nutzt -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- 1) Parametric Tools Modal -->
+<!-- =========================================
+     PARAMETRIC TOOLS MODAL (modalParamTools)
+     ========================================= -->
 <div
   class="modal fade"
   id="modalParamTools"
@@ -848,36 +926,11 @@
         </button>
       </div>
 
-      <!-- Hier war ein überflüssiges </button> -->
+    </div> <!-- .modal-content -->
+  </div> <!-- .modal-dialog -->
+</div> <!-- #modalParamTools -->
 
-    </div>
-  </div>
-</div>
-
-<!--
-  feinguss_parametric_modal.html
-  ===============================
-
-  Vollständige, minimal-invasive HTML-Struktur
-  für das Feinguss-Parametric-Tool.
-
-  - Gleiche IDs wie im JS-Code (z. B. fgMatSelect, fgWeight, etc.)
-  - Tabs für Basis-Eingaben, Erweitert, Ergebnisse
-  - Einfache Tabelle & Pie-Chart zur Ergebnisanzeige
-  - Copy-Paste-fähig & anpassbar
-
-  Wichtig:
-   - Du brauchst zusätzlich bootstrap.bundle.min.js (Bootstrap 5)
-     und chart.umd.min.js (Chart.js) im HEAD oder vor dem /body
-   - Danach feinguss_parametric_final.js einbinden
-   - Der Button "Berechnen" ruft calculateFeingussParametric() auf
-   - Falls du den "Modal-Öffnen"-Button brauchst,
-     kannst du ihn überall platzieren (hier optional)
-
--->
-
-
-<!-- =============== FEINGUSS MODAL =============== -->
+<!-- =============== FEINGUSS MODAL (feingussModal) =============== -->
 <div
   class="modal fade"
   id="feingussModal"
@@ -1143,14 +1196,10 @@
 
     </div><!-- .modal-content -->
   </div><!-- .modal-dialog -->
-</div><!-- #feingussModal -->
-
-<!--
-     Jetzt das neue (lange) JS laden.
-     Du kannst den Namen frei wählen, z.B.:
-     /static/js/feinguss_parametric_v1_merged.js
--->
-<div  class="modal fade"
+</div><!-- #feingussModal --> END #content -->
+<!-- ============== SCHMIEDEN-MODAL ============== -->
+<div
+  class="modal fade"
   id="schmiedenModal"
   tabindex="-1"
   aria-hidden="true"
@@ -1312,7 +1361,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div><!-- /.tab-content -->
 
         <!-- ========== ERGEBNISBEREICH (3-spaltig) ========== -->
         <hr />
@@ -1340,7 +1389,7 @@
             ></canvas>
           </div>
         </div>
-      </div>
+      </div><!-- /.modal-body -->
 
       <div class="modal-footer">
         <button
@@ -1358,271 +1407,261 @@
           Schließen
         </button>
       </div>
-    </div>
-  </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
 </div>
-<!--
-  Kaltfliess-Modal
-  - 2 Tabs (Eingaben, Erweitert)
-  - Ergebnis-Bereich unten (3-Spalten Layout)
--->
- <!-- ============== KALTFLIESS-MODAL ============== -->
-  <!-- (Dein Code, 1:1 übernommen) -->
-  <div
-    class="modal fade"
-    id="kaltfliessModal"
-    tabindex="-1"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-xl">
-      <div
-        class="modal-content"
-        style="max-height: 85vh; overflow-y: auto;"
-      >
-        <div class="modal-header">
-          <h5 class="modal-title">Kaltfließpressen – Parametrik</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
+<!-- End SchmiedenModal -->
 
-        <div class="modal-body">
-          <!-- NAV-TABS -->
-          <ul class="nav nav-tabs" id="kaltfliessTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="kaltfliess-tab-input"
-                data-bs-toggle="tab"
-                data-bs-target="#kaltfliess-tabpane-input"
-                type="button"
-                role="tab"
-              >
-                Eingaben
-              </button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="kaltfliess-tab-adv"
-                data-bs-toggle="tab"
-                data-bs-target="#kaltfliess-tabpane-adv"
-                type="button"
-                role="tab"
-              >
-                Erweitert
-              </button>
-            </li>
-          </ul>
 
-          <div class="tab-content p-3" id="kaltfliessTabsContent">
-            <!-- TAB 1: EINGABEN -->
-            <div
-              class="tab-pane fade show active"
-              id="kaltfliess-tabpane-input"
-              role="tabpanel"
+<!-- ============== KALTFLIESS-MODAL ============== -->
+<div
+  class="modal fade"
+  id="kaltfliessModal"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div
+      class="modal-content"
+      style="max-height: 85vh; overflow-y: auto;"
+    >
+      <div class="modal-header">
+        <h5 class="modal-title">Kaltfließpressen – Parametrik</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- NAV-TABS -->
+        <ul class="nav nav-tabs" id="kaltfliessTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="kaltfliess-tab-input"
+              data-bs-toggle="tab"
+              data-bs-target="#kaltfliess-tabpane-input"
+              type="button"
+              role="tab"
             >
-              <!-- Material -->
-              <div class="row mb-3">
-                <label for="kaltfliessMatSelect" class="col-sm-4 col-form-label">
-                  Material
-                </label>
-                <div class="col-sm-5">
-                  <select class="form-select form-select-sm" id="kaltfliessMatSelect">
-                    <option>C10 (Stahl)</option>
-                    <option>C35 (Stahl)</option>
-                    <option>Alu6060</option>
-                    <option>Edelstahl304</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Land -->
-              <div class="row mb-3">
-                <label for="kaltfliessCountry" class="col-sm-4 col-form-label">
-                  Land
-                </label>
-                <div class="col-sm-5">
-                  <select class="form-select form-select-sm" id="kaltfliessCountry">
-                    <option>DE</option>
-                    <option>CN</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Bauteilgewicht (g) -->
-              <div class="row mb-3">
-                <label for="kaltfliessWeight" class="col-sm-4 col-form-label">
-                  Bauteilgewicht (g)
-                </label>
-                <div class="col-sm-5">
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="kaltfliessWeight"
-                    step="0.1"
-                    value="50.0"
-                  />
-                </div>
-              </div>
-
-              <!-- Losgröße -->
-              <div class="row mb-3">
-                <label for="kaltfliessLos" class="col-sm-4 col-form-label">
-                  Losgröße
-                </label>
-                <div class="col-sm-5">
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="kaltfliessLos"
-                    step="1"
-                    value="10000"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- TAB 2: ERWEITERT -->
-            <div
-              class="tab-pane fade"
-              id="kaltfliess-tabpane-adv"
-              role="tabpanel"
+              Eingaben
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="kaltfliess-tab-adv"
+              data-bs-toggle="tab"
+              data-bs-target="#kaltfliess-tabpane-adv"
+              type="button"
+              role="tab"
             >
-              <!-- Umform-Stufen -->
-              <div class="row mb-3">
-                <label for="kaltfliessStufen" class="col-sm-4 col-form-label">
-                  Umform-Stufen
-                </label>
-                <div class="col-sm-5">
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="kaltfliessStufen"
-                    step="1"
-                    value="3"
-                  />
-                </div>
-              </div>
+              Erweitert
+            </button>
+          </li>
+        </ul>
 
-              <!-- Rüstzeit (min) -->
-              <div class="row mb-3">
-                <label for="kaltfliessRuestMin" class="col-sm-4 col-form-label">
-                  Rüstzeit (min)
-                </label>
-                <div class="col-sm-5">
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="kaltfliessRuestMin"
-                    step="1"
-                    value="60"
-                  />
-                </div>
-              </div>
-
-              <!-- Komplex => -20% Hub/min -->
-              <div class="row mb-3">
-                <div class="col-sm-4"></div>
-                <div class="col-sm-8">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="kaltfliessKomplex"
-                    />
-                    <label class="form-check-label" for="kaltfliessKomplex">
-                      Komplex => -20% Hub/min
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Automatische Maschinenwahl? -->
-              <div class="row mb-3">
-                <div class="col-sm-4"></div>
-                <div class="col-sm-8">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="kaltfliessAutoMach"
-                      checked
-                    />
-                    <label class="form-check-label" for="kaltfliessAutoMach">
-                      Maschine automatisch wählen?
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Manuelle Maschine-Combo -->
-              <div class="row mb-3">
-                <label for="kaltfliessMachineCombo" class="col-sm-4 col-form-label">
-                  Manuelle Maschine:
-                </label>
-                <div class="col-sm-5">
-                  <select class="form-select form-select-sm" id="kaltfliessMachineCombo" disabled>
-                    <option>200 t</option>
-                    <option>400 t</option>
-                    <option>600 t</option>
-                  </select>
-                </div>
+        <div class="tab-content p-3" id="kaltfliessTabsContent">
+          <!-- TAB 1: EINGABEN -->
+          <div
+            class="tab-pane fade show active"
+            id="kaltfliess-tabpane-input"
+            role="tabpanel"
+          >
+            <!-- Material -->
+            <div class="row mb-3">
+              <label for="kaltfliessMatSelect" class="col-sm-4 col-form-label">
+                Material
+              </label>
+              <div class="col-sm-5">
+                <select class="form-select form-select-sm" id="kaltfliessMatSelect">
+                  <option>C10 (Stahl)</option>
+                  <option>C35 (Stahl)</option>
+                  <option>Alu6060</option>
+                  <option>Edelstahl304</option>
+                </select>
               </div>
             </div>
-          </div><!-- end tab-content -->
 
-          <!-- =========== Ergebnisbereich (3 Spalten) =========== -->
-          <hr />
-          <div class="row">
-            <div class="col-sm-4" id="kaltfliessResultText" style="font-size:0.85rem;">
-              <!-- Dynamisch gefüllt -->
+            <!-- Land -->
+            <div class="row mb-3">
+              <label for="kaltfliessCountry" class="col-sm-4 col-form-label">
+                Land
+              </label>
+              <div class="col-sm-5">
+                <select class="form-select form-select-sm" id="kaltfliessCountry">
+                  <option>DE</option>
+                  <option>CN</option>
+                </select>
+              </div>
             </div>
-            <div class="col-sm-4 text-center">
-              <canvas
-                id="kaltfliessCostChart"
-                width="200"
-                height="200"
-                style="border:1px solid #ccc;"
-              ></canvas>
+
+            <!-- Bauteilgewicht (g) -->
+            <div class="row mb-3">
+              <label for="kaltfliessWeight" class="col-sm-4 col-form-label">
+                Bauteilgewicht (g)
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="kaltfliessWeight"
+                  step="0.1"
+                  value="50.0"
+                />
+              </div>
             </div>
-            <div class="col-sm-4 text-center">
-              <canvas
-                id="kaltfliessCo2Chart"
-                width="200"
-                height="200"
-                style="border:1px solid #ccc;"
-              ></canvas>
+
+            <!-- Losgröße -->
+            <div class="row mb-3">
+              <label for="kaltfliessLos" class="col-sm-4 col-form-label">
+                Losgröße
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="kaltfliessLos"
+                  step="1"
+                  value="10000"
+                />
+              </div>
             </div>
           </div>
-        </div><!-- end .modal-body -->
 
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-primary me-2"
-            onclick="calculateKaltfliess()"
+          <!-- TAB 2: ERWEITERT -->
+          <div
+            class="tab-pane fade"
+            id="kaltfliess-tabpane-adv"
+            role="tabpanel"
           >
-            Berechnen
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Schließen
-          </button>
+            <!-- Umform-Stufen -->
+            <div class="row mb-3">
+              <label for="kaltfliessStufen" class="col-sm-4 col-form-label">
+                Umform-Stufen
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="kaltfliessStufen"
+                  step="1"
+                  value="3"
+                />
+              </div>
+            </div>
+
+            <!-- Rüstzeit (min) -->
+            <div class="row mb-3">
+              <label for="kaltfliessRuestMin" class="col-sm-4 col-form-label">
+                Rüstzeit (min)
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="kaltfliessRuestMin"
+                  step="1"
+                  value="60"
+                />
+              </div>
+            </div>
+
+            <!-- Komplex => -20% Hub/min -->
+            <div class="row mb-3">
+              <div class="col-sm-4"></div>
+              <div class="col-sm-8">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="kaltfliessKomplex"
+                  />
+                  <label class="form-check-label" for="kaltfliessKomplex">
+                    Komplex => -20% Hub/min
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Automatische Maschinenwahl? -->
+            <div class="row mb-3">
+              <div class="col-sm-4"></div>
+              <div class="col-sm-8">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="kaltfliessAutoMach"
+                    checked
+                  />
+                  <label class="form-check-label" for="kaltfliessAutoMach">
+                    Maschine automatisch wählen?
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Manuelle Maschine-Combo -->
+            <div class="row mb-3">
+              <label for="kaltfliessMachineCombo" class="col-sm-4 col-form-label">
+                Manuelle Maschine:
+              </label>
+              <div class="col-sm-5">
+                <select class="form-select form-select-sm" id="kaltfliessMachineCombo" disabled>
+                  <option>200 t</option>
+                  <option>400 t</option>
+                  <option>600 t</option>
+                </select>
+              </div>
+            </div>
+          </div><!-- end tabpane-adv -->
+        </div><!-- end .tab-content -->
+
+        <!-- =========== Ergebnisbereich (3 Spalten) =========== -->
+        <hr />
+        <div class="row">
+          <div class="col-sm-4" id="kaltfliessResultText" style="font-size:0.85rem;">
+            <!-- Dynamisch gefüllt -->
+          </div>
+          <div class="col-sm-4 text-center">
+            <canvas
+              id="kaltfliessCostChart"
+              width="200"
+              height="200"
+              style="border:1px solid #ccc;"
+            ></canvas>
+          </div>
+          <div class="col-sm-4 text-center">
+            <canvas
+              id="kaltfliessCo2Chart"
+              width="200"
+              height="200"
+              style="border:1px solid #ccc;"
+            ></canvas>
+          </div>
         </div>
+      </div><!-- end .modal-body -->
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary me-2"
+          onclick="calculateKaltfliess()"
+        >
+          Berechnen
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Schließen
+        </button>
       </div>
-    </div>
-  </div>
-<!--
-  PCB-Kalkulator-Modal
-  - 2 Tabs: Eingaben (4 Felder) + Erweitert (6 Felder)
-  - Ergebnisse unten: 3 Spalten => Text / CostChart / Co2Chart
-  - "modal-xxl" + style="max-height: 85vh;" um wenig Scroll zu haben
--->
-  <!-- =================== PCB-MODAL =================== -->
-  <!-- Hier dein gepostetes PCB-Modal (1:1) -->
-  <div
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- End KaltfliessModal -->
+<div
     class="modal fade"
     id="pcbModal"
     tabindex="-1"
@@ -1910,8 +1949,8 @@
         </div>
       </div>
     </div>
-  </div>  <!-- ================= SPRITZGUSS-MODAL ================= -->
-<!-- ============= SPRITZGUSS-MODAL – FINALE VERSION ============= -->
+  </div>
+<!-- ================= SPRITZGUSS-MODAL ================= -->
 <div
   class="modal fade"
   id="modalSpritzguss"
@@ -2337,17 +2376,16 @@
               <span id="sgCyclePart" class="fw-bold">--</span>
             </div>
 
-            <!-- Falls wir die Maschine-Erklärung hier wollen: -->
+            <!-- Maschine-Erklärung -->
             <div
               id="sgMachineExplain"
               class="text-muted"
               style="font-size:0.85rem;"
             >
-              <!-- JS kann hier eine Erklärung einfügen, z. B.:
-                   "Maschine '150t Automotive' gewählt, da mind. 110 t benötigt werden." -->
+              <!-- Dynamisch vom JS ausgefüllt -->
             </div>
 
-            <!-- Ausgeblendete Felder für Durchsatz/Kosten, falls das JS noch "--" setzt -->
+            <!-- Versteckte Felder für Durchsatz / Kosten -->
             <div style="display:none;">
               Teile/h:
               <span id="sgThroughput">--</span>
@@ -2397,726 +2435,702 @@
     </div><!-- .modal-content -->
   </div><!-- .modal-dialog -->
 </div><!-- #modalSpritzguss -->
-
-<!-- END #modalSpritzguss -->
 <!-- DRUCKGUSS-MODAL (Fancy v2.0) -->
-  <div class="modal fade" id="modalDruckguss" tabindex="-1" aria-labelledby="druckgussModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dg">
-      <div class="modal-content">
-        <!-- HEADER -->
-        <div class="modal-header">
-          <h5 class="modal-title" id="druckgussModalLabel">Druckguss – Taktzeitrechner</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-
-        <!-- BODY -->
-        <div class="modal-body p-2">
-          <!-- TABS (Basis / Erweitert) -->
-          <ul class="nav nav-tabs" id="dgTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="dg-basic-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#dgTabBasic"
-                type="button"
-                role="tab"
-                aria-selected="true"
-              >
-                Basis
-              </button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="dg-adv-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#dgTabAdvanced"
-                type="button"
-                role="tab"
-                aria-selected="false"
-              >
-                Erweitert
-              </button>
-            </li>
-          </ul>
-
-          <div class="tab-content mt-2" id="dgTabContent">
-            <!-- TAB 1: BASIS -->
-            <div
-              class="tab-pane fade show active"
-              id="dgTabBasic"
-              role="tabpanel"
-            >
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Legierung</label>
-                  <select id="dgMaterialSelect" class="form-select form-select-sm">
-                    <option value="AlSi9Cu3">AlSi9Cu3</option>
-                    <option value="AZ91D">AZ91D</option>
-                    <option value="Zamak5">Zamak5</option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Teilegewicht (g)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="dgPartWeight"
-                    value="500"
-                  />
-                </div>
-              </div>
-
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">proj. Fläche (cm²)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="dgAreaCm2"
-                    value="80"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Kavitäten</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="dgCavities"
-                    value="1"
-                  />
-                </div>
-              </div>
-
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <div class="form-check mb-1">
-                    <input class="form-check-input" type="checkbox" id="dgDickwandChk" />
-                    <label class="form-check-label" for="dgDickwandChk">
-                      Dickwand? (+15% Kraft, ggf. +2x Kühlzeit)
-                    </label>
-                  </div>
-                  <div class="form-check mb-1">
-                    <input class="form-check-input" type="checkbox" id="dgEntgratenChk" />
-                    <label class="form-check-label" for="dgEntgratenChk">
-                      Entgraten (+2s)
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Overflow (%)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="dgOverflowPct"
-                    value="50"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- TAB 2: ERWEITERT -->
-            <div
-              class="tab-pane fade"
-              id="dgTabAdvanced"
-              role="tabpanel"
-            >
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <div class="form-check mb-1">
-                    <input class="form-check-input" type="checkbox" id="dgAutoMachineChk" checked />
-                    <label class="form-check-label" for="dgAutoMachineChk">
-                      Maschine automatisch wählen?
-                    </label>
-                  </div>
-                  <label class="form-label fw-bold mb-1">Manuelle Maschine</label>
-                  <select
-                    id="dgMachineSelect"
-                    class="form-select form-select-sm"
-                    disabled
-                  >
-                    <option value="200t">200 t</option>
-                    <option value="400t">400 t</option>
-                    <option value="800t">800 t</option>
-                  </select>
-
-                  <div class="form-check mb-1 mt-2">
-                    <input class="form-check-input" type="checkbox" id="dgAbgeschrChk" />
-                    <label class="form-check-label" for="dgAbgeschrChk">
-                      Abgeschrieben? (-20% Rate)
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Sicherheitsfaktor</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="dgSafetyFactor"
-                    value="2.0"
-                  />
-                  <div class="form-check mb-1 mt-2">
-                    <input class="form-check-input" type="checkbox" id="dgSqueezeChk" />
-                    <label class="form-check-label" for="dgSqueezeChk">
-                      Squeeze Casting (+20% Kraft, +3s Nachdruck)
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Wandstärke (mm)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="dgWallThickness"
-                    value="6.0"
-                  />
-                  <label class="form-label fw-bold mb-1 mt-2">Sprühzeit (s)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="dgSprayTime"
-                    value="5.0"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Nachdruck (s)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="dgHoldTime"
-                    value="5.0"
-                  />
-                  <label class="form-label fw-bold mb-1 mt-2">Automation-Level</label>
-                  <select id="dgAutomationSelect" class="form-select form-select-sm">
-                    <option value="Manuell">Manuell</option>
-                    <option value="Halbauto">Halbauto</option>
-                    <option value="Vollauto">Vollauto</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Auslastung (%)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="dgUtilPct"
-                    value="85"
-                  />
-                </div>
-              </div>
-            </div>
-          </div><!-- END TABS -->
-
-          <hr/>
-          <!-- ERGEBNISSE -->
-          <div id="dgResultsArea" class="mt-2">
-            <h6>Ergebnisse</h6>
-            <div class="row">
-              <div class="col-md-6">
-                <div>Schließkraft (t): <span id="dgClosureForce" class="fw-bold">--</span></div>
-                <div>Gewählte Maschine: <span id="dgChosenMachine" class="fw-bold">--</span></div>
-                <div>Zyklus/Schuss (s): <span id="dgCycleShot" class="fw-bold">--</span></div>
-                <div>Zyklus/Teil (s): <span id="dgCyclePart" class="fw-bold">--</span></div>
-                <div>Teile/h (real): <span id="dgThroughput" class="fw-bold">--</span></div>
-                <div>Kosten/Teil: <span id="dgCostEach" class="fw-bold">--</span></div>
-                <div>CO₂/Teil: <span id="dgCo2Each" class="fw-bold">--</span></div>
-              </div>
-              <div class="col-md-6">
-                <canvas
-                  id="dgCycleChart"
-                  width="240"
-                  height="240"
-                  style="border:1px solid #ccc;"
-                ></canvas>
-              </div>
-            </div>
-          </div>
-        </div><!-- END modal-body -->
-
-        <!-- FOOTER-BUTTONS -->
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary btn-sm"
-            data-bs-dismiss="modal"
-          >
-            Schließen
-          </button>
-          <!-- Neuer AJAX-Call-Button: -->
-          <button
-            type="button"
-            class="btn btn-primary btn-sm"
-            onclick="calculateDruckguss()"
-          >
-            Berechnen
-          </button>
-          <button
-            type="button"
-            class="btn btn-success btn-sm"
-            id="btnDruckgussUebernehmen"
-          >
-            Übernehmen
-          </button>
-        </div>
+<div class="modal fade" id="modalDruckguss" tabindex="-1" aria-labelledby="druckgussModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dg">
+    <div class="modal-content">
+      <!-- HEADER -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="druckgussModalLabel">Druckguss – Taktzeitrechner</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-    </div>
-  </div>
 
-<!-- ================================================
-     (10-15 Zeilen VORLAUF, z. B. andere Modals)
-     Beispiel:
-     <div class="modal fade" id="modalLohn"...> ... </div>
-     ================================================ -->
-
-<!-- =================== MILLING-MODAL =================== -->
-  <!-- (1:1 dein Code: IDs, Felder, etc.) -->
-  <div class="modal fade" id="modalMilling" tabindex="-1" aria-labelledby="millingModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-milling">
-      <div class="modal-content">
-        <!-- Header -->
-        <div class="modal-header">
-          <h5 class="modal-title" id="millingModalLabel">Fräs-/Zerspanungs-Rechner</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-
-        <!-- Body -->
-        <div class="modal-body p-2">
-          <!-- Tabs (Basis / Erweitert) -->
-          <ul class="nav nav-tabs" id="millTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="mill-basic-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#millTabBasic"
-                type="button"
-                role="tab"
-              >
-                Basis
-              </button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="mill-adv-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#millTabAdvanced"
-                type="button"
-                role="tab"
-              >
-                Erweitert
-              </button>
-            </li>
-          </ul>
-
-          <div class="tab-content mt-2" id="millTabContent">
-            <!-- TAB 1: BASIS -->
-            <div
-              class="tab-pane fade show active"
-              id="millTabBasic"
-              role="tabpanel"
+      <!-- BODY -->
+      <div class="modal-body p-2">
+        <!-- TABS (Basis / Erweitert) -->
+        <ul class="nav nav-tabs" id="dgTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="dg-basic-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#dgTabBasic"
+              type="button"
+              role="tab"
+              aria-selected="true"
             >
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Werkstoff</label>
-                  <select id="millMatSelect" class="form-select form-select-sm">
-                    <option value="Stahl S235">Stahl S235</option>
-                    <option value="Alu ENAW6060">Alu ENAW6060</option>
-                    <option value="GG25 Guss">GG25 Guss</option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-check mt-2">
-                    <input class="form-check-input" type="checkbox" id="millAutoMachChk" checked />
-                    <label class="form-check-label" for="millAutoMachChk">
-                      Maschine automatisch wählen?
-                    </label>
-                  </div>
-                </div>
-              </div>
+              Basis
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="dg-adv-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#dgTabAdvanced"
+              type="button"
+              role="tab"
+              aria-selected="false"
+            >
+              Erweitert
+            </button>
+          </li>
+        </ul>
 
-              <div class="row mb-2">
-                <label class="form-label fw-bold mb-1">Manuelle Maschine:</label>
-                <select
-                  id="millMachineSelect"
-                  class="form-select form-select-sm ms-2"
-                  style="max-width:60%;"
-                  disabled
-                >
-                  <option value="3-Achs Standard">3-Achs Standard</option>
-                  <option value="5-Achs Standard">5-Achs Standard</option>
-                  <option value="5-Achs HighEnd">5-Achs HighEnd</option>
+        <div class="tab-content mt-2" id="dgTabContent">
+          <!-- TAB 1: BASIS -->
+          <div
+            class="tab-pane fade show active"
+            id="dgTabBasic"
+            role="tabpanel"
+          >
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Legierung</label>
+                <select id="dgMaterialSelect" class="form-select form-select-sm">
+                  <option value="AlSi9Cu3">AlSi9Cu3</option>
+                  <option value="AZ91D">AZ91D</option>
+                  <option value="Zamak5">Zamak5</option>
                 </select>
               </div>
-
-              <div class="row">
-                <div class="col-md-4 mb-2">
-                  <label class="form-label">Länge (mm)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="millLenMm"
-                    value="100"
-                  />
-                </div>
-                <div class="col-md-4 mb-2">
-                  <label class="form-label">Breite (mm)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="millWidMm"
-                    value="80"
-                  />
-                </div>
-                <div class="col-md-4 mb-2">
-                  <label class="form-label">Höhe (mm)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="millHeiMm"
-                    value="30"
-                  />
-                </div>
-              </div>
-
-              <div class="mb-2">
-                <label class="form-label fw-bold mb-1">End-Höhe (mm)</label>
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Teilegewicht (g)</label>
                 <input
                   type="number"
                   class="form-control form-control-sm"
-                  id="millFinishHeight"
-                  value="28"
+                  id="dgPartWeight"
+                  value="500"
                 />
               </div>
             </div>
 
-            <!-- TAB 2: ERWEITERT -->
-            <div
-              class="tab-pane fade"
-              id="millTabAdvanced"
-              role="tabpanel"
-            >
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Vorschub (mm/min)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="millFeedRate"
-                    value="1500"
-                  />
-                  <label class="form-label fw-bold mt-2">Schnitttiefe pro Zug (mm)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="millCutDepth"
-                    value="3.0"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Toolchange-Zeit (s)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="millToolChange"
-                    value="20"
-                  />
-                  <label class="form-label fw-bold mt-2">Maschinen-Verfügbarkeit (%)</label>
-                  <small class="form-text text-muted">(fix im Code? Optional.)</small>
-                </div>
-              </div>
-
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Losgröße</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="millLotSize"
-                    value="100"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Rüstzeit (min)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="millRuestMin"
-                    value="30"
-                  />
-                </div>
-              </div>
-            </div>
-          </div><!-- /tab-content -->
-
-          <hr/>
-          <!-- ERGEBNISSE -->
-          <div id="millResultsArea" class="mt-2">
-            <h6>Ergebnisse</h6>
-            <div class="row">
+            <div class="row mb-2">
               <div class="col-md-6">
-                <div>Maschine: <span id="millChosenMachine" class="fw-bold">--</span></div>
-                <div>Takt/Teil (s): <span id="millCycleTime" class="fw-bold">--</span></div>
-                <div>Teile/h: <span id="millPartPerHour" class="fw-bold">--</span></div>
-                <div>Kosten/Teil: <span id="millCostEach" class="fw-bold">--</span></div>
-                <div>CO₂/Teil: <span id="millCo2Each" class="fw-bold">--</span></div>
+                <label class="form-label fw-bold mb-1">proj. Fläche (cm²)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="dgAreaCm2"
+                  value="80"
+                />
               </div>
               <div class="col-md-6">
-                <canvas
-                  id="millCostChart"
-                  width="240"
-                  height="240"
-                  style="border:1px solid #ccc;"
-                ></canvas>
-              </div>
-            </div>
-          </div><!-- /millResultsArea -->
-        </div><!-- /modal-body -->
-
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary btn-sm"
-            data-bs-dismiss="modal"
-          >
-            Schließen
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary btn-sm"
-            onclick="calculateMilling()"
-          >
-            Berechnen
-          </button>
-          <button
-            type="button"
-            class="btn btn-success btn-sm"
-            id="btnMillingUebernehmen"
-          >
-            Übernehmen
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-<!-- ================================================
-     (10-15 Zeilen NACHLAUF)
-     ================================================ -->
-
-<!-- ================================================
-     (10-15 Zeilen NACHLAUF – z. B. Footer-Script)
-     z.B.
-     <div class="modal fade" id="modalZyklusBild" ...> ... </div>
-     ================================================ -->
-<!-- =========================================================
-     (ca. 10-15 Zeilen VORLAUF - Beispiel: anderes Modal etc.)
-     <div class="modal fade" id="modalLohn" ...>...</div>
-     ...
-     ========================================================= -->
-
- <!-- ============== STAMPING-MODAL ============== -->
-  <!-- (1:1 dein Code, plus IDs) -->
-  <div class="modal fade" id="modalStamping" tabindex="-1" aria-labelledby="stampingModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-stamping">
-      <div class="modal-content">
-
-        <!-- Header -->
-        <div class="modal-header">
-          <h5 class="modal-title" id="stampingModalLabel">Stanzen/Pressen – Kalkulator</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-
-        <!-- Body -->
-        <div class="modal-body p-2">
-          <!-- Tabs (Basis / Erweitert) -->
-          <ul class="nav nav-tabs" id="stampingTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="stamping-basic-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#stampingTabBasic"
-                type="button"
-                role="tab"
-              >
-                Basis
-              </button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="stamping-adv-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#stampingTabAdvanced"
-                type="button"
-                role="tab"
-              >
-                Erweitert
-              </button>
-            </li>
-          </ul>
-
-          <div class="tab-content mt-2" id="stampingTabContent">
-
-            <!-- TAB 1: BASIS -->
-            <div
-              class="tab-pane fade show active"
-              id="stampingTabBasic"
-              role="tabpanel"
-            >
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Material</label>
-                  <select id="stMatSelect" class="form-select form-select-sm">
-                    <option value="Stahl DC01">Stahl DC01</option>
-                    <option value="Stahl DP600">Stahl DP600</option>
-                    <option value="Alu AW1050">Alu AW1050</option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Blechdicke (mm)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="stThickMm"
-                    value="1.0"
-                  />
-                </div>
-              </div>
-
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">proj. Fläche (cm²)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="stAreaCm2"
-                    value="150"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Verschnitt (%)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="stScrapPct"
-                    value="15"
-                  />
-                </div>
-              </div>
-
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Losgröße</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="stLos"
-                    value="10000"
-                  />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Rüstzeit (min)</label>
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="stRuestMin"
-                    value="60"
-                  />
-                </div>
-              </div>
-
-              <div class="mb-2 form-check">
-                <input class="form-check-input" type="checkbox" id="stDickBlechChk" />
-                <label class="form-check-label" for="stDickBlechChk">
-                  Dickes Blech => -20% Hubzahl
-                </label>
+                <label class="form-label fw-bold mb-1">Kavitäten</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="dgCavities"
+                  value="1"
+                />
               </div>
             </div>
 
-            <!-- TAB 2: ERWEITERT -->
-            <div
-              class="tab-pane fade"
-              id="stampingTabAdvanced"
-              role="tabpanel"
-            >
-              <div class="row mb-2">
-                <div class="col-md-6">
-                  <div class="form-check mb-1">
-                    <input class="form-check-input" type="checkbox" id="stAutoMachChk" checked />
-                    <label class="form-check-label" for="stAutoMachChk">
-                      Presse automatisch wählen?
-                    </label>
-                  </div>
-                  <label class="form-label fw-bold mb-1">Manuelle Presse</label>
-                  <select id="stPressSelect" class="form-select form-select-sm" disabled>
-                    <option value="100">100 t</option>
-                    <option value="200">200 t</option>
-                    <option value="400">400 t</option>
-                    <option value="600">600 t</option>
-                  </select>
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <div class="form-check mb-1">
+                  <input class="form-check-input" type="checkbox" id="dgDickwandChk" />
+                  <label class="form-check-label" for="dgDickwandChk">
+                    Dickwand? (+15% Kraft, ggf. +2x Kühlzeit)
+                  </label>
                 </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-bold mb-1">Hub/min (Berechnung intern)</label>
-                  <small class="form-text text-muted">
-                    (Kein separates Eingabefeld, wir leiten es aus machine_data ab.)
-                  </small>
+                <div class="form-check mb-1">
+                  <input class="form-check-input" type="checkbox" id="dgEntgratenChk" />
+                  <label class="form-check-label" for="dgEntgratenChk">
+                    Entgraten (+2s)
+                  </label>
                 </div>
               </div>
-            </div>
-          </div><!-- /tab-content -->
-
-          <hr/>
-          <!-- ERGEBNISSE -->
-          <div id="stResultsArea" class="mt-2">
-            <h6>Ergebnisse</h6>
-            <div class="row">
               <div class="col-md-6">
-                <div>Presskraft (t): <span id="stPressForce" class="fw-bold">--</span></div>
-                <div>Gewählte Presse: <span id="stChosenPress" class="fw-bold">--</span></div>
-                <div>Takt/Teil (s): <span id="stCycleTime" class="fw-bold">--</span></div>
-                <div>Teile/h: <span id="stPartPerHour" class="fw-bold">--</span></div>
-                <div>Kosten/Teil: <span id="stCostEach" class="fw-bold">--</span></div>
-                <div>CO₂/Teil: <span id="stCo2Each" class="fw-bold">--</span></div>
-              </div>
-              <div class="col-md-6">
-                <canvas
-                  id="stCycleChart"
-                  width="240"
-                  height="240"
-                  style="border:1px solid #ccc;"
-                ></canvas>
+                <label class="form-label fw-bold mb-1">Overflow (%)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="dgOverflowPct"
+                  value="50"
+                />
               </div>
             </div>
           </div>
 
-        </div><!-- /modal-body -->
+          <!-- TAB 2: ERWEITERT -->
+          <div
+            class="tab-pane fade"
+            id="dgTabAdvanced"
+            role="tabpanel"
+          >
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <div class="form-check mb-1">
+                  <input class="form-check-input" type="checkbox" id="dgAutoMachineChk" checked />
+                  <label class="form-check-label" for="dgAutoMachineChk">
+                    Maschine automatisch wählen?
+                  </label>
+                </div>
+                <label class="form-label fw-bold mb-1">Manuelle Maschine</label>
+                <select
+                  id="dgMachineSelect"
+                  class="form-select form-select-sm"
+                  disabled
+                >
+                  <option value="200t">200 t</option>
+                  <option value="400t">400 t</option>
+                  <option value="800t">800 t</option>
+                </select>
 
-        <!-- Footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-            Schließen
-          </button>
-          <button type="button" class="btn btn-primary btn-sm" onclick="calculateStamping()">
-            Berechnen
-          </button>
-          <button type="button" class="btn btn-success btn-sm" id="btnStampingUebernehmen">
-            Übernehmen
-          </button>
+                <div class="form-check mb-1 mt-2">
+                  <input class="form-check-input" type="checkbox" id="dgAbgeschrChk" />
+                  <label class="form-check-label" for="dgAbgeschrChk">
+                    Abgeschrieben? (-20% Rate)
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Sicherheitsfaktor</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="dgSafetyFactor"
+                  value="2.0"
+                />
+                <div class="form-check mb-1 mt-2">
+                  <input class="form-check-input" type="checkbox" id="dgSqueezeChk" />
+                  <label class="form-check-label" for="dgSqueezeChk">
+                    Squeeze Casting (+20% Kraft, +3s Nachdruck)
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Wandstärke (mm)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="dgWallThickness"
+                  value="6.0"
+                />
+                <label class="form-label fw-bold mb-1 mt-2">Sprühzeit (s)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="dgSprayTime"
+                  value="5.0"
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Nachdruck (s)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="dgHoldTime"
+                  value="5.0"
+                />
+                <label class="form-label fw-bold mb-1 mt-2">Automation-Level</label>
+                <select id="dgAutomationSelect" class="form-select form-select-sm">
+                  <option value="Manuell">Manuell</option>
+                  <option value="Halbauto">Halbauto</option>
+                  <option value="Vollauto">Vollauto</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Auslastung (%)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="dgUtilPct"
+                  value="85"
+                />
+              </div>
+            </div>
+          </div>
+        </div><!-- END TABS -->
+
+        <hr/>
+        <!-- ERGEBNISSE -->
+        <div id="dgResultsArea" class="mt-2">
+          <h6>Ergebnisse</h6>
+          <div class="row">
+            <div class="col-md-6">
+              <div>Schließkraft (t): <span id="dgClosureForce" class="fw-bold">--</span></div>
+              <div>Gewählte Maschine: <span id="dgChosenMachine" class="fw-bold">--</span></div>
+              <div>Zyklus/Schuss (s): <span id="dgCycleShot" class="fw-bold">--</span></div>
+              <div>Zyklus/Teil (s): <span id="dgCyclePart" class="fw-bold">--</span></div>
+              <div>Teile/h (real): <span id="dgThroughput" class="fw-bold">--</span></div>
+              <div>Kosten/Teil: <span id="dgCostEach" class="fw-bold">--</span></div>
+              <div>CO₂/Teil: <span id="dgCo2Each" class="fw-bold">--</span></div>
+            </div>
+            <div class="col-md-6">
+              <canvas
+                id="dgCycleChart"
+                width="240"
+                height="240"
+                style="border:1px solid #ccc;"
+              ></canvas>
+            </div>
+          </div>
         </div>
+      </div><!-- END modal-body -->
+
+      <!-- FOOTER-BUTTONS -->
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm"
+          data-bs-dismiss="modal"
+        >
+          Schließen
+        </button>
+        <!-- Neuer AJAX-Call-Button: -->
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          onclick="calculateDruckguss()"
+        >
+          Berechnen
+        </button>
+        <button
+          type="button"
+          class="btn btn-success btn-sm"
+          id="btnDruckgussUebernehmen"
+        >
+          Übernehmen
+        </button>
       </div>
     </div>
   </div>
-<!-- =========================================================
-     (ca. 10-15 Zeilen NACHLAUF - z. B. anderes Modal etc.)
-     ========================================================= -->
+</div>
 
+<!-- ================================================
+     (10-15 Zeilen VORLAUF, z. B. andere Modals)
+     ================================================ -->
+
+<!-- =================== MILLING-MODAL =================== -->
+<div class="modal fade" id="modalMilling" tabindex="-1" aria-labelledby="millingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-milling">
+    <div class="modal-content">
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="millingModalLabel">Fräs-/Zerspanungs-Rechner</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body p-2">
+        <!-- Tabs (Basis / Erweitert) -->
+        <ul class="nav nav-tabs" id="millTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="mill-basic-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#millTabBasic"
+              type="button"
+              role="tab"
+            >
+              Basis
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="mill-adv-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#millTabAdvanced"
+              type="button"
+              role="tab"
+            >
+              Erweitert
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content mt-2" id="millTabContent">
+          <!-- TAB 1: BASIS -->
+          <div
+            class="tab-pane fade show active"
+            id="millTabBasic"
+            role="tabpanel"
+          >
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Werkstoff</label>
+                <select id="millMatSelect" class="form-select form-select-sm">
+                  <option value="Stahl S235">Stahl S235</option>
+                  <option value="Alu ENAW6060">Alu ENAW6060</option>
+                  <option value="GG25 Guss">GG25 Guss</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" id="millAutoMachChk" checked />
+                  <label class="form-check-label" for="millAutoMachChk">
+                    Maschine automatisch wählen?
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <label class="form-label fw-bold mb-1">Manuelle Maschine:</label>
+              <select
+                id="millMachineSelect"
+                class="form-select form-select-sm ms-2"
+                style="max-width:60%;"
+                disabled
+              >
+                <option value="3-Achs Standard">3-Achs Standard</option>
+                <option value="5-Achs Standard">5-Achs Standard</option>
+                <option value="5-Achs HighEnd">5-Achs HighEnd</option>
+              </select>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4 mb-2">
+                <label class="form-label">Länge (mm)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="millLenMm"
+                  value="100"
+                />
+              </div>
+              <div class="col-md-4 mb-2">
+                <label class="form-label">Breite (mm)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="millWidMm"
+                  value="80"
+                />
+              </div>
+              <div class="col-md-4 mb-2">
+                <label class="form-label">Höhe (mm)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="millHeiMm"
+                  value="30"
+                />
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label fw-bold mb-1">End-Höhe (mm)</label>
+              <input
+                type="number"
+                class="form-control form-control-sm"
+                id="millFinishHeight"
+                value="28"
+              />
+            </div>
+          </div>
+
+          <!-- TAB 2: ERWEITERT -->
+          <div
+            class="tab-pane fade"
+            id="millTabAdvanced"
+            role="tabpanel"
+          >
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Vorschub (mm/min)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="millFeedRate"
+                  value="1500"
+                />
+                <label class="form-label fw-bold mt-2">Schnitttiefe pro Zug (mm)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="millCutDepth"
+                  value="3.0"
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Toolchange-Zeit (s)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="millToolChange"
+                  value="20"
+                />
+                <label class="form-label fw-bold mt-2">Maschinen-Verfügbarkeit (%)</label>
+                <small class="form-text text-muted">(fix im Code? Optional.)</small>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Losgröße</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="millLotSize"
+                  value="100"
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Rüstzeit (min)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="millRuestMin"
+                  value="30"
+                />
+              </div>
+            </div>
+          </div><!-- /millTabAdvanced -->
+        </div><!-- /tab-content -->
+
+        <hr/>
+        <!-- ERGEBNISSE -->
+        <div id="millResultsArea" class="mt-2">
+          <h6>Ergebnisse</h6>
+          <div class="row">
+            <div class="col-md-6">
+              <div>Maschine: <span id="millChosenMachine" class="fw-bold">--</span></div>
+              <div>Takt/Teil (s): <span id="millCycleTime" class="fw-bold">--</span></div>
+              <div>Teile/h: <span id="millPartPerHour" class="fw-bold">--</span></div>
+              <div>Kosten/Teil: <span id="millCostEach" class="fw-bold">--</span></div>
+              <div>CO₂/Teil: <span id="millCo2Each" class="fw-bold">--</span></div>
+            </div>
+            <div class="col-md-6">
+              <canvas
+                id="millCostChart"
+                width="240"
+                height="240"
+                style="border:1px solid #ccc;"
+              ></canvas>
+            </div>
+          </div>
+        </div><!-- /millResultsArea -->
+      </div><!-- /modal-body -->
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm"
+          data-bs-dismiss="modal"
+        >
+          Schließen
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          onclick="calculateMilling()"
+        >
+          Berechnen
+        </button>
+        <button
+          type="button"
+          class="btn btn-success btn-sm"
+          id="btnMillingUebernehmen"
+        >
+          Übernehmen
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End MILLING-MODAL -->
+        <!-- ============== STAMPING-MODAL ============== -->
+<div class="modal fade" id="modalStamping" tabindex="-1" aria-labelledby="stampingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-stamping">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="stampingModalLabel">Stanzen/Pressen – Kalkulator</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body p-2">
+        <!-- Tabs (Basis / Erweitert) -->
+        <ul class="nav nav-tabs" id="stampingTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="stamping-basic-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#stampingTabBasic"
+              type="button"
+              role="tab"
+            >
+              Basis
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="stamping-adv-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#stampingTabAdvanced"
+              type="button"
+              role="tab"
+            >
+              Erweitert
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content mt-2" id="stampingTabContent">
+
+          <!-- TAB 1: BASIS -->
+          <div
+            class="tab-pane fade show active"
+            id="stampingTabBasic"
+            role="tabpanel"
+          >
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Material</label>
+                <select id="stMatSelect" class="form-select form-select-sm">
+                  <option value="Stahl DC01">Stahl DC01</option>
+                  <option value="Stahl DP600">Stahl DP600</option>
+                  <option value="Alu AW1050">Alu AW1050</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Blechdicke (mm)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="stThickMm"
+                  value="1.0"
+                />
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">proj. Fläche (cm²)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="stAreaCm2"
+                  value="150"
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Verschnitt (%)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="stScrapPct"
+                  value="15"
+                />
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Losgröße</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="stLos"
+                  value="10000"
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Rüstzeit (min)</label>
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="stRuestMin"
+                  value="60"
+                />
+              </div>
+            </div>
+
+            <div class="mb-2 form-check">
+              <input class="form-check-input" type="checkbox" id="stDickBlechChk" />
+              <label class="form-check-label" for="stDickBlechChk">
+                Dickes Blech => -20% Hubzahl
+              </label>
+            </div>
+          </div>
+
+          <!-- TAB 2: ERWEITERT -->
+          <div
+            class="tab-pane fade"
+            id="stampingTabAdvanced"
+            role="tabpanel"
+          >
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <div class="form-check mb-1">
+                  <input class="form-check-input" type="checkbox" id="stAutoMachChk" checked />
+                  <label class="form-check-label" for="stAutoMachChk">
+                    Presse automatisch wählen?
+                  </label>
+                </div>
+                <label class="form-label fw-bold mb-1">Manuelle Presse</label>
+                <select id="stPressSelect" class="form-select form-select-sm" disabled>
+                  <option value="100">100 t</option>
+                  <option value="200">200 t</option>
+                  <option value="400">400 t</option>
+                  <option value="600">600 t</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold mb-1">Hub/min (Berechnung intern)</label>
+                <small class="form-text text-muted">
+                  (Kein separates Eingabefeld, wir leiten es aus machine_data ab.)
+                </small>
+              </div>
+            </div>
+          </div>
+        </div><!-- /tab-content -->
+
+        <hr/>
+        <!-- ERGEBNISSE -->
+        <div id="stResultsArea" class="mt-2">
+          <h6>Ergebnisse</h6>
+          <div class="row">
+            <div class="col-md-6">
+              <div>Presskraft (t): <span id="stPressForce" class="fw-bold">--</span></div>
+              <div>Gewählte Presse: <span id="stChosenPress" class="fw-bold">--</span></div>
+              <div>Takt/Teil (s): <span id="stCycleTime" class="fw-bold">--</span></div>
+              <div>Teile/h: <span id="stPartPerHour" class="fw-bold">--</span></div>
+              <div>Kosten/Teil: <span id="stCostEach" class="fw-bold">--</span></div>
+              <div>CO₂/Teil: <span id="stCo2Each" class="fw-bold">--</span></div>
+            </div>
+            <div class="col-md-6">
+              <canvas
+                id="stCycleChart"
+                width="240"
+                height="240"
+                style="border:1px solid #ccc;"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /modal-body -->
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+          Schließen
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="calculateStamping()">
+          Berechnen
+        </button>
+        <button type="button" class="btn btn-success btn-sm" id="btnStampingUebernehmen">
+          Übernehmen
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- MATERIAL MODAL -->
 <div
   class="modal fade"
@@ -3134,28 +3148,28 @@
       <div class="modal-body">
         <!-- Filterfeld -->
         <div class="mb-3 d-flex gap-2">
-  <div class="flex-grow-1">
-    <label for="matFilterInput" class="form-label"
-      >Filter (Materialname oder Verfahren)</label
-    >
-    <input
-      type="text"
-      class="form-control"
-      id="matFilterInput"
-      placeholder="z.B. 'AlSi9' oder 'Guss'"
-      oninput="filterMaterialList()"
-    />
-  </div>
-  <div class="align-self-end">
-    <button
-      class="btn btn-sm btn-outline-secondary"
-      onclick="clearMaterialFilter()"
-      style="margin-top: 1.8rem;" <!-- optional zum Ausrichten -->
-    >
-      Filter zurücksetzen
-    </button>
-  </div>
-</div>
+          <div class="flex-grow-1">
+            <label for="matFilterInput" class="form-label"
+              >Filter (Materialname oder Verfahren)</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="matFilterInput"
+              placeholder="z.B. 'AlSi9' oder 'Guss'"
+              oninput="filterMaterialList()"
+            />
+          </div>
+          <div class="align-self-end">
+            <button
+              class="btn btn-sm btn-outline-secondary"
+              onclick="clearMaterialFilter()"
+              style="margin-top: 1.8rem;"
+            >
+              Filter zurücksetzen
+            </button>
+          </div>
+        </div>
 
         <table class="table table-sm" id="tblMaterialList">
           <thead>
@@ -3188,80 +3202,80 @@
 </div>
 
 
-  <!-- ============= ZYKLUSZEIT-MODAL (mit 4 Verfahren) ============= -->
-  <div
-    class="modal fade"
-    id="modalZyklusBild"
-    tabindex="-1"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Zykluszeit – Auswahl</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <p>Wähle deine Fertigungstechnik:</p>
-          <div class="d-flex flex-wrap justify-content-between">
-            <!-- Spritzguss -->
-            <div class="text-center m-2">
-              <img
-                src="/static/img/spritzguss.jpeg"
-                alt="Spritzguss"
-                class="img-choice"
-                onclick="openSpritzgussModal()"
-              />
-              <p class="mt-2 mb-0">Spritzguss</p>
-            </div>
-            <!-- Druckguss -->
-            <div class="text-center m-2">
-              <img
-                src="/static/img/druckguss.jpeg"
-                alt="Druckguss"
-                class="img-choice"
-                onclick="openDruckgussModalSafe()"
-              />
-              <p class="mt-2 mb-0">Druckguss</p>
-            </div>
-            <!-- Zerspanung -->
-            <div class="text-center m-2">
-              <img
-                src="/static/img/zerspanung.jpeg"
-                alt="Zerspanung"
-                class="img-choice"
-                onclick="openMillingModalSafe()"
-              />
-              <p class="mt-2 mb-0">Zerspanung</p>
-            </div>
-            <!-- Stanzen -->
-            <div class="text-center m-2">
-              <img
-                src="/static/img/stanzen.jpeg"
-                alt="Stanzen"
-                class="img-choice"
-                onclick="openStampingModalSafe()"
-              />
-              <p class="mt-2 mb-0">Stanzen</p>
-            </div>
+<!-- ============= ZYKLUSZEIT-MODAL (mit 4 Verfahren) ============= -->
+<div
+  class="modal fade"
+  id="modalZyklusBild"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Zykluszeit – Auswahl</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>Wähle deine Fertigungstechnik:</p>
+        <div class="d-flex flex-wrap justify-content-between">
+          <!-- Spritzguss -->
+          <div class="text-center m-2">
+            <img
+              src="/static/img/spritzguss.jpeg"
+              alt="Spritzguss"
+              class="img-choice"
+              onclick="openSpritzgussModal()"
+            />
+            <p class="mt-2 mb-0">Spritzguss</p>
+          </div>
+          <!-- Druckguss -->
+          <div class="text-center m-2">
+            <img
+              src="/static/img/druckguss.jpeg"
+              alt="Druckguss"
+              class="img-choice"
+              onclick="openDruckgussModalSafe()"
+            />
+            <p class="mt-2 mb-0">Druckguss</p>
+          </div>
+          <!-- Zerspanung -->
+          <div class="text-center m-2">
+            <img
+              src="/static/img/zerspanung.jpeg"
+              alt="Zerspanung"
+              class="img-choice"
+              onclick="openMillingModalSafe()"
+            />
+            <p class="mt-2 mb-0">Zerspanung</p>
+          </div>
+          <!-- Stanzen -->
+          <div class="text-center m-2">
+            <img
+              src="/static/img/stanzen.jpeg"
+              alt="Stanzen"
+              class="img-choice"
+              onclick="openStampingModalSafe()"
+            />
+            <p class="mt-2 mb-0">Stanzen</p>
           </div>
         </div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Schließen
-          </button>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Schließen
+        </button>
       </div>
     </div>
   </div>
+</div>
 
 
 <!-- Taktzeit-Modal -->
@@ -3302,26 +3316,6 @@
     </div>
   </div>
 </div>
-
-<!--
-  Maschinen-Modal "modalMachine" – erweiterte Version
-  Alle Felder mit passendem Label:
-    - Kaufpreis
-    - Nutzungsdauer (Jahre)
-    - Jahresauslastung (h/Jahr)
-    - Anschlusswert (kW)
-    - Realer Stromverbrauch (%)
-    - Stromkosten (€/kWh)
-    - Flächenkosten (€/m²/Monat)
-    - Instandhaltung (% Kaufpreis)
-    - Betriebskosten (% Kaufpreis)
-    - Anlagenverfügbarkeit (%)
-    - Maschinenkosten (Ergebnis)
-  + je Feld "€ pro Stunde" – Display oder Input
-  + Button "Aus Maschinenliste"
-  + Buttons "Berechnen", "Übernehmen", "Schließen"
--->
-
 <!-- BEGIN: Maschinenstundensatz-Modal mit Tausender-Punkten & Dedicated-Prozent -->
 <div class="modal fade" id="modalMachine" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg"> <!-- Größere Breite -->
@@ -3631,55 +3625,72 @@
       </div> <!-- Ende modal-body -->
 
       <div class="modal-footer" style="display: none;">
-  <div class="me-3">
-    Jahreskosten:
-    <input
-      type="text"
-      class="form-control d-inline-block"
-      id="machSumYear"
-      style="width:140px;"
-      value="0"
-      readonly
-    />
-  </div>
-</div>
+        <div class="me-3">
+          Jahreskosten:
+          <input
+            type="text"
+            class="form-control d-inline-block"
+            id="machSumYear"
+            style="width:140px;"
+            value="0"
+            readonly
+          />
+        </div>
+      </div>
 
 
-        <!-- Button: Rechnen -->
-        <button
-          type="button"
-          class="btn btn-primary"
-          onclick="calcExtendedMachineRate()"
-        >
-          Berechnen
-        </button>
-        <!-- Button: Übernehmen -->
-        <button
-          type="button"
-          class="btn btn-success"
-          onclick="acceptMachine()"
-        >
-          Übernehmen
-        </button>
-        <!-- Button: Schließen -->
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Schließen
-        </button>
+      <!-- Button: Rechnen -->
+      <button
+        type="button"
+        class="btn btn-primary"
+        onclick="calcExtendedMachineRate()"
+      >
+        Berechnen
+      </button>
+      <!-- Button: Übernehmen -->
+      <button
+        type="button"
+        class="btn btn-success"
+        onclick="acceptMachine()"
+      >
+        Übernehmen
+      </button>
+      <!-- Button: Schließen -->
+      <button
+        type="button"
+        class="btn btn-secondary"
+        data-bs-dismiss="modal"
+      >
+        Schließen
+      </button>
 
-        <span class="ms-3">
-          Maschinenkosten (€/h):
-          <b id="machResult">--</b>
-        </span>
-      </div> <!-- Ende modal-footer -->
+      <span class="ms-3">
+        Maschinenkosten (€/h):
+        <b id="machResult">--</b>
+      </span>
+    </div> <!-- Ende modal-footer -->
 
-    </div>
   </div>
 </div>
 <!-- END: Maschinenstundensatz-Modal --><!-- END: Maschinenstundensatz-Modal -->
+<!--
+  Maschinen-Modal "modalMachine" – erweiterte Version
+  Alle Felder mit passendem Label:
+    - Kaufpreis
+    - Nutzungsdauer (Jahre)
+    - Jahresauslastung (h/Jahr)
+    - Anschlusswert (kW)
+    - Realer Stromverbrauch (%)
+    - Stromkosten (€/kWh)
+    - Flächenkosten (€/m²/Monat)
+    - Instandhaltung (% Kaufpreis)
+    - Betriebskosten (% Kaufpreis)
+    - Anlagenverfügbarkeit (%)
+    - Maschinenkosten (Ergebnis)
+  + je Feld "€ pro Stunde" – Display oder Input
+  + Button "Aus Maschinenliste"
+  + Buttons "Berechnen", "Übernehmen", "Schließen"
+--><!-- END #modalSpritzguss -->
 <!-- LOHN-LISTE MODAL -->
 <div
   class="modal fade"
@@ -3836,6 +3847,10 @@
 </div><!-- <input id="txtCosts100" type="text" class="form-control" /> -->
 <!--<input id="txtCo2Per100" type="text" class="form-control" /> -->
 </div>
+      <!-- ================== BEGIN ColorAdmin core JS ================== -->
+<script src="/static/coloradmin/js/vendor.min.js"></script>
+<script src="/static/coloradmin/js/app.min.js"></script>
+<!-- ================== END ColorAdmin core JS ================== -->
 <!-- Bootstrap-Bundle (JS + Popper) -->
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
@@ -3907,5 +3922,3 @@ window.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
-
-
