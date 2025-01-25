@@ -3308,363 +3308,362 @@
     </div>
   </div>
 </div>
-<!-- BEGIN: Maschinenstundensatz-Modal mit Tausender-Punkten & Dedicated-Prozent -->
+<!-- =================== NEUES MASCHINENSTUNDENSATZ-MODAL =================== -->
 <div class="modal fade" id="modalMachine" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg"> <!-- Größere Breite -->
-    <div class="modal-content">
-
-      <div class="modal-header">
+  <div class="modal-dialog modal-xl" style="max-width:1000px;"> <!-- Extra-breit -->
+    <div class="modal-content" style="font-size: 0.9rem;">
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title">Maschinenstundensatz – Erweitert</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <div class="modal-body">
-        <!-- Kaufpreis + Button "Aus Liste..." + Abschreibung pro Stunde -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Kaufpreis (€)</label>
-          <div class="col-sm-4 d-flex">
-            <input
-              type="number"
-              class="form-control"
-              id="machKaufpreis"
-              value="100000"
-            />
-            <button
-              class="btn btn-sm btn-outline-info ms-2"
-              onclick="openMachineListModal()"
-            >
-              Aus Liste...
+      <div class="modal-body p-2">
+        <!-- TABS: "Abschreibung/Kapital" & "Energie/Betrieb" -->
+        <ul class="nav nav-tabs nav-tabs-v2" role="tablist" style="margin-bottom: 0.5rem;">
+          <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#machTabCapital" type="button">
+              Abschreibung & Kapital
             </button>
-          </div>
-          <div class="col-sm-3">
-            <!-- Abschreibung pro Stunde -->
-            <input
-              type="text"
-              class="form-control"
-              id="machKaufpreisHr"
-              placeholder="€/h"
-              readonly
-            />
-          </div>
-        </div>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#machTabEnergy" type="button">
+              Energie & Betrieb
+            </button>
+          </li>
+        </ul>
 
-        <!-- Installationskosten -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Installationskosten (€)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machInstCost"
-              value="0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <!-- Leer -->
-          </div>
-        </div>
+        <div class="tab-content p-2">
+          <!-- TAB 1: Abschreibung & Kapital -->
+          <div class="tab-pane fade show active" id="machTabCapital">
+            <div class="row mb-2">
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Kaufpreis (€)</label>
+                <div class="col-7 d-flex gap-2">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machKaufpreis"
+                    value="100000"
+                  />
+                  <button class="btn btn-sm btn-outline-theme" onclick="openMachineListModal()">
+                    Aus Liste...
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Abschr. pro h</label>
+                <div class="col-7">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="machKaufpreisHr"
+                    placeholder="€/h"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
 
-        <!-- Zinssatz + Zins pro Stunde -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Zinssatz (%)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machZinssatz"
-              step="0.1"
-              value="3.0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machZinsHr"
-              placeholder="€/h"
-              readonly
-            />
-          </div>
-        </div>
+            <div class="row mb-2">
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Installationsk. (€)</label>
+                <div class="col-7">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machInstCost"
+                    value="0"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Zinssatz (%)</label>
+                <div class="col-7 d-flex gap-2">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machZinssatz"
+                    step="0.1"
+                    value="3.0"
+                  />
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="machZinsHr"
+                    placeholder="€/h"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
 
-        <!-- Nutzungsdauer -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Nutzungsdauer (Jahre)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machNutzdauer"
-              value="5"
-            />
-          </div>
-          <div class="col-sm-3">
-            <!-- Leer -->
-          </div>
-        </div>
+            <div class="row mb-2">
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Nutzungsdauer (J.)</label>
+                <div class="col-7">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machNutzdauer"
+                    value="5"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Dedicated?</label>
+                <div class="col-7 d-flex align-items-center gap-2">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    style="transform: scale(1.2);"
+                    id="chkDedicated"
+                    onchange="toggleDedicatedPct()"
+                  />
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machDedicatedPct"
+                    value="100"
+                    step="1"
+                    min="1"
+                    max="100"
+                    style="width: 60px;"
+                    disabled
+                  />
+                  <span>%</span>
+                  <!-- Mini Chat Icon (als Dummy) -->
+                  <div>
+                    <a href="javascript:void(0)" onclick="openMiniChatDedicated()" class="text-theme" style="font-size:1.2rem;">
+                      <i class="fa fa-question-circle"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        <!-- Dedicated Machine (Checkbox & Prozentsatz) -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Dedicated?</label>
-          <div class="col-sm-4 d-flex align-items-center">
-            <input
-              type="checkbox"
-              class="form-check-input me-2"
-              id="chkDedicated"
-              onchange="toggleDedicatedPct()"
-            />
-            <input
-              type="number"
-              class="form-control"
-              id="machDedicatedPct"
-              value="100"
-              step="1"
-              min="1"
-              max="100"
-              style="width:80px;"
-              disabled
-            />
-            <span class="ms-2">%</span>
-          </div>
-          <div class="col-sm-3">
-            <!-- Leer -->
-          </div>
-        </div>
+            <!-- Minimales Chat-Fenster-Dummy (wird per JS ein-/ausgeblendet) -->
+            <div id="miniChatDedicated" class="border p-2 bg-light" style="display:none; margin-bottom: 0.5rem;">
+              <strong>Dedicated? Was bedeutet das?</strong>
+              <p class="mb-1" style="font-size:0.85rem;">
+                Das bedeutet, dass die Maschine nur für dieses Projekt genutzt wird.
+                Bei 100% Dedicated entfallen die Maschinenkosten komplett auf dieses Bauteil.
+              </p>
+              <button class="btn btn-sm btn-outline-secondary" onclick="closeMiniChatDedicated()">
+                Verstanden
+              </button>
+            </div>
 
-        <!-- Jahresauslastung + Verfügbarkeit -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Jahresauslastung (h/Jahr)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machAuslast"
-              value="6000"
-            />
+            <div class="row mb-2">
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Jahresauslastung (h)</label>
+                <div class="col-7">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machAuslast"
+                    value="6000"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Verfügbarkeit (%)</label>
+                <div class="col-7 d-flex gap-2">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machAvailPct"
+                    step="0.1"
+                    value="85.0"
+                  />
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="machAvailHr"
+                    placeholder="eff. h"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="col-sm-3">
-            <!-- Leer -->
-          </div>
-        </div>
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Anlagenverfügbarkeit (%)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machAvailPct"
-              step="0.1"
-              value="85.0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machAvailHr"
-              placeholder="eff. h"
-              readonly
-            />
-          </div>
-        </div>
+          <!-- END TAB1 -->
 
-        <!-- Anschlusswert (kW) + Stromverbrauch (%) + Stromkosten/kWh -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Anschlusswert (kW)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machKW"
-              value="100"
-            />
-          </div>
-          <div class="col-sm-3">
-            <!-- Leer -->
-          </div>
-        </div>
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Realer Stromverbrauch (%)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machStromPct"
-              value="80.0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <!-- Leer -->
-          </div>
-        </div>
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Stromkosten (€/kWh)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machStromCost"
-              step="0.01"
-              value="0.20"
-            />
-          </div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machStromCostHr"
-              placeholder="€/h"
-              readonly
-            />
-          </div>
-        </div>
+          <!-- TAB 2: Energie & Betrieb -->
+          <div class="tab-pane fade" id="machTabEnergy">
+            <div class="row mb-2">
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Anschlusswert (kW)</label>
+                <div class="col-7">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machKW"
+                    value="100"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Stromverbr. (%)</label>
+                <div class="col-7">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machStromPct"
+                    value="80.0"
+                  />
+                </div>
+              </div>
+            </div>
 
-        <!-- Flächenbedarf + Flächenkosten -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Flächenbedarf (m²)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machFlaecheBedarf"
-              value="20"
-            />
-          </div>
-          <div class="col-sm-3">
-            <!-- Leer -->
-          </div>
-        </div>
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Flächenkosten (€/m²/Monat)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machFlaechenkost"
-              step="0.01"
-              value="7.0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machFlaechenkostHr"
-              placeholder="€/h"
-              readonly
-            />
-          </div>
-        </div>
+            <div class="row mb-2">
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Stromkosten (€/kWh)</label>
+                <div class="col-7 d-flex gap-2">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machStromCost"
+                    step="0.01"
+                    value="0.20"
+                  />
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="machStromCostHr"
+                    placeholder="€/h"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">CO₂ (kg/h)</label>
+                <div class="col-7">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="machCo2Hr"
+                    placeholder="kg/h"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
 
-        <!-- Instandhaltung + Betriebskosten -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Instandhaltung (% v. KP)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machInstandPct"
-              step="0.1"
-              value="3.0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machInstandHr"
-              placeholder="€/h"
-              readonly
-            />
-          </div>
-        </div>
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">Betriebskosten (% v. KP)</label>
-          <div class="col-sm-4">
-            <input
-              type="number"
-              class="form-control"
-              id="machBetriebPct"
-              step="0.1"
-              value="2.0"
-            />
-          </div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machBetriebHr"
-              placeholder="€/h"
-              readonly
-            />
-          </div>
-        </div>
+            <div class="row mb-2">
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Flächenbedarf (m²)</label>
+                <div class="col-7">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machFlaecheBedarf"
+                    value="20"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Flächenkosten (€/m²)</label>
+                <div class="col-7 d-flex gap-2">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machFlaechenkost"
+                    step="0.01"
+                    value="7.0"
+                  />
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="machFlaechenkostHr"
+                    placeholder="€/h"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
 
-        <!-- CO₂ -->
-        <div class="row mb-2">
-          <label class="col-sm-5 col-form-label">CO₂ (kg/h)</label>
-          <div class="col-sm-4"></div>
-          <div class="col-sm-3">
-            <input
-              type="text"
-              class="form-control"
-              id="machCo2Hr"
-              placeholder="kg/h"
-              readonly
-            />
+            <div class="row mb-2">
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Instandhaltung (% v. KP)</label>
+                <div class="col-7 d-flex gap-2">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machInstandPct"
+                    step="0.1"
+                    value="3.0"
+                  />
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="machInstandHr"
+                    placeholder="€/h"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="col-md-6 d-flex align-items-center">
+                <label class="col-form-label col-5">Betriebskosten (% v. KP)</label>
+                <div class="col-7 d-flex gap-2">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="machBetriebPct"
+                    step="0.1"
+                    value="2.0"
+                  />
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="machBetriebHr"
+                    placeholder="€/h"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div> <!-- Ende modal-body -->
+          <!-- END TAB2 -->
+        </div> <!-- /.tab-content -->
 
-      <div class="modal-footer" style="display: none;">
-        <div class="me-3">
-          Jahreskosten:
-          <input
-            type="text"
-            class="form-control d-inline-block"
-            id="machSumYear"
-            style="width:140px;"
-            value="0"
-            readonly
-          />
+        <!-- Jahreskosten / Summen, ausgeblendet? -->
+        <!-- Falls du das brauchst, könntest du es in ein Accordion packen. -->
+
+      </div> <!-- END modal-body -->
+
+      <!-- FOOTER-ROW: Buttons + Ergebnis -->
+      <div class="modal-footer d-flex justify-content-between align-items-center" style="padding:0.5rem 1rem;">
+        <div>
+          <!-- 3 Buttons in einer Zeile -->
+          <button type="button" class="btn btn-sm btn-theme me-2" onclick="calcExtendedMachineRate()">
+            <i class="fa fa-calculator me-1"></i> Berechnen
+          </button>
+          <button type="button" class="btn btn-sm btn-success me-2" onclick="acceptMachine()">
+            <i class="fa fa-check me-1"></i> Übernehmen
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+        </div>
+        <div>
+          <!-- Maschinenkosten & CO2 -->
+          <span style="font-weight:600;">Maschinenkosten (€/h):</span>
+          <span id="machResult" class="text-theme fw-bold ms-1 me-3">--</span>
         </div>
       </div>
+    </div> <!-- /.modal-content -->
+  </div> <!-- /.modal-dialog -->
+</div> <!-- #modalMachine -->
 
-
-      <!-- Button: Rechnen -->
-      <button
-        type="button"
-        class="btn btn-primary"
-        onclick="calcExtendedMachineRate()"
-      >
-        Berechnen
-      </button>
-      <!-- Button: Übernehmen -->
-      <button
-        type="button"
-        class="btn btn-success"
-        onclick="acceptMachine()"
-      >
-        Übernehmen
-      </button>
-      <!-- Button: Schließen -->
-      <button
-        type="button"
-        class="btn btn-secondary"
-        data-bs-dismiss="modal"
-      >
-        Schließen
-      </button>
-
-      <span class="ms-3">
-        Maschinenkosten (€/h):
-        <b id="machResult">--</b>
-      </span>
-    </div> <!-- Ende modal-footer -->
-
-  </div>
-</div>
-<!-- END: Maschinenstundensatz-Modal --><!-- END: Maschinenstundensatz-Modal -->
+<script>
+// Mini-Chat-Widget-Dummy
+function openMiniChatDedicated(){
+  document.getElementById('miniChatDedicated').style.display = 'block';
+}
+function closeMiniChatDedicated(){
+  document.getElementById('miniChatDedicated').style.display = 'none';
+}
+</script><!-- END: Maschinenstundensatz-Modal --><!-- END: Maschinenstundensatz-Modal -->
 <!--
   Maschinen-Modal "modalMachine" – erweiterte Version
   Alle Felder mit passendem Label:
