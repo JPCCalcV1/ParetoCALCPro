@@ -26,6 +26,8 @@ from routes.routes_calc_takt import takt_calc_bp
 from routes.routes_landing import landing_bp
 from routes.routes_account import account_bp
 from routes.legal import legal_bp
+from routes.exports import exports_bp
+
 
 def create_app():
     app = Flask(__name__)
@@ -67,6 +69,7 @@ def create_app():
     app.register_blueprint(takt_calc_bp, url_prefix="/calc/takt")
     app.register_blueprint(account_bp, url_prefix="/account")
     app.register_blueprint(legal_bp, url_prefix="")
+    app.register_blueprint(exports_bp, url_prefix="/exports")
 
     # OPTIONAL: Falls du die alte /upgrade-Seite gar nicht mehr willst,
     # kannst du sie einfach weglassen oder eine "Redirect-Route" bauen:

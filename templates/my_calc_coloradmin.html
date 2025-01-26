@@ -775,6 +775,8 @@
       <button class="btn btn-primary mt-3" onclick="addResultToBaugruppeFromTab4()">
         In Baugruppe übernehmen
       </button>
+      <button onclick="exportComparisonExcel()">Excel Export</button>
+      <button onclick="exportBaugruppenPdf()">PDF Export</button>
     </div>
 
     <!-- ====================
@@ -3890,7 +3892,7 @@
   <button id="cookieAcceptAll" class="btn btn-sm btn-success" style="margin: 5px;">Alle akzeptieren</button>
   <button id="cookieDeclineAll" class="btn btn-sm btn-light" style="margin: 5px;">Nur essenzielle</button>
 </div>
-
+</div>
 <script>
 window.addEventListener("DOMContentLoaded", () => {
   checkLicense(); // oder checkUserLogin();

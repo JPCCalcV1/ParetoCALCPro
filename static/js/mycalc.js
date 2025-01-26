@@ -1,7 +1,7 @@
 // Globale Faktoren:
 let material_factor = 1,
-    labor_factor    = 1,
-    co2_factor      = 1;
+    labor_factor = 1,
+    co2_factor = 1;
 
 // Globale Variablen (Charts + Faktoren)
 let costChart = null, co2Chart = null;
@@ -9,7 +9,7 @@ let chartInitialized = false;
 
 
 window.materialData = [];
-let currentTaktRow  = null;
+let currentTaktRow = null;
 let currentMachineRow = null;
 let currentLohnRow = null;
 /**
@@ -32,6 +32,7 @@ function parseFloatAllowZero(inputStr, fallbackVal) {
   console.log("DEBUG: Exiting parseFloatAllowZero() - returning val =", val);
   return val;
 }
+
 // 1. Opening modals
 function openParametrikModal() {
   console.log("DEBUG: Entering openParametrikModal()");
@@ -46,201 +47,202 @@ function openTaktzeitModal() {
   myModal.show();
   console.log("DEBUG: Exiting openTaktzeitModal()");
 }
-/**
-// 2. AJAX to Parametrik
-function calcParamFeinguss() {
-  console.log("DEBUG: Entering calcParamFeinguss()");
-  const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-  console.log("DEBUG: fetch(/mycalc/feinguss) - about to POST {someParam:123}");
-  fetch('/mycalc/feinguss', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken
-    },
-    body: JSON.stringify({ someParam: 123 })
-  })
-  .then(res => {
-    console.log("DEBUG: fetch(/mycalc/feinguss) response status =", res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log("DEBUG: fetch(/mycalc/feinguss) response data =", data);
-    document.getElementById('paramResult').innerText = data.result;
-    console.log("DEBUG: Exiting calcParamFeinguss() after fetch result");
-  });
-}
-
-function calcParamKaltflies() {
-  console.log("DEBUG: Entering calcParamKaltflies()");
-  const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-  console.log("DEBUG: fetch(/mycalc/kaltfliess) - about to POST {someParam:456}");
-  fetch('/mycalc/kaltfliess', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken
-    },
-    body: JSON.stringify({ someParam: 456 }) // Beispiel-Parameter
-  })
-  .then(res => {
-    console.log("DEBUG: fetch(/mycalc/kaltfliess) response status =", res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log("DEBUG: fetch(/mycalc/kaltfliess) response data =", data);
-    document.getElementById('paramResult').innerText = data.result;
-    console.log("DEBUG: Exiting calcParamKaltflies() after fetch result");
-  });
-}
-
-function calcParamSchmieden() {
-  console.log("DEBUG: Entering calcParamSchmieden()");
-  const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-  console.log("DEBUG: fetch(/mycalc/schmieden) - about to POST {someParam:789}");
-  fetch('/mycalc/schmieden', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken
-    },
-    body: JSON.stringify({ someParam: 789 }) // Beispiel-Parameter
-  })
-  .then(res => {
-    console.log("DEBUG: fetch(/mycalc/schmieden) response status =", res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log("DEBUG: fetch(/mycalc/schmieden) response data =", data);
-    document.getElementById('paramResult').innerText = data.result;
-    console.log("DEBUG: Exiting calcParamSchmieden() after fetch result");
-  });
-}
-
-function calcParamPcb() {
-  console.log("DEBUG: Entering calcParamPcb()");
-  const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-  console.log("DEBUG: fetch(/mycalc/pcb) - about to POST {someParam:999}");
-  fetch('/mycalc/pcb', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken
-    },
-    body: JSON.stringify({ someParam: 999 }) // Beispiel-Parameter
-  })
-  .then(res => {
-    console.log("DEBUG: fetch(/mycalc/pcb) response status =", res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log("DEBUG: fetch(/mycalc/pcb) response data =", data);
-    document.getElementById('paramResult').innerText = data.result;
-    console.log("DEBUG: Exiting calcParamPcb() after fetch result");
-  });
-}
-
-// 3. Taktzeit
-function calcTaktSpritzguss() {
-  console.log("DEBUG: Entering calcTaktSpritzguss()");
-  const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-  console.log("DEBUG: fetch(/mycalc/spritzguss) - about to POST {paramA:'example'}");
-  fetch('/mycalc/spritzguss', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken
-    },
-    body: JSON.stringify({ paramA: 'example' })
-  })
-  .then(res => {
-    console.log("DEBUG: fetch(/mycalc/spritzguss) response status =", res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log("Spritzguss:", data.result);
-    console.log("DEBUG: Exiting calcTaktSpritzguss() after fetch result");
-  });
-}
 
 /**
+ // 2. AJAX to Parametrik
+ function calcParamFeinguss() {
+ console.log("DEBUG: Entering calcParamFeinguss()");
+ const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+ console.log("DEBUG: fetch(/mycalc/feinguss) - about to POST {someParam:123}");
+ fetch('/mycalc/feinguss', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'X-CSRFToken': csrftoken
+ },
+ body: JSON.stringify({ someParam: 123 })
+ })
+ .then(res => {
+ console.log("DEBUG: fetch(/mycalc/feinguss) response status =", res.status);
+ return res.json();
+ })
+ .then(data => {
+ console.log("DEBUG: fetch(/mycalc/feinguss) response data =", data);
+ document.getElementById('paramResult').innerText = data.result;
+ console.log("DEBUG: Exiting calcParamFeinguss() after fetch result");
+ });
+ }
+
+ function calcParamKaltflies() {
+ console.log("DEBUG: Entering calcParamKaltflies()");
+ const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+ console.log("DEBUG: fetch(/mycalc/kaltfliess) - about to POST {someParam:456}");
+ fetch('/mycalc/kaltfliess', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'X-CSRFToken': csrftoken
+ },
+ body: JSON.stringify({ someParam: 456 }) // Beispiel-Parameter
+ })
+ .then(res => {
+ console.log("DEBUG: fetch(/mycalc/kaltfliess) response status =", res.status);
+ return res.json();
+ })
+ .then(data => {
+ console.log("DEBUG: fetch(/mycalc/kaltfliess) response data =", data);
+ document.getElementById('paramResult').innerText = data.result;
+ console.log("DEBUG: Exiting calcParamKaltflies() after fetch result");
+ });
+ }
+
+ function calcParamSchmieden() {
+ console.log("DEBUG: Entering calcParamSchmieden()");
+ const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+ console.log("DEBUG: fetch(/mycalc/schmieden) - about to POST {someParam:789}");
+ fetch('/mycalc/schmieden', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'X-CSRFToken': csrftoken
+ },
+ body: JSON.stringify({ someParam: 789 }) // Beispiel-Parameter
+ })
+ .then(res => {
+ console.log("DEBUG: fetch(/mycalc/schmieden) response status =", res.status);
+ return res.json();
+ })
+ .then(data => {
+ console.log("DEBUG: fetch(/mycalc/schmieden) response data =", data);
+ document.getElementById('paramResult').innerText = data.result;
+ console.log("DEBUG: Exiting calcParamSchmieden() after fetch result");
+ });
+ }
+
+ function calcParamPcb() {
+ console.log("DEBUG: Entering calcParamPcb()");
+ const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+ console.log("DEBUG: fetch(/mycalc/pcb) - about to POST {someParam:999}");
+ fetch('/mycalc/pcb', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'X-CSRFToken': csrftoken
+ },
+ body: JSON.stringify({ someParam: 999 }) // Beispiel-Parameter
+ })
+ .then(res => {
+ console.log("DEBUG: fetch(/mycalc/pcb) response status =", res.status);
+ return res.json();
+ })
+ .then(data => {
+ console.log("DEBUG: fetch(/mycalc/pcb) response data =", data);
+ document.getElementById('paramResult').innerText = data.result;
+ console.log("DEBUG: Exiting calcParamPcb() after fetch result");
+ });
+ }
+
+ // 3. Taktzeit
+ function calcTaktSpritzguss() {
+ console.log("DEBUG: Entering calcTaktSpritzguss()");
+ const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+ console.log("DEBUG: fetch(/mycalc/spritzguss) - about to POST {paramA:'example'}");
+ fetch('/mycalc/spritzguss', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'X-CSRFToken': csrftoken
+ },
+ body: JSON.stringify({ paramA: 'example' })
+ })
+ .then(res => {
+ console.log("DEBUG: fetch(/mycalc/spritzguss) response status =", res.status);
+ return res.json();
+ })
+ .then(data => {
+ console.log("Spritzguss:", data.result);
+ console.log("DEBUG: Exiting calcTaktSpritzguss() after fetch result");
+ });
+ }
+
+ /**
  * Taktzeit: Druckguss
  * Alte Route: '/calc/takt/druckguss'
  * Neue Route: '/takt_calc/druckguss'
 
-function calcTaktDruckguss() {
-  console.log("DEBUG: Entering calcTaktDruckguss()");
-  const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
-  console.log("DEBUG: fetch(/mycalc/druckguss) - about to POST {paramA:'example'}");
-  fetch('/mycalc/druckguss', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken
-    },
-    body: JSON.stringify({ paramA: 'example' })
-  })
-  .then(res => {
-    console.log("DEBUG: fetch(/mycalc/druckguss) response status =", res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log("Druckguss:", data.result);
-    console.log("DEBUG: Exiting calcTaktDruckguss() after fetch result");
-  })
-  .catch(err => console.error("Druckguss error:", err));
-}
+ function calcTaktDruckguss() {
+ console.log("DEBUG: Entering calcTaktDruckguss()");
+ const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
+ console.log("DEBUG: fetch(/mycalc/druckguss) - about to POST {paramA:'example'}");
+ fetch('/mycalc/druckguss', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'X-CSRFToken': csrftoken
+ },
+ body: JSON.stringify({ paramA: 'example' })
+ })
+ .then(res => {
+ console.log("DEBUG: fetch(/mycalc/druckguss) response status =", res.status);
+ return res.json();
+ })
+ .then(data => {
+ console.log("Druckguss:", data.result);
+ console.log("DEBUG: Exiting calcTaktDruckguss() after fetch result");
+ })
+ .catch(err => console.error("Druckguss error:", err));
+ }
 
 
 
-function calcTaktZerspanung() {
-  console.log("DEBUG: Entering calcTaktZerspanung()");
-  const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
-  console.log("DEBUG: fetch(/mycalc/milling) - about to POST {paramA:'example'}");
-  fetch('/mycalc/milling', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken
-    },
-    body: JSON.stringify({ paramA: 'example' })
-  })
-  .then(res => {
-    console.log("DEBUG: fetch(/mycalc/milling) response status =", res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log("Zerspanung (milling):", data.result);
-    console.log("DEBUG: Exiting calcTaktZerspanung() after fetch result");
-  })
-  .catch(err => console.error("Zerspanung error:", err));
-}
+ function calcTaktZerspanung() {
+ console.log("DEBUG: Entering calcTaktZerspanung()");
+ const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
+ console.log("DEBUG: fetch(/mycalc/milling) - about to POST {paramA:'example'}");
+ fetch('/mycalc/milling', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'X-CSRFToken': csrftoken
+ },
+ body: JSON.stringify({ paramA: 'example' })
+ })
+ .then(res => {
+ console.log("DEBUG: fetch(/mycalc/milling) response status =", res.status);
+ return res.json();
+ })
+ .then(data => {
+ console.log("Zerspanung (milling):", data.result);
+ console.log("DEBUG: Exiting calcTaktZerspanung() after fetch result");
+ })
+ .catch(err => console.error("Zerspanung error:", err));
+ }
 
 
 
-function calcTaktStanzen() {
-  console.log("DEBUG: Entering calcTaktStanzen()");
-  const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
-  console.log("DEBUG: fetch(/mycalc/stamping) - about to POST {paramA:'example'}");
-  fetch('/mycalc/stamping', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrftoken
-    },
-    body: JSON.stringify({ paramA: 'example' })
-  })
-  .then(res => {
-    console.log("DEBUG: fetch(/mycalc/stamping) response status =", res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log("Stanzen (stamping):", data.result);
-    console.log("DEBUG: Exiting calcTaktStanzen() after fetch result");
-  })
-  .catch(err => console.error("Stanzen error:", err));
-}
-*/
+ function calcTaktStanzen() {
+ console.log("DEBUG: Entering calcTaktStanzen()");
+ const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
+ console.log("DEBUG: fetch(/mycalc/stamping) - about to POST {paramA:'example'}");
+ fetch('/mycalc/stamping', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ 'X-CSRFToken': csrftoken
+ },
+ body: JSON.stringify({ paramA: 'example' })
+ })
+ .then(res => {
+ console.log("DEBUG: fetch(/mycalc/stamping) response status =", res.status);
+ return res.json();
+ })
+ .then(data => {
+ console.log("Stanzen (stamping):", data.result);
+ console.log("DEBUG: Exiting calcTaktStanzen() after fetch result");
+ })
+ .catch(err => console.error("Stanzen error:", err));
+ }
+ */
 // 4. Hauptberechnung
 function triggerMainCalc() {
   console.log("DEBUG: Entering triggerMainCalc()");
@@ -262,15 +264,15 @@ function triggerMainCalc() {
       // usw...
     })
   })
-  .then(res => {
-    console.log("DEBUG: fetch(/mycalc/calc) response status =", res.status);
-    return res.json();
-  })
-  .then(data => {
-    console.log("MainCalc result:", data);
-    console.log("DEBUG: Exiting triggerMainCalc() after fetch result");
-    // Bsp: document.getElementById('spanTotalCosts').innerText = data.total_costs;
-  });
+      .then(res => {
+        console.log("DEBUG: fetch(/mycalc/calc) response status =", res.status);
+        return res.json();
+      })
+      .then(data => {
+        console.log("MainCalc result:", data);
+        console.log("DEBUG: Exiting triggerMainCalc() after fetch result");
+        // Bsp: document.getElementById('spanTotalCosts').innerText = data.total_costs;
+      });
 }
 
 function calcAll() {
@@ -281,44 +283,44 @@ function calcAll() {
   // -------------------------
   console.log("DEBUG: Collecting Projekt-Inputs...");
   const projectName = document.getElementById("txtProjectName")?.value || "";
-  const partName    = document.getElementById("txtPartName")?.value    || "";
+  const partName = document.getElementById("txtPartName")?.value || "";
 
   // Beispiel: annualQty, lotSize, ...
   const annualQty = parseFloatAllowZero(
-    document.getElementById("annualQty")?.value,
-    1000
+      document.getElementById("annualQty")?.value,
+      1000
   );
-  const lotSize   = parseFloatAllowZero(
-    document.getElementById("lotSize")?.value,
-    100
+  const lotSize = parseFloatAllowZero(
+      document.getElementById("lotSize")?.value,
+      100
   );
-  const scrapPct  = parseFloatAllowZero(
-    document.getElementById("scrapPct")?.value,
-    5
+  const scrapPct = parseFloatAllowZero(
+      document.getElementById("scrapPct")?.value,
+      5
   );
-  const sgaPct    = parseFloatAllowZero(
-    document.getElementById("sgaPct")?.value,
-    10
+  const sgaPct = parseFloatAllowZero(
+      document.getElementById("sgaPct")?.value,
+      10
   );
   const profitPct = parseFloatAllowZero(
-    document.getElementById("profitPct")?.value,
-    5
+      document.getElementById("profitPct")?.value,
+      5
   );
   const zielPrice = parseFloatAllowZero(
-    document.getElementById("zielPrice")?.value,
-    200
+      document.getElementById("zielPrice")?.value,
+      200
   );
 
   // -------------------------
   // 2. Material-Inputs
   // -------------------------
   console.log("DEBUG: Collecting Material-Inputs...");
-  const matName   = document.getElementById("matName")?.value || "";
-  let matPrice    = parseFloatAllowZero(document.getElementById("matPrice")?.value,  2);
-  let matCo2      = parseFloatAllowZero(document.getElementById("matCo2")?.value,    2);
-  let matGK       = parseFloatAllowZero(document.getElementById("matGK")?.value,     5);
-  let matWeight   = parseFloatAllowZero(document.getElementById("matWeight")?.value, 0.2);
-  let fremdVal    = parseFloatAllowZero(document.getElementById("fremdValue")?.value,0);
+  const matName = document.getElementById("matName")?.value || "";
+  let matPrice = parseFloatAllowZero(document.getElementById("matPrice")?.value, 2);
+  let matCo2 = parseFloatAllowZero(document.getElementById("matCo2")?.value, 2);
+  let matGK = parseFloatAllowZero(document.getElementById("matGK")?.value, 5);
+  let matWeight = parseFloatAllowZero(document.getElementById("matWeight")?.value, 0.2);
+  let fremdVal = parseFloatAllowZero(document.getElementById("fremdValue")?.value, 0);
 
   // -------------------------
   // 3. Fertigungstabelle => steps
@@ -331,13 +333,13 @@ function calcAll() {
     const cells = row.cells;
     let stepName = cells[0].querySelector("input")?.value || "";
 
-    let cycTime  = parseFloatAllowZero(cells[1].querySelector("input")?.value, 0);
-    let msRate   = parseFloatAllowZero(cells[2].querySelector("input")?.value, 0);
+    let cycTime = parseFloatAllowZero(cells[1].querySelector("input")?.value, 0);
+    let msRate = parseFloatAllowZero(cells[2].querySelector("input")?.value, 0);
     let lohnRate = parseFloatAllowZero(cells[3].querySelector("input")?.value, 0);
     let ruestVal = parseFloatAllowZero(cells[4].querySelector("input")?.value, 0);
     let toolingVal = parseFloatAllowZero(cells[5].querySelector("input")?.value, 0);
-    let fgkPct   = parseFloatAllowZero(cells[6].querySelector("input")?.value, 0);
-    let co2Hour  = parseFloatAllowZero(cells[7].querySelector("input")?.value, 0);
+    let fgkPct = parseFloatAllowZero(cells[6].querySelector("input")?.value, 0);
+    let co2Hour = parseFloatAllowZero(cells[7].querySelector("input")?.value, 0);
 
     steps.push({
       stepName,
@@ -360,9 +362,9 @@ function calcAll() {
   steps = steps.map(st => {
     return {
       ...st,
-      msRate:   st.msRate   * labor_factor,
+      msRate: st.msRate * labor_factor,
       lohnRate: st.lohnRate * labor_factor,
-      co2Hour:  st.co2Hour  * co2_factor
+      co2Hour: st.co2Hour * co2_factor
     };
   });
 
@@ -380,16 +382,16 @@ function calcAll() {
     profitPct,
     zielPrice,
 
-    mat_factor:   material_factor,
+    mat_factor: material_factor,
     labor_factor: labor_factor,
-    co2_factor:   co2_factor,
+    co2_factor: co2_factor,
 
     material: {
-      name:    matName,
-      price:   matPrice,
-      co2:     matCo2,
-      gk:      matGK,
-      weight:  matWeight,
+      name: matName,
+      price: matPrice,
+      co2: matCo2,
+      gk: matGK,
+      weight: matWeight,
       fremdValue: fremdVal
     },
     steps
@@ -410,45 +412,45 @@ function calcAll() {
     },
     body: JSON.stringify(payload)
   })
-    .then((res) => {
-      console.log("DEBUG: fetch(/mycalc/calc) response status =", res.status);
-      if (!res.ok) {
-        console.log("DEBUG: !res.ok => throwing error");
-        throw new Error("Server error: " + res.status);
-      }
-      return res.json();
-    })
-    .then((data) => {
-      console.log("Response from /mycalc/calc:", data);
-      if (data.error) {
-        console.log("DEBUG: data.error =", data.error);
-        alert("Fehler: " + data.error);
-        return;
-      }
+      .then((res) => {
+        console.log("DEBUG: fetch(/mycalc/calc) response status =", res.status);
+        if (!res.ok) {
+          console.log("DEBUG: !res.ok => throwing error");
+          throw new Error("Server error: " + res.status);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Response from /mycalc/calc:", data);
+        if (data.error) {
+          console.log("DEBUG: data.error =", data.error);
+          alert("Fehler: " + data.error);
+          return;
+        }
 
-      // (a) Ergebnis-Tabelle / Felder füllen
-      updateResultTable(data);
+        // (a) Ergebnis-Tabelle / Felder füllen
+        updateResultTable(data);
 
-      // z. B. top area "Kosten/100" und "CO2/100"
-      let cost_100 = data.totalAll100 ?? 0;
-      let co2_100  = (data.co2Mat100 ?? 0) + (data.co2Proc100 ?? 0);
+        // z. B. top area "Kosten/100" und "CO2/100"
+        let cost_100 = data.totalAll100 ?? 0;
+        let co2_100 = (data.co2Mat100 ?? 0) + (data.co2Proc100 ?? 0);
 
-      document.getElementById("txtCosts100").value  = cost_100.toFixed(2);
-      document.getElementById("txtCo2Per100").value = co2_100.toFixed(2);
+        document.getElementById("txtCosts100").value = cost_100.toFixed(2);
+        document.getElementById("txtCo2Per100").value = co2_100.toFixed(2);
 
-      // (b) Charts erzeugen (einmalig) & aktualisieren
-      if (!chartInitialized) {
-        console.log("DEBUG: chartInitialized == false => calling initCharts()");
-        initCharts();  // Neue Funktion: hier nur 1x new Chart(...)
-      }
-      console.log("DEBUG: calling updateCharts(data)...");
-      updateCharts(data);
-      console.log("DEBUG: Exiting calcAll() after successful fetch & chart update");
-    })
-    .catch((err) => {
-      console.error("Fehler in calcAll():", err);
-      alert("calcAll() error: " + err);
-    });
+        // (b) Charts erzeugen (einmalig) & aktualisieren
+        if (!chartInitialized) {
+          console.log("DEBUG: chartInitialized == false => calling initCharts()");
+          initCharts();  // Neue Funktion: hier nur 1x new Chart(...)
+        }
+        console.log("DEBUG: calling updateCharts(data)...");
+        updateCharts(data);
+        console.log("DEBUG: Exiting calcAll() after successful fetch & chart update");
+      })
+      .catch((err) => {
+        console.error("Fehler in calcAll():", err);
+        alert("calcAll() error: " + err);
+      });
 }
 
 /************************************************************
@@ -484,7 +486,7 @@ function initCharts() {
     options: {
       responsive: false,
       scales: {
-        y: { beginAtZero: true }
+        y: {beginAtZero: true}
       }
     }
   });
@@ -506,7 +508,7 @@ function initCharts() {
     options: {
       responsive: false,
       scales: {
-        y: { beginAtZero: true }
+        y: {beginAtZero: true}
       }
     }
   });
@@ -533,7 +535,7 @@ function updateCharts(resultData) {
   //   - Fertigung = mach100 + lohn100 + fgk100
   //   - Rest = sga100 + profit100 + fremd100
   console.log("DEBUG: Calculating matVal, fertVal, restVal ...");
-  const matVal  = (resultData.matEinzel100 ?? 0) + (resultData.matGemein100 ?? 0);
+  const matVal = (resultData.matEinzel100 ?? 0) + (resultData.matGemein100 ?? 0);
   const fertVal = (resultData.mach100 ?? 0) + (resultData.lohn100 ?? 0) + (resultData.fgk100 ?? 0);
   const restVal = (resultData.sga100 ?? 0) + (resultData.profit100 ?? 0) + (resultData.fremd100 ?? 0);
   console.log("DEBUG: matVal =", matVal, "fertVal =", fertVal, "restVal =", restVal);
@@ -546,7 +548,7 @@ function updateCharts(resultData) {
 
   // CO2:
   console.log("DEBUG: Calculating co2Mat, co2Proc ...");
-  const co2Mat  = resultData.co2Mat100  ?? 0;
+  const co2Mat = resultData.co2Mat100 ?? 0;
   const co2Proc = resultData.co2Proc100 ?? 0;
   console.log("DEBUG: co2Mat =", co2Mat, "co2Proc =", co2Proc);
 
@@ -580,6 +582,7 @@ function goPrevTab() {
   }
   console.log("DEBUG: Exiting goPrevTab()");
 }
+
 function goNextTab() {
   console.log("DEBUG: Entering goNextTab()");
   const allBtns = document.querySelectorAll("#calcTab button");
@@ -760,28 +763,28 @@ function updateRowCalc(rowIdx, lotSize) {
   // fgkPct  = row.cells[6].querySelector("input") // (Falls du es brauchst)
   // co2Hour = row.cells[7].querySelector("input")
 
-  const cycTime   = parseFloat(row[1].querySelector("input").value) || 0;
-  const msRate    = parseFloat(row[2].querySelector("input").value) || 0;
-  const lohnRate  = parseFloat(row[3].querySelector("input").value) || 0;
-  const ruestVal  = parseFloat(row[4].querySelector("input").value) || 0;
-  const toolingVal= parseFloat(row[5].querySelector("input").value) || 0;
+  const cycTime = parseFloat(row[1].querySelector("input").value) || 0;
+  const msRate = parseFloat(row[2].querySelector("input").value) || 0;
+  const lohnRate = parseFloat(row[3].querySelector("input").value) || 0;
+  const ruestVal = parseFloat(row[4].querySelector("input").value) || 0;
+  const toolingVal = parseFloat(row[5].querySelector("input").value) || 0;
   // const fgkPct = parseFloat(row[6].querySelector("input").value) || 0; // Nur nötig, wenn du's einbeziehen willst
-  const co2Hour   = parseFloat(row[7].querySelector("input").value) || 0;
+  const co2Hour = parseFloat(row[7].querySelector("input").value) || 0;
 
   console.log("DEBUG: cycTime=", cycTime, "msRate=", msRate, "lohnRate=", lohnRate,
-              "ruestVal=", ruestVal, "toolingVal=", toolingVal, "co2Hour=", co2Hour);
+      "ruestVal=", ruestVal, "toolingVal=", toolingVal, "co2Hour=", co2Hour);
 
   // Zyklus in Stunden:
   const cycTimeH = cycTime / 3600;
 
   // => Maschinenkosten pro 100
-  const costMach100  = cycTimeH * msRate  * 100;
+  const costMach100 = cycTimeH * msRate * 100;
   // => Lohnkosten pro 100
-  const costLohn100  = cycTimeH * lohnRate * 100;
+  const costLohn100 = cycTimeH * lohnRate * 100;
   // => Rüstkosten pro 100 (verteilt auf lotSize)
   const costRuest100 = (ruestVal / lotSize) * 100;
   // => Tooling (falls gewünscht 1:1 addieren, je 100)
-  const costTool100  = toolingVal; // oder (toolingVal / lotSize)*100, je nach V1-Logik?
+  const costTool100 = toolingVal; // oder (toolingVal / lotSize)*100, je nach V1-Logik?
 
   // Summiere => spalte[8] (Kosten/100)
   const cost100 = costMach100 + costLohn100 + costRuest100 + costTool100;
@@ -795,6 +798,7 @@ function updateRowCalc(rowIdx, lotSize) {
   console.log("DEBUG: cost100=", cost100, "co2_100=", co2_100);
   console.log("DEBUG: Exiting updateRowCalc()");
 }
+
 /** ============== Material-Funktionen ============== */
 
 /**
@@ -806,26 +810,27 @@ function openMaterialModal() {
   const csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.content || "";
 
   fetch("/mycalc/material_list", {
-    headers: { "X-CSRFToken": csrfToken }
+    headers: {"X-CSRFToken": csrfToken}
   })
-    .then(res => {
-      if (!res.ok) {
-        if (res.status === 403) {
-          throw new Error("Lizenz nicht ausreichend oder abgelaufen.");
+      .then(res => {
+        if (!res.ok) {
+          if (res.status === 403) {
+            throw new Error("Lizenz nicht ausreichend oder abgelaufen.");
+          }
+          throw new Error("HTTP Error " + res.status);
         }
-        throw new Error("HTTP Error " + res.status);
-      }
-      return res.json();
-    })
-    .then(data => {
-      fillMaterialTable(data);
-      // Modal anzeigen
-      new bootstrap.Modal(document.getElementById("modalMaterial")).show();
-      console.log("DEBUG: modalMaterial shown");
-    })
-    .catch(err => alert(err.message));
+        return res.json();
+      })
+      .then(data => {
+        fillMaterialTable(data);
+        // Modal anzeigen
+        new bootstrap.Modal(document.getElementById("modalMaterial")).show();
+        console.log("DEBUG: modalMaterial shown");
+      })
+      .catch(err => alert(err.message));
   console.log("DEBUG: Exiting openMaterialModal()");
 }
+
 /** fillMaterialTable(matArray) – füllt #tblMaterialList */
 function fillMaterialTable(matArray) {
   console.log("DEBUG: Entering fillMaterialTable() with matArray length =", matArray.length);
@@ -842,18 +847,18 @@ function fillMaterialTable(matArray) {
 
   // Jede Zeile anlegen
   matArray.forEach((m, idx) => {
-    const matName   = m.material      || "Unbekannt";
+    const matName = m.material || "Unbekannt";
     const verfahren = m.verfahrensTyp || "";
-    const priceKg   = (m.gesamtPreisEURkg ?? 0).toFixed(2);
-    const co2Kg     = (m.co2EmissionenKG  ?? 0).toFixed(2);
-    const comm      = m.kommentar     || "";
+    const priceKg = (m.gesamtPreisEURkg ?? 0).toFixed(2);
+    const co2Kg = (m.co2EmissionenKG ?? 0).toFixed(2);
+    const comm = m.kommentar || "";
 
     // TR erzeugen
     const tr = document.createElement("tr");
-    tr.dataset.index    = idx;           // für selectMaterial(idx)
-    tr.dataset.matName  = matName;
+    tr.dataset.index = idx;           // für selectMaterial(idx)
+    tr.dataset.matName = matName;
     tr.dataset.matPrice = priceKg;
-    tr.dataset.matCo2   = co2Kg;
+    tr.dataset.matCo2 = co2Kg;
 
     tr.innerHTML = `
       <td>${matName}</td>
@@ -871,6 +876,7 @@ function fillMaterialTable(matArray) {
   });
   console.log("DEBUG: Exiting fillMaterialTable()");
 }
+
 function filterMaterialList() {
   console.log("DEBUG: Entering filterMaterialList()");
   const filterVal = document.getElementById("matFilterInput")?.value.toLowerCase() || "";
@@ -881,8 +887,8 @@ function filterMaterialList() {
   console.log("DEBUG: filterVal =", filterVal);
 
   const filtered = window.materialData.filter(m => {
-    const matN = (m.material       || "").toLowerCase();
-    const verF = (m.verfahrensTyp  || "").toLowerCase();
+    const matN = (m.material || "").toLowerCase();
+    const verF = (m.verfahrensTyp || "").toLowerCase();
     return matN.includes(filterVal) || verF.includes(filterVal);
   });
   console.log("DEBUG: filtered material count =", filtered.length);
@@ -890,6 +896,7 @@ function filterMaterialList() {
   fillMaterialTable(filtered);
   console.log("DEBUG: Exiting filterMaterialList()");
 }
+
 /** selectMaterial(idx): schreibt in #matName, #matPrice, #matCo2 */
 function selectMaterial(idx) {
   console.log("DEBUG: Entering selectMaterial() with idx =", idx);
@@ -900,9 +907,9 @@ function selectMaterial(idx) {
   }
 
   // => Input-Felder in Tab2
-  document.getElementById("matName").value  = row.dataset.matName || "";
-  document.getElementById("matPrice").value = row.dataset.matPrice||"0.00";
-  document.getElementById("matCo2").value   = row.dataset.matCo2  ||"0.00";
+  document.getElementById("matName").value = row.dataset.matName || "";
+  document.getElementById("matPrice").value = row.dataset.matPrice || "0.00";
+  document.getElementById("matCo2").value = row.dataset.matCo2 || "0.00";
 
   // Modal schließen
   const modalEl = document.getElementById("modalMaterial");
@@ -911,12 +918,14 @@ function selectMaterial(idx) {
 
   console.log("DEBUG: Material selected => Exiting selectMaterial()");
 }
+
 function clearMaterialFilter() {
   console.log("DEBUG: Entering clearMaterialFilter()");
   document.getElementById("matFilterInput").value = "";
   filterMaterialList(); // => zeigt alle wieder an
   console.log("DEBUG: Exiting clearMaterialFilter()");
 }
+
 function applyLohnFilter() {
   console.log("DEBUG: Entering applyLohnFilter()");
   const filterVal = (document.getElementById("txtLohnFilter").value || "").trim().toLowerCase();
@@ -933,12 +942,14 @@ function applyLohnFilter() {
   });
   console.log("DEBUG: Exiting applyLohnFilter()");
 }
+
 function clearLohnFilter() {
   console.log("DEBUG: Entering clearLohnFilter()");
   document.getElementById("txtLohnFilter").value = "";
   applyLohnFilter(); // Reset => zeigt alle an
   console.log("DEBUG: Exiting clearLohnFilter()");
 }
+
 /** filterMaterialList(): optionaler Filter auf window.materialData */
 function filterMaterialList() {
   console.log("DEBUG: Entering filterMaterialList()");
@@ -951,7 +962,7 @@ function filterMaterialList() {
   console.log("DEBUG: filterVal =", filterVal);
   const filtered = window.materialData.filter(m => {
     const matN = (m.material || "").toLowerCase();
-    const verF= (m.verfahrensTyp||"").toLowerCase();
+    const verF = (m.verfahrensTyp || "").toLowerCase();
     return matN.includes(filterVal) || verF.includes(filterVal);
   });
   console.log("DEBUG: filtered material count =", filtered.length);
@@ -969,7 +980,7 @@ function openZyklusModalWithTakt(rowIndex) {
     console.log("DEBUG: #modalZyklusBild not found => returning");
     return;
   }
-  const bsModal= new bootstrap.Modal(modalEl);
+  const bsModal = new bootstrap.Modal(modalEl);
   bsModal.show();
   console.log("DEBUG: ZyklusModal shown for rowIndex =", rowIndex);
   console.log("DEBUG: Exiting openZyklusModalWithTakt()");
@@ -994,22 +1005,22 @@ function openMachineModal(rowIdx) {
 function openMachineListModal() {
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
   fetch("/mycalc/machine_list", {
-    headers: { "X-CSRFToken": csrfToken }
+    headers: {"X-CSRFToken": csrfToken}
   })
-  .then(res => {
-    if (!res.ok) {
-      if (res.status === 403) {
-        throw new Error("Lizenz nicht ausreichend oder abgelaufen.");
-      }
-      throw new Error("HTTP Error " + res.status);
-    }
-    return res.json();
-  })
-  .then(data => {
-    fillMachineTable(data);
-    new bootstrap.Modal(document.getElementById("modalMachineList")).show();
-  })
-  .catch(err => alert(err.message));
+      .then(res => {
+        if (!res.ok) {
+          if (res.status === 403) {
+            throw new Error("Lizenz nicht ausreichend oder abgelaufen.");
+          }
+          throw new Error("HTTP Error " + res.status);
+        }
+        return res.json();
+      })
+      .then(data => {
+        fillMachineTable(data);
+        new bootstrap.Modal(document.getElementById("modalMachineList")).show();
+      })
+      .catch(err => alert(err.message));
 }
 
 
@@ -1018,44 +1029,45 @@ function openLohnModal(rowIndex) {
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
 
   // 1) check login
-  fetch("/auth/whoami", { method: "GET", headers: { "X-CSRFToken": csrfToken } })
-    .then(res => res.json())
-    .then(data => {
-      if (!data.logged_in) {
-        throw new Error("Nicht eingeloggt.");
-      }
-      if (data.license === "no_access") {
-        throw new Error("Lizenz abgelaufen.");
-      }
-      // 2) load /mycalc/lohn_list
-      return fetch("/mycalc/lohn_list", {
-        method: "GET",
-        headers: { "X-CSRFToken": csrfToken }
-      });
-    })
-    .then(res => {
-      if (!res.ok) {
-        throw new Error("Fehler beim Laden der Lohnliste: " + res.status);
-      }
-      return res.json();
-    })
-    .then(lohnData => {
-      // 3) fill table
-      LOHN_DATA = lohnData;
-      fillLohnTable(lohnData);
+  fetch("/auth/whoami", {method: "GET", headers: {"X-CSRFToken": csrfToken}})
+      .then(res => res.json())
+      .then(data => {
+        if (!data.logged_in) {
+          throw new Error("Nicht eingeloggt.");
+        }
+        if (data.license === "no_access") {
+          throw new Error("Lizenz abgelaufen.");
+        }
+        // 2) load /mycalc/lohn_list
+        return fetch("/mycalc/lohn_list", {
+          method: "GET",
+          headers: {"X-CSRFToken": csrfToken}
+        });
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Fehler beim Laden der Lohnliste: " + res.status);
+        }
+        return res.json();
+      })
+      .then(lohnData => {
+        // 3) fill table
+        LOHN_DATA = lohnData;
+        fillLohnTable(lohnData);
 
-      // 4) open modal
-      currentLohnRow = rowIndex; // Speichere, für selectLohn()
-      const modalEl = document.getElementById("modalLohn");
-      new bootstrap.Modal(modalEl).show();
-      console.log("DEBUG: modalLohn shown");
-    })
-    .catch(err => {
-      console.error("openLohnModal error:", err);
-      alert(err.message || "Lohnliste nicht verfügbar.");
-    });
+        // 4) open modal
+        currentLohnRow = rowIndex; // Speichere, für selectLohn()
+        const modalEl = document.getElementById("modalLohn");
+        new bootstrap.Modal(modalEl).show();
+        console.log("DEBUG: modalLohn shown");
+      })
+      .catch(err => {
+        console.error("openLohnModal error:", err);
+        alert(err.message || "Lohnliste nicht verfügbar.");
+      });
   console.log("DEBUG: Exiting openLohnModal()");
 }
+
 /** fillMachineTable(machArr) => #tblMachineList */
 function fillMachineTable(machArr) {
   console.log("DEBUG: Entering fillMachineTable() with machArr length =", machArr.length);
@@ -1068,15 +1080,15 @@ function fillMachineTable(machArr) {
 
   machArr.forEach((item, idx) => {
     // Beispiel: item => { "machineName": "XYZ", "process": "Drehen", "kaufpreis": 100000, ... }
-    const machName   = item.machineName  || "Unbekannt";
-    const process    = item.process      || "N/A";
-    const kauf       = parseFloat(item.kaufpreis||0).toFixed(0);
-    const power      = parseFloat(item.power_kW||0).toFixed(1);
-    const comment    = item.comment      || "";
+    const machName = item.machineName || "Unbekannt";
+    const process = item.process || "N/A";
+    const kauf = parseFloat(item.kaufpreis || 0).toFixed(0);
+    const power = parseFloat(item.power_kW || 0).toFixed(1);
+    const comment = item.comment || "";
 
     const tr = document.createElement("tr");
     tr.dataset.index = idx;
-    tr.dataset.kauf  = kauf;
+    tr.dataset.kauf = kauf;
     tr.dataset.power = power;
 
     tr.innerHTML = `
@@ -1095,11 +1107,12 @@ function fillMachineTable(machArr) {
   });
   console.log("DEBUG: Exiting fillMachineTable()");
 }
+
 function applyMachineFilter() {
   console.log("DEBUG: Entering applyMachineFilter()");
   const filterVal = (document.getElementById("txtMachineFilter").value || "")
-    .trim()
-    .toLowerCase();
+      .trim()
+      .toLowerCase();
 
   const rows = document.querySelectorAll("#tblMachineList tbody tr");
   rows.forEach(row => {
@@ -1112,12 +1125,14 @@ function applyMachineFilter() {
   });
   console.log("DEBUG: Exiting applyMachineFilter()");
 }
+
 function clearMachineFilter() {
   console.log("DEBUG: Entering clearMachineFilter()");
   document.getElementById("txtMachineFilter").value = "";
   applyMachineFilter(); // => zeigt alles wieder an
   console.log("DEBUG: Exiting clearMachineFilter()");
 }
+
 /** selectMachine(idx): schreibt in #machKaufpreis, #machKW */
 function selectMachine(idx) {
   console.log("DEBUG: Entering selectMachine() with idx =", idx);
@@ -1127,20 +1142,21 @@ function selectMachine(idx) {
     return;
   }
 
-  const kaufVal  = parseFloat(row.dataset.kauf)  || 0;
+  const kaufVal = parseFloat(row.dataset.kauf) || 0;
   const powerVal = parseFloat(row.dataset.power) || 0;
   console.log("DEBUG: kaufVal =", kaufVal, "powerVal =", powerVal);
 
   document.getElementById("machKaufpreis").value = kaufVal.toFixed(0);
-  document.getElementById("machKW").value        = powerVal.toFixed(1);
+  document.getElementById("machKW").value = powerVal.toFixed(1);
 
   // Modal schließen
-  const modalEl= document.getElementById("modalMachineList");
-  const bsModal= bootstrap.Modal.getInstance(modalEl);
+  const modalEl = document.getElementById("modalMachineList");
+  const bsModal = bootstrap.Modal.getInstance(modalEl);
   bsModal.hide();
 
   console.log("DEBUG: Machine selected => Exiting selectMachine()");
 }
+
 /** =========== Lohn-Funktionen =========== */
 function openLohnModal(rowIndex) {
   console.log("DEBUG: Entering openLohnModal() with rowIndex =", rowIndex);
@@ -1149,44 +1165,45 @@ function openLohnModal(rowIndex) {
   // 1) Wer bin ich?
   fetch("/auth/whoami", {
     method: "GET",
-    headers: { "X-CSRFToken": csrfToken }
+    headers: {"X-CSRFToken": csrfToken}
   })
-  .then(res => res.json())
-  .then(data => {
-    if (!data.logged_in) {
-      throw new Error("Nicht eingeloggt.");
-    }
-    if (data.license === "no_access") {
-      throw new Error("Lizenz abgelaufen.");
-    }
-    // 2) Lohnliste abrufen
-    return fetch("/mycalc/lohn_list", {
-      method: "GET",
-      headers: { "X-CSRFToken": csrfToken }
-    });
-  })
-  .then(res => {
-    if (!res.ok) {
-      throw new Error("Fehler beim Laden der Lohnliste: " + res.status);
-    }
-    return res.json();
-  })
-  .then(lohnData => {
-    // 3) Tabelle befüllen
-    fillLohnTable(lohnData);
+      .then(res => res.json())
+      .then(data => {
+        if (!data.logged_in) {
+          throw new Error("Nicht eingeloggt.");
+        }
+        if (data.license === "no_access") {
+          throw new Error("Lizenz abgelaufen.");
+        }
+        // 2) Lohnliste abrufen
+        return fetch("/mycalc/lohn_list", {
+          method: "GET",
+          headers: {"X-CSRFToken": csrfToken}
+        });
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Fehler beim Laden der Lohnliste: " + res.status);
+        }
+        return res.json();
+      })
+      .then(lohnData => {
+        // 3) Tabelle befüllen
+        fillLohnTable(lohnData);
 
-    // 4) Modal öffnen
-    currentLohnRow = rowIndex; // falls du rowIndex irgendwo brauchst
-    const modalEl = document.getElementById("modalLohn");
-    new bootstrap.Modal(modalEl).show();
-    console.log("DEBUG: modalLohn shown");
-  })
-  .catch(err => {
-    console.error("openLohnModal error:", err);
-    alert(err.message || "Lohnliste nicht verfügbar.");
-  });
+        // 4) Modal öffnen
+        currentLohnRow = rowIndex; // falls du rowIndex irgendwo brauchst
+        const modalEl = document.getElementById("modalLohn");
+        new bootstrap.Modal(modalEl).show();
+        console.log("DEBUG: modalLohn shown");
+      })
+      .catch(err => {
+        console.error("openLohnModal error:", err);
+        alert(err.message || "Lohnliste nicht verfügbar.");
+      });
   console.log("DEBUG: Exiting openLohnModal()");
 }
+
 /** fillLohnTable(lohnArr) => #tblLohnList */
 function fillLohnTable(lohnArr) {
   console.log("DEBUG: Entering fillLohnTable() with lohnArr length =", lohnArr.length);
@@ -1198,14 +1215,14 @@ function fillLohnTable(lohnArr) {
   tbody.innerHTML = "";
 
   lohnArr.forEach((item, idx) => {
-    const countryStr= item.country    || "Unbekannt";
-    const shiftMod  = item.shiftModel || "N/A";
-    const allInVal  = parseFloat(item.allInEURh||0).toFixed(2);
-    const comment   = item.comment    || "";
+    const countryStr = item.country || "Unbekannt";
+    const shiftMod = item.shiftModel || "N/A";
+    const allInVal = parseFloat(item.allInEURh || 0).toFixed(2);
+    const comment = item.comment || "";
 
     const tr = document.createElement("tr");
-    tr.dataset.index    = idx;
-    tr.dataset.allIneurh= allInVal;
+    tr.dataset.index = idx;
+    tr.dataset.allIneurh = allInVal;
     tr.innerHTML = `
       <td>${countryStr}</td>
       <td>${shiftMod}</td>
@@ -1219,6 +1236,7 @@ function fillLohnTable(lohnArr) {
   });
   console.log("DEBUG: Exiting fillLohnTable()");
 }
+
 function selectLohnByIndex(idx) {
   console.log("DEBUG: Entering selectLohnByIndex() with idx =", idx);
 
@@ -1229,321 +1247,321 @@ function selectLohnByIndex(idx) {
   }
 } // <-- H
 
-   // ===========================================================================
-  // ALL-IN STUNDENSATZ AUS DATASET (Lohn) – selectLohn()
-  // ===========================================================================
-  function selectLohn(row) {
-    // All-In Stundensatz aus dataset
-    const baseRate = parseFloat(row.dataset.allIneurh) || 0;
-    const ops      = parseFloat(document.getElementById("operatorsPerMachine")?.value) || 0.5;
-    const utilPct  = parseFloat(document.getElementById("lohnUtilPct")?.value) || 85.0;
+// ===========================================================================
+// ALL-IN STUNDENSATZ AUS DATASET (Lohn) – selectLohn()
+// ===========================================================================
+function selectLohn(row) {
+  // All-In Stundensatz aus dataset
+  const baseRate = parseFloat(row.dataset.allIneurh) || 0;
+  const ops = parseFloat(document.getElementById("operatorsPerMachine")?.value) || 0.5;
+  const utilPct = parseFloat(document.getElementById("lohnUtilPct")?.value) || 85.0;
 
-    // Beispiel-Formel
-    let effRate  = (utilPct > 0) ? (baseRate / (utilPct / 100.0)) : baseRate;
-    const lohnGesc = effRate * ops;
+  // Beispiel-Formel
+  let effRate = (utilPct > 0) ? (baseRate / (utilPct / 100.0)) : baseRate;
+  const lohnGesc = effRate * ops;
 
-    console.log("DEBUG: Calculated lohnGesc =", lohnGesc);
+  console.log("DEBUG: Calculated lohnGesc =", lohnGesc);
 
-    // In #fertTable übernehmen
-    const fertRows = document.querySelectorAll("#fertTable tbody tr");
-    if (typeof currentLohnRow !== "undefined" && currentLohnRow >= 0 && currentLohnRow < fertRows.length) {
-      fertRows[currentLohnRow].cells[3].querySelector("input").value = lohnGesc.toFixed(2);
-    }
-
-    // --------------------
-    // Modal schließen
-    // --------------------
-    console.log("DEBUG: Attempting to close modalLohn");
-    const modalEl = document.getElementById("modalLohn");
-    const bsModal = bootstrap.Modal.getInstance(modalEl);
-    bsModal.hide();
-
-    console.log("DEBUG: Exiting selectLohn()");
+  // In #fertTable übernehmen
+  const fertRows = document.querySelectorAll("#fertTable tbody tr");
+  if (typeof currentLohnRow !== "undefined" && currentLohnRow >= 0 && currentLohnRow < fertRows.length) {
+    fertRows[currentLohnRow].cells[3].querySelector("input").value = lohnGesc.toFixed(2);
   }
 
-  // ===========================================================================
-  // HILFSFUNKTIONEN FÜR MASCHINENSTUNDENSATZ
-  // ===========================================================================
-  /************************************************************
-   * parseFloatAllowZero() – parst eine Zahl oder gibt fallback zurück,
-   *   ABER 0 bleibt 0 und führt NICHT zum fallback.
-   ************************************************************/
-  function parseFloatAllowZero(str, fallbackVal) {
-    const val = parseFloat(str);
-    if (isNaN(val)) {
-      return fallbackVal; // Nur bei wirklichem NaN
-    }
-    return val; // 0 bleibt 0
-  }
+  // --------------------
+  // Modal schließen
+  // --------------------
+  console.log("DEBUG: Attempting to close modalLohn");
+  const modalEl = document.getElementById("modalLohn");
+  const bsModal = bootstrap.Modal.getInstance(modalEl);
+  bsModal.hide();
 
-  /************************************************************
-   * formatIntCurrency(value):
-   *  - Tausender-Punkte (de-DE)
-   *  - Keine Nachkommastellen
-   *  - " €" am Ende
-   ************************************************************/
-  function formatIntCurrency(value) {
-    return (
+  console.log("DEBUG: Exiting selectLohn()");
+}
+
+// ===========================================================================
+// HILFSFUNKTIONEN FÜR MASCHINENSTUNDENSATZ
+// ===========================================================================
+/************************************************************
+ * parseFloatAllowZero() – parst eine Zahl oder gibt fallback zurück,
+ *   ABER 0 bleibt 0 und führt NICHT zum fallback.
+ ************************************************************/
+function parseFloatAllowZero(str, fallbackVal) {
+  const val = parseFloat(str);
+  if (isNaN(val)) {
+    return fallbackVal; // Nur bei wirklichem NaN
+  }
+  return val; // 0 bleibt 0
+}
+
+/************************************************************
+ * formatIntCurrency(value):
+ *  - Tausender-Punkte (de-DE)
+ *  - Keine Nachkommastellen
+ *  - " €" am Ende
+ ************************************************************/
+function formatIntCurrency(value) {
+  return (
       value.toLocaleString("de-DE", {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
       }) + " €"
-    );
-  }
+  );
+}
 
-  /************************************************************
-   * formatHourCurrency(value):
-   *  - Tausender-Punkte (de-DE)
-   *  - 2 Nachkommastellen
-   *  - " €" am Ende
-   ************************************************************/
-  function formatHourCurrency(value) {
-    return (
+/************************************************************
+ * formatHourCurrency(value):
+ *  - Tausender-Punkte (de-DE)
+ *  - 2 Nachkommastellen
+ *  - " €" am Ende
+ ************************************************************/
+function formatHourCurrency(value) {
+  return (
       value.toLocaleString("de-DE", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       }) + " €"
-    );
+  );
+}
+
+/************************************************************
+ * toggleDedicatedPct() – wird aufgerufen, wenn Checkbox "Dedicated?"
+ *   geändert wird. Aktiviert/Deaktiviert das Eingabefeld für den
+ *   Ded.-Prozentsatz.
+ ************************************************************/
+function toggleDedicatedPct() {
+  const cb = document.getElementById("chkDedicated");
+  const pctField = document.getElementById("machDedicatedPct");
+  if (cb.checked) {
+    pctField.disabled = false;
+  } else {
+    pctField.disabled = true;
+    pctField.value = "100";
+  }
+}
+
+// ===========================================================================
+// calcExtendedMachineRate() – Hauptfunktion zur Berechnung des Maschinenstundensatzes
+// ===========================================================================
+function calcExtendedMachineRate() {
+  console.log("DEBUG: Entering calcExtendedMachineRate()");
+
+  // 1) Felder aus dem DOM – parseFloatAllowZero()
+  const kaufpreis = parseFloatAllowZero(document.getElementById("machKaufpreis").value, 100000);
+  const instCost = parseFloatAllowZero(document.getElementById("machInstCost").value, 0);
+  const jahre = parseFloatAllowZero(document.getElementById("machNutzdauer").value, 5);
+  const auslast = parseFloatAllowZero(document.getElementById("machAuslast").value, 6000);
+  const availPct = parseFloatAllowZero(document.getElementById("machAvailPct").value, 85);
+
+  const chkDedicated = document.getElementById("chkDedicated").checked;
+  const dedicatedPct = parseFloatAllowZero(document.getElementById("machDedicatedPct").value, 100);
+
+  const kw = parseFloatAllowZero(document.getElementById("machKW").value, 100.0);
+  const stromPct = parseFloatAllowZero(document.getElementById("machStromPct").value, 80.0);
+  const stromCost = parseFloatAllowZero(document.getElementById("machStromCost").value, 0.20);
+
+  const flaecheBedarf = parseFloatAllowZero(document.getElementById("machFlaecheBedarf").value, 20.0);
+  const flaecheCost = parseFloatAllowZero(document.getElementById("machFlaechenkost").value, 7.0);
+
+  const instPct = parseFloatAllowZero(document.getElementById("machInstandPct").value, 3.0);
+  const betrPct = parseFloatAllowZero(document.getElementById("machBetriebPct").value, 2.0);
+
+  // Zinssatz (z. B. 3 => 3%)
+  const inputZins = parseFloatAllowZero(document.getElementById("machZinssatz").value, 3.0);
+  const zinssatz = inputZins / 100.0;
+
+  console.log("DEBUG: Input Values =>", {
+    kaufpreis, instCost, jahre, auslast, availPct, chkDedicated, dedicatedPct,
+    kw, stromPct, stromCost, flaecheBedarf, flaecheCost, instPct, betrPct, zinssatz
+  });
+
+  // 2) Fixkosten pro Jahr
+  const depYear = (kaufpreis + instCost) / jahre;
+  const interestYear = (kaufpreis + instCost) * 0.5 * zinssatz;
+  const instYear = kaufpreis * (instPct / 100.0);
+  const betrYear = kaufpreis * (betrPct / 100.0);
+  const flaecheYear = flaecheBedarf * flaecheCost * 12;
+
+  // Summe fixe Jahreskosten (ohne Strom)
+  let fixYear = depYear + interestYear + instYear + betrYear + flaecheYear;
+
+  // 3) Variable Kosten (Strom) pro Jahr
+  const usedKW = kw * (stromPct / 100.0); // effektive kW
+  const stromHour = usedKW * stromCost;      // €/h
+  const baseEffHours = auslast * (availPct / 100.0);
+  let varYear = stromHour * baseEffHours;
+
+  // 4) Dedicated-Logik
+  let usageFactor = 1.0;
+  if (chkDedicated) {
+    usageFactor = dedicatedPct / 100.0; // z. B. 0.5, wenn 50% eingetragen
+  }
+  fixYear *= usageFactor;
+  const effHours = baseEffHours * usageFactor;
+  varYear *= usageFactor;
+
+  console.log("DEBUG: fixYear=", fixYear, "varYear=", varYear, "effHours=", effHours);
+
+  // 5) Jahreskosten
+  const sumYear = fixYear + varYear;
+
+  // 6) Maschinenkosten pro Stunde
+  let costPerHour = 0;
+  if (effHours > 0) {
+    costPerHour = sumYear / effHours;
   }
 
-  /************************************************************
-   * toggleDedicatedPct() – wird aufgerufen, wenn Checkbox "Dedicated?"
-   *   geändert wird. Aktiviert/Deaktiviert das Eingabefeld für den
-   *   Ded.-Prozentsatz.
-   ************************************************************/
-  function toggleDedicatedPct() {
-    const cb = document.getElementById("chkDedicated");
-    const pctField = document.getElementById("machDedicatedPct");
-    if (cb.checked) {
-      pctField.disabled = false;
-    } else {
-      pctField.disabled = true;
-      pctField.value = "100";
-    }
-  }
+  // 7) CO₂ pro Stunde (Dummy-Faktor)
+  const co2_per_hour = usedKW * 0.38;
 
-  // ===========================================================================
-  // calcExtendedMachineRate() – Hauptfunktion zur Berechnung des Maschinenstundensatzes
-  // ===========================================================================
-  function calcExtendedMachineRate() {
-    console.log("DEBUG: Entering calcExtendedMachineRate()");
-
-    // 1) Felder aus dem DOM – parseFloatAllowZero()
-    const kaufpreis    = parseFloatAllowZero(document.getElementById("machKaufpreis").value,   100000);
-    const instCost     = parseFloatAllowZero(document.getElementById("machInstCost").value,    0);
-    const jahre        = parseFloatAllowZero(document.getElementById("machNutzdauer").value,   5);
-    const auslast      = parseFloatAllowZero(document.getElementById("machAuslast").value,     6000);
-    const availPct     = parseFloatAllowZero(document.getElementById("machAvailPct").value,    85);
-
-    const chkDedicated = document.getElementById("chkDedicated").checked;
-    const dedicatedPct = parseFloatAllowZero(document.getElementById("machDedicatedPct").value, 100);
-
-    const kw           = parseFloatAllowZero(document.getElementById("machKW").value,          100.0);
-    const stromPct     = parseFloatAllowZero(document.getElementById("machStromPct").value,    80.0);
-    const stromCost    = parseFloatAllowZero(document.getElementById("machStromCost").value,   0.20);
-
-    const flaecheBedarf= parseFloatAllowZero(document.getElementById("machFlaecheBedarf").value, 20.0);
-    const flaecheCost  = parseFloatAllowZero(document.getElementById("machFlaechenkost").value,  7.0);
-
-    const instPct      = parseFloatAllowZero(document.getElementById("machInstandPct").value,   3.0);
-    const betrPct      = parseFloatAllowZero(document.getElementById("machBetriebPct").value,   2.0);
-
-    // Zinssatz (z. B. 3 => 3%)
-    const inputZins    = parseFloatAllowZero(document.getElementById("machZinssatz").value,     3.0);
-    const zinssatz     = inputZins / 100.0;
-
-    console.log("DEBUG: Input Values =>", {
-      kaufpreis, instCost, jahre, auslast, availPct, chkDedicated, dedicatedPct,
-      kw, stromPct, stromCost, flaecheBedarf, flaecheCost, instPct, betrPct, zinssatz
-    });
-
-    // 2) Fixkosten pro Jahr
-    const depYear      = (kaufpreis + instCost) / jahre;
-    const interestYear = (kaufpreis + instCost) * 0.5 * zinssatz;
-    const instYear     = kaufpreis * (instPct / 100.0);
-    const betrYear     = kaufpreis * (betrPct / 100.0);
-    const flaecheYear  = flaecheBedarf * flaecheCost * 12;
-
-    // Summe fixe Jahreskosten (ohne Strom)
-    let fixYear = depYear + interestYear + instYear + betrYear + flaecheYear;
-
-    // 3) Variable Kosten (Strom) pro Jahr
-    const usedKW   = kw * (stromPct / 100.0); // effektive kW
-    const stromHour= usedKW * stromCost;      // €/h
-    const baseEffHours = auslast * (availPct / 100.0);
-    let varYear    = stromHour * baseEffHours;
-
-    // 4) Dedicated-Logik
-    let usageFactor = 1.0;
-    if (chkDedicated) {
-      usageFactor = dedicatedPct / 100.0; // z. B. 0.5, wenn 50% eingetragen
-    }
-    fixYear *= usageFactor;
-    const effHours = baseEffHours * usageFactor;
-    varYear *= usageFactor;
-
-    console.log("DEBUG: fixYear=", fixYear, "varYear=", varYear, "effHours=", effHours);
-
-    // 5) Jahreskosten
-    const sumYear = fixYear + varYear;
-
-    // 6) Maschinenkosten pro Stunde
-    let costPerHour = 0;
-    if (effHours > 0) {
-      costPerHour = sumYear / effHours;
-    }
-
-    // 7) CO₂ pro Stunde (Dummy-Faktor)
-    const co2_per_hour = usedKW * 0.38;
-
-    // 8) Felder befüllen
-    // Abschreibung, Zins, ...
-    document.getElementById("machKaufpreisHr").value =
+  // 8) Felder befüllen
+  // Abschreibung, Zins, ...
+  document.getElementById("machKaufpreisHr").value =
       effHours > 0 ? formatHourCurrency(depYear / effHours) : "0,00 €";
-    document.getElementById("machZinsHr").value =
+  document.getElementById("machZinsHr").value =
       effHours > 0 ? formatHourCurrency(interestYear / effHours) : "0,00 €";
-    document.getElementById("machInstandHr").value =
+  document.getElementById("machInstandHr").value =
       effHours > 0 ? formatHourCurrency(instYear / effHours) : "0,00 €";
-    document.getElementById("machBetriebHr").value =
+  document.getElementById("machBetriebHr").value =
       effHours > 0 ? formatHourCurrency(betrYear / effHours) : "0,00 €";
-    document.getElementById("machFlaechenkostHr").value =
+  document.getElementById("machFlaechenkostHr").value =
       effHours > 0 ? formatHourCurrency(flaecheYear / effHours) : "0,00 €";
-    document.getElementById("machStromCostHr").value =
+  document.getElementById("machStromCostHr").value =
       effHours > 0 ? formatHourCurrency(varYear / effHours) : "0,00 €";
 
-    // Effektive Stunden
-    document.getElementById("machAvailHr").value =
-      effHours.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " h eff.";
+  // Effektive Stunden
+  document.getElementById("machAvailHr").value =
+      effHours.toLocaleString("de-DE", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + " h eff.";
 
-    // CO₂ kg/h
-    document.getElementById("machCo2Hr").value =
+  // CO₂ kg/h
+  document.getElementById("machCo2Hr").value =
       co2_per_hour.toLocaleString("de-DE", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
 
-    // Jahreskosten (falls Feld vorhanden)
-    if (document.getElementById("machSumYear")) {
-      document.getElementById("machSumYear").value = formatIntCurrency(sumYear);
-    }
+  // Jahreskosten (falls Feld vorhanden)
+  if (document.getElementById("machSumYear")) {
+    document.getElementById("machSumYear").value = formatIntCurrency(sumYear);
+  }
 
-    // Summe der 6 Einzelwerte => machResult
-    let sumOfSix = 0;
-    if (effHours > 0) {
-      sumOfSix =
+  // Summe der 6 Einzelwerte => machResult
+  let sumOfSix = 0;
+  if (effHours > 0) {
+    sumOfSix =
         (depYear / effHours) +
         (interestYear / effHours) +
         (instYear / effHours) +
         (betrYear / effHours) +
         (flaecheYear / effHours) +
         (varYear / effHours);
-    }
-    document.getElementById("machResult").textContent = formatHourCurrency(sumOfSix);
+  }
+  document.getElementById("machResult").textContent = formatHourCurrency(sumOfSix);
 
-    // 9) Globale Variable für acceptMachine()
-    window.extMachCalc = {
-      depYear,
-      interestYear,
-      instYear,
-      betrYear,
-      flaecheYear,
-      fixYear,
-      varYear,
-      sumYear,
-      effHours,
-      co2_per_hour,
-      usageFactor,
-      costPerHour: sumOfSix
-    };
+  // 9) Globale Variable für acceptMachine()
+  window.extMachCalc = {
+    depYear,
+    interestYear,
+    instYear,
+    betrYear,
+    flaecheYear,
+    fixYear,
+    varYear,
+    sumYear,
+    effHours,
+    co2_per_hour,
+    usageFactor,
+    costPerHour: sumOfSix
+  };
 
-    console.log("DEBUG: Exiting calcExtendedMachineRate(), costPerHour=", sumOfSix);
+  console.log("DEBUG: Exiting calcExtendedMachineRate(), costPerHour=", sumOfSix);
+}
+
+// ===========================================================================
+// acceptMachine() – Übernimmt den berechneten Maschinenstundenansatz in die Tabelle
+// ===========================================================================
+function acceptMachine() {
+  console.log("DEBUG: Entering acceptMachine() => currentMachineRow:", currentMachineRow);
+  console.log("DEBUG: Checking if window.extMachCalc is defined");
+
+  if (!window.extMachCalc) {
+    console.log("DEBUG: window.extMachCalc is falsy => alerting user");
+    alert("Bitte zuerst 'Berechnen' klicken!");
+    return;
   }
 
-  // ===========================================================================
-  // acceptMachine() – Übernimmt den berechneten Maschinenstundenansatz in die Tabelle
-  // ===========================================================================
-  function acceptMachine() {
-    console.log("DEBUG: Entering acceptMachine() => currentMachineRow:", currentMachineRow);
-    console.log("DEBUG: Checking if window.extMachCalc is defined");
-
-    if (!window.extMachCalc) {
-      console.log("DEBUG: window.extMachCalc is falsy => alerting user");
-      alert("Bitte zuerst 'Berechnen' klicken!");
-      return;
-    }
-
-    const rows = document.querySelectorAll("#fertTable tbody tr");
-    console.log("DEBUG: rows.length =", rows.length);
-    if (typeof currentMachineRow === "undefined" || currentMachineRow < 0 || currentMachineRow >= rows.length) {
-      console.error("Ungültige Zeilen-ID:", currentMachineRow);
-      alert("Es wurde keine gültige Zeile ausgewählt oder currentMachineRow ist -1.");
-      return;
-    }
-
-    const {
-      depYear, interestYear, instYear, betrYear,
-      flaecheYear, varYear, sumYear, effHours,
-      costPerHour, co2_per_hour
-    } = window.extMachCalc;
-    console.log("DEBUG: destructured extMachCalc =", {
-      depYear, interestYear, instYear, betrYear, flaecheYear, varYear, sumYear, effHours, costPerHour, co2_per_hour
-    });
-
-    // Einzelwerte pro Stunde:
-    const depHour    = effHours > 0 ? depYear      / effHours : 0;
-    const intHour    = effHours > 0 ? interestYear / effHours : 0;
-    const instHour   = effHours > 0 ? instYear     / effHours : 0;
-    const betrHour   = effHours > 0 ? betrYear     / effHours : 0;
-    const flaechHour = effHours > 0 ? flaecheYear  / effHours : 0;
-    const stromHour  = effHours > 0 ? varYear      / effHours : 0;
-
-    console.log("DEBUG: calcHourly =>", { depHour, intHour, instHour, betrHour, flaechHour, stromHour });
-
-    // In die Textfelder (Modal)
-    document.getElementById("machKaufpreisHr").value  = depHour.toFixed(2);
-    document.getElementById("machZinsHr").value       = intHour.toFixed(2);
-    document.getElementById("machInstandHr").value    = instHour.toFixed(2);
-    document.getElementById("machBetriebHr").value    = betrHour.toFixed(2);
-    document.getElementById("machFlaechenkostHr").value = flaechHour.toFixed(2);
-    document.getElementById("machStromCostHr").value  = stromHour.toFixed(2);
-    document.getElementById("machAvailHr").value      = effHours.toFixed(1) + " h eff.";
-    document.getElementById("machResult").textContent = costPerHour.toFixed(2);
-    document.getElementById("machCo2Hr").value        = co2_per_hour.toFixed(2);
-
-    // In #fertTable übernehmen
-    const row = rows[currentMachineRow];
-    console.log("DEBUG: Setting row.cells[2].querySelector(input).value =", costPerHour.toFixed(2));
-    row.cells[2].querySelector("input").value = costPerHour.toFixed(2);   // Maschinen-€/h
-    console.log("DEBUG: Setting row.cells[7].querySelector(input).value =", co2_per_hour.toFixed(2));
-    row.cells[7].querySelector("input").value = co2_per_hour.toFixed(2); // co2/h
-
-    // Modal schließen
-    const modalEl = document.getElementById("modalMachine");
-    console.log("DEBUG: Attempting to close modalMachine");
-    const bsModal = bootstrap.Modal.getInstance(modalEl);
-    bsModal.hide();
-
-    console.log("DEBUG: Exiting acceptMachine()");
+  const rows = document.querySelectorAll("#fertTable tbody tr");
+  console.log("DEBUG: rows.length =", rows.length);
+  if (typeof currentMachineRow === "undefined" || currentMachineRow < 0 || currentMachineRow >= rows.length) {
+    console.error("Ungültige Zeilen-ID:", currentMachineRow);
+    alert("Es wurde keine gültige Zeile ausgewählt oder currentMachineRow ist -1.");
+    return;
   }
 
-  // ===========================================================================
-  // updateResultTable() – ggf. für andere Summen / Endergebnisse
-  // ===========================================================================
-  function updateResultTable(e) {
-    console.log("DEBUG: Entering updateResultTable() with object e =", e);
-    document.getElementById("tdMatEinzel").textContent  = (e.matEinzel100 ?? 0).toFixed(2);
-    document.getElementById("tdMatGemein").textContent  = (e.matGemein100 ?? 0).toFixed(2);
-    document.getElementById("tdFremd").textContent      = (e.fremd100     ?? 0).toFixed(2);
-    document.getElementById("tdMach").textContent       = (e.mach100      ?? 0).toFixed(2);
-    document.getElementById("tdLohn").textContent       = (e.lohn100      ?? 0).toFixed(2);
-    document.getElementById("tdFGK").textContent        = (e.fgk100       ?? 0).toFixed(2);
-    document.getElementById("tdHerstell").textContent   = (e.herstell100  ?? 0).toFixed(2);
-    document.getElementById("tdSGA").textContent        = (e.sga100       ?? 0).toFixed(2);
-    document.getElementById("tdProfit").textContent     = (e.profit100    ?? 0).toFixed(2);
-    document.getElementById("tdTotal").textContent      = (e.totalAll100  ?? 0).toFixed(2);
+  const {
+    depYear, interestYear, instYear, betrYear,
+    flaecheYear, varYear, sumYear, effHours,
+    costPerHour, co2_per_hour
+  } = window.extMachCalc;
+  console.log("DEBUG: destructured extMachCalc =", {
+    depYear, interestYear, instYear, betrYear, flaecheYear, varYear, sumYear, effHours, costPerHour, co2_per_hour
+  });
 
-    console.log("DEBUG: Exiting updateResultTable()");
-  }
+  // Einzelwerte pro Stunde:
+  const depHour = effHours > 0 ? depYear / effHours : 0;
+  const intHour = effHours > 0 ? interestYear / effHours : 0;
+  const instHour = effHours > 0 ? instYear / effHours : 0;
+  const betrHour = effHours > 0 ? betrYear / effHours : 0;
+  const flaechHour = effHours > 0 ? flaecheYear / effHours : 0;
+  const stromHour = effHours > 0 ? varYear / effHours : 0;
+
+  console.log("DEBUG: calcHourly =>", {depHour, intHour, instHour, betrHour, flaechHour, stromHour});
+
+  // In die Textfelder (Modal)
+  document.getElementById("machKaufpreisHr").value = depHour.toFixed(2);
+  document.getElementById("machZinsHr").value = intHour.toFixed(2);
+  document.getElementById("machInstandHr").value = instHour.toFixed(2);
+  document.getElementById("machBetriebHr").value = betrHour.toFixed(2);
+  document.getElementById("machFlaechenkostHr").value = flaechHour.toFixed(2);
+  document.getElementById("machStromCostHr").value = stromHour.toFixed(2);
+  document.getElementById("machAvailHr").value = effHours.toFixed(1) + " h eff.";
+  document.getElementById("machResult").textContent = costPerHour.toFixed(2);
+  document.getElementById("machCo2Hr").value = co2_per_hour.toFixed(2);
+
+  // In #fertTable übernehmen
+  const row = rows[currentMachineRow];
+  console.log("DEBUG: Setting row.cells[2].querySelector(input).value =", costPerHour.toFixed(2));
+  row.cells[2].querySelector("input").value = costPerHour.toFixed(2);   // Maschinen-€/h
+  console.log("DEBUG: Setting row.cells[7].querySelector(input).value =", co2_per_hour.toFixed(2));
+  row.cells[7].querySelector("input").value = co2_per_hour.toFixed(2); // co2/h
+
+  // Modal schließen
+  const modalEl = document.getElementById("modalMachine");
+  console.log("DEBUG: Attempting to close modalMachine");
+  const bsModal = bootstrap.Modal.getInstance(modalEl);
+  bsModal.hide();
+
+  console.log("DEBUG: Exiting acceptMachine()");
+}
+
+// ===========================================================================
+// updateResultTable() – ggf. für andere Summen / Endergebnisse
+// ===========================================================================
+function updateResultTable(e) {
+  console.log("DEBUG: Entering updateResultTable() with object e =", e);
+  document.getElementById("tdMatEinzel").textContent = (e.matEinzel100 ?? 0).toFixed(2);
+  document.getElementById("tdMatGemein").textContent = (e.matGemein100 ?? 0).toFixed(2);
+  document.getElementById("tdFremd").textContent = (e.fremd100 ?? 0).toFixed(2);
+  document.getElementById("tdMach").textContent = (e.mach100 ?? 0).toFixed(2);
+  document.getElementById("tdLohn").textContent = (e.lohn100 ?? 0).toFixed(2);
+  document.getElementById("tdFGK").textContent = (e.fgk100 ?? 0).toFixed(2);
+  document.getElementById("tdHerstell").textContent = (e.herstell100 ?? 0).toFixed(2);
+  document.getElementById("tdSGA").textContent = (e.sga100 ?? 0).toFixed(2);
+  document.getElementById("tdProfit").textContent = (e.profit100 ?? 0).toFixed(2);
+  document.getElementById("tdTotal").textContent = (e.totalAll100 ?? 0).toFixed(2);
+
+  console.log("DEBUG: Exiting updateResultTable()");
+}
 
 function onSliderMaterialChange(e) {
   console.log("DEBUG: Entering onSliderMaterialChange() with e =", e);
@@ -1586,25 +1604,25 @@ function exampleFetchChartsData() {
       "Content-Type": "application/json",
       "X-CSRFToken": csrftoken
     },
-    body: JSON.stringify({ someParam: 123 })
+    body: JSON.stringify({someParam: 123})
   })
-    .then(res => {
-      console.log("DEBUG: fetch(/calc/chartsData) response status =", res.status);
-      return res.json();
-    })
-    .then(data => {
-      console.log("DEBUG: /calc/chartsData response data =", data);
-      // data enthält z. B. { matVal, fertVal, restVal, co2Mat, co2Proc }
-      costChart.data.datasets[0].data = [data.matVal, data.fertVal, data.restVal];
-      costChart.update();
+      .then(res => {
+        console.log("DEBUG: fetch(/calc/chartsData) response status =", res.status);
+        return res.json();
+      })
+      .then(data => {
+        console.log("DEBUG: /calc/chartsData response data =", data);
+        // data enthält z. B. { matVal, fertVal, restVal, co2Mat, co2Proc }
+        costChart.data.datasets[0].data = [data.matVal, data.fertVal, data.restVal];
+        costChart.update();
 
-      co2Chart.data.datasets[0].data = [data.co2Mat, data.co2Proc];
-      co2Chart.update();
-      console.log("DEBUG: Charts updated from exampleFetchChartsData()");
-    })
-    .catch(err => {
-      console.error("chartsData fetch error:", err);
-    });
+        co2Chart.data.datasets[0].data = [data.co2Mat, data.co2Proc];
+        co2Chart.update();
+        console.log("DEBUG: Charts updated from exampleFetchChartsData()");
+      })
+      .catch(err => {
+        console.error("chartsData fetch error:", err);
+      });
   console.log("DEBUG: Exiting exampleFetchChartsData()");
 }
 
@@ -1661,31 +1679,31 @@ function calcBaugruppeSum() {
 
   // Werte summieren
   for (const it of baugruppenItems) {
-    sumMatEinz  += (it.matEinzel  ?? 0);
-    sumMatGem   += (it.matGemein  ?? 0);
-    sumFremd    += (it.fremd      ?? 0);
-    sumMach     += (it.mach       ?? 0);
-    sumLohn     += (it.lohn       ?? 0);
-    sumFGK      += (it.fgk        ?? 0);
-    sumHerstell += (it.herstell   ?? 0);
-    sumSGA      += (it.sga        ?? 0);
-    sumProfit   += (it.profit     ?? 0);
-    sumTotal    += (it.total      ?? 0);
-    sumCo2      += (it.co2_100    ?? 0);
+    sumMatEinz += (it.matEinzel ?? 0);
+    sumMatGem += (it.matGemein ?? 0);
+    sumFremd += (it.fremd ?? 0);
+    sumMach += (it.mach ?? 0);
+    sumLohn += (it.lohn ?? 0);
+    sumFGK += (it.fgk ?? 0);
+    sumHerstell += (it.herstell ?? 0);
+    sumSGA += (it.sga ?? 0);
+    sumProfit += (it.profit ?? 0);
+    sumTotal += (it.total ?? 0);
+    sumCo2 += (it.co2_100 ?? 0);
   }
 
   // Summen in <tfoot> Felder schreiben
-  document.getElementById("bgSumMatEinzel").textContent  = sumMatEinz.toFixed(2);
-  document.getElementById("bgSumMatGemein").textContent  = sumMatGem.toFixed(2);
-  document.getElementById("bgSumFremd").textContent      = sumFremd.toFixed(2);
-  document.getElementById("bgSumMach").textContent       = sumMach.toFixed(2);
-  document.getElementById("bgSumLohn").textContent       = sumLohn.toFixed(2);
-  document.getElementById("bgSumFGK").textContent        = sumFGK.toFixed(2);
-  document.getElementById("bgSumHerstell").textContent   = sumHerstell.toFixed(2);
-  document.getElementById("bgSumSGA").textContent        = sumSGA.toFixed(2);
-  document.getElementById("bgSumProfit").textContent     = sumProfit.toFixed(2);
-  document.getElementById("bgSumTotal").textContent      = sumTotal.toFixed(2);
-  document.getElementById("bgSumCO2").textContent        = sumCo2.toFixed(2);
+  document.getElementById("bgSumMatEinzel").textContent = sumMatEinz.toFixed(2);
+  document.getElementById("bgSumMatGemein").textContent = sumMatGem.toFixed(2);
+  document.getElementById("bgSumFremd").textContent = sumFremd.toFixed(2);
+  document.getElementById("bgSumMach").textContent = sumMach.toFixed(2);
+  document.getElementById("bgSumLohn").textContent = sumLohn.toFixed(2);
+  document.getElementById("bgSumFGK").textContent = sumFGK.toFixed(2);
+  document.getElementById("bgSumHerstell").textContent = sumHerstell.toFixed(2);
+  document.getElementById("bgSumSGA").textContent = sumSGA.toFixed(2);
+  document.getElementById("bgSumProfit").textContent = sumProfit.toFixed(2);
+  document.getElementById("bgSumTotal").textContent = sumTotal.toFixed(2);
+  document.getElementById("bgSumCO2").textContent = sumCo2.toFixed(2);
 }
 
 /**
@@ -1698,17 +1716,17 @@ function addResultToBaugruppeFromTab4() {
   const verfahren = "---"; // oder: document.getElementById(...) ?
 
   // Lese Zahlen aus Tab 4 Feldern
-  const matEinzel  = parseFloat(document.getElementById("tdMatEinzel")?.textContent || "0");
-  const matGemein  = parseFloat(document.getElementById("tdMatGemein")?.textContent || "0");
-  const fremd      = parseFloat(document.getElementById("tdFremd")?.textContent     || "0");
-  const mach       = parseFloat(document.getElementById("tdMach")?.textContent      || "0");
-  const lohn       = parseFloat(document.getElementById("tdLohn")?.textContent      || "0");
-  const fgk        = parseFloat(document.getElementById("tdFGK")?.textContent       || "0");
-  const herstell   = parseFloat(document.getElementById("tdHerstell")?.textContent  || "0");
-  const sga        = parseFloat(document.getElementById("tdSGA")?.textContent       || "0");
-  const profit     = parseFloat(document.getElementById("tdProfit")?.textContent    || "0");
-  const total      = parseFloat(document.getElementById("tdTotal")?.textContent     || "0");
-  const co2_100    = parseFloat(document.getElementById("txtCo2Per100")?.value      || "0");
+  const matEinzel = parseFloat(document.getElementById("tdMatEinzel")?.textContent || "0");
+  const matGemein = parseFloat(document.getElementById("tdMatGemein")?.textContent || "0");
+  const fremd = parseFloat(document.getElementById("tdFremd")?.textContent || "0");
+  const mach = parseFloat(document.getElementById("tdMach")?.textContent || "0");
+  const lohn = parseFloat(document.getElementById("tdLohn")?.textContent || "0");
+  const fgk = parseFloat(document.getElementById("tdFGK")?.textContent || "0");
+  const herstell = parseFloat(document.getElementById("tdHerstell")?.textContent || "0");
+  const sga = parseFloat(document.getElementById("tdSGA")?.textContent || "0");
+  const profit = parseFloat(document.getElementById("tdProfit")?.textContent || "0");
+  const total = parseFloat(document.getElementById("tdTotal")?.textContent || "0");
+  const co2_100 = parseFloat(document.getElementById("txtCo2Per100")?.value || "0");
 
   // Neues Objekt
   const newItem = {
@@ -1746,19 +1764,19 @@ function resetBaugruppenListe() {
  * Manuelles Hinzufügen
  */
 function addManualBaugruppe() {
-  const name       = prompt("Bauteilname:")          || "Manuelles Bauteil";
-  const verfahren  = prompt("Verfahren:")            || "---";
-  const matEinzel  = parseFloat(prompt("MatEinzel (€/100):")   || 0);
-  const matGemein  = parseFloat(prompt("MatGemein (€/100):")   || 0);
-  const fremd      = parseFloat(prompt("Fremdzukauf (€/100):") || 0);
-  const mach       = parseFloat(prompt("Maschinenkosten (€/100):") || 0);
-  const lohn       = parseFloat(prompt("Lohnkosten (€/100):")   || 0);
-  const fgk        = parseFloat(prompt("FGK (€/100):")          || 0);
-  const herstell   = parseFloat(prompt("Herstellkosten (€/100):")|| 0);
-  const sga        = parseFloat(prompt("SG&A (€/100):")         || 0);
-  const profit     = parseFloat(prompt("Profit (€/100):")       || 0);
-  const total      = parseFloat(prompt("Total (€/100):")        || 0);
-  const co2_100    = parseFloat(prompt("CO₂/100 (kg):")         || 0);
+  const name = prompt("Bauteilname:") || "Manuelles Bauteil";
+  const verfahren = prompt("Verfahren:") || "---";
+  const matEinzel = parseFloat(prompt("MatEinzel (€/100):") || 0);
+  const matGemein = parseFloat(prompt("MatGemein (€/100):") || 0);
+  const fremd = parseFloat(prompt("Fremdzukauf (€/100):") || 0);
+  const mach = parseFloat(prompt("Maschinenkosten (€/100):") || 0);
+  const lohn = parseFloat(prompt("Lohnkosten (€/100):") || 0);
+  const fgk = parseFloat(prompt("FGK (€/100):") || 0);
+  const herstell = parseFloat(prompt("Herstellkosten (€/100):") || 0);
+  const sga = parseFloat(prompt("SG&A (€/100):") || 0);
+  const profit = parseFloat(prompt("Profit (€/100):") || 0);
+  const total = parseFloat(prompt("Total (€/100):") || 0);
+  const co2_100 = parseFloat(prompt("CO₂/100 (kg):") || 0);
 
   const newItem = {
     name,
@@ -1802,22 +1820,22 @@ function exportBaugruppenAsCSV() {
     csvStr += [
       it.name,
       it.verfahren,
-      (it.matEinzel  ?? 0).toFixed(2),
-      (it.matGemein  ?? 0).toFixed(2),
-      (it.fremd      ?? 0).toFixed(2),
-      (it.mach       ?? 0).toFixed(2),
-      (it.lohn       ?? 0).toFixed(2),
-      (it.fgk        ?? 0).toFixed(2),
-      (it.herstell   ?? 0).toFixed(2),
-      (it.sga        ?? 0).toFixed(2),
-      (it.profit     ?? 0).toFixed(2),
-      (it.total      ?? 0).toFixed(2),
-      (it.co2_100    ?? 0).toFixed(2),
+      (it.matEinzel ?? 0).toFixed(2),
+      (it.matGemein ?? 0).toFixed(2),
+      (it.fremd ?? 0).toFixed(2),
+      (it.mach ?? 0).toFixed(2),
+      (it.lohn ?? 0).toFixed(2),
+      (it.fgk ?? 0).toFixed(2),
+      (it.herstell ?? 0).toFixed(2),
+      (it.sga ?? 0).toFixed(2),
+      (it.profit ?? 0).toFixed(2),
+      (it.total ?? 0).toFixed(2),
+      (it.co2_100 ?? 0).toFixed(2),
     ].join(";") + "\n";
   }
 
   // Blob erzeugen und Download-Link klicken
-  const blob = new Blob([csvStr], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob([csvStr], {type: "text/csv;charset=utf-8;"});
   const url = URL.createObjectURL(blob);
 
   const link = document.createElement("a");
@@ -1837,18 +1855,18 @@ function exampleBaugruppeAjax() {
   // Dies ist nur eine Vorlage, falls du später Daten per AJAX speichern willst.
   const csrftoken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "";
   fetch('/some/baugruppe/api', {
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
       'X-CSRFToken': csrftoken
     },
-    body: JSON.stringify({ items: baugruppenItems })
+    body: JSON.stringify({items: baugruppenItems})
   })
-    .then(res=>res.json())
-    .then(data=>{
-      console.log("Saved baugruppenItems:", data);
-    })
-    .catch(err=>console.error("Error saving baugruppen:", err));
+      .then(res => res.json())
+      .then(data => {
+        console.log("Saved baugruppenItems:", data);
+      })
+      .catch(err => console.error("Error saving baugruppen:", err));
 }
 
 // Beim Laden einmal initial rendern + summieren
@@ -1858,14 +1876,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-
-
-
-
 //----------------------------------------------------------
 // mycalc.js – Haupt-JavaScript-Datei
 //----------------------------------------------------------
-
 
 
 function openZyklusModalwithtakt() {
@@ -1923,12 +1936,10 @@ function openSpritzgussModal() {
 }
 
 
-
-
 function openDruckgussModal() {
   // Optional: Zyklus-Modal schließen, falls offen
   // closeZyklusModal();
- closeZyklusModal();
+  closeZyklusModal();
   const dgModalEl = document.getElementById("modalDruckguss");
   if (!dgModalEl) {
     console.error("modalDruckguss not found!");
@@ -1941,7 +1952,7 @@ function openDruckgussModal() {
 function openMillingModal() {
   // Optional: Zykluszeit-Modal schließen, etc.
   // closeZyklusModal();
- closeZyklusModal();
+  closeZyklusModal();
   const millModalEl = document.getElementById("modalMilling");
   if (!millModalEl) {
     console.error("modalMilling not found!");
@@ -1955,7 +1966,7 @@ function openMillingModal() {
 function openStampingModal() {
   // Evtl. vorher "Zykluszeit-Modal" schließen oder ParamTools schließen ...
   // closeZyklusModal();
- closeZyklusModal();
+  closeZyklusModal();
   const stModalEl = document.getElementById("modalStamping");
   if (!stModalEl) {
     console.error("modalStamping not found!");
@@ -2008,6 +2019,7 @@ function openPcbModal() {
   const bsModal = new bootstrap.Modal(pcbEl);
   bsModal.show();
 }
+
 /**
  * onAskGPT(inputId, outputId):
  *  - Liest question aus inputId,
@@ -2027,17 +2039,17 @@ function onAskGPT(inputId, outputId) {
 
   out.textContent = "Ich frage die KI...";
   askCustomGPT(question)
-    .then((reply) => {
-      out.textContent = reply;
-    })
-    .catch((err) => {
-      if (err.message === "GPT usage limit exceeded") {
-        alert("Dein GPT-Kontingent ist aufgebraucht. Bitte upgrade dein Abo!");
-      } else {
-        console.error("onAskGPT error:", err);
-        out.textContent = "Fehler: " + err.message;
-      }
-    });
+      .then((reply) => {
+        out.textContent = reply;
+      })
+      .catch((err) => {
+        if (err.message === "GPT usage limit exceeded") {
+          alert("Dein GPT-Kontingent ist aufgebraucht. Bitte upgrade dein Abo!");
+        } else {
+          console.error("onAskGPT error:", err);
+          out.textContent = "Fehler: " + err.message;
+        }
+      });
 }
 
 /**
@@ -2055,24 +2067,24 @@ function askCustomGPT(userQuestion) {
       "Content-Type": "application/json",
       "X-CSRFToken": csrftoken
     },
-    body: JSON.stringify({ question: userQuestion })
+    body: JSON.stringify({question: userQuestion})
   })
-    .then((res) => {
-      if (!res.ok) {
-              // Hier können wir zusätzlich checken:
-        if (res.status === 403) {
-          throw new Error("GPT usage limit exceeded");
+      .then((res) => {
+        if (!res.ok) {
+          // Hier können wir zusätzlich checken:
+          if (res.status === 403) {
+            throw new Error("GPT usage limit exceeded");
+          }
+          throw new Error("GPT request error: " + res.status);
         }
-        throw new Error("GPT request error: " + res.status);
-      }
-      return res.json();
-    })
-    .then((data) => {
-      if (data.error) {
-        throw new Error("GPT error: " + data.error);
-      }
-      return data.answer || "Keine Antwort gefunden.";
-    });
+        return res.json();
+      })
+      .then((data) => {
+        if (data.error) {
+          throw new Error("GPT error: " + data.error);
+        }
+        return data.answer || "Keine Antwort gefunden.";
+      });
 }
 
 /** ================= Login/Logout/Session ================ */
@@ -2091,25 +2103,25 @@ function doLogin() {
       "Content-Type": "application/json",
       "X-CSRFToken": csrftoken
     },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({email, password})
   })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.error) {
-        alert(data.error);
-        return;
-      }
-      // Verstecke LoginPanel, zeige userInfo
-      document.getElementById("loginPanel").style.display = "none";
-      document.getElementById("userInfo").style.display = "block";
-      document.getElementById("spanUserEmail").textContent = email;
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+        // Verstecke LoginPanel, zeige userInfo
+        document.getElementById("loginPanel").style.display = "none";
+        document.getElementById("userInfo").style.display = "block";
+        document.getElementById("spanUserEmail").textContent = email;
 
-      // Lizenzstatus prüfen
-      checkLicense();
-    })
-    .catch((err) => {
-      alert("Login fehlgeschlagen: " + err);
-    });
+        // Lizenzstatus prüfen
+        checkLicense();
+      })
+      .catch((err) => {
+        alert("Login fehlgeschlagen: " + err);
+      });
 }
 
 /**
@@ -2121,15 +2133,15 @@ function doLogout() {
   const csrftoken = document.querySelector('meta[name="csrf-token"]')?.content || "";
   fetch("/auth/logout", {
     method: "POST",
-    headers: { "X-CSRFToken": csrftoken }
+    headers: {"X-CSRFToken": csrftoken}
   })
-    .then((res) => res.json())
-    .then(() => {
-      window.location.href = "/";
-    })
-    .catch((err) => {
-      alert("Logout fehlgeschlagen: " + err);
-    });
+      .then((res) => res.json())
+      .then(() => {
+        window.location.href = "/";
+      })
+      .catch((err) => {
+        alert("Logout fehlgeschlagen: " + err);
+      });
 }
 
 /**
@@ -2146,20 +2158,20 @@ function doRegister() {
       "Content-Type": "application/json",
       "X-CSRFToken": csrftoken
     },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({email, password})
   })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("DEBUG: Server-Antwort:", data);
-      if (data.error) {
-        alert(data.error);
-        return;
-      }
-      alert("Registrierung erfolgreich. Jetzt einloggen.");
-    })
-    .catch((err) => {
-      alert("Registrierung fehlgeschlagen: " + err);
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("DEBUG: Server-Antwort:", data);
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+        alert("Registrierung erfolgreich. Jetzt einloggen.");
+      })
+      .catch((err) => {
+        alert("Registrierung fehlgeschlagen: " + err);
+      });
 }
 
 /** ===================== Lizenz / whoami ===================== */
@@ -2173,24 +2185,24 @@ function checkLicense() {
   const csrftoken = document.querySelector('meta[name="csrf-token"]')?.content || "";
   fetch("/auth/whoami", {
     method: "GET",
-    headers: { "X-CSRFToken": csrftoken }
+    headers: {"X-CSRFToken": csrftoken}
   })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("DEBUG: Lizenzprüfung/whoami:", data);
-      if (data.logged_in) {
-        // Benutzerinfos
-        document.getElementById("userInfo").style.display = "block";
-        document.getElementById("spanUserEmail").textContent = data.email || "Unbekannt";
-        // Weitere UI-Anpassungen je nach data.license
-      } else {
-        // Nicht eingeloggt => userInfo verstecken
-        document.getElementById("userInfo").style.display = "none";
-      }
-    })
-    .catch((err) => {
-      console.error("Lizenzstatus konnte nicht abgerufen werden:", err);
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("DEBUG: Lizenzprüfung/whoami:", data);
+        if (data.logged_in) {
+          // Benutzerinfos
+          document.getElementById("userInfo").style.display = "block";
+          document.getElementById("spanUserEmail").textContent = data.email || "Unbekannt";
+          // Weitere UI-Anpassungen je nach data.license
+        } else {
+          // Nicht eingeloggt => userInfo verstecken
+          document.getElementById("userInfo").style.display = "none";
+        }
+      })
+      .catch((err) => {
+        console.error("Lizenzstatus konnte nicht abgerufen werden:", err);
+      });
 }
 
 /**
@@ -2198,26 +2210,27 @@ function checkLicense() {
  *  - POST /pay/create-checkout-session => { checkout_url }
  *  - Weiterleitung
  */
+
 /**
-function buyExtended() {
-  const csrftoken = document.querySelector('meta[name="csrf-token"]')?.content || "";
-  fetch("/pay/create-checkout-session", {
-    method: "POST",
-    headers:{ "X-CSRFToken": csrftoken }
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.error) {
-        alert(data.error);
-        return;
-      }
-      window.location = data.checkout_url;
-    })
-    .catch((err) => {
-      alert("Fehler beim Start des Lizenzkaufs: " + err);
-    });
-}
-*/
+ function buyExtended() {
+ const csrftoken = document.querySelector('meta[name="csrf-token"]')?.content || "";
+ fetch("/pay/create-checkout-session", {
+ method: "POST",
+ headers:{ "X-CSRFToken": csrftoken }
+ })
+ .then((res) => res.json())
+ .then((data) => {
+ if (data.error) {
+ alert(data.error);
+ return;
+ }
+ window.location = data.checkout_url;
+ })
+ .catch((err) => {
+ alert("Fehler beim Start des Lizenzkaufs: " + err);
+ });
+ }
+ */
 /**
  * checkMaterialAccess():
  *  - Ruft /auth/whoami => prüft license
@@ -2227,21 +2240,21 @@ function checkMaterialAccess() {
   const csrftoken = document.querySelector('meta[name="csrf-token"]')?.content || "";
   fetch("/auth/whoami", {
     method: "GET",
-    headers:{ "X-CSRFToken": csrftoken }
+    headers: {"X-CSRFToken": csrftoken}
   })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("DEBUG: Lizenzprüfung Material:", data);
-      if (data.logged_in && data.license === "extended") {
-        openMaterialModal();
-      } else {
-        alert("Materialliste nur in Extended-Version verfügbar. Bitte upgraden!");
-      }
-    })
-    .catch((err) => {
-      console.error("Fehler checkMaterialAccess:", err);
-      alert("Ein Fehler ist aufgetreten. Bitte später erneut versuchen.");
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("DEBUG: Lizenzprüfung Material:", data);
+        if (data.logged_in && data.license === "extended") {
+          openMaterialModal();
+        } else {
+          alert("Materialliste nur in Extended-Version verfügbar. Bitte upgraden!");
+        }
+      })
+      .catch((err) => {
+        console.error("Fehler checkMaterialAccess:", err);
+        alert("Ein Fehler ist aufgetreten. Bitte später erneut versuchen.");
+      });
 }
 
 /**
@@ -2251,12 +2264,11 @@ function checkMaterialAccess() {
  */
 
 // Exporte, falls nötig
-window.onAskGPT     = onAskGPT;
-window.doLogin      = doLogin;
-window.doLogout     = doLogout;
-window.doRegister   = doRegister;
+window.onAskGPT = onAskGPT;
+window.doLogin = doLogin;
+window.doLogout = doLogout;
+window.doRegister = doRegister;
 window.checkLicense = checkLicense;
-
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -2299,9 +2311,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   console.log("DEBUG: DOMContentLoaded end (fusion done).");
 });
+
 async function checkLicenseThen(fnIfOk) {
   try {
-    const res = await fetch("/auth/whoami", { method: "GET" });
+    const res = await fetch("/auth/whoami", {method: "GET"});
     const data = await res.json();
 
     // Falls nicht eingeloggt => Umleiten zum Login
@@ -2312,7 +2325,7 @@ async function checkLicenseThen(fnIfOk) {
     }
 
     // Lizenzprüfung: Nur "premium" oder "extended" erlaubt
-    if (!["premium","extended"].includes(data.license)) {
+    if (!["premium", "extended"].includes(data.license)) {
       alert("Dieses Feature erfordert Premium oder Extended. Bitte Upgrade!");
       return;
     }
@@ -2320,7 +2333,7 @@ async function checkLicenseThen(fnIfOk) {
     // Falls alles OK => eigentliche Funktion ausführen
     fnIfOk();
 
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     alert("Lizenzprüfung fehlgeschlagen. Bitte erneut versuchen.");
   }
@@ -2370,7 +2383,201 @@ function openPcbModalSafe() {
     openPcbModal();
   });
 }
-function togglePcbChatWindow(){
+
+function togglePcbChatWindow() {
   let cw = document.getElementById("pcbChatWindow");
   cw.style.display = (cw.style.display === "block") ? "none" : "block";
 }
+
+
+  async function exportBaugruppenExcel() {
+  // 1) Bauteile aus globaler Liste:
+  if(!window.baugruppenItems || !window.baugruppenItems.length){
+  alert("Keine Einträge in der Baugruppenliste.");
+  return;
+}
+  // 2) POST an /exports/baugruppe/excel
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
+  const resp = await fetch("/exports/baugruppe/excel", {
+  method: "POST",
+  headers: {
+  "Content-Type": "application/json",
+  "X-CSRFToken": csrfToken
+},
+  body: JSON.stringify({baugruppenItems: window.baugruppenItems})
+});
+  if(!resp.ok){
+  let data = null;
+  try {data = await resp.json();} catch(e){}
+  if(data?.error) alert("Fehler: " + data.error);
+  else alert("Fehler: " + resp.status);
+  return;
+}
+  // 3) Download
+  // Da wir "send_file", fetch => Blobs
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "baugruppe_export.xlsx";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+  async function exportBaugruppenPdf(){
+  if(!window.baugruppenItems || !window.baugruppenItems.length){
+  alert("Keine Einträge in der Baugruppenliste.");
+  return;
+}
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
+  const resp = await fetch("/exports/baugruppe/pdf", {
+  method:"POST",
+  headers: {
+  "Content-Type":"application/json",
+  "X-CSRFToken": csrfToken
+},
+  body: JSON.stringify({baugruppenItems: window.baugruppenItems})
+});
+  if(!resp.ok){
+  let data = null;
+  try {data = await resp.json();} catch(e){}
+  if(data?.error) alert("Fehler: " + data.error);
+  else alert("Fehler: " + resp.status);
+  return;
+}
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "baugruppe_export.pdf";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+
+/* ------------------------------------------------------
+   Beispielhafter JS-Code für Comparison-Excel-Export
+   ------------------------------------------------------ */
+
+/**
+ * Sammelt Daten aus Tab1-4 und ruft /exports/baugruppe/excel_comparison auf.
+ * Erwartet, dass du die Daten vorher in globalen Variablen oder per DOM ausgelesen hast.
+ */
+async function exportComparisonExcel() {
+  // Beispielhaft: Hier holst du dir die Werte aus dem DOM (Tab1):
+  const tab1 = {
+    projectName: document.getElementById("txtProjectName")?.value || "",
+    partName: document.getElementById("txtPartName")?.value || "",
+    annualQty: parseFloat(document.getElementById("annualQty")?.value) || 0,
+    lotSize: parseFloat(document.getElementById("lotSize")?.value) || 0,
+    scrapPct: parseFloat(document.getElementById("scrapPct")?.value) || 0,
+    sgaPct: parseFloat(document.getElementById("sgaPct")?.value) || 0,
+    profitPct: parseFloat(document.getElementById("profitPct")?.value) || 0
+  };
+
+  // Tab2:
+  const tab2 = {
+    matName: document.getElementById("matName")?.value || "",
+    matPrice: parseFloat(document.getElementById("matPrice")?.value) || 0,
+    matCo2: parseFloat(document.getElementById("matCo2")?.value) || 0,
+    matGK: parseFloat(document.getElementById("matGK")?.value) || 0,
+    matWeight: parseFloat(document.getElementById("matWeight")?.value) || 0,
+    fremdValue: parseFloat(document.getElementById("fremdValue")?.value) || 0
+  };
+
+  // Tab3: bis zu 8 Schritte
+  // Hier ein rudimentäres Beispiel. Du müsstest ggf. die DOM-Struktur deines
+  // "fertTable" durchlaufen und Daten extrahieren.
+  const rows = document.querySelectorAll("#fertTable tbody tr");
+  const tab3 = [];
+  rows.forEach((tr, idx) => {
+    if(idx < 8) { // Max 8
+      const tds = tr.querySelectorAll("td");
+      // Columns (Annahme: StepName, Zyklus, MS/h, Lohn/h, Rüst/Los, Tooling, FGK, CO2/h, etc.)
+      // Hier exemplarisch, du musst es an deine Felder anpassen
+      const stepName = tds[0]?.querySelector("input")?.value || `Step ${idx+1}`;
+      const zyklus_s = parseFloat(tds[1]?.querySelector("input")?.value) || 0;
+      const ms_eur_h = parseFloat(tds[2]?.querySelector("input")?.value) || 0;
+      const lohn_eur_h = parseFloat(tds[3]?.querySelector("input")?.value) || 0;
+      const ruest_eur_los = parseFloat(tds[4]?.querySelector("input")?.value) || 0;
+      const tooling_eur_100 = parseFloat(tds[5]?.querySelector("input")?.value) || 0;
+      const fgk_pct = parseFloat(tds[6]?.querySelector("input")?.value) || 0;
+      const co2_kg_h = parseFloat(tds[7]?.querySelector("input")?.value) || 0;
+      // Die berechneten Spalten 8/9 in Tab3 (#kosten/100, #co2/100) sind Spans?
+      const kosten_100 = parseFloat(tds[8]?.querySelector("span")?.innerText) || 0;
+      const co2_100 = parseFloat(tds[9]?.querySelector("span")?.innerText) || 0;
+
+      tab3.push({
+        stepName,
+        zyklus_s,
+        ms_eur_h,
+        lohn_eur_h,
+        ruest_eur_los,
+        tooling_eur_100,
+        fgk_pct,
+        co2_kg_h,
+        kosten_100,
+        co2_100
+      });
+    }
+  });
+
+  // Tab4: Summary
+  const tab4 = {
+    matEinzel: parseFloat(document.getElementById("tdMatEinzel")?.innerText) || 0,
+    matGemein: parseFloat(document.getElementById("tdMatGemein")?.innerText) || 0,
+    fremd: parseFloat(document.getElementById("tdFremd")?.innerText) || 0,
+    mach: parseFloat(document.getElementById("tdMach")?.innerText) || 0,
+    lohn: parseFloat(document.getElementById("tdLohn")?.innerText) || 0,
+    fgk: parseFloat(document.getElementById("tdFGK")?.innerText) || 0,
+    herstell: parseFloat(document.getElementById("tdHerstell")?.innerText) || 0,
+    sga: parseFloat(document.getElementById("tdSGA")?.innerText) || 0,
+    profit: parseFloat(document.getElementById("tdProfit")?.innerText) || 0,
+    total: parseFloat(document.getElementById("tdTotal")?.innerText) || 0,
+    co2_100: parseFloat(document.getElementById("tdCo2Total")?.innerText) || 0
+  };
+
+  // Jetzt POST an /exports/baugruppe/excel_comparison
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
+  const resp = await fetch("/exports/baugruppe/excel_comparison", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken
+    },
+    body: JSON.stringify({
+      tab1,
+      tab2,
+      tab3,
+      tab4
+    })
+  });
+
+  if (!resp.ok) {
+    let data = null;
+    try { data = await resp.json(); } catch(e){}
+    if(data?.error) alert("Fehler: " + data.error);
+    else alert("Fehler: " + resp.status);
+    return;
+  }
+
+  // Download (ähnlich wie in deinem bestehenden code)
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "ParetoKalk_Comparison.xlsx";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+// ------------------------------------------------------
+// Ende JS
+// ------------------------------------------------------
+
