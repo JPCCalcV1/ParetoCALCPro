@@ -1193,13 +1193,7 @@
           >
             <i class="fa fa-calculator me-1"></i> Berechnen
           </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-success me-2"
-            onclick="/* ggf. Funktion für Übernehmen */"
-          >
-            <i class="fa fa-check me-1"></i> Übernehmen
-          </button>
+
           <button
             type="button"
             class="btn btn-sm btn-secondary"
@@ -1215,22 +1209,22 @@
 </div><!-- #feingussModal -->
 
 <!-- ============== SCHMIEDEN-MODAL ============== -->
-<div
-  class="modal fade"
-  id="schmiedenModal"
-  tabindex="-1"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
-      <div class="modal-header">
+<!-- =================== SCHMIEDEN-KALKULATOR (PARAMETRIC) - DESIGN-ADAPTIERT =================== -->
+<div class="modal fade" id="schmiedenModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl" style="max-width:1000px;">
+    <!-- Übernimmt Design-Komponenten analog zum Beispiel -->
+    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
+
+      <!-- HEADER (Farbe & Styling übernommen) -->
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title">Schmieden-Kalkulator (Parametric)</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <div class="modal-body">
-        <!-- === NAV TABS: Eingaben / Erweitert === -->
-        <ul class="nav nav-tabs" id="schmiedenTabs" role="tablist">
+      <!-- BODY (Tabs + Inhalt) -->
+      <div class="modal-body p-2">
+        <!-- === NAV TABS (Eingaben / Erweitert) - mit nav-tabs-v2 === -->
+        <ul class="nav nav-tabs nav-tabs-v2" id="schmiedenTabs" role="tablist" style="margin-bottom: 0.5rem;">
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
@@ -1408,48 +1402,48 @@
         </div>
       </div><!-- /.modal-body -->
 
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-primary me-2"
-          onclick="calculateSchmieden()"
-        >
-          Berechnen
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Schließen
-        </button>
+      <!-- FOOTER (Buttons & Styling analog) -->
+      <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-theme me-2"
+            onclick="calculateSchmieden()"
+          >
+            <i class="fa fa-calculator me-1"></i> Berechnen
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+        </div>
       </div>
+
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
-</div>
+</div><!-- #schmiedenModal -->
 <!-- End SchmiedenModal -->
 
 
 <!-- ============== KALTFLIESS-MODAL ============== -->
-<div
-  class="modal fade"
-  id="kaltfliessModal"
-  tabindex="-1"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-xl">
-    <div
-      class="modal-content"
-      style="max-height: 85vh; overflow-y: auto;"
-    >
-      <div class="modal-header">
+<!-- =================== KALTFLIESSPRESSEN – PARAMETRIK (DESIGN-ADAPTIERT) =================== -->
+<div class="modal fade" id="kaltfliessModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl" style="max-width:1000px;">
+    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
+
+      <!-- HEADER (Design analog zu "Maschinenstundensatz") -->
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title">Kaltfließpressen – Parametrik</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <div class="modal-body">
-        <!-- NAV-TABS -->
-        <ul class="nav nav-tabs" id="kaltfliessTabs" role="tablist">
+      <!-- BODY -->
+      <div class="modal-body p-2">
+        <!-- NAV-TABS (Eingaben / Erweitert) -->
+        <ul class="nav nav-tabs nav-tabs-v2" id="kaltfliessTabs" role="tablist" style="margin-bottom: 0.5rem;">
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
@@ -1630,10 +1624,10 @@
                 </select>
               </div>
             </div>
-          </div><!-- end tabpane-adv -->
-        </div><!-- end .tab-content -->
+          </div><!-- #kaltfliess-tabpane-adv -->
+        </div><!-- .tab-content -->
 
-        <!-- =========== Ergebnisbereich (3 Spalten) =========== -->
+        <!-- =========== ERGEBNISBEREICH (3 Spalten) =========== -->
         <hr />
         <div class="row">
           <div class="col-sm-4" id="kaltfliessResultText" style="font-size:0.85rem;">
@@ -1656,337 +1650,333 @@
             ></canvas>
           </div>
         </div>
-      </div><!-- end .modal-body -->
+      </div><!-- /.modal-body -->
 
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-primary me-2"
-          onclick="calculateKaltfliess()"
-        >
-          Berechnen
-        </button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Schließen
-        </button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
-<!-- End KaltfliessModal -->
-<div
-    class="modal fade"
-    id="pcbModal"
-    tabindex="-1"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-xl">
-      <div
-        class="modal-content"
-        style="max-height: 85vh; overflow-y: auto;"
-      >
-        <div class="modal-header">
-          <h5 class="modal-title">PCB-Kalkulator (Parametrik)</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-
-        <div class="modal-body">
-          <!-- NAVIGATIONS-TABS -->
-          <ul class="nav nav-tabs" id="pcbTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="pcb-tab-input"
-                data-bs-toggle="tab"
-                data-bs-target="#pcb-tabpane-input"
-                type="button"
-                role="tab"
-              >
-                Eingaben
-              </button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="pcb-tab-adv"
-                data-bs-toggle="tab"
-                data-bs-target="#pcb-tabpane-adv"
-                type="button"
-                role="tab"
-              >
-                Erweitert
-              </button>
-            </li>
-          </ul>
-
-          <div class="tab-content p-3" id="pcbTabContent">
-            <!-- TAB 1: EINGABEN -->
-            <div
-              class="tab-pane fade show active"
-              id="pcb-tabpane-input"
-              role="tabpanel"
-            >
-              <!-- L x B (mm) -->
-              <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">
-                  Abmessung:
-                </label>
-                <div class="col-sm-5 d-flex flex-wrap gap-2">
-                  <div class="input-group input-group-sm" style="width: 48%;">
-                    <span class="input-group-text">L (mm)</span>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="pcbLen"
-                      step="1"
-                      value="100"
-                    />
-                  </div>
-                  <div class="input-group input-group-sm" style="width: 48%;">
-                    <span class="input-group-text">B (mm)</span>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="pcbWid"
-                      step="1"
-                      value="80"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Lagenzahl -->
-              <div class="row mb-3">
-                <label for="pcbLayer" class="col-sm-4 col-form-label">
-                  Lagenzahl
-                </label>
-                <div class="col-sm-5">
-                  <select class="form-select form-select-sm" id="pcbLayer">
-                    <option>2</option>
-                    <option>4</option>
-                    <option>6</option>
-                    <option>8</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Stückzahl -->
-              <div class="row mb-3">
-                <label for="pcbQty" class="col-sm-4 col-form-label">
-                  Stückzahl
-                </label>
-                <div class="col-sm-5">
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="pcbQty"
-                    step="1"
-                    value="1000"
-                  />
-                </div>
-              </div>
-
-              <!-- Land -->
-              <div class="row mb-3">
-                <label for="pcbLand" class="col-sm-4 col-form-label">
-                  Land (Fertigung)
-                </label>
-                <div class="col-sm-5">
-                  <select class="form-select form-select-sm" id="pcbLand">
-                    <option>China</option>
-                    <option>Europa</option>
-                    <option>Sonst</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- TAB 2: ERWEITERT -->
-            <div
-              class="tab-pane fade"
-              id="pcb-tabpane-adv"
-              role="tabpanel"
-            >
-              <!-- Dicke -->
-              <div class="row mb-3">
-                <label for="pcbThick" class="col-sm-4 col-form-label">
-                  PCB-Dicke (mm)
-                </label>
-                <div class="col-sm-5">
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="pcbThick"
-                    step="0.01"
-                    value="1.6"
-                  />
-                </div>
-              </div>
-
-              <!-- Kupferdicke -->
-              <div class="row mb-3">
-                <label for="pcbCu" class="col-sm-4 col-form-label">
-                  Kupferdicke
-                </label>
-                <div class="col-sm-5">
-                  <select class="form-select form-select-sm" id="pcbCu">
-                    <option>35µm</option>
-                    <option>70µm</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Finish -->
-              <div class="row mb-3">
-                <label for="pcbFinish" class="col-sm-4 col-form-label">
-                  Oberfläche (Finish)
-                </label>
-                <div class="col-sm-5">
-                  <select class="form-select form-select-sm" id="pcbFinish">
-                    <option>HASL</option>
-                    <option>ENIG</option>
-                    <option>OSP</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Tooling-Kosten -->
-              <div class="row mb-3">
-                <label for="pcbTooling" class="col-sm-4 col-form-label">
-                  Tooling-Kosten (€)
-                </label>
-                <div class="col-sm-5">
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="pcbTooling"
-                    step="1"
-                    value="200"
-                  />
-                </div>
-              </div>
-
-              <!-- CheckBox: "Einfache Bestückung?" -->
-              <div class="row mb-3">
-                <div class="col-sm-4"></div>
-                <div class="col-sm-8">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="pcbAssemblyCheck"
-                    />
-                    <label
-                      class="form-check-label"
-                      for="pcbAssemblyCheck"
-                    >
-                      Einfache Bestückung berücksichtigen?
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- SMD / THT Felder -->
-              <div class="row mb-3">
-                <label for="pcbSmdCount" class="col-sm-4 col-form-label">
-                  SMD-Bauteile (Anzahl)
-                </label>
-                <div class="col-sm-5">
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="pcbSmdCount"
-                    step="1"
-                    value="50"
-                  />
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <label for="pcbThtCount" class="col-sm-4 col-form-label">
-                  THT-Pins (Anzahl)
-                </label>
-                <div class="col-sm-5">
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    id="pcbThtCount"
-                    step="1"
-                    value="10"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ================== ERGEBNIS-BEREICH (3 SPALTEN) ================== -->
-          <hr />
-          <div class="row">
-            <div class="col-sm-4" id="pcbResultText" style="font-size:0.85rem;">
-              <!-- Dynamisch gefüllt -->
-            </div>
-            <div class="col-sm-4 text-center">
-              <canvas
-                id="pcbCostChart"
-                width="200"
-                height="200"
-                style="border:1px solid #ccc;"
-              ></canvas>
-            </div>
-            <div class="col-sm-4 text-center">
-              <canvas
-                id="pcbCo2Chart"
-                width="200"
-                height="200"
-                style="border:1px solid #ccc;"
-              ></canvas>
-            </div>
-          </div>
-        </div><!-- end .modal-body -->
-
-        <div class="modal-footer">
+      <!-- FOOTER (Design-Farben & Buttons) -->
+      <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
+        <div>
           <button
             type="button"
-            class="btn btn-primary me-2"
-            onclick="calculatePcb()"
+            class="btn btn-sm btn-theme me-2"
+            onclick="calculateKaltfliess()"
           >
-            Berechnen
+            <i class="fa fa-calculator me-1"></i> Berechnen
           </button>
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-sm btn-secondary"
             data-bs-dismiss="modal"
           >
-            Schließen
+            <i class="fa fa-times me-1"></i> Schließen
           </button>
         </div>
       </div>
-    </div>
-  </div>
-<!-- ================= SPRITZGUSS-MODAL ================= -->
-<div
-  class="modal fade"
-  id="modalSpritzguss"
-  tabindex="-1"
-  aria-labelledby="spritzgussModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-xl modal-sg">
-    <div class="modal-content">
 
-      <!-- HEADER -->
-      <div class="modal-header">
-        <!-- 5) Überschrift NICHT mehr „Szenario 1“ -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- #kaltfliessModal --><!-- End KaltfliessModal -->
+<!-- =================== PCB-KALKULATOR (PARAMETRIK) - DESIGN-ADAPTIERT =================== -->
+<div class="modal fade" id="pcbModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl" style="max-width:1000px;">
+    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
+
+      <!-- HEADER (Design analog) -->
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
+        <h5 class="modal-title">PCB-Kalkulator (Parametrik)</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body p-2">
+        <!-- NAVIGATIONS-TABS -->
+        <ul class="nav nav-tabs nav-tabs-v2" id="pcbTabs" role="tablist" style="margin-bottom: 0.5rem;">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="pcb-tab-input"
+              data-bs-toggle="tab"
+              data-bs-target="#pcb-tabpane-input"
+              type="button"
+              role="tab"
+            >
+              Eingaben
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="pcb-tab-adv"
+              data-bs-toggle="tab"
+              data-bs-target="#pcb-tabpane-adv"
+              type="button"
+              role="tab"
+            >
+              Erweitert
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content p-3" id="pcbTabContent">
+          <!-- TAB 1: EINGABEN -->
+          <div
+            class="tab-pane fade show active"
+            id="pcb-tabpane-input"
+            role="tabpanel"
+          >
+            <!-- L x B (mm) -->
+            <div class="row mb-3">
+              <label class="col-sm-4 col-form-label">
+                Abmessung:
+              </label>
+              <div class="col-sm-5 d-flex flex-wrap gap-2">
+                <div class="input-group input-group-sm" style="width: 48%;">
+                  <span class="input-group-text">L (mm)</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="pcbLen"
+                    step="1"
+                    value="100"
+                  />
+                </div>
+                <div class="input-group input-group-sm" style="width: 48%;">
+                  <span class="input-group-text">B (mm)</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="pcbWid"
+                    step="1"
+                    value="80"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Lagenzahl -->
+            <div class="row mb-3">
+              <label for="pcbLayer" class="col-sm-4 col-form-label">
+                Lagenzahl
+              </label>
+              <div class="col-sm-5">
+                <select class="form-select form-select-sm" id="pcbLayer">
+                  <option>2</option>
+                  <option>4</option>
+                  <option>6</option>
+                  <option>8</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Stückzahl -->
+            <div class="row mb-3">
+              <label for="pcbQty" class="col-sm-4 col-form-label">
+                Stückzahl
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="pcbQty"
+                  step="1"
+                  value="1000"
+                />
+              </div>
+            </div>
+
+            <!-- Land -->
+            <div class="row mb-3">
+              <label for="pcbLand" class="col-sm-4 col-form-label">
+                Land (Fertigung)
+              </label>
+              <div class="col-sm-5">
+                <select class="form-select form-select-sm" id="pcbLand">
+                  <option>China</option>
+                  <option>Europa</option>
+                  <option>Sonst</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: ERWEITERT -->
+          <div
+            class="tab-pane fade"
+            id="pcb-tabpane-adv"
+            role="tabpanel"
+          >
+            <!-- Dicke -->
+            <div class="row mb-3">
+              <label for="pcbThick" class="col-sm-4 col-form-label">
+                PCB-Dicke (mm)
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="pcbThick"
+                  step="0.01"
+                  value="1.6"
+                />
+              </div>
+            </div>
+
+            <!-- Kupferdicke -->
+            <div class="row mb-3">
+              <label for="pcbCu" class="col-sm-4 col-form-label">
+                Kupferdicke
+              </label>
+              <div class="col-sm-5">
+                <select class="form-select form-select-sm" id="pcbCu">
+                  <option>35µm</option>
+                  <option>70µm</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Finish -->
+            <div class="row mb-3">
+              <label for="pcbFinish" class="col-sm-4 col-form-label">
+                Oberfläche (Finish)
+              </label>
+              <div class="col-sm-5">
+                <select class="form-select form-select-sm" id="pcbFinish">
+                  <option>HASL</option>
+                  <option>ENIG</option>
+                  <option>OSP</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Tooling-Kosten -->
+            <div class="row mb-3">
+              <label for="pcbTooling" class="col-sm-4 col-form-label">
+                Tooling-Kosten (€)
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="pcbTooling"
+                  step="1"
+                  value="200"
+                />
+              </div>
+            </div>
+
+            <!-- CheckBox: "Einfache Bestückung?" -->
+            <div class="row mb-3">
+              <div class="col-sm-4"></div>
+              <div class="col-sm-8">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="pcbAssemblyCheck"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="pcbAssemblyCheck"
+                  >
+                    Einfache Bestückung berücksichtigen?
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- SMD / THT Felder -->
+            <div class="row mb-3">
+              <label for="pcbSmdCount" class="col-sm-4 col-form-label">
+                SMD-Bauteile (Anzahl)
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="pcbSmdCount"
+                  step="1"
+                  value="50"
+                />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label for="pcbThtCount" class="col-sm-4 col-form-label">
+                THT-Pins (Anzahl)
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="pcbThtCount"
+                  step="1"
+                  value="10"
+                />
+              </div>
+            </div>
+          </div>
+        </div><!-- .tab-content -->
+
+        <!-- ================== ERGEBNIS-BEREICH (3 SPALTEN) ================== -->
+        <hr />
+        <div class="row">
+          <div class="col-sm-4" id="pcbResultText" style="font-size:0.85rem;">
+            <!-- Dynamisch gefüllt -->
+          </div>
+          <div class="col-sm-4 text-center">
+            <canvas
+              id="pcbCostChart"
+              width="200"
+              height="200"
+              style="border:1px solid #ccc;"
+            ></canvas>
+          </div>
+          <div class="col-sm-4 text-center">
+            <canvas
+              id="pcbCo2Chart"
+              width="200"
+              height="200"
+              style="border:1px solid #ccc;"
+            ></canvas>
+          </div>
+        </div>
+      </div><!-- .modal-body -->
+
+      <!-- FOOTER (Design analog) -->
+      <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-theme me-2"
+            onclick="calculatePcb()"
+          >
+            <i class="fa fa-calculator me-1"></i> Berechnen
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- #pcbModal --><!-- ================= SPRITZGUSS-MODAL ================= -->
+<!-- =================== SPRITZGUSS – TAKTZEITRECHNER (DESIGN-ADAPTIERT) =================== -->
+<div class="modal fade" id="modalSpritzguss" tabindex="-1" aria-labelledby="spritzgussModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-sg" style="max-width:1000px;">
+    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
+
+      <!-- HEADER (Design analog) -->
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title" id="spritzgussModalLabel">
           Spritzguss – Taktzeitrechner
         </h5>
         <button
           type="button"
-          class="btn-close"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Schließen"
         ></button>
@@ -1996,7 +1986,7 @@
       <div class="modal-body p-2">
 
         <!-- TABS (Basis / Erweitert / Profile) -->
-        <ul class="nav nav-tabs" id="sgTabs" role="tablist">
+        <ul class="nav nav-tabs nav-tabs-v2" id="sgTabs" role="tablist" style="margin-bottom: 0.5rem;">
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
@@ -2137,7 +2127,6 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold mb-1">Wandstärke (mm)</label>
-                <!-- Wir legen min="0.3" max="8.0" direkt im HTML an -->
                 <input
                   type="number"
                   class="form-control form-control-sm"
@@ -2189,7 +2178,6 @@
                           id="sgMachineCombo"
                           class="form-select form-select-sm"
                         >
-                          <!-- Zusätzliche Maschinen (z. B. 250t, 400t) -->
                           <option value="80t HighSpeed">80t HighSpeed</option>
                           <option value="100t Standard">100t Standard</option>
                           <option value="120t AllElectric">120t AllElectric</option>
@@ -2358,7 +2346,6 @@
                   Automotive-Profil
                 </button>
               </div>
-              <!-- Gibt an, welche Felder das Profil wirklich geändert hat (user-friendly labels) -->
               <div
                 id="sgProfileChanges"
                 class="mt-3 p-2 border border-info"
@@ -2372,7 +2359,7 @@
         </div><!-- END of TAB-CONTENT -->
 
         <hr />
-        <!-- ERGEBNISSE: Kompakter Bereich -->
+        <!-- ERGEBNISSE -->
         <h6>Ergebnisse</h6>
         <div class="row">
           <div class="col-md-6">
@@ -2393,7 +2380,6 @@
               <span id="sgCyclePart" class="fw-bold">--</span>
             </div>
 
-            <!-- Maschine-Erklärung -->
             <div
               id="sgMachineExplain"
               class="text-muted"
@@ -2402,7 +2388,7 @@
               <!-- Dynamisch vom JS ausgefüllt -->
             </div>
 
-            <!-- Versteckte Felder für Durchsatz / Kosten -->
+            <!-- Versteckte Felder für Durchsatz / Kosten (bei Bedarf genutzt) -->
             <div style="display:none;">
               Teile/h:
               <span id="sgThroughput">--</span>
@@ -2424,48 +2410,53 @@
 
       </div><!-- END modal-body -->
 
-      <!-- FOOTER-BUTTONS -->
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary btn-sm"
-          data-bs-dismiss="modal"
-        >
-          Schließen
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary btn-sm"
-          onclick="calculateSpritzguss()"
-        >
-          Berechnen
-        </button>
-        <button
-          type="button"
-          class="btn btn-success btn-sm"
-          id="btnSpritzgussUebernehmen"
-        >
-          Übernehmen
-        </button>
+      <!-- FOOTER -->
+      <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
+        <div>
+          <!-- Reihenfolge wie im Original, nur Design & Icons ergänzt -->
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary me-2"
+            data-bs-dismiss="modal"
+          >
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-theme me-2"
+            onclick="calculateSpritzguss()"
+          >
+            <i class="fa fa-calculator me-1"></i> Berechnen
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-success"
+            id="btnSpritzgussUebernehmen"
+          >
+            <i class="fa fa-check me-1"></i> Übernehmen
+          </button>
+        </div>
       </div>
 
     </div><!-- .modal-content -->
   </div><!-- .modal-dialog -->
 </div><!-- #modalSpritzguss -->
-<!-- DRUCKGUSS-MODAL (Fancy v2.0) -->
+        <!-- DRUCKGUSS-MODAL (Fancy v2.0) -->
+<!-- =================== DRUCKGUSS – TAKTZEITRECHNER (DESIGN-ADAPTIERT) =================== -->
 <div class="modal fade" id="modalDruckguss" tabindex="-1" aria-labelledby="druckgussModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dg">
-    <div class="modal-content">
-      <!-- HEADER -->
-      <div class="modal-header">
+  <div class="modal-dialog modal-xl modal-dg" style="max-width:1000px;">
+    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
+
+      <!-- HEADER (Design analog) -->
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title" id="druckgussModalLabel">Druckguss – Taktzeitrechner</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
       <!-- BODY -->
       <div class="modal-body p-2">
         <!-- TABS (Basis / Erweitert) -->
-        <ul class="nav nav-tabs" id="dgTabs" role="tablist">
+        <ul class="nav nav-tabs nav-tabs-v2" id="dgTabs" role="tablist" style="margin-bottom: 0.5rem;">
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
@@ -2567,7 +2558,7 @@
                 />
               </div>
             </div>
-          </div>
+          </div><!-- END TAB BASIC -->
 
           <!-- TAB 2: ERWEITERT -->
           <div
@@ -2663,8 +2654,8 @@
                 />
               </div>
             </div>
-          </div>
-        </div><!-- END TABS -->
+          </div><!-- END TAB ADVANCED -->
+        </div><!-- END .tab-content -->
 
         <hr/>
         <!-- ERGEBNISSE -->
@@ -2692,53 +2683,60 @@
         </div>
       </div><!-- END modal-body -->
 
-      <!-- FOOTER-BUTTONS -->
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary btn-sm"
-          data-bs-dismiss="modal"
-        >
-          Schließen
-        </button>
-        <!-- Neuer AJAX-Call-Button: -->
-        <button
-          type="button"
-          class="btn btn-primary btn-sm"
-          onclick="calculateDruckguss()"
-        >
-          Berechnen
-        </button>
-        <button
-          type="button"
-          class="btn btn-success btn-sm"
-          id="btnDruckgussUebernehmen"
-        >
-          Übernehmen
-        </button>
+      <!-- FOOTER-BUTTONS (Design analog) -->
+      <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary me-2"
+            data-bs-dismiss="modal"
+          >
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-theme me-2"
+            onclick="calculateDruckguss()"
+          >
+            <i class="fa fa-calculator me-1"></i> Berechnen
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-success"
+            id="btnDruckgussUebernehmen"
+          >
+            <i class="fa fa-check me-1"></i> Übernehmen
+          </button>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- #modalDruckguss -->
 <!-- ================================================
      (10-15 Zeilen VORLAUF, z. B. andere Modals)
      ================================================ -->
 
 <!-- =================== MILLING-MODAL =================== -->
+
+Request for o1 pro mode
+Denkvorgang beendet
+html
+Kopieren
+<!-- =================== FRÄS-/ZERSPANUNGS-RECHNER (DESIGN-ADAPTIERT) =================== -->
 <div class="modal fade" id="modalMilling" tabindex="-1" aria-labelledby="millingModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-milling">
-    <div class="modal-content">
-      <!-- Header -->
-      <div class="modal-header">
+  <div class="modal-dialog modal-xl modal-milling" style="max-width:1000px;">
+    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
+
+      <!-- HEADER (Design analog) -->
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title" id="millingModalLabel">Fräs-/Zerspanungs-Rechner</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <!-- Body -->
+      <!-- BODY -->
       <div class="modal-body p-2">
         <!-- Tabs (Basis / Erweitert) -->
-        <ul class="nav nav-tabs" id="millTabs" role="tablist">
+        <ul class="nav nav-tabs nav-tabs-v2" id="millTabs" role="tablist" style="margin-bottom: 0.5rem;">
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
@@ -2844,7 +2842,7 @@
                 value="28"
               />
             </div>
-          </div>
+          </div><!-- END TAB BASIC -->
 
           <!-- TAB 2: ERWEITERT -->
           <div
@@ -2902,8 +2900,8 @@
                 />
               </div>
             </div>
-          </div><!-- /millTabAdvanced -->
-        </div><!-- /tab-content -->
+          </div><!-- END TAB ADVANCED -->
+        </div><!-- END .tab-content -->
 
         <hr/>
         <!-- ERGEBNISSE -->
@@ -2929,48 +2927,53 @@
         </div><!-- /millResultsArea -->
       </div><!-- /modal-body -->
 
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary btn-sm"
-          data-bs-dismiss="modal"
-        >
-          Schließen
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary btn-sm"
-          onclick="calculateMilling()"
-        >
-          Berechnen
-        </button>
-        <button
-          type="button"
-          class="btn btn-success btn-sm"
-          id="btnMillingUebernehmen"
-        >
-          Übernehmen
-        </button>
+      <!-- FOOTER (Design analog) -->
+      <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary me-2"
+            data-bs-dismiss="modal"
+          >
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-theme me-2"
+            onclick="calculateMilling()"
+          >
+            <i class="fa fa-calculator me-1"></i> Berechnen
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-success"
+            id="btnMillingUebernehmen"
+          >
+            <i class="fa fa-check me-1"></i> Übernehmen
+          </button>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- #modalMilling -->
 <!-- End MILLING-MODAL -->
         <!-- ============== STAMPING-MODAL ============== -->
+<!-- =================== STANZEN/PRESSEN – KALKULATOR (DESIGN-ADAPTIERT) =================== -->
 <div class="modal fade" id="modalStamping" tabindex="-1" aria-labelledby="stampingModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-stamping">
-    <div class="modal-content">
+  <div class="modal-dialog modal-xl modal-stamping" style="max-width:1000px;">
+    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
 
-      <!-- Header -->
-      <div class="modal-header">
+      <!-- HEADER (Design analog) -->
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title" id="stampingModalLabel">Stanzen/Pressen – Kalkulator</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <!-- Body -->
+      <!-- BODY -->
       <div class="modal-body p-2">
         <!-- Tabs (Basis / Erweitert) -->
-        <ul class="nav nav-tabs" id="stampingTabs" role="tablist">
+        <ul class="nav nav-tabs nav-tabs-v2" id="stampingTabs" role="tablist" style="margin-bottom: 0.5rem;">
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
@@ -2998,7 +3001,6 @@
         </ul>
 
         <div class="tab-content mt-2" id="stampingTabContent">
-
           <!-- TAB 1: BASIS -->
           <div
             class="tab-pane fade show active"
@@ -3073,7 +3075,7 @@
                 Dickes Blech => -20% Hubzahl
               </label>
             </div>
-          </div>
+          </div><!-- END TAB BASIC -->
 
           <!-- TAB 2: ERWEITERT -->
           <div
@@ -3104,7 +3106,7 @@
                 </small>
               </div>
             </div>
-          </div>
+          </div><!-- END TAB ADVANCED -->
         </div><!-- /tab-content -->
 
         <hr/>
@@ -3130,94 +3132,26 @@
             </div>
           </div>
         </div>
-
       </div><!-- /modal-body -->
 
-      <!-- Footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-          Schließen
-        </button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="calculateStamping()">
-          Berechnen
-        </button>
-        <button type="button" class="btn btn-success btn-sm" id="btnStampingUebernehmen">
-          Übernehmen
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- MATERIAL MODAL -->
-<div
-  class="modal fade"
-  id="modalMaterial"
-  tabindex="-1"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
-      <div class="modal-header">
-        <h5 class="modal-title">Materialliste</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        <!-- Filterfeld -->
-        <div class="mb-3 d-flex gap-2">
-          <div class="flex-grow-1">
-            <label for="matFilterInput" class="form-label"
-              >Filter (Materialname oder Verfahren)</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="matFilterInput"
-              placeholder="z.B. 'AlSi9' oder 'Guss'"
-              oninput="filterMaterialList()"
-            />
-          </div>
-          <div class="align-self-end">
-            <button
-              class="btn btn-sm btn-outline-secondary"
-              onclick="clearMaterialFilter()"
-              style="margin-top: 1.8rem;"
-            >
-              Filter zurücksetzen
-            </button>
-          </div>
+      <!-- FOOTER (Design analog) -->
+      <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
+        <div>
+          <button type="button" class="btn btn-sm btn-secondary me-2" data-bs-dismiss="modal">
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+          <button type="button" class="btn btn-sm btn-theme me-2" onclick="calculateStamping()">
+            <i class="fa fa-calculator me-1"></i> Berechnen
+          </button>
+          <button type="button" class="btn btn-sm btn-success" id="btnStampingUebernehmen">
+            <i class="fa fa-check me-1"></i> Übernehmen
+          </button>
         </div>
-
-        <table class="table table-sm" id="tblMaterialList">
-          <thead>
-            <tr>
-              <th style="width: 25%;">Material</th>
-              <th style="width: 20%;">Verfahren</th>
-              <th style="width: 15%;">Preis/kg</th>
-              <th style="width: 10%;">CO₂/kg</th>
-              <th>Kommentar</th>
-              <th style="width: 10%;"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Dynamisch gefüllt via JS -->
-          </tbody>
-        </table>
       </div>
 
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Schließen
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- #modalStamping -->
 
 <!-- ============= ZYKLUSZEIT-MODAL (mit 4 Verfahren) ============= -->
 <div
