@@ -2384,3 +2384,7 @@ function openPcbModalSafe() {
     openPcbModal();
   });
 }
+function togglePcbChatWindow(){
+  let cw = document.getElementById("pcbChatWindow");
+  cw.style.display = (cw.style.display === "block") ? "none" : "block";
+}

@@ -19,6 +19,76 @@
       font-size: 14px;
       background-color: #f8f9fa;
     }
+        /* Größeres Logo & Minimales Layout-Anpassungen */
+    .navbar-header .navbar-brand img {
+      height: 80px !important; /* doppelte Höhe */
+      width: auto;
+    }
+    .navbar-header .navbar-brand {
+      white-space: nowrap;
+    }
+    /* Sorgt dafür, dass Logo/Text nicht in 2 Zeilen rutschen */
+    .navbar-header .navbar-brand span {
+      font-size: 18px; /* ggf. anpassen */
+      vertical-align: middle;
+      margin-left: 10px;
+    }
+
+    /* Sidebar nur Icons, kein Text (spart Platz) */
+    .nav-icon {
+      font-size: 1.2rem;
+    }
+    /* Verstecke .nav-text, wenn du nur die Symbole anzeigen willst */
+    .nav-text {
+      display: none !important;
+    }
+
+    /* Chat-Bubble und Chat-Fenster (innerhalb Modals) */
+    .modal-body {
+      position: relative; /* um absolute positioning zu ermöglichen */
+    }
+    #pcbChatBubble {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      z-index: 9999; /* überm Modal-Inhalt */
+    }
+    #pcbChatBubble img {
+      width: 100%;
+      height: auto;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+
+    #pcbChatWindow {
+      position: absolute;
+      right: 60px;
+      bottom: 60px;
+      width: 280px;
+      background: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 6px rgba(0,0,0,0.2);
+      z-index: 9999;
+      display: none; /* toggled via JS */
+    }
+    #pcbChatWindow .header {
+      background: #f0f0f0;
+      padding: 6px;
+      font-weight: bold;
+    }
+    #pcbChatWindow .body {
+      max-height: 150px;
+      overflow-y: auto;
+      padding: 6px;
+      font-size: 0.85rem;
+    }
+    #pcbChatWindow .footer {
+      padding: 6px;
+      text-align: right;
+    }
     .nav-tabs .nav-link {
       font-weight: 500;
     }
@@ -157,29 +227,20 @@
   <!-- BEGIN app-header -->
   <!-- Top-Header mit Logo, Kosten/CO₂, Login/Logout usw. -->
   <div id="header" class="app-header">
-    <!-- NAV / Branding-Bereich -->
     <div class="navbar-header">
-      <!-- Dein Logo -->
-      <a href="/" class="navbar-brand text-wrap" style="white-space: nowrap;">
-        <img src="{{ url_for('static', filename='img/jpc.jpeg') }}"
-             alt="Logo"
-             style="height:40px; max-height:40px;"
-        />
-        <!-- kleiner Abstand, dein Titel -->
-        <span class="ms-2">JPC CALC V2.0</span>
-      </a>
+      <!-- 1) Burger links -->
+      <button type="button"
+              class="navbar-desktop-toggler"
+              data-toggle="app-sidebar-minify"
+              style="margin-right:10px;">
+        <i class="fa fa-bars fa-2x text-dark"></i>
+      </button>
 
-      <!-- Desktop-Burger: um Sidebar zu minifizieren -->
-      <button type="button" class="navbar-desktop-toggler" data-toggle="app-sidebar-minify">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <!-- Mobile-Burger: Sidebar für Smartphones -->
-      <button type="button" class="navbar-mobile-toggler" data-toggle="app-sidebar-mobile">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
+      <!-- 2) Logo + Text -->
+      <a href="/" class="navbar-brand text-wrap">
+        <img src="/static/img/jpc.jpeg" alt="Logo" />
+        <span>JPC CALC V2.0</span>
+      </a>
     </div>
     <!-- Rechts vom Navbar -->
     <div class="navbar-nav">
@@ -1676,294 +1737,311 @@
   </div><!-- /.modal-dialog -->
 </div><!-- #kaltfliessModal --><!-- End KaltfliessModal -->
 <!-- =================== PCB-KALKULATOR (PARAMETRIK) - DESIGN-ADAPTIERT =================== -->
-<div class="modal fade" id="pcbModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-xl" style="max-width:1000px;">
-    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
+    <div class="modal fade" id="pcbModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-xl" style="max-width:1000px;">
+        <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
 
-      <!-- HEADER (Design analog) -->
-      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
-        <h5 class="modal-title">PCB-Kalkulator (Parametrik)</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-
-      <!-- BODY -->
-      <div class="modal-body p-2">
-        <!-- NAVIGATIONS-TABS -->
-        <ul class="nav nav-tabs nav-tabs-v2" id="pcbTabs" role="tablist" style="margin-bottom: 0.5rem;">
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link active"
-              id="pcb-tab-input"
-              data-bs-toggle="tab"
-              data-bs-target="#pcb-tabpane-input"
-              type="button"
-              role="tab"
-            >
-              Eingaben
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="pcb-tab-adv"
-              data-bs-toggle="tab"
-              data-bs-target="#pcb-tabpane-adv"
-              type="button"
-              role="tab"
-            >
-              Erweitert
-            </button>
-          </li>
-        </ul>
-
-        <div class="tab-content p-3" id="pcbTabContent">
-          <!-- TAB 1: EINGABEN -->
-          <div
-            class="tab-pane fade show active"
-            id="pcb-tabpane-input"
-            role="tabpanel"
-          >
-            <!-- L x B (mm) -->
-            <div class="row mb-3">
-              <label class="col-sm-4 col-form-label">
-                Abmessung:
-              </label>
-              <div class="col-sm-5 d-flex flex-wrap gap-2">
-                <div class="input-group input-group-sm" style="width: 48%;">
-                  <span class="input-group-text">L (mm)</span>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="pcbLen"
-                    step="1"
-                    value="100"
-                  />
-                </div>
-                <div class="input-group input-group-sm" style="width: 48%;">
-                  <span class="input-group-text">B (mm)</span>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="pcbWid"
-                    step="1"
-                    value="80"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- Lagenzahl -->
-            <div class="row mb-3">
-              <label for="pcbLayer" class="col-sm-4 col-form-label">
-                Lagenzahl
-              </label>
-              <div class="col-sm-5">
-                <select class="form-select form-select-sm" id="pcbLayer">
-                  <option>2</option>
-                  <option>4</option>
-                  <option>6</option>
-                  <option>8</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Stückzahl -->
-            <div class="row mb-3">
-              <label for="pcbQty" class="col-sm-4 col-form-label">
-                Stückzahl
-              </label>
-              <div class="col-sm-5">
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  id="pcbQty"
-                  step="1"
-                  value="1000"
-                />
-              </div>
-            </div>
-
-            <!-- Land -->
-            <div class="row mb-3">
-              <label for="pcbLand" class="col-sm-4 col-form-label">
-                Land (Fertigung)
-              </label>
-              <div class="col-sm-5">
-                <select class="form-select form-select-sm" id="pcbLand">
-                  <option>China</option>
-                  <option>Europa</option>
-                  <option>Sonst</option>
-                </select>
-              </div>
-            </div>
+          <!-- HEADER -->
+          <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
+            <h5 class="modal-title">PCB-Kalkulator (Parametrik)</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
 
-          <!-- TAB 2: ERWEITERT -->
-          <div
-            class="tab-pane fade"
-            id="pcb-tabpane-adv"
-            role="tabpanel"
-          >
-            <!-- Dicke -->
-            <div class="row mb-3">
-              <label for="pcbThick" class="col-sm-4 col-form-label">
-                PCB-Dicke (mm)
-              </label>
-              <div class="col-sm-5">
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  id="pcbThick"
-                  step="0.01"
-                  value="1.6"
-                />
-              </div>
-            </div>
+          <!-- BODY: position relative -->
+          <div class="modal-body p-2 position-relative">
+            <!-- NAV-TABS -->
+            <ul class="nav nav-tabs nav-tabs-v2" id="pcbTabs" role="tablist" style="margin-bottom: 0.5rem;">
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link active"
+                  id="pcb-tab-input"
+                  data-bs-toggle="tab"
+                  data-bs-target="#pcb-tabpane-input"
+                  type="button"
+                  role="tab"
+                >
+                  Eingaben
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="pcb-tab-adv"
+                  data-bs-toggle="tab"
+                  data-bs-target="#pcb-tabpane-adv"
+                  type="button"
+                  role="tab"
+                >
+                  Erweitert
+                </button>
+              </li>
+            </ul>
 
-            <!-- Kupferdicke -->
-            <div class="row mb-3">
-              <label for="pcbCu" class="col-sm-4 col-form-label">
-                Kupferdicke
-              </label>
-              <div class="col-sm-5">
-                <select class="form-select form-select-sm" id="pcbCu">
-                  <option>35µm</option>
-                  <option>70µm</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Finish -->
-            <div class="row mb-3">
-              <label for="pcbFinish" class="col-sm-4 col-form-label">
-                Oberfläche (Finish)
-              </label>
-              <div class="col-sm-5">
-                <select class="form-select form-select-sm" id="pcbFinish">
-                  <option>HASL</option>
-                  <option>ENIG</option>
-                  <option>OSP</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Tooling-Kosten -->
-            <div class="row mb-3">
-              <label for="pcbTooling" class="col-sm-4 col-form-label">
-                Tooling-Kosten (€)
-              </label>
-              <div class="col-sm-5">
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  id="pcbTooling"
-                  step="1"
-                  value="200"
-                />
-              </div>
-            </div>
-
-            <!-- CheckBox: "Einfache Bestückung?" -->
-            <div class="row mb-3">
-              <div class="col-sm-4"></div>
-              <div class="col-sm-8">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="pcbAssemblyCheck"
-                  />
-                  <label
-                    class="form-check-label"
-                    for="pcbAssemblyCheck"
-                  >
-                    Einfache Bestückung berücksichtigen?
+            <div class="tab-content p-3" id="pcbTabContent">
+              <!-- TAB 1: EINGABEN -->
+              <div
+                class="tab-pane fade show active"
+                id="pcb-tabpane-input"
+                role="tabpanel"
+              >
+                <!-- L x B (mm) -->
+                <div class="row mb-3">
+                  <label class="col-sm-4 col-form-label">
+                    Abmessung:
                   </label>
+                  <div class="col-sm-5 d-flex flex-wrap gap-2">
+                    <div class="input-group input-group-sm" style="width: 48%;">
+                      <span class="input-group-text">L (mm)</span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="pcbLen"
+                        step="1"
+                        value="100"
+                      />
+                    </div>
+                    <div class="input-group input-group-sm" style="width: 48%;">
+                      <span class="input-group-text">B (mm)</span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="pcbWid"
+                        step="1"
+                        value="80"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Lagenzahl -->
+                <div class="row mb-3">
+                  <label for="pcbLayer" class="col-sm-4 col-form-label">
+                    Lagenzahl
+                  </label>
+                  <div class="col-sm-5">
+                    <select class="form-select form-select-sm" id="pcbLayer">
+                      <option>2</option>
+                      <option>4</option>
+                      <option>6</option>
+                      <option>8</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Stückzahl -->
+                <div class="row mb-3">
+                  <label for="pcbQty" class="col-sm-4 col-form-label">
+                    Stückzahl
+                  </label>
+                  <div class="col-sm-5">
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      id="pcbQty"
+                      step="1"
+                      value="1000"
+                    />
+                  </div>
+                </div>
+
+                <!-- Land -->
+                <div class="row mb-3">
+                  <label for="pcbLand" class="col-sm-4 col-form-label">
+                    Land (Fertigung)
+                  </label>
+                  <div class="col-sm-5">
+                    <select class="form-select form-select-sm" id="pcbLand">
+                      <option>China</option>
+                      <option>Europa</option>
+                      <option>Sonst</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- SMD / THT Felder -->
-            <div class="row mb-3">
-              <label for="pcbSmdCount" class="col-sm-4 col-form-label">
-                SMD-Bauteile (Anzahl)
-              </label>
-              <div class="col-sm-5">
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  id="pcbSmdCount"
-                  step="1"
-                  value="50"
-                />
+              <!-- TAB 2: ERWEITERT -->
+              <div
+                class="tab-pane fade"
+                id="pcb-tabpane-adv"
+                role="tabpanel"
+              >
+                <!-- Dicke -->
+                <div class="row mb-3">
+                  <label for="pcbThick" class="col-sm-4 col-form-label">
+                    PCB-Dicke (mm)
+                  </label>
+                  <div class="col-sm-5">
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      id="pcbThick"
+                      step="0.01"
+                      value="1.6"
+                    />
+                  </div>
+                </div>
+
+                <!-- Kupferdicke -->
+                <div class="row mb-3">
+                  <label for="pcbCu" class="col-sm-4 col-form-label">
+                    Kupferdicke
+                  </label>
+                  <div class="col-sm-5">
+                    <select class="form-select form-select-sm" id="pcbCu">
+                      <option>35µm</option>
+                      <option>70µm</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Finish -->
+                <div class="row mb-3">
+                  <label for="pcbFinish" class="col-sm-4 col-form-label">
+                    Oberfläche (Finish)
+                  </label>
+                  <div class="col-sm-5">
+                    <select class="form-select form-select-sm" id="pcbFinish">
+                      <option>HASL</option>
+                      <option>ENIG</option>
+                      <option>OSP</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Tooling-Kosten -->
+                <div class="row mb-3">
+                  <label for="pcbTooling" class="col-sm-4 col-form-label">
+                    Tooling-Kosten (€)
+                  </label>
+                  <div class="col-sm-5">
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      id="pcbTooling"
+                      step="1"
+                      value="200"
+                    />
+                  </div>
+                </div>
+
+                <!-- CheckBox: "Einfache Bestückung?" -->
+                <div class="row mb-3">
+                  <div class="col-sm-4"></div>
+                  <div class="col-sm-8">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="pcbAssemblyCheck"
+                      />
+                      <label
+                        class="form-check-label"
+                        for="pcbAssemblyCheck"
+                      >
+                        Einfache Bestückung berücksichtigen?
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SMD / THT Felder -->
+                <div class="row mb-3">
+                  <label for="pcbSmdCount" class="col-sm-4 col-form-label">
+                    SMD-Bauteile (Anzahl)
+                  </label>
+                  <div class="col-sm-5">
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      id="pcbSmdCount"
+                      step="1"
+                      value="50"
+                    />
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="pcbThtCount" class="col-sm-4 col-form-label">
+                    THT-Pins (Anzahl)
+                  </label>
+                  <div class="col-sm-5">
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      id="pcbThtCount"
+                      step="1"
+                      value="10"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div><!-- .tab-content -->
+
+            <!-- Ergebnis-Bereich -->
+            <hr />
+            <div class="row">
+              <div class="col-sm-4" id="pcbResultText" style="font-size:0.85rem;">
+                <!-- Dynamisch gefüllt -->
+              </div>
+              <div class="col-sm-4 text-center">
+                <canvas
+                  id="pcbCostChart"
+                  width="200"
+                  height="200"
+                  style="border:1px solid #ccc;"
+                ></canvas>
+              </div>
+              <div class="col-sm-4 text-center">
+                <canvas
+                  id="pcbCo2Chart"
+                  width="200"
+                  height="200"
+                  style="border:1px solid #ccc;"
+                ></canvas>
               </div>
             </div>
 
-            <div class="row mb-3">
-              <label for="pcbThtCount" class="col-sm-4 col-form-label">
-                THT-Pins (Anzahl)
-              </label>
-              <div class="col-sm-5">
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  id="pcbThtCount"
-                  step="1"
-                  value="10"
-                />
+            <!-- Chat-Bubble + Chat-Fenster im Modal (Beispiel) -->
+            <div id="pcbChatBubble">
+              <img src="https://cdn-icons-png.flaticon.com/512/2990/2990675.png"
+                   alt="Chat"
+                   onclick="togglePcbChatWindow()"/>
+            </div>
+            <div id="pcbChatWindow">
+              <div class="header">KI-Assistent</div>
+              <div class="body">
+                <p>Hallo, wie kann ich helfen?</p>
+              </div>
+              <div class="footer">
+                <button class="btn btn-sm btn-secondary" onclick="togglePcbChatWindow()">Schließen</button>
               </div>
             </div>
-          </div>
-        </div><!-- .tab-content -->
 
-        <!-- ================== ERGEBNIS-BEREICH (3 SPALTEN) ================== -->
-        <hr />
-        <div class="row">
-          <div class="col-sm-4" id="pcbResultText" style="font-size:0.85rem;">
-            <!-- Dynamisch gefüllt -->
-          </div>
-          <div class="col-sm-4 text-center">
-            <canvas
-              id="pcbCostChart"
-              width="200"
-              height="200"
-              style="border:1px solid #ccc;"
-            ></canvas>
-          </div>
-          <div class="col-sm-4 text-center">
-            <canvas
-              id="pcbCo2Chart"
-              width="200"
-              height="200"
-              style="border:1px solid #ccc;"
-            ></canvas>
-          </div>
-        </div>
-      </div><!-- .modal-body -->
+          </div><!-- .modal-body -->
 
-      <!-- FOOTER (Design analog) -->
-      <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
-        <div>
-          <button
-            type="button"
-            class="btn btn-sm btn-theme me-2"
-            onclick="calculatePcb()"
-          >
-            <i class="fa fa-calculator me-1"></i> Berechnen
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            <i class="fa fa-times me-1"></i> Schließen
-          </button>
-        </div>
-      </div>
+          <!-- FOOTER -->
+          <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
+            <div>
+              <button
+                type="button"
+                class="btn btn-sm btn-theme me-2"
+                onclick="calculatePcb()"
+              >
+                <i class="fa fa-calculator me-1"></i> Berechnen
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                <i class="fa fa-times me-1"></i> Schließen
+              </button>
+            </div>
+          </div>
 
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- #pcbModal --><!-- ================= SPRITZGUSS-MODAL ================= -->
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- #pcbModal --><!-- ================= SPRITZGUSS-MODAL ================= -->
 <!-- =================== SPRITZGUSS – TAKTZEITRECHNER (DESIGN-ADAPTIERT) =================== -->
 <div class="modal fade" id="modalSpritzguss" tabindex="-1" aria-labelledby="spritzgussModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-sg" style="max-width:1000px;">
@@ -3638,15 +3716,24 @@
         </div>
         <div class="d-flex align-items-center gap-2">
           <!-- Jahreskosten (falls du es brauchst) -->
-          <label class="mb-0 fw-bold">Jahreskosten:</label>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            id="machSumYear"
-            style="width:100px; background-color:#e9ecef;"
-            value="0"
-            readonly
-          />
+        <script>
+/* Mini-Chat-Widget (Dedicated) */
+function openMiniChatDedicated(){
+  document.getElementById('miniChatDedicated').style.display = 'block';
+}
+function closeMiniChatDedicated(){
+  document.getElementById('miniChatDedicated').style.display = 'none';
+}
+
+/* ACHTUNG:
+   Stelle sicher, dass deine JS-Funktion
+   calcExtendedMachineRate()
+   exakt die IDs referenziert, die wir hier haben:
+   - machKaufpreis, machZinssatz, ...
+   - machZinsHr, machBetriebHr, machStromCostHr, ...
+   - Der Code muss 1:1 matchen
+*/
+</script>
           <!-- Maschinenkosten (€/h) -->
           <span style="font-weight:600;">Maschinenkosten (€/h):</span>
           <span id="machResult" class="text-theme fw-bold">--</span>
