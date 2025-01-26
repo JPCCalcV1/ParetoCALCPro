@@ -1071,7 +1071,7 @@ function fillMachineTable(machArr) {
     const machName   = item.machineName  || "Unbekannt";
     const process    = item.process      || "N/A";
     const kauf       = parseFloat(item.kaufpreis||0).toFixed(0);
-    const power      = parseFloat(item.powerKW||0).toFixed(1);
+    const power      = parseFloat(item.power_KW||0).toFixed(1);
     const comment    = item.comment      || "";
 
     const tr = document.createElement("tr");

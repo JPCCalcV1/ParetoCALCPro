@@ -969,5 +969,3440 @@
               "power_kW": 90,
               "throughputPartsPerYear": 120000,
               "comment": "Erweiterte Peripherie, QS, Automationszelle, etc."
-            }          
+            },
+            {
+              "machineName": "Einspindler (klein) - Standard",
+              "machineNameIntern": "DMG Mori NLX 1500 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 180000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 80000,
+              "comment": "Max. Stangendurchlass ~45 mm, Basis-Automation (Stangenlader)."
+            },
+            {
+              "machineName": "Einspindler (klein) - High-End",
+              "machineNameIntern": "DMG Mori NLX 1500 (Automotive-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 320000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 80000,
+              "comment": "Zusatzausstattung mit Y-Achse, Messtaster, schneller Revolver, Robot-Anbindung."
+            },
+            {
+              "machineName": "Einspindler (mittel) - Standard",
+              "machineNameIntern": "Mazak Quick Turn 250 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 300000,
+              "power_kW": 18,
+              "throughputPartsPerYear": 150000,
+              "comment": "Ø65 mm Stangendurchlass, solider Spindelmotor, optionaler Stangenlader."
+            },
+            {
+              "machineName": "Einspindler (mittel) - High-End",
+              "machineNameIntern": "Mazak Quick Turn 250 (Automotive-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 550000,
+              "power_kW": 18,
+              "throughputPartsPerYear": 150000,
+              "comment": "Zweites Revolverwerkzeug, Y-Achse, Hochdruckkühlung, integrierter Roboter, Inline-Messung."
+            },
+            {
+              "machineName": "Einspindler (mittel-groß) - Standard",
+              "machineNameIntern": "Okuma LB3000 EX II (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 400000,
+              "power_kW": 22,
+              "throughputPartsPerYear": 100000,
+              "comment": "Bis Ø80 mm Stange oder Futter ~250 mm. Einfacher Automationsgrad (z.B. Gantryloader)."
+            },
+            {
+              "machineName": "Einspindler (mittel-groß) - High-End",
+              "machineNameIntern": "Okuma LB3000 EX II (Automotive-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 750000,
+              "power_kW": 22,
+              "throughputPartsPerYear": 100000,
+              "comment": "Gegenspindel, Y-Achse, Hochdruckkühlung, Roboter-Beladung, umfangreiche Prozessüberwachung."
+            },
+            {
+              "machineName": "Einspindler (groß) - Standard",
+              "machineNameIntern": "Doosan Puma 5100 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 500000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 70000,
+              "comment": "Futtergröße ~300 mm, Schwere Zerspanung, manuelle oder Portallader-Option."
+            },
+            {
+              "machineName": "Einspindler (groß) - High-End",
+              "machineNameIntern": "Doosan Puma 5100 (Automotive-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 900000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 70000,
+              "comment": "Vollautomation (Portal/Roboter), angetriebene Werkzeuge, umfassende QS-Lösungen."
+            },
+            {
+              "machineName": "Mehrspindler ∅16 - Standard",
+              "machineNameIntern": "Index MS16 Plus (Vollausstattung, Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 600000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 500000,
+              "comment": "Basis ~400k, real lauffähig ~600k. 6-Spindel, Ø16 mm, hoher Output."
+            },
+            {
+              "machineName": "Mehrspindler ∅16 - Automotive Special",
+              "machineNameIntern": "Index MS16 Plus (High-End Automotive)",
+              "verfahren": "Drehen",
+              "kaufpreis": 900000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 550000,
+              "comment": "Zusätzliche Inline-Messsysteme, Robotik, Teilgreifer, deutlich schnelleres Rüsten."
+            },
+            {
+              "machineName": "Mehrspindler ∅32 - Standard",
+              "machineNameIntern": "Schütte S32PC (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 1100000,
+              "power_kW": 35,
+              "throughputPartsPerYear": 300000,
+              "comment": "6-Spindler, Ø32 mm, solide Ausstattung, vollautomatische Stangenführung."
+            },
+            {
+              "machineName": "Mehrspindler ∅32 - Automotive Special",
+              "machineNameIntern": "Schütte S32PC (High-End Automotive)",
+              "verfahren": "Drehen",
+              "kaufpreis": 1500000,
+              "power_kW": 35,
+              "throughputPartsPerYear": 350000,
+              "comment": "Mit High-End-Automation, Robotik, QS-Systeme, angetriebene Werkzeuge auf jeder Spindel."
+            },
+            {
+              "machineName": "Mehrspindler ∅50+ - Standard",
+              "machineNameIntern": "Schütte S51 (Vollausstattung, Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 1300000,
+              "power_kW": 50,
+              "throughputPartsPerYear": 300000,
+              "comment": "Großer Stangendurchlass, Ø50+, ideal für größere Automotive- und Hydraulikteile."
+            },
+            {
+              "machineName": "Mehrspindler ∅50+ - Automotive Special",
+              "machineNameIntern": "Schütte S51 (High-End Automotive)",
+              "verfahren": "Drehen",
+              "kaufpreis": 2100000,
+              "power_kW": 50,
+              "throughputPartsPerYear": 300000,
+              "comment": "Robotik, QS, Verzahnungseinheiten, hochdynamische Achsen, reduzierter Rüstaufwand."
+            },
+            {
+              "machineName": "Vertikaldrehmaschine (klein) - Standard",
+              "machineNameIntern": "EMAG VL 2 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 250000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 120000,
+              "comment": "Kompakte Vertikaldrehmaschine, Werkstück-Ø bis ~150 mm, Pick-up-Spindel für leichte Automation."
+            },
+            {
+              "machineName": "Vertikaldrehmaschine (klein) - High-End",
+              "machineNameIntern": "EMAG VL 2 (Automotive-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 450000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 120000,
+              "comment": "Zusatzausstattung: Gegenspindel, In-Prozess-Messung, High-Speed-Spindel, Gantry-Handling."
+            },
+            {
+              "machineName": "Vertikaldrehmaschine (groß) - Standard",
+              "machineNameIntern": "EMAG VSC 400 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 600000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 60000,
+              "comment": "Schwere Ausführung, ~400 mm Drehdurchmesser, Portalbeladung möglich, einfache QS."
+            },
+            {
+              "machineName": "Vertikaldrehmaschine (groß) - High-End",
+              "machineNameIntern": "EMAG VSC 400 (Aerospace-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 900000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 60000,
+              "comment": "High-End-Paket: hochpräzise Antriebe, Messtaster, automatisches Werkzeugwechselsystem."
+            },
+          
+            {
+              "machineName": "3-Achs (klein) - Standard",
+              "machineNameIntern": "Haas VF-2 (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 150000,
+              "power_kW": 11,
+              "throughputPartsPerYear": 30000,
+              "comment": "Kleine 3-Achs, Basisausstattung, manuelle oder einfache Automationslösungen."
+            },
+            {
+              "machineName": "3-Achs (klein) - High-End",
+              "machineNameIntern": "Haas VF-2 (Automotive-Special)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 300000,
+              "power_kW": 11,
+              "throughputPartsPerYear": 30000,
+              "comment": "4./5. Achse integriert, Messtaster, Hochgeschwindigkeitsspindel, Robot-Handling."
+            },
+            {
+              "machineName": "5-Achs (kompakt) - Standard",
+              "machineNameIntern": "DMG Mori DMU 50 (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 350000,
+              "power_kW": 18,
+              "throughputPartsPerYear": 40000,
+              "comment": "Manuelle Beladung, ~15k Spindel, ca. 30 Werkzeuge, solide für kleinere 5-Achs-Jobs."
+            },
+            {
+              "machineName": "5-Achs (kompakt) - High-End",
+              "machineNameIntern": "DMG Mori DMU 50 (Automotive-Special)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 600000,
+              "power_kW": 18,
+              "throughputPartsPerYear": 40000,
+              "comment": "Hochgeschwindigkeitsspindel (18–20k), Roboter oder Palettenwechsler, Messtaster."
+            },
+            {
+              "machineName": "5-Achs (mittel) - Standard",
+              "machineNameIntern": "Chiron FZ12 FX (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 450000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 50000,
+              "comment": "Hohe Dynamik, ~40er Werkzeugmagazin, 12k Spindel, einfaches Beladesystem."
+            },
+            {
+              "machineName": "5-Achs (mittel) - High-End",
+              "machineNameIntern": "Chiron FZ12 FX (Automotive-Special)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 800000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 50000,
+              "comment": "Roboter-Beladung, 20k Spindel, Palettenwechsler, In-Prozess-Messung."
+            },
+          
+            {
+              "machineName": "Spritzguss 50 t - Standard",
+              "machineNameIntern": "Arburg Allrounder 370S (Standard)",
+              "verfahren": "Spritzguss",
+              "kaufpreis": 100000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 2000000,
+              "comment": "Kleine Maschine (~50 t Schließkraft), Basissteuerung, manuelle Zu- und Abfuhr oder Entnahmegerät."
+            },
+            {
+              "machineName": "Spritzguss 50 t - High-End",
+              "machineNameIntern": "Arburg Allrounder 370S (Automotive-Special)",
+              "verfahren": "Spritzguss",
+              "kaufpreis": 180000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 2000000,
+              "comment": "Robot-Handling, integrierte QS, servoelektrische Antriebe, volle Prozessüberwachung."
+            },
+            {
+              "machineName": "Spritzguss 150 t - Standard",
+              "machineNameIntern": "ENGEL victory 150 (Standard)",
+              "verfahren": "Spritzguss",
+              "kaufpreis": 180000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 1500000,
+              "comment": "Schließkraft ~150 t, einfache Ausstattung, Standard-Automation optional."
+            },
+            {
+              "machineName": "Spritzguss 150 t - High-End",
+              "machineNameIntern": "ENGEL victory 150 (Automotive-Special)",
+              "verfahren": "Spritzguss",
+              "kaufpreis": 350000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 1500000,
+              "comment": "Roboterkurzentnahme, verschleißfeste Schnecke, Kamera- und Gewichtskontrolle inline."
+            },
+            {
+              "machineName": "Universaldrehmaschine (klein) - Standard",
+              "machineNameIntern": "Weiler Praktikant GSD (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 20000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 3000,
+              "comment": "Kleine konventionelle Drehmaschine, manuelle Bedienung, Spitzenweite ~500 mm."
+            },
+            {
+              "machineName": "Universaldrehmaschine (klein) - High-End",
+              "machineNameIntern": "Weiler Praktikant GSD (Präzisionspaket)",
+              "verfahren": "Drehen",
+              "kaufpreis": 35000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 3000,
+              "comment": "Zusatz-Ausstattung: Digitalanzeige, erweiterte Planscheibe, höherer Genauigkeitsstandard."
+            },
+            {
+              "machineName": "Universaldrehmaschine (mittel) - Standard",
+              "machineNameIntern": "Knuth Basic 180 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 30000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 6000,
+              "comment": "Robuste Werkstattmaschine, Spitzenhöhe ~180 mm, Spitzenweite ~1000 mm, konventionell."
+            },
+            {
+              "machineName": "Universaldrehmaschine (groß) - High-End",
+              "machineNameIntern": "Weiler Condor VC (Profi-Paket)",
+              "verfahren": "Drehen",
+              "kaufpreis": 70000,
+              "power_kW": 7,
+              "throughputPartsPerYear": 8000,
+              "comment": "Größere Drehmaschine, digitaler Messschieber, Automatikvorschübe, erweiterter Drehdurchmesser."
+            },
+          
+            {
+              "machineName": "CNC-Drehmaschine 2-Achsen - Standard",
+              "machineNameIntern": "DMG Mori CLX 350 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 160000,
+              "power_kW": 11,
+              "throughputPartsPerYear": 50000,
+              "comment": "2-Achsen-CNC, max. Stangendurchmesser ~51 mm, einfache Automation (Stangenlader)."
+            },
+            {
+              "machineName": "CNC-Drehmaschine 2-Achsen - High-End",
+              "machineNameIntern": "DMG Mori CLX 350 (Automotive-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 280000,
+              "power_kW": 11,
+              "throughputPartsPerYear": 50000,
+              "comment": "Integriertes Messtaster-System, Hochdruckkühlung, optionaler Roboter oder Portallader."
+            },
+            {
+              "machineName": "CNC-Drehmaschine mit Y-Achse - Standard",
+              "machineNameIntern": "Mazak Quick Turn 250MY (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 320000,
+              "power_kW": 18,
+              "throughputPartsPerYear": 100000,
+              "comment": "Y-Achse für angetriebene Werkzeuge, Ø65 mm Stangendurchlass, Basisausstattung."
+            },
+            {
+              "machineName": "CNC-Drehmaschine mit Y-Achse - High-End",
+              "machineNameIntern": "Mazak Quick Turn 250MY (Automotive-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 480000,
+              "power_kW": 18,
+              "throughputPartsPerYear": 100000,
+              "comment": "Zusätzliche Gegenspindel, Advanced-Tool-Monitoring, Roboterzelle, umfangreiche QS."
+            },
+          
+            {
+              "machineName": "Mehrspindler ∅16 - Standard",
+              "machineNameIntern": "Index MS16 Plus (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 600000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 500000,
+              "comment": "6-Spindel-Konzept, max. Ø16 mm, solide Ausstattung für Massenfertigung, Stangenlader integriert."
+            },
+            {
+              "machineName": "Mehrspindler ∅16 - High-End",
+              "machineNameIntern": "Index MS16 Plus (Automotive-Package)",
+              "verfahren": "Drehen",
+              "kaufpreis": 900000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 550000,
+              "comment": "In-Prozess-Messung, Automatik-Greifer, kurze Rüstzeiten, angetriebene Werkzeuge für Querbohrungen."
+            },
+            {
+              "machineName": "Mehrspindler ∅32 - Standard",
+              "machineNameIntern": "Schütte S32 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 1100000,
+              "power_kW": 35,
+              "throughputPartsPerYear": 300000,
+              "comment": "6-Spindler, Ø32 mm, Grundausstattung, solide für Hydraulik- und Automotive-Teile."
+            },
+            {
+              "machineName": "Mehrspindler ∅32 - High-End",
+              "machineNameIntern": "Schütte S32 (Automotive-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 1500000,
+              "power_kW": 35,
+              "throughputPartsPerYear": 350000,
+              "comment": "Zusätzliche Automation, QS-Paket, Roboterzelle, angetriebene Werkzeuge auf jeder Spindel."
+            },
+          
+            {
+              "machineName": "Vertikaldrehmaschine (klein) - Standard",
+              "machineNameIntern": "EMAG VL2 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 250000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 120000,
+              "comment": "Pick-up-Spindel, max. Werkstück-Ø ~150 mm, einfache Ausführung."
+            },
+            {
+              "machineName": "Vertikaldrehmaschine (klein) - High-End",
+              "machineNameIntern": "EMAG VL2 (Automotive-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 450000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 140000,
+              "comment": "Schnellere Achsantriebe, In-Prozess-Messung, Robot-Interface, verkürzte Taktzeiten."
+            },
+            {
+              "machineName": "Vertikaldrehmaschine (mittel) - Standard",
+              "machineNameIntern": "EMAG VL5 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 600000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 80000,
+              "comment": "Max. Ø ~250 mm, robust, integrierter Teilehandling-Greifer, einfache QS."
+            },
+            {
+              "machineName": "Karusselldrehmaschine (groß) - High-End",
+              "machineNameIntern": "TOS SKJ 25 (Automotive/Aerospace)",
+              "verfahren": "Drehen",
+              "kaufpreis": 1200000,
+              "power_kW": 40,
+              "throughputPartsPerYear": 30000,
+              "comment": "Großer Drehtisch (bis Ø2500 mm), CNC-4-Achsen, Messtaster, optionaler Werkzeugwechsler."
+            },
+          
+            {
+              "machineName": "Hartdrehmaschine (klein) - Standard",
+              "machineNameIntern": "Okuma LU3000 EX (Hard-Turning, Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 350000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 40000,
+              "comment": "Geeignet für gehärtete Stähle ~60 HRC, spezielle Spindellagerung, CBN-Werkzeuge möglich."
+            },
+            {
+              "machineName": "Hartdrehmaschine (klein) - High-End",
+              "machineNameIntern": "Okuma LU3000 EX (Automotive-Hard-Turn)",
+              "verfahren": "Drehen",
+              "kaufpreis": 550000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 45000,
+              "comment": "Integriertes Robot-Handling, Hydrostatik-Führungen, Teil- und In-Prozess-Messung."
+            },
+            {
+              "machineName": "Dreh-Fräs-Zentrum (mittel) - Standard",
+              "machineNameIntern": "DMG Mori CTX beta 1250 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 500000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 60000,
+              "comment": "Y-Achse, angetriebene Werkzeuge, bedingt als Fräsersatz, 12k Frässpindeldrehzahl."
+            },
+            {
+              "machineName": "Dreh-Fräs-Zentrum (mittel) - High-End",
+              "machineNameIntern": "DMG Mori CTX beta 1250 (Automotive-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 800000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 70000,
+              "comment": "Gegenspindel, B-Achse mit 5-Achs-Simultanoption, Automationszelle, umfangreiche Prozessüberwachung."
+            },
+            {
+              "machineName": "Dreh-Fräs-Zentrum (groß) - Standard",
+              "machineNameIntern": "Okuma Multus B550 (Standard)",
+              "verfahren": "Drehen",
+              "kaufpreis": 900000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 40000,
+              "comment": "Große Werkstücke bis ~Ø600 mm, C-Achse, angetriebene Werkzeuge, Grundautomation."
+            },
+            {
+              "machineName": "Dreh-Fräs-Zentrum (groß) - High-End",
+              "machineNameIntern": "Okuma Multus B550 (Aerospace-Special)",
+              "verfahren": "Drehen",
+              "kaufpreis": 1300000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 45000,
+              "comment": "5-Achsen-Simultan, Hochdruckkühlung, Robot-Beladung, Messtaster, Palettenaufspanntisch."
+            },
+            {
+              "machineName": "3-Achs (klein) - Standard",
+              "machineNameIntern": "Haas VF-2 (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 150000,
+              "power_kW": 11,
+              "throughputPartsPerYear": 30000,
+              "comment": "Kleine 3-Achs, Basisausstattung, 30er Werkzeugmagazin, Spindel ~8k-10k U/min."
+            },
+            {
+              "machineName": "3-Achs (klein) - High-End",
+              "machineNameIntern": "Haas VF-2 (Automotive-Special)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 300000,
+              "power_kW": 11,
+              "throughputPartsPerYear": 30000,
+              "comment": "Mit 4./5. Achs-Vorbereitung, Hochgeschwindigkeitsspindel (bis ~15k U/min), Messtaster, kompakter Roboter."
+            },
+            {
+              "machineName": "3-Achs (mittel) - Standard",
+              "machineNameIntern": "DMG Mori CMX 600 V (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 250000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 40000,
+              "comment": "Mittlere Größe, Fahrwege ~600 x 500 x 500 mm, 30er Magazin, Spindel ~10k U/min."
+            },
+            {
+              "machineName": "3-Achs (mittel) - High-End",
+              "machineNameIntern": "DMG Mori CMX 600 V (Automotive-Special)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 450000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 40000,
+              "comment": "4./5. Achse integrierbar, Messtaster, erweiterte Werkzeugkapazität (50+), evtl. Automationszelle."
+            },
+          
+            {
+              "machineName": "5-Achs (kompakt) - Standard",
+              "machineNameIntern": "DMG Mori DMU 50 (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 350000,
+              "power_kW": 18,
+              "throughputPartsPerYear": 40000,
+              "comment": "Kompakter 5-Achs-Tisch, manuelle Beladung, ~15k Spindel, 30er Werkzeugmagazin."
+            },
+            {
+              "machineName": "5-Achs (kompakt) - High-End",
+              "machineNameIntern": "DMG Mori DMU 50 (Automotive-Special)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 600000,
+              "power_kW": 18,
+              "throughputPartsPerYear": 40000,
+              "comment": "Hochgeschwindigkeitsspindel (20k), Palettenwechsler, In-Prozess-Messung, automatisierte Werkzeugverwaltung."
+            },
+            {
+              "machineName": "5-Achs (mittel) - Standard",
+              "machineNameIntern": "Chiron FZ12 FX (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 450000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 50000,
+              "comment": "Hohe Dynamik, 5-Achs-Tisch, ~12k Spindel, etwa 40er Werkzeugmagazin, einfache Roboter-Option."
+            },
+            {
+              "machineName": "5-Achs (mittel) - High-End",
+              "machineNameIntern": "Chiron FZ12 FX (Automotive-Special)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 800000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 50000,
+              "comment": "Roboter-Beladung, 20k Spindel, Palettenwechsler, In-Prozess-Messung, Kühlmittel-Hochdruckanlage."
+            },
+          
+            {
+              "machineName": "Horizontales BAZ (klein) - Standard",
+              "machineNameIntern": "Makino a40 (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 500000,
+              "power_kW": 22,
+              "throughputPartsPerYear": 60000,
+              "comment": "Horizontalbearbeitung, ~400 mm Palettengröße, 2-fach Palettenwechsler, 40er Werkzeugmagazin."
+            },
+            {
+              "machineName": "Horizontales BAZ (klein) - High-End",
+              "machineNameIntern": "Makino a40 (Automotive-Special)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 800000,
+              "power_kW": 22,
+              "throughputPartsPerYear": 70000,
+              "comment": "Schnelle Palettenwechsel (6s), 60+ Werkzeugplätze, Roboterzelle, In-Prozess-Messtaster."
+            },
+            {
+              "machineName": "Horizontales BAZ (mittel) - Standard",
+              "machineNameIntern": "Mazak HCN-5000 (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 700000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 80000,
+              "comment": "500er Paletten, 2-fach Wechsler, 40-50 Werkzeugplätze, Spindel ~10k U/min, solider Automationsgrad."
+            },
+            {
+              "machineName": "Horizontales BAZ (mittel) - High-End",
+              "machineNameIntern": "Mazak HCN-5000 (Automotive-Special)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 1100000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 90000,
+              "comment": "Mehrfach-Palettensystem (6 oder mehr), Hochgeschwindigkeitsspindel (15k+), umfangreiche QS."
+            },
+          
+            {
+              "machineName": "HSC-Fräse (klein) - Standard",
+              "machineNameIntern": "Mikron HSM 400 (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 300000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 20000,
+              "comment": "Spindeldrehzahl bis 24000 U/min, kleine Fahrwege (~400 mm in X), manuelle Be-/Entladung."
+            },
+            {
+              "machineName": "HSC-Fräse (klein) - High-End",
+              "machineNameIntern": "Mikron HSM 400 (Mold-Making)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 500000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 25000,
+              "comment": "Erweiterte Temperaturkompensation, Werkzeugwechsler 60 Plätze, Robot-System für Paletten."
+            },
+            {
+              "machineName": "HSC-Fräse (mittel) - Standard",
+              "machineNameIntern": "Röders RXP 600 (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 600000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 30000,
+              "comment": "Sehr hohe Präzision, bis 36k Spindeldrehzahl, Kühlschmierstoff optional, 30er Magazin."
+            },
+            {
+              "machineName": "HSC-Fräse (mittel) - High-End",
+              "machineNameIntern": "Röders RXP 600 (Premium)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 900000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 35000,
+              "comment": "5-Achsen-HSC, Messtaster, Automationszelle, thermische Stabilisierung, 60+ Werkzeugplätze."
+            },
+          
+            {
+              "machineName": "Portalfräsmaschine (mittel) - Standard",
+              "machineNameIntern": "Waldrich Coburg TA 1200 (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 800000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 20000,
+              "comment": "Portalbauweise, Verfahrwege ~1200x1000x800 mm, manuelle Aufspannung, 6000–8000 U/min Spindel."
+            },
+            {
+              "machineName": "Portalfräsmaschine (mittel) - High-End",
+              "machineNameIntern": "Waldrich Coburg TA 1200 (Aerospace-Special)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 1300000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 20000,
+              "comment": "Integrierte Messtaster, 5-Seiten-Bearbeitung, automatischer Kopfwechsel, Hochgeschwindigkeitsoption."
+            },
+            {
+              "machineName": "Großportal - Standard",
+              "machineNameIntern": "FZ42 Portal (Standard)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 1800000,
+              "power_kW": 40,
+              "throughputPartsPerYear": 10000,
+              "comment": "Gewaltige Verfahrwege (4000+ mm in X), 2-Achs-Kopf optional, manuelle Beladung per Kran."
+            },
+            {
+              "machineName": "Großportal - High-End",
+              "machineNameIntern": "FZ42 Portal (Automotive/Aerospace)",
+              "verfahren": "Fräsen",
+              "kaufpreis": 2800000,
+              "power_kW": 40,
+              "throughputPartsPerYear": 10000,
+              "comment": "Automatisierte Paletten-/Vorrichtungslösungen, High-Speed-Spindel (bis ~18k U/min), Laser-Vermessung."
+            },
+            {
+              "machineName": "Exzenterpresse 63 t - Standard",
+              "machineNameIntern": "Erfurt PKZZ 63 (Standard)",
+              "verfahren": "Stanzen / Pressen",
+              "kaufpreis": 50000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 500000,
+              "comment": "Einfache Exzenterpresse, mechanisch angetrieben, Tischgröße ~800x600 mm."
+            },
+            {
+              "machineName": "Exzenterpresse 63 t - High-End",
+              "machineNameIntern": "Erfurt PKZZ 63 (Automotive-Special)",
+              "verfahren": "Stanzen / Pressen",
+              "kaufpreis": 90000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 600000,
+              "comment": "Schnellwechselsystem für Werkzeuge, integrierte Platinenzuführung, einfache Prozessüberwachung."
+            },
+            {
+              "machineName": "Stanzautomat 160 t - Standard",
+              "machineNameIntern": "Schuler MP 160 (Standard)",
+              "verfahren": "Stanzen / Pressen",
+              "kaufpreis": 150000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 1200000,
+              "comment": "Vollautomatische Zuführung (Coil), mechanischer Stanzautomat, ~100 Hübe/min."
+            },
+            {
+              "machineName": "Stanzautomat 160 t - High-End",
+              "machineNameIntern": "Schuler MP 160 (Automotive-Special)",
+              "verfahren": "Stanzen / Pressen",
+              "kaufpreis": 250000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 1400000,
+              "comment": "Servoantrieb, intelligente Steuerung, Rüstassistent, QS-Kamera zur Teilekontrolle."
+            },
+          
+            {
+              "machineName": "Feinschneidpresse 100 t - Standard",
+              "machineNameIntern": "Feintool XFT 100 (Standard)",
+              "verfahren": "Stanzen / Feinschneiden",
+              "kaufpreis": 300000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 400000,
+              "comment": "Mit hydraulischer Niederhalterfunktion, Coil-Zuführung, ~30–50 Hübe/min."
+            },
+            {
+              "machineName": "Feinschneidpresse 100 t - High-End",
+              "machineNameIntern": "Feintool XFT 100 (Automotive-Special)",
+              "verfahren": "Stanzen / Feinschneiden",
+              "kaufpreis": 450000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 500000,
+              "comment": "Servohydraulische Steuerung, integrierte Entgratung, Laser-Konturmessung, automatische Werkzeugklemmung."
+            },
+            {
+              "machineName": "Feinschneidpresse 200 t - Standard",
+              "machineNameIntern": "Feintool XFT 200 (Standard)",
+              "verfahren": "Stanzen / Feinschneiden",
+              "kaufpreis": 500000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 600000,
+              "comment": "Für größere Teile, Presskraft ~200 t, Transfer-System optional, ~20–40 Hübe/min."
+            },
+            {
+              "machineName": "Feinschneidpresse 200 t - High-End",
+              "machineNameIntern": "Feintool XFT 200 (Automotive-Special)",
+              "verfahren": "Stanzen / Feinschneiden",
+              "kaufpreis": 700000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 700000,
+              "comment": "Vollautomatische Coil-Handhabung, Rüstzeitoptimierung, In-Prozess-Kamerasystem, QS-Anbindung via MES."
+            },
+          
+            {
+              "machineName": "Tiefziehpresse 200 t - Standard",
+              "machineNameIntern": "Hidroliksan HD200 (Standard)",
+              "verfahren": "Tiefziehen / Hydraulische Presse",
+              "kaufpreis": 120000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 300000,
+              "comment": "Hydraulische Presse für kleine bis mittlere Tiefziehteile, manuelle Beladung möglich."
+            },
+            {
+              "machineName": "Tiefziehpresse 200 t - High-End",
+              "machineNameIntern": "Hidroliksan HD200 (Automotive-Special)",
+              "verfahren": "Tiefziehen / Hydraulische Presse",
+              "kaufpreis": 200000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 350000,
+              "comment": "Servohydraulische Steuerung, aktives Ziehkissen, automatisierte Zuführung, QS-Integration."
+            },
+            {
+              "machineName": "Hydraulische Presse 500 t - Standard",
+              "machineNameIntern": "Schuler HP500 (Standard)",
+              "verfahren": "Tiefziehen / Hydraulische Presse",
+              "kaufpreis": 350000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 200000,
+              "comment": "Großer Tisch, passend für größere Karosserieteile, inkl. Grundausstattung (manuelle Rüstung)."
+            },
+            {
+              "machineName": "Hydraulische Presse 500 t - High-End",
+              "machineNameIntern": "Schuler HP500 (Automotive-Special)",
+              "verfahren": "Tiefziehen / Hydraulische Presse",
+              "kaufpreis": 600000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 250000,
+              "comment": "Automatisierte Werkstückzuführung per Roboter/Portal, intelligent gesteuertes Ziehkissen, Prozessdatenerfassung."
+            },
+          
+            {
+              "machineName": "Abkantpresse 80 t - Standard",
+              "machineNameIntern": "Amada RG 80 (Standard)",
+              "verfahren": "Blechbiegen / Abkanten",
+              "kaufpreis": 40000,
+              "power_kW": 7,
+              "throughputPartsPerYear": 250000,
+              "comment": "Einfache CNC-Abkantpresse, ~2 m Abkantlänge, manuelle Werkzeugwechsel."
+            },
+            {
+              "machineName": "Abkantpresse 80 t - High-End",
+              "machineNameIntern": "Amada RG 80 (Automotive-Special)",
+              "verfahren": "Blechbiegen / Abkanten",
+              "kaufpreis": 70000,
+              "power_kW": 7,
+              "throughputPartsPerYear": 300000,
+              "comment": "Automatische Biegewinkelüberwachung, Schnellspannsystem, optionaler Winkelmesslaser, Hinteranschlag 6-Achsen."
+            },
+            {
+              "machineName": "Abkantpresse 200 t - Standard",
+              "machineNameIntern": "Trumpf TruBend 5320 (Standard)",
+              "verfahren": "Blechbiegen / Abkanten",
+              "kaufpreis": 100000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 150000,
+              "comment": "Große Abkantlänge ~3 m, CNC-Steuerung, manuelle Rüstprozesse, einfache Hinteranschlagsachsen."
+            },
+            {
+              "machineName": "Abkantpresse 200 t - High-End",
+              "machineNameIntern": "Trumpf TruBend 5320 (Automotive-Special)",
+              "verfahren": "Blechbiegen / Abkanten",
+              "kaufpreis": 180000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 180000,
+              "comment": "Automatisches Biegekontrollsystem (ACB), 6-Achsen-Hinteranschlag, Werkzeugwechsler, Offline-Programmierung."
+            },
+          
+            {
+              "machineName": "Servo-Pressautomat 200 t - Standard",
+              "machineNameIntern": "Aida DSF-200 (Standard)",
+              "verfahren": "Servopressen / Stanzautomaten",
+              "kaufpreis": 300000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 800000,
+              "comment": "Servoantrieb ermöglicht variable Hubeinstellungen, Coilzuführung, ~80 Hübe/min."
+            },
+            {
+              "machineName": "Servo-Pressautomat 200 t - High-End",
+              "machineNameIntern": "Aida DSF-200 (Automotive-Special)",
+              "verfahren": "Servopressen / Stanzautomaten",
+              "kaufpreis": 450000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 900000,
+              "comment": "Präzise Kurvensteuerung, Inline-Kamera-Prüfung, Automatik-Werkzeugklemmung, Rüstassistent."
+            },
+            {
+              "machineName": "Servo-Transferpresse 400 t - Standard",
+              "machineNameIntern": "Komatsu H2W-400 (Standard)",
+              "verfahren": "Servopressen / Transfer",
+              "kaufpreis": 600000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 1200000,
+              "comment": "Servoantrieb, Transferfinger für komplexe Umformfolgen, ~40–60 Hübe/min, Grund-QS."
+            },
+            {
+              "machineName": "Servo-Transferpresse 400 t - High-End",
+              "machineNameIntern": "Komatsu H2W-400 (Automotive-Special)",
+              "verfahren": "Servopressen / Transfer",
+              "kaufpreis": 900000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 1400000,
+              "comment": "Adaptive Presskurvensteuerung, vollautomatische Rüstsysteme, umfangreiche Prozesskontrolle (MES)."
+            },
+            {
+              "machineName": "Freiformschmiedepresse 1000 t - Standard",
+              "machineNameIntern": "SMS Eumuco ES-1000 (Standard)",
+              "verfahren": "Freiformschmieden",
+              "kaufpreis": 600000,
+              "power_kW": 60,
+              "throughputPartsPerYear": 20000,
+              "comment": "Hydraulische Schmiedepresse, max. 1000 t Presskraft, manuelle Manipulation mittels Kran."
+            },
+            {
+              "machineName": "Freiformschmiedepresse 1000 t - High-End",
+              "machineNameIntern": "SMS Eumuco ES-1000 (Aerospace)",
+              "verfahren": "Freiformschmieden",
+              "kaufpreis": 900000,
+              "power_kW": 60,
+              "throughputPartsPerYear": 25000,
+              "comment": "Vollautomatisierte Schmiedemanipulatoren, Induktions-Vorwärmstation, In-Prozess-Wegmessung."
+            },
+            {
+              "machineName": "Freiformschmiedepresse 3000 t - Standard",
+              "machineNameIntern": "Schuler HF3000 (Standard)",
+              "verfahren": "Freiformschmieden",
+              "kaufpreis": 1200000,
+              "power_kW": 120,
+              "throughputPartsPerYear": 10000,
+              "comment": "Große Presse für massive Schmiedestücke (z.B. Antriebswellen), Grundausstattung, manuelles Handling."
+            },
+            {
+              "machineName": "Freiformschmiedepresse 3000 t - High-End",
+              "machineNameIntern": "Schuler HF3000 (Power-Forging)",
+              "verfahren": "Freiformschmieden",
+              "kaufpreis": 1800000,
+              "power_kW": 120,
+              "throughputPartsPerYear": 12000,
+              "comment": "Automatische Manipulatorachse, Prozessdatenerfassung (MES), engere Toleranzen, schnelle Umrüstung."
+            },
+          
+            {
+              "machineName": "Kurzhubhämmer 800 kJ - Standard",
+              "machineNameIntern": "Lasco LH 8 (Standard)",
+              "verfahren": "Gesenkschmieden",
+              "kaufpreis": 300000,
+              "power_kW": 45,
+              "throughputPartsPerYear": 60000,
+              "comment": "Hammerschmieden mit ~800 kJ Schlagenergie, konventionelle Gesenkaufnahmen, manuelle oder halbautomatische Zuführung."
+            },
+            {
+              "machineName": "Kurzhubhämmer 800 kJ - High-End",
+              "machineNameIntern": "Lasco LH 8 (Automotive-Special)",
+              "verfahren": "Gesenkschmieden",
+              "kaufpreis": 500000,
+              "power_kW": 45,
+              "throughputPartsPerYear": 80000,
+              "comment": "Automatische Induktionsheizung, Roboter-Greifsystem, QS-Kamera zur Gesenkerkennung, Lärmschutzkabine."
+            },
+            {
+              "machineName": "Warmumformpresse 1600 t - Standard",
+              "machineNameIntern": "Müller Weingarten MP1600 (Standard)",
+              "verfahren": "Gesenkschmieden",
+              "kaufpreis": 800000,
+              "power_kW": 90,
+              "throughputPartsPerYear": 50000,
+              "comment": "Mechanische Presse für Warmumformungen, Standard-Rüstsystem, Induktionsofen optional."
+            },
+            {
+              "machineName": "Warmumformpresse 1600 t - High-End",
+              "machineNameIntern": "Müller Weingarten MP1600 (Automotive-Special)",
+              "verfahren": "Gesenkschmieden",
+              "kaufpreis": 1200000,
+              "power_kW": 90,
+              "throughputPartsPerYear": 60000,
+              "comment": "Servoantrieb, schneller Transfer, aufwändige Kühl- & Sprühsysteme, In-Prozess-Messung, Q-Doku."
+            },
+          
+            {
+              "machineName": "Kaltfließpresse 5-Stationen - Standard",
+              "machineNameIntern": "National Machinery FORMAX 200 (Standard)",
+              "verfahren": "Fließpressen (kalt)",
+              "kaufpreis": 600000,
+              "power_kW": 40,
+              "throughputPartsPerYear": 2000000,
+              "comment": "5-Stationen-Kopf für Kaltfließpressteile (z.B. Schrauben, Bolzen), basisausgestattet, ~150–200 Teile/min."
+            },
+            {
+              "machineName": "Kaltfließpresse 5-Stationen - High-End",
+              "machineNameIntern": "National Machinery FORMAX 200 (Automotive-Special)",
+              "verfahren": "Fließpressen (kalt)",
+              "kaufpreis": 900000,
+              "power_kW": 40,
+              "throughputPartsPerYear": 2500000,
+              "comment": "Schneller Werkzeugwechsel, automatisierte Zuführung, kamerabasierte Qualitätskontrolle, MES-Interface."
+            },
+            {
+              "machineName": "Halbwarmfließpresse 3-Stationen - Standard",
+              "machineNameIntern": "Hatebur Hotmatic HM35 (Standard)",
+              "verfahren": "Fließpressen (halbwarm)",
+              "kaufpreis": 700000,
+              "power_kW": 60,
+              "throughputPartsPerYear": 400000,
+              "comment": "Für Materialtemperaturen um ~600-800°C, robuste Bauweise, Induktionsheizung optional."
+            },
+            {
+              "machineName": "Halbwarmfließpresse 3-Stationen - High-End",
+              "machineNameIntern": "Hatebur Hotmatic HM35 (Automotive-Special)",
+              "verfahren": "Fließpressen (halbwarm)",
+              "kaufpreis": 1000000,
+              "power_kW": 60,
+              "throughputPartsPerYear": 500000,
+              "comment": "Integrierte Induktionserwärmung, servogesteuerte Transfereinheit, lückenlose Prozessdatenerfassung."
+            },
+          
+            {
+              "machineName": "Ringwalzanlage Ø300-800 mm - Standard",
+              "machineNameIntern": "Wagner RAW 300/800 (Standard)",
+              "verfahren": "Ringwalzen",
+              "kaufpreis": 500000,
+              "power_kW": 50,
+              "throughputPartsPerYear": 30000,
+              "comment": "Warmwalzanlage, manuelle Zuführung der Vorform, Walzdruck bis 200 t, Basisautomatisierung."
+            },
+            {
+              "machineName": "Ringwalzanlage Ø300-800 mm - High-End",
+              "machineNameIntern": "Wagner RAW 300/800 (High-Precision)",
+              "verfahren": "Ringwalzen",
+              "kaufpreis": 800000,
+              "power_kW": 50,
+              "throughputPartsPerYear": 35000,
+              "comment": "Automatischer Werkstücktransfer, CNC-Steuerung der Walzprofile, Online-Messung (Ø, Breite)."
+            },
+            {
+              "machineName": "Profilwalzanlage (Achsen, Profile) - Standard",
+              "machineNameIntern": "SMS ProfilRoll PRS 500 (Standard)",
+              "verfahren": "Profilwalzen",
+              "kaufpreis": 600000,
+              "power_kW": 70,
+              "throughputPartsPerYear": 20000,
+              "comment": "Zur Herstellung von Wellen-, Achs- oder Profilen, hydraulischer Vorschub, einfache QS."
+            },
+            {
+              "machineName": "Profilwalzanlage (Achsen, Profile) - High-End",
+              "machineNameIntern": "SMS ProfilRoll PRS 500 (Automotive-Special)",
+              "verfahren": "Profilwalzen",
+              "kaufpreis": 1000000,
+              "power_kW": 70,
+              "throughputPartsPerYear": 25000,
+              "comment": "CNC-Regelung, In-Prozess-Geometriemessung, schnelle Rüstkonzepte, Roboter-Automation."
+            },
+            {
+              "machineName": "Alu-Druckguss 350 t - Standard",
+              "machineNameIntern": "Bühler Evolution 350 (Standard)",
+              "verfahren": "Druckguss (Aluminium)",
+              "kaufpreis": 250000,
+              "power_kW": 35,
+              "throughputPartsPerYear": 300000,
+              "comment": "Kaltkammer-Druckgießmaschine mit 350 t Schließkraft, einfache Ausstattung, manuelles Abgreifen möglich."
+            },
+            {
+              "machineName": "Alu-Druckguss 350 t - High-End",
+              "machineNameIntern": "Bühler Evolution 350 (Automotive-Special)",
+              "verfahren": "Druckguss (Aluminium)",
+              "kaufpreis": 450000,
+              "power_kW": 35,
+              "throughputPartsPerYear": 350000,
+              "comment": "Automatische Entnahme, integrierte Sprüh- und Kühlstation, MES-Anbindung, QS-Kamera zur Formfüllkontrolle."
+            },
+            {
+              "machineName": "Alu-Druckguss 800 t - Standard",
+              "machineNameIntern": "Italpresse IP 800 (Standard)",
+              "verfahren": "Druckguss (Aluminium)",
+              "kaufpreis": 400000,
+              "power_kW": 50,
+              "throughputPartsPerYear": 200000,
+              "comment": "Kaltkammer 800 t, mittelgroße Gussteile (z.B. Motorblöcke, Strukturteile), Basis-Automation."
+            },
+            {
+              "machineName": "Alu-Druckguss 800 t - High-End",
+              "machineNameIntern": "Italpresse IP 800 (Automotive-Special)",
+              "verfahren": "Druckguss (Aluminium)",
+              "kaufpreis": 700000,
+              "power_kW": 50,
+              "throughputPartsPerYear": 250000,
+              "comment": "Hochgeschwindigkeits-Einspritzsystem, Roboter-Entnahme, Vakuum-Technik für Porenfreiheit, Prozessdatenerfassung."
+            },
+          
+            {
+              "machineName": "Mg-Druckguss 200 t - Standard",
+              "machineNameIntern": "Bühler Carat 200 (Mg-Standard)",
+              "verfahren": "Druckguss (Magnesium)",
+              "kaufpreis": 300000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 400000,
+              "comment": "Heißkammerprinzip, 200 t Schließkraft, einfache Steuerung, manuelle oder halbautomatische Entnahme."
+            },
+            {
+              "machineName": "Mg-Druckguss 200 t - High-End",
+              "machineNameIntern": "Bühler Carat 200 (Mg-Automotive)",
+              "verfahren": "Druckguss (Magnesium)",
+              "kaufpreis": 500000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 450000,
+              "comment": "Automatisierter Gieß- und Entnahmeprozess, Vakuum-Unterstützung, Prozesstracking, optional Schutzgas-System."
+            },
+            {
+              "machineName": "Mg-Druckguss 400 t - Standard",
+              "machineNameIntern": "Italpresse HP 400 (Mg-Standard)",
+              "verfahren": "Druckguss (Magnesium)",
+              "kaufpreis": 450000,
+              "power_kW": 40,
+              "throughputPartsPerYear": 250000,
+              "comment": "Kaltkammerverfahren für größere Magnesiumteile, Basisausstattung, einfache Sprüh- und Kühltechnik."
+            },
+            {
+              "machineName": "Mg-Druckguss 400 t - High-End",
+              "machineNameIntern": "Italpresse HP 400 (Mg-Automotive)",
+              "verfahren": "Druckguss (Magnesium)",
+              "kaufpreis": 750000,
+              "power_kW": 40,
+              "throughputPartsPerYear": 300000,
+              "comment": "Robotersystem (Entnahme + Beschnitt), advanced Casting Controller, Niederhaltertechnik, lückenlose QS."
+            },
+          
+            {
+              "machineName": "Zinkdruckguss 80 t - Standard",
+              "machineNameIntern": "Frech DAW 80 (Standard)",
+              "verfahren": "Druckguss (Zink)",
+              "kaufpreis": 150000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 800000,
+              "comment": "Heißkammer-Druckgießmaschine, 80 t Schließkraft, einfache Handlingsysteme, Fokus auf kleine Teile."
+            },
+            {
+              "machineName": "Zinkdruckguss 80 t - High-End",
+              "machineNameIntern": "Frech DAW 80 (Automotive/Electronics)",
+              "verfahren": "Druckguss (Zink)",
+              "kaufpreis": 250000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 900000,
+              "comment": "Automatische Anguss-Entnahme, integrierte Qualitätskontrolle (Kamera, Wiegezelle), SPS/HMI moderner Standard."
+            },
+            {
+              "machineName": "Zinkdruckguss 200 t - Standard",
+              "machineNameIntern": "Italpresse IHM 200 (Standard)",
+              "verfahren": "Druckguss (Zink)",
+              "kaufpreis": 300000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 500000,
+              "comment": "Höhere Schließkraft (~200 t) für größere Zink-Bauteile, Basisausstattung, manuelle Rüstsysteme."
+            },
+            {
+              "machineName": "Zinkdruckguss 200 t - High-End",
+              "machineNameIntern": "Italpresse IHM 200 (High-Precision)",
+              "verfahren": "Druckguss (Zink)",
+              "kaufpreis": 450000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 600000,
+              "comment": "Hochautomatisierter Betrieb, Vakuumoption, Temperierung integriert, Touchscreen-Steuerung mit statistischer Prozesskontrolle."
+            },
+          
+            {
+              "machineName": "Kokillenguss (manuell) - Standard",
+              "machineNameIntern": "GDS GravityCast 400 (Standard)",
+              "verfahren": "Kokillenguss / Schwerkraft",
+              "kaufpreis": 60000,
+              "power_kW": 8,
+              "throughputPartsPerYear": 50000,
+              "comment": "Manuelle Beschickung, Kippkokille, für kleinere Losgrößen, Grundausstattung ohne Automatisierung."
+            },
+            {
+              "machineName": "Kokillenguss (manuell) - High-End",
+              "machineNameIntern": "GDS GravityCast 400 (Semi-Automotive)",
+              "verfahren": "Kokillenguss / Schwerkraft",
+              "kaufpreis": 120000,
+              "power_kW": 8,
+              "throughputPartsPerYear": 60000,
+              "comment": "Mit Rotations-Kokille und Servo-Kippmechanismus, einfache Robot-Option für Metallzufuhr, Temperaturüberwachung."
+            },
+            {
+              "machineName": "Kokillenguss (automatisch) - Standard",
+              "machineNameIntern": "Italpresse GravityPro 700 (Standard)",
+              "verfahren": "Kokillenguss / Schwerkraft",
+              "kaufpreis": 200000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 150000,
+              "comment": "Automatisierte Gießzelle mit Schmelzofen, Kippkokille, Auswerfer, einfache QS-Systeme (z.B. Kameraprüfung)."
+            },
+            {
+              "machineName": "Kokillenguss (automatisch) - High-End",
+              "machineNameIntern": "Italpresse GravityPro 700 (Automotive-Special)",
+              "verfahren": "Kokillenguss / Schwerkraft",
+              "kaufpreis": 350000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 200000,
+              "comment": "Vollautomatischer Gießprozess, Robot-Entnahme, Kühltunnel, integrierte Laservermessung für Wanddicke."
+            },
+            {
+              "machineName": "Feingussanlage (klein) - Standard",
+              "machineNameIntern": "InvestmentCast 100 (Standard)",
+              "verfahren": "Feinguss",
+              "kaufpreis": 200000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 50000,
+              "comment": "Kleine Anlage für Wachsmodellerstellung (Spritzsystem) und Keramikschlicker-Roboter, manuelle Entformung."
+            },
+            {
+              "machineName": "Feingussanlage (klein) - High-End",
+              "machineNameIntern": "InvestmentCast 100 (Aerospace-Special)",
+              "verfahren": "Feinguss",
+              "kaufpreis": 350000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 60000,
+              "comment": "Automatische Wachsspritzstation, vollautomatische Schlicker-Dip- und Trocknungsstation, integrierte QS (Kamera)."
+            },
+            {
+              "machineName": "Feingussanlage (mittel) - Standard",
+              "machineNameIntern": "LostWaxPro 300 (Standard)",
+              "verfahren": "Feinguss",
+              "kaufpreis": 500000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 100000,
+              "comment": "Größere Anlage mit mehreren Tauchbecken, teils automatisierte Trockner, manuelle Bauteilentnahme."
+            },
+            {
+              "machineName": "Feingussanlage (mittel) - High-End",
+              "machineNameIntern": "LostWaxPro 300 (Automotive/Luftfahrt)",
+              "verfahren": "Feinguss",
+              "kaufpreis": 800000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 120000,
+              "comment": "Vollautomatischer Schlickerauftrag, mehrere Roboterarme, Prozessdatenerfassung (MES), Röntgenprüfung inline."
+            },
+          
+            {
+              "machineName": "Manuelle Sandgusslinie - Standard",
+              "machineNameIntern": "HandMold 150 (Standard)",
+              "verfahren": "Sandguss",
+              "kaufpreis": 80000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 20000,
+              "comment": "Einfache Handformerei, Kastenabmessung ~500x400 mm, manuelle Kernherstellung, Schmelzofen extern."
+            },
+            {
+              "machineName": "Manuelle Sandgusslinie - High-End",
+              "machineNameIntern": "HandMold 150 (Semi-Automated)",
+              "verfahren": "Sandguss",
+              "kaufpreis": 130000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 30000,
+              "comment": "Halbautomatischer Sandaufbereitungs-Mischer, Vibrationsrüttler, einfache Kernschießmaschine, QS optional."
+            },
+            {
+              "machineName": "Automatische Formanlage (mittel) - Standard",
+              "machineNameIntern": "DISA Match 130 (Standard)",
+              "verfahren": "Sandguss",
+              "kaufpreis": 400000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 120000,
+              "comment": "Horizontal geteilter Formkasten, automatischer Sandverdichter, Gießstation manuell oder halbautomatisch."
+            },
+            {
+              "machineName": "Automatische Formanlage (mittel) - High-End",
+              "machineNameIntern": "DISA Match 130 (Automotive-Special)",
+              "verfahren": "Sandguss",
+              "kaufpreis": 700000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 150000,
+              "comment": "Vollautomatische Gießstrecke, Kernschießanlage integriert, MES-Anbindung, Inline-Kamera für Gießüberwachung."
+            },
+          
+            {
+              "machineName": "Lost-Foam-Anlage (klein) - Standard",
+              "machineNameIntern": "FoamCast 50 (Standard)",
+              "verfahren": "Lost-Foam-Guss",
+              "kaufpreis": 120000,
+              "power_kW": 8,
+              "throughputPartsPerYear": 30000,
+              "comment": "Kleine Anlage mit Handaufbau der Schaummodelle, Vakuumunterstützung, einfache Gießstation."
+            },
+            {
+              "machineName": "Lost-Foam-Anlage (klein) - High-End",
+              "machineNameIntern": "FoamCast 50 (Automotive-Special)",
+              "verfahren": "Lost-Foam-Guss",
+              "kaufpreis": 200000,
+              "power_kW": 8,
+              "throughputPartsPerYear": 40000,
+              "comment": "Vollautomatische Modellherstellung (Schaumform), Transferstation mit Vakuum, QA-Dokumentation, Röntgen-Option."
+            },
+            {
+              "machineName": "Lost-Foam-Anlage (mittel) - Standard",
+              "machineNameIntern": "V-Process 150 (Standard)",
+              "verfahren": "Lost-Foam-Guss",
+              "kaufpreis": 350000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 80000,
+              "comment": "Vakuum-Formverfahren, mittlere Losgrößen, manuelle Kernlegung, Schmelzofen extern (optional)."
+            },
+            {
+              "machineName": "Lost-Foam-Anlage (mittel) - High-End",
+              "machineNameIntern": "V-Process 150 (Automotive-Special)",
+              "verfahren": "Lost-Foam-Guss",
+              "kaufpreis": 550000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 100000,
+              "comment": "Automatische Polystyrol-Modellherstellung, MES-Schnittstelle, 2-Stationen-Gießlinie, Inline-Temperaturmessung."
+            },
+          
+            {
+              "machineName": "Niederdruckguss 400°C - Standard",
+              "machineNameIntern": "AluLowPressure 1000 (Standard)",
+              "verfahren": "Niederdruckguss",
+              "kaufpreis": 200000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 60000,
+              "comment": "Gießofen mit max. 400°C, Aufwärtsbefüllung, manuelles Kernsetzen, Kühlbecken extern."
+            },
+            {
+              "machineName": "Niederdruckguss 400°C - High-End",
+              "machineNameIntern": "AluLowPressure 1000 (Automotive-Special)",
+              "verfahren": "Niederdruckguss",
+              "kaufpreis": 350000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 70000,
+              "comment": "Vollautomatisierte Kernbestückung, Vakuumoption, Roboter-Entnahme, QS-Kamera, integrierte Zykluszeiterfassung."
+            },
+            {
+              "machineName": "Vakuumguss (Alu) - Standard",
+              "machineNameIntern": "VacCast 600 (Standard)",
+              "verfahren": "Vakuumguss",
+              "kaufpreis": 500000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 50000,
+              "comment": "Für hochwertige, porenarme Bauteile. Vakuumschleuse, manuelle Befüllung, einfache Überwachung."
+            },
+            {
+              "machineName": "Vakuumguss (Alu) - High-End",
+              "machineNameIntern": "VacCast 600 (High-Performance)",
+              "verfahren": "Vakuumguss",
+              "kaufpreis": 800000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 60000,
+              "comment": "Automatisierter Gießprozess, Laser-Messtechnik für Schmelzepegel, MES-Anbindung, Roboter-Kernhandhabung."
+            },
+            {
+              "machineName": "Metall-LPBF (klein) - Standard",
+              "machineNameIntern": "EOS M 100 (Standard)",
+              "verfahren": "Additive Fertigung (Metall-LPBF)",
+              "kaufpreis": 400000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 5000,
+              "comment": "Kleine Bauplattform (~100 x 100 x 100 mm), 200–400 W Laser, manuelle Pulverhandhabung."
+            },
+            {
+              "machineName": "Metall-LPBF (klein) - High-End",
+              "machineNameIntern": "EOS M 100 (Aerospace-Special)",
+              "verfahren": "Additive Fertigung (Metall-LPBF)",
+              "kaufpreis": 600000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 6000,
+              "comment": "Gleiche Baugröße, aber verbesserte Laserquelle (bis 500 W), automatisierte Pulverstation, Inertgas-Qualitätskontrolle."
+            },
+            {
+              "machineName": "Metall-LPBF (mittel) - Standard",
+              "machineNameIntern": "Renishaw RenAM 500Q (Standard)",
+              "verfahren": "Additive Fertigung (Metall-LPBF)",
+              "kaufpreis": 700000,
+              "power_kW": 8,
+              "throughputPartsPerYear": 8000,
+              "comment": "Bauvolumen ~250 x 250 x 350 mm, bis zu 2–4 Lasern (je ~500 W), halbautomatische Siebstation."
+            },
+            {
+              "machineName": "Metall-LPBF (mittel) - High-End",
+              "machineNameIntern": "Renishaw RenAM 500Q (Automotive/Luftfahrt)",
+              "verfahren": "Additive Fertigung (Metall-LPBF)",
+              "kaufpreis": 1100000,
+              "power_kW": 8,
+              "throughputPartsPerYear": 10000,
+              "comment": "4 Laser parallel, vollautomatisches Pulvermanagement, Überwachung jeder Schicht per Kamera, MES-Anbindung."
+            },
+            {
+              "machineName": "Metall-LPBF (groß) - Standard",
+              "machineNameIntern": "SLM Solutions 500 (Standard)",
+              "verfahren": "Additive Fertigung (Metall-LPBF)",
+              "kaufpreis": 1200000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 15000,
+              "comment": "Bauvolumen ~500 x 280 x 365 mm, 2–4 kW Laser aggregate total, Grundausstattung, manuelle Pulverwechsel."
+            },
+            {
+              "machineName": "Metall-LPBF (groß) - High-End",
+              "machineNameIntern": "SLM Solutions 500 (Aerospace-Pro)",
+              "verfahren": "Additive Fertigung (Metall-LPBF)",
+              "kaufpreis": 1800000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 20000,
+              "comment": "Bis zu 4 Hochleistungslaser (je 700–1000 W), lückenlose Prozessüberwachung (Meltpool-Monitoring), vollautomatisches Pulver-Handling."
+            },
+          
+            {
+              "machineName": "SLS (PA12) - Standard",
+              "machineNameIntern": "Formiga P110 (Standard)",
+              "verfahren": "Additive Fertigung (SLS)",
+              "kaufpreis": 150000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 10000,
+              "comment": "Bauvolumen ~200 x 250 x 330 mm, Laser 30–50 W CO2, manuelle Pulverentfernung."
+            },
+            {
+              "machineName": "SLS (PA12) - High-End",
+              "machineNameIntern": "Formiga P110 (Automotive-Special)",
+              "verfahren": "Additive Fertigung (SLS)",
+              "kaufpreis": 250000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 12000,
+              "comment": "Schnellere Scangeschwindigkeit, integrierte Kühleinheit, automatisierte Recyclingstation, erweiterte Prozessüberwachung."
+            },
+            {
+              "machineName": "MJF (PA12) - Standard",
+              "machineNameIntern": "HP Jet Fusion 4200 (Standard)",
+              "verfahren": "Additive Fertigung (MJF)",
+              "kaufpreis": 300000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 20000,
+              "comment": "Multi Jet Fusion mit ~380 x 280 x 380 mm Bauvolumen, Basisausstattung, manuelles Nachbearbeiten."
+            },
+            {
+              "machineName": "MJF (PA12) - High-End",
+              "machineNameIntern": "HP Jet Fusion 5200 (Production)",
+              "verfahren": "Additive Fertigung (MJF)",
+              "kaufpreis": 450000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 30000,
+              "comment": "Höhere Druckgeschwindigkeit, automatisches Pulverrecycling, Online-Qualitätsüberwachung, verbesserte Oberflächenqualität."
+            },
+          
+            {
+              "machineName": "FDM-Printer (klein) - Standard",
+              "machineNameIntern": "Ultimaker S3 (Standard)",
+              "verfahren": "Additive Fertigung (FDM)",
+              "kaufpreis": 7000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 1500,
+              "comment": "Bauvolumen ~230 x 190 x 200 mm, Dual-Extrusion optional, meist PLA/ABS, manuelle Bedienung."
+            },
+            {
+              "machineName": "FDM-Printer (klein) - High-End",
+              "machineNameIntern": "Ultimaker S3 (Industrial-Special)",
+              "verfahren": "Additive Fertigung (FDM)",
+              "kaufpreis": 12000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 1800,
+              "comment": "Integrierte Kamera, Filamentsensor, schallgedämpftes Gehäuse, Netzwerk-Anbindung, Q-Reporting."
+            },
+            {
+              "machineName": "FDM-Printer (mittel) - Standard",
+              "machineNameIntern": "Stratasys F270 (Standard)",
+              "verfahren": "Additive Fertigung (FDM)",
+              "kaufpreis": 30000,
+              "power_kW": 1.5,
+              "throughputPartsPerYear": 5000,
+              "comment": "Bauvolumen ~305 x 254 x 305 mm, beheizter Bauraum, Basismaterial ABS/ASA/PLA, manuelles Support-Entfernen."
+            },
+            {
+              "machineName": "FDM-Printer (mittel) - High-End",
+              "machineNameIntern": "Stratasys F370 (Automotive-Special)",
+              "verfahren": "Additive Fertigung (FDM)",
+              "kaufpreis": 50000,
+              "power_kW": 1.5,
+              "throughputPartsPerYear": 7000,
+              "comment": "Multi-Material (TPU, PC-ABS), optimierte Support-Entfernung in Waschstation, Cloud-Monitoring, QS-Protokoll."
+            },
+            {
+              "machineName": "FDM-Printer (großformat) - Standard",
+              "machineNameIntern": "BigRep ONE (Standard)",
+              "verfahren": "Additive Fertigung (FDM)",
+              "kaufpreis": 120000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 2000,
+              "comment": "Bauvolumen ~1000 x 1000 x 1000 mm, offenes System, manuelle Filamentführung, Basis-Heizbett."
+            },
+            {
+              "machineName": "FDM-Printer (großformat) - High-End",
+              "machineNameIntern": "BigRep PRO (Industrial)",
+              "verfahren": "Additive Fertigung (FDM)",
+              "kaufpreis": 250000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 3000,
+              "comment": "Geschlossene, beheizte Baukammer, verstärkter Frame, automatischer Materialwechsel, umfangreiche Prozesskontrolle."
+            },
+          
+            {
+              "machineName": "Binder Jetting (Metall) - Standard",
+              "machineNameIntern": "ExOne Innovent+ (Standard)",
+              "verfahren": "Additive Fertigung (Binder Jetting)",
+              "kaufpreis": 200000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 3000,
+              "comment": "Kompaktes System (~160 x 65 x 65 mm Bauvolumen), manuelle Pulver- und Binderbefüllung, externes Sintern nötig."
+            },
+            {
+              "machineName": "Binder Jetting (Metall) - High-End",
+              "machineNameIntern": "ExOne M-Flex (Automotive/Industrial)",
+              "verfahren": "Additive Fertigung (Binder Jetting)",
+              "kaufpreis": 400000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 5000,
+              "comment": "Größere Baufläche (~400 x 250 x 250 mm), automatisches Binderrecycling, integrierte Überwachung, optionales Sinter-Ofensystem."
+            },
+            {
+              "machineName": "Binder Jetting (Sand) - Standard",
+              "machineNameIntern": "ExOne S-Print (Standard)",
+              "verfahren": "Additive Fertigung (Binder Jetting, Sand)",
+              "kaufpreis": 300000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 2000,
+              "comment": "Für Sandformen/-kerne, Bauvolumen ~800 x 500 x 400 mm, manuelles Auspacken, Basisausstattung."
+            },
+            {
+              "machineName": "Binder Jetting (Sand) - High-End",
+              "machineNameIntern": "ExOne S-Max Pro (Foundry-Special)",
+              "verfahren": "Additive Fertigung (Binder Jetting, Sand)",
+              "kaufpreis": 600000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 3000,
+              "comment": "Größeres Bauvolumen (~1800 x 1000 x 700 mm), Vollautomation (Entstaubung, Kernhandling), vernetzt mit Gießereilinie (MES)."
+            },
+          
+            {
+              "machineName": "SLA (klein) - Standard",
+              "machineNameIntern": "Formlabs Form 3+ (Standard)",
+              "verfahren": "Additive Fertigung (SLA)",
+              "kaufpreis": 4000,
+              "power_kW": 0.3,
+              "throughputPartsPerYear": 1000,
+              "comment": "Kleine Bauplattform (~145 x 145 x 185 mm), einfacher Harzwechsel, manuelle Nachhärtung (UV)."
+            },
+            {
+              "machineName": "SLA (klein) - High-End",
+              "machineNameIntern": "Formlabs Form 3B (Dental/Medical)",
+              "verfahren": "Additive Fertigung (SLA)",
+              "kaufpreis": 7000,
+              "power_kW": 0.3,
+              "throughputPartsPerYear": 1200,
+              "comment": "Zusätzliche Harzoptionen (Dental, Biokompatibel), automatisiertes Pre-Heat, verbesserte Schichthöhenkontrolle."
+            },
+            {
+              "machineName": "SLA (mittel) - Standard",
+              "machineNameIntern": "3D Systems ProJet 6000 (Standard)",
+              "verfahren": "Additive Fertigung (SLA)",
+              "kaufpreis": 150000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 5000,
+              "comment": "Bauvolumen ~250 x 250 x 250 mm, UV-Laser ~250 mW, manuelle Reinigung, Stand-alone-Härtung."
+            },
+            {
+              "machineName": "SLA (mittel) - High-End",
+              "machineNameIntern": "3D Systems ProJet 7000 (High-Precision)",
+              "verfahren": "Additive Fertigung (SLA)",
+              "kaufpreis": 250000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 7000,
+              "comment": "Größeres Bauvolumen, hochgenauer Laser, automatische Harzkontrolle, integrierter UV-Härteofen, QC-Software."
+            },
+          
+            {
+              "machineName": "DED (Laser-Pulver) - Standard",
+              "machineNameIntern": "Optomec LENS 500 (Standard)",
+              "verfahren": "Additive Fertigung (DED-Laser)",
+              "kaufpreis": 500000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 1000,
+              "comment": "5-Achs-System, Laserleistung ~1 kW, Pulverzufuhr, manuelle Teilepositionierung, ideal für Reparaturen."
+            },
+            {
+              "machineName": "DED (Laser-Pulver) - High-End",
+              "machineNameIntern": "Optomec LENS 500 (Aerospace-Special)",
+              "verfahren": "Additive Fertigung (DED-Laser)",
+              "kaufpreis": 800000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 1200,
+              "comment": "Automatische 5-Achs-Positionierung, 2–4 kW Laserupgrade möglich, In-Situ-Temperaturkontrolle, Robot-Handling."
+            },
+            {
+              "machineName": "WAAM (Draht) - Standard",
+              "machineNameIntern": "Gefertec arc403 (Standard)",
+              "verfahren": "Additive Fertigung (WAAM)",
+              "kaufpreis": 700000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 500,
+              "comment": "3-Achs-Portal, MIG/MAG-Schweißdrähte, manuelle Rüstung, Bauteile bis ~0,4 m³, v.a. Stahl oder Edelstahl."
+            },
+            {
+              "machineName": "WAAM (Draht) - High-End",
+              "machineNameIntern": "Gefertec arc605 (Industrial)",
+              "verfahren": "Additive Fertigung (WAAM)",
+              "kaufpreis": 1200000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 800,
+              "comment": "5-Achs-Konzept, großvolumige Bauteile (bis 1m³+), Laser-Scanner zur Lagekontrolle, MES-Integration."
+            },
+            {
+              "machineName": "2D-Laser CO2 (klein) - Standard",
+              "machineNameIntern": "Trumpf TruLaser 1030 (Standard)",
+              "verfahren": "2D-Laserschneiden (CO2)",
+              "kaufpreis": 150000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 50000,
+              "comment": "Kleiner Arbeitsbereich (~1250 x 2500 mm), CO2-Laser ~2 kW, Basisausstattung, manuelle Be-/Entladung."
+            },
+            {
+              "machineName": "2D-Laser CO2 (klein) - High-End",
+              "machineNameIntern": "Trumpf TruLaser 1030 (Automated)",
+              "verfahren": "2D-Laserschneiden (CO2)",
+              "kaufpreis": 250000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 60000,
+              "comment": "Automatische Palettenwechsler, schnellere Steuerung, kamerabasierte Prozessüberwachung, erweiterte Blechdickenoption."
+            },
+            {
+              "machineName": "2D-Laser Faser (mittel) - Standard",
+              "machineNameIntern": "Bystronic BySmart Fiber 3015 (Standard)",
+              "verfahren": "2D-Laserschneiden (Faserlaser)",
+              "kaufpreis": 300000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 90000,
+              "comment": "Arbeitsbereich ~3000 x 1500 mm, Faserlaser ~3 kW, manuelle Blechbeladung, Basiskühlung."
+            },
+            {
+              "machineName": "2D-Laser Faser (mittel) - High-End",
+              "machineNameIntern": "Bystronic BySmart Fiber 3015 (Automotive-Special)",
+              "verfahren": "2D-Laserschneiden (Faserlaser)",
+              "kaufpreis": 500000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 120000,
+              "comment": "Automatisierte Blechzufuhr/-abfuhr (Wechseltisch), Hochgeschwindigkeitskopf, Prozessüberwachung (Cut Control)."
+            },
+            {
+              "machineName": "2D-Laser Faser (groß) - Standard",
+              "machineNameIntern": "Amada ENSIS 6kW (Standard)",
+              "verfahren": "2D-Laserschneiden (Faserlaser)",
+              "kaufpreis": 600000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 180000,
+              "comment": "Großer Tisch (4000 x 2000 mm), 6-kW-Faserlaser, automatischer Düsenwechsler, Basisausstattung."
+            },
+            {
+              "machineName": "2D-Laser Faser (groß) - High-End",
+              "machineNameIntern": "Amada ENSIS 6kW (Fully-Automated)",
+              "verfahren": "2D-Laserschneiden (Faserlaser)",
+              "kaufpreis": 900000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 220000,
+              "comment": "Vollautomatisierte Lageranbindung, Sortier- und Stapelroboter, Echtzeit-Sensorik für Strahlqualität, MES-Integration."
+            },
+          
+            {
+              "machineName": "3D-Laser (Roboter) - Standard",
+              "machineNameIntern": "Prima Power Laser Next 3D (Standard)",
+              "verfahren": "3D-Laserschneiden",
+              "kaufpreis": 400000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 30000,
+              "comment": "6-Achs-Roboter mit Laser-Kopf, CO2 oder Faser ~3 kW, manuelles Einlegen von Bauteilen, Grund-Sicherheitszelle."
+            },
+            {
+              "machineName": "3D-Laser (Roboter) - High-End",
+              "machineNameIntern": "Prima Power Laser Next 3D (Automotive)",
+              "verfahren": "3D-Laserschneiden",
+              "kaufpreis": 700000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 40000,
+              "comment": "High-Speed-Roboter, Faserlaser ~4 kW, automatische Wechseltische, Offline-Programmierung, Inline-Vermessung."
+            },
+            {
+              "machineName": "Rohrlaser (mittel) - Standard",
+              "machineNameIntern": "BLM LT Fiber 652 (Standard)",
+              "verfahren": "Rohr-/Profillaserschneiden",
+              "kaufpreis": 350000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 60000,
+              "comment": "Max. Rohrlänge ~6500 mm, Ø bis 200 mm, 2-kW-Faserlaser, manuelle Be- und Entladung, Basisausstattung."
+            },
+            {
+              "machineName": "Rohrlaser (mittel) - High-End",
+              "machineNameIntern": "BLM LT Fiber 652 (Industrial-Automation)",
+              "verfahren": "Rohr-/Profillaserschneiden",
+              "kaufpreis": 550000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 80000,
+              "comment": "Automatische Bündelbeladung, schnelles Profilwechselsystem, 3D-Schneidkopf, integrierte QS-Kamera."
+            },
+            {
+              "machineName": "Rohrlaser (groß) - Standard",
+              "machineNameIntern": "Trumpf TruLaser Tube 7000 (Standard)",
+              "verfahren": "Rohr-/Profillaserschneiden",
+              "kaufpreis": 600000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 100000,
+              "comment": "Lange Profilaufnahmen (~8 m), 3-kW-Faserlaser, Grund-Rüstsystem, manuelle Sortierung."
+            },
+            {
+              "machineName": "Rohrlaser (groß) - High-End",
+              "machineNameIntern": "Trumpf TruLaser Tube 7000 (Automation)",
+              "verfahren": "Rohr-/Profillaserschneiden",
+              "kaufpreis": 900000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 120000,
+              "comment": "Automatische Lade-/Entlademodule, 3D-Schneidkopf bis 45° Fasen, Smart Profile Detection, MES-Integration."
+            },
+          
+            {
+              "machineName": "Laser-Schweißroboter Zelle (klein) - Standard",
+              "machineNameIntern": "Fanuc Arc Mate LaserCell 1kW",
+              "verfahren": "Laserschweißen",
+              "kaufpreis": 250000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 40000,
+              "comment": "Kompakte Zelle mit 6-Achs-Roboter, 1 kW Faserlaser, manuelles Bauteilhandling, einfache Sicherheitseinhausung."
+            },
+            {
+              "machineName": "Laser-Schweißroboter Zelle (klein) - High-End",
+              "machineNameIntern": "Fanuc Arc Mate LaserCell 2kW (Automotive)",
+              "verfahren": "Laserschweißen",
+              "kaufpreis": 450000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 60000,
+              "comment": "Höhere Laserleistung (2 kW), automatischer Rundtisch, Offline-Programmierung, Echtzeit-Schweißnahtüberwachung."
+            },
+            {
+              "machineName": "Laser-Schweißportal (mittel) - Standard",
+              "machineNameIntern": "Trumpf TruLaser Weld 5000 (Standard)",
+              "verfahren": "Laserschweißen",
+              "kaufpreis": 500000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 80000,
+              "comment": "3-kW-Laser auf Portal, Bauteile bis ~2 x 1 m, Schutzkabine, manuelle Spannvorrichtungen."
+            },
+            {
+              "machineName": "Laser-Schweißportal (mittel) - High-End",
+              "machineNameIntern": "Trumpf TruLaser Weld 5000 (Automated)",
+              "verfahren": "Laserschweißen",
+              "kaufpreis": 800000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 100000,
+              "comment": "Höhere Laserleistung (4 kW), automatischer Positionierer (Wechseltisch, Drehtisch), Schweißnaht-Scanner, MES-Anbindung."
+            },
+            {
+              "machineName": "Remote-Laserschweißen (Karosserie) - Standard",
+              "machineNameIntern": "Kuka LaserTec RL 6kW (Standard)",
+              "verfahren": "Laserschweißen",
+              "kaufpreis": 900000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 150000,
+              "comment": "Große Reichweite, 6-kW-Faserlaser, Scankopf (Remote Welding), Basisausstattung, manueller Bauteilwechsel."
+            },
+            {
+              "machineName": "Remote-Laserschweißen (Karosserie) - High-End",
+              "machineNameIntern": "Kuka LaserTec RL 6kW (Automotive)",
+              "verfahren": "Laserschweißen",
+              "kaufpreis": 1500000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 200000,
+              "comment": "Vollautomatisierter Karosseriedurchlauf, hochdynamischer Laser-Scanner, komplexe Messtechnik (Spaltüberwachung, QS)."
+            },
+          
+            {
+              "machineName": "Laserhärtezelle (klein) - Standard",
+              "machineNameIntern": "AL-ROCK LH 1000 (Standard)",
+              "verfahren": "Laserhärten",
+              "kaufpreis": 200000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 30000,
+              "comment": "Kleine Bearbeitungszelle, Laserleistung ~2 kW, manuelles Spannen, einfache Temperaturüberwachung."
+            },
+            {
+              "machineName": "Laserhärtezelle (klein) - High-End",
+              "machineNameIntern": "AL-ROCK LH 1000 (Automated)",
+              "verfahren": "Laserhärten",
+              "kaufpreis": 350000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 40000,
+              "comment": "Roboter-Handhabung, integrierter Pyrometer, adaptives Scannen, offline-Programmierung (CAM-Sim)."
+            },
+            {
+              "machineName": "Laser-Cladding (Pulver) - Standard",
+              "machineNameIntern": "Trumpf TruLaser Cell 3000 (Standard)",
+              "verfahren": "Laserauftragschweißen (Pulver)",
+              "kaufpreis": 400000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 20000,
+              "comment": "5-Achs-Laserzelle, Pulverzufuhr mit Basisausstattung, ideal für Reparaturen von Werkzeugkanten, manuelles Rüsten."
+            },
+            {
+              "machineName": "Laser-Cladding (Pulver) - High-End",
+              "machineNameIntern": "Trumpf TruLaser Cell 3000 (Automotive)",
+              "verfahren": "Laserauftragschweißen (Pulver)",
+              "kaufpreis": 700000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 30000,
+              "comment": "Stärkere Laserquelle, automatisierter Pulverwechsler, integrierte Temperaturkontrolle, QS-Datenerfassung (Meltpool)."
+            },
+          
+            {
+              "machineName": "Laser-Textur (klein) - Standard",
+              "machineNameIntern": "GF AgieCharmilles Laser P 1000 (Standard)",
+              "verfahren": "Laser-Texturierung",
+              "kaufpreis": 180000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 20000,
+              "comment": "Arbeitsbereich ~300 x 300 mm, 5-Achsen-Bewegung, einfache Markierung und Texturierung, manuelle Beladung."
+            },
+            {
+              "machineName": "Laser-Textur (klein) - High-End",
+              "machineNameIntern": "GF AgieCharmilles Laser P 1000 (Precision)",
+              "verfahren": "Laser-Texturierung",
+              "kaufpreis": 300000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 25000,
+              "comment": "Hochpräzise Achsensysteme, 3D-Scanner für Textur-Layout, CAM-Software für komplexe Strukturen, QS-Kamera."
+            },
+            {
+              "machineName": "Laser-Mikrostruktur (mittel) - Standard",
+              "machineNameIntern": "Trumpf TruMicro Mark 5000 (Standard)",
+              "verfahren": "Mikrostrukturierung",
+              "kaufpreis": 250000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 50000,
+              "comment": "Kurzpulslaser (ps/fs-Bereich), Bearbeitungsfeld ~150 x 150 mm, manuelle Fokusjustierung, simpler Rundtisch."
+            },
+            {
+              "machineName": "Laser-Mikrostruktur (mittel) - High-End",
+              "machineNameIntern": "Trumpf TruMicro Mark 5000 (Ultrafast)",
+              "verfahren": "Mikrostrukturierung",
+              "kaufpreis": 500000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 70000,
+              "comment": "Ultrakurzpulslaser <1 ps, hochgenaue Achssysteme, automatischer Fokus, Prozessüberwachung, optional Reinraum-Setup."
+            },
+            {
+              "machineName": "Plasma-CNC (klein) - Standard",
+              "machineNameIntern": "Hypertherm Powermax 65 + CNC-Table (Standard)",
+              "verfahren": "Plasma-Schneiden",
+              "kaufpreis": 50000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 30000,
+              "comment": "Arbeitsbereich ~1500 x 3000 mm, 65 A-Plasmabrenner, manuelles Beladen, Basiskonfiguration (keine Absaugung)."
+            },
+            {
+              "machineName": "Plasma-CNC (klein) - High-End",
+              "machineNameIntern": "Hypertherm XPR170 + CNC-Table (Automated)",
+              "verfahren": "Plasma-Schneiden",
+              "kaufpreis": 90000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 40000,
+              "comment": "Höhere Energie (bis ~170 A), automatische Gashöhenregulierung, integrierte Filterabsaugung, präzisere Lochqualität."
+            },
+            {
+              "machineName": "Plasma-CNC (mittel) - Standard",
+              "machineNameIntern": "ESAB Cutmaster 120 + Gantry (Standard)",
+              "verfahren": "Plasma-Schneiden",
+              "kaufpreis": 120000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 60000,
+              "comment": "Tischgröße ~2000 x 6000 mm, mechanisierter Brenner, einfache CNC-Steuerung, Basisausstattung (manuelles Rüsten)."
+            },
+            {
+              "machineName": "Plasma-CNC (mittel) - High-End",
+              "machineNameIntern": "ESAB m3 Plasma System (Automotive)",
+              "verfahren": "Plasma-Schneiden",
+              "kaufpreis": 200000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 80000,
+              "comment": "Hohe Amperage (bis 400 A), automatisierte CAD/CAM-Schnittstelle, Z-Achsen-Höhenregelung, Absaugtisch & Filtereinheit."
+            },
+          
+            {
+              "machineName": "Wasserstrahl (reines Wasser) - Standard",
+              "machineNameIntern": "Flow Mach 100 (Standard)",
+              "verfahren": "Wasserstrahlschneiden",
+              "kaufpreis": 100000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 25000,
+              "comment": "Einfacher Tisch ~2 x 1 m, max. 3800 bar, nur für weiche Materialien (Gummi, Schaum, Kunststoff)."
+            },
+            {
+              "machineName": "Wasserstrahl (reines Wasser) - High-End",
+              "machineNameIntern": "Flow Mach 100 (Automation)",
+              "verfahren": "Wasserstrahlschneiden",
+              "kaufpreis": 150000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 30000,
+              "comment": "Erweiterte Steuerung, 5-Achs-Kopf (bis 60° Schrägschnitt), automatisierter Wechseltisch, optionaler Reinwasser-Filter."
+            },
+            {
+              "machineName": "Wasserstrahl (mit Abrasiv) - Standard",
+              "machineNameIntern": "OMAX 60120 (Standard)",
+              "verfahren": "Wasserstrahlschneiden",
+              "kaufpreis": 200000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 40000,
+              "comment": "Größerer Tisch (~3 x 2 m), bis 4000 bar, Abrasivförderer manuell, Basisausstattung, simpler Schlauchwechsel."
+            },
+            {
+              "machineName": "Wasserstrahl (mit Abrasiv) - High-End",
+              "machineNameIntern": "OMAX 60120 (Precision)",
+              "verfahren": "Wasserstrahlschneiden",
+              "kaufpreis": 300000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 50000,
+              "comment": "Präzisions-5-Achs-Kopf, vollautomatisches Abrasiv-Dosiersystem, fortgeschrittene CAM-Software, MES-Anbindung."
+            },
+            {
+              "machineName": "Großformat-Wasserstrahl - Standard",
+              "machineNameIntern": "TECHNI Waterjet Intec-G2 (Standard)",
+              "verfahren": "Wasserstrahlschneiden",
+              "kaufpreis": 400000,
+              "power_kW": 40,
+              "throughputPartsPerYear": 60000,
+              "comment": "Arbeitsbereich ~4 x 2 m, 4200 bar, einfache Handhabung, Abrasiv optional, CNC-Grundsteuerung."
+            },
+            {
+              "machineName": "Großformat-Wasserstrahl - High-End",
+              "machineNameIntern": "TECHNI Waterjet Intec-G2 (Automotive/Aerospace)",
+              "verfahren": "Wasserstrahlschneiden",
+              "kaufpreis": 600000,
+              "power_kW": 50,
+              "throughputPartsPerYear": 70000,
+              "comment": "5-Achs-Dynamic-Kopf, automatischer Wechseltisch, programmierbare Abrasivzufuhr, hochpräzise Servomotoren, QS-Datenerfassung."
+            },
+          
+            {
+              "machineName": "Autogenschneidanlage (klein) - Standard",
+              "machineNameIntern": "Esab Handycut 150 (Standard)",
+              "verfahren": "Autogenes Brennschneiden (Oxyfuel)",
+              "kaufpreis": 8000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 10000,
+              "comment": "Tragbares Gerät für manuelle oder einfach geführte Schnitte, max. ~100 mm Stahl, Acetylen oder Propan."
+            },
+            {
+              "machineName": "Autogenschneidanlage (CNC) - Standard",
+              "machineNameIntern": "Koike IK-1500 CNC (Standard)",
+              "verfahren": "Autogenes Brennschneiden (Oxyfuel)",
+              "kaufpreis": 25000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 20000,
+              "comment": "Einfacher CNC-Portalsupport (~1,5 x 3 m), 1–2 Brennerköpfe, manuelle Gasregelung, Basisausstattung."
+            },
+            {
+              "machineName": "Autogenschneidanlage (CNC) - High-End",
+              "machineNameIntern": "Koike SupremeCut 3000 (Heavy-Duty)",
+              "verfahren": "Autogenes Brennschneiden (Oxyfuel)",
+              "kaufpreis": 60000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 40000,
+              "comment": "Großes Portal (3 x 6 m), mehrere Brennerköpfe (bis 4), automatische Zünd-/Gasregelung, Dicke bis 300 mm."
+            },
+          
+            {
+              "machineName": "EBW-Kammer (klein) - Standard",
+              "machineNameIntern": "ProBeam EB-100 (Standard)",
+              "verfahren": "Elektronenstrahlschweißen (EBW)",
+              "kaufpreis": 600000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 5000,
+              "comment": "Kleine Vakuumkammer (~600 x 400 mm), max. 30 kV, manuelle Spannvorrichtungen, einfache Strahlfokussteuerung."
+            },
+            {
+              "machineName": "EBW-Kammer (klein) - High-End",
+              "machineNameIntern": "ProBeam EB-100 (Aerospace)",
+              "verfahren": "Elektronenstrahlschweißen (EBW)",
+              "kaufpreis": 900000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 6000,
+              "comment": "Gleiche Kammergröße, verbesserte 60 kV-Beschleunigung, CNC-Positionierung (5 Achsen), QS-Software, Vakuummonitoring."
+            },
+            {
+              "machineName": "EBW-Kammer (groß) - Standard",
+              "machineNameIntern": "Sciaky VX-200 (Standard)",
+              "verfahren": "Elektronenstrahlschweißen (EBW)",
+              "kaufpreis": 1500000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 3000,
+              "comment": "Große Vakuumkammer (~1500 x 1000 mm), ~60 kV, ideal für größere Bauteile (Turbinenkomponenten), manuelles Rüsten."
+            },
+            {
+              "machineName": "EBW-Kammer (groß) - High-End",
+              "machineNameIntern": "Sciaky VX-200 (Aerospace/PowerGen)",
+              "verfahren": "Elektronenstrahlschweißen (EBW)",
+              "kaufpreis": 2200000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 4000,
+              "comment": "Vollautomatisches Beladesystem, 5-Achs-Positionierung, Prozessdatenerfassung, Hochvakuum <1e-5 mbar, In-Situ Messung."
+            },
+            {
+              "machineName": "Kammerwaschanlage (klein) - Standard",
+              "machineNameIntern": "Dürr Ecoclean MiniJet (Standard)",
+              "verfahren": "Spritzreinigung",
+              "kaufpreis": 30000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 20000,
+              "comment": "Kleine Kammer (ca. 600 x 600 x 600 mm), Einsteigerlösung, einfache Düsen, manuelles Be-/Entladen."
+            },
+            {
+              "machineName": "Kammerwaschanlage (klein) - High-End",
+              "machineNameIntern": "Dürr Ecoclean MiniJet (Pro)",
+              "verfahren": "Spritzreinigung",
+              "kaufpreis": 60000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 25000,
+              "comment": "Zusätzliche Trocknungsstufe (Heißluft), Drehteller für bessere Reinigungsabdeckung, SPS-Steuerung mit Vorwahlprogrammen."
+            },
+            {
+              "machineName": "Kammerwaschanlage (mittel) - Standard",
+              "machineNameIntern": "EMO RapidClean 1000 (Standard)",
+              "verfahren": "Spritzreinigung",
+              "kaufpreis": 80000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 50000,
+              "comment": "Kammer ~1000 x 1000 x 1000 mm, Drehteller oder Korbaufnahme, Zwei-Tank-System (Wasch-/Spülmedium), basische Reinigung."
+            },
+            {
+              "machineName": "Kammerwaschanlage (mittel) - High-End",
+              "machineNameIntern": "EMO RapidClean 1000 (Automotive-Special)",
+              "verfahren": "Spritzreinigung",
+              "kaufpreis": 120000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 60000,
+              "comment": "Zusätzliche Hochdruckdüsen (> 100 bar), integrierte Ölabscheidung, Vakuumtrocknung, MES-Anbindung für Prozessdatenerfassung."
+            },
+          
+            {
+              "machineName": "Ultraschallbecken (klein) - Standard",
+              "machineNameIntern": "Elma Ultraclean S30 (Standard)",
+              "verfahren": "Ultraschallreinigung",
+              "kaufpreis": 5000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 10000,
+              "comment": "Kleines Tischgerät, Beckenvolumen ~30 Liter, manuelle Einlegekörbe, Frequenz ~40 kHz, einfache Timer-Steuerung."
+            },
+            {
+              "machineName": "Ultraschallbecken (klein) - High-End",
+              "machineNameIntern": "Elma Ultraclean S30 (Pro)",
+              "verfahren": "Ultraschallreinigung",
+              "kaufpreis": 9000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 12000,
+              "comment": "Gleiche Größe, aber duale Frequenz (40/80 kHz), Heizung bis 80°C, integrierte Filtration, digital gesteuerte Sweep-Funktion."
+            },
+            {
+              "machineName": "Ultraschallanlage (mittel) - Standard",
+              "machineNameIntern": "BANDELIN Sonorex 150 (Standard)",
+              "verfahren": "Ultraschallreinigung",
+              "kaufpreis": 35000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 30000,
+              "comment": "Beckenvolumen ~150 Liter, Einzelkammer mit optionaler Spülstufe, Frequenz 40 kHz, manuelle Beladung."
+            },
+            {
+              "machineName": "Ultraschallanlage (mittel) - High-End",
+              "machineNameIntern": "BANDELIN Sonorex 150 (Multi-Step)",
+              "verfahren": "Ultraschallreinigung",
+              "kaufpreis": 70000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 40000,
+              "comment": "Mehrstufig (Waschen-Spülen-Trocknen), Transport über Hub-Korb-System, Frequenzumschaltung 25/40 kHz, Ölabscheider."
+            },
+            {
+              "machineName": "Ultraschall-Großanlage - Standard",
+              "machineNameIntern": "SonicTec ProLine 500 (Standard)",
+              "verfahren": "Ultraschallreinigung",
+              "kaufpreis": 120000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 80000,
+              "comment": "Großes Becken (500 Liter+), Eintauch-/Hebetechnik, Frequenz ~30 oder 40 kHz, einfache SPS-Steuerung, manuelle Befüllung."
+            },
+            {
+              "machineName": "Ultraschall-Großanlage - High-End",
+              "machineNameIntern": "SonicTec ProLine 500 (Industrial)",
+              "verfahren": "Ultraschallreinigung",
+              "kaufpreis": 200000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 100000,
+              "comment": "Automatischer Korbtransport über Schienensystem, Mehrkammersystem (Vorwäsche, Ultraschall, Spülen, Trocknen), MES-Anbindung."
+            },
+          
+            {
+              "machineName": "Durchlaufwaschanlage (klein) - Standard",
+              "machineNameIntern": "Kärcher PowerLine 200 (Standard)",
+              "verfahren": "Spritz-Durchlaufreinigung",
+              "kaufpreis": 60000,
+              "power_kW": 8,
+              "throughputPartsPerYear": 50000,
+              "comment": "Förderbreite ~300 mm, ein Wasch- und ein Spülmodul, Heißlufttrocknung integriert, manuelle Beladung."
+            },
+            {
+              "machineName": "Durchlaufwaschanlage (klein) - High-End",
+              "machineNameIntern": "Kärcher PowerLine 200 (Automation)",
+              "verfahren": "Spritz-Durchlaufreinigung",
+              "kaufpreis": 100000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 60000,
+              "comment": "Erweiterte Trocknungszone, frequenzgeregelte Pumpen, automatische Infeed/Outfeed-Bänder, SPS mit Rezeptverwaltung."
+            },
+            {
+              "machineName": "Durchlaufwaschanlage (mittel) - Standard",
+              "machineNameIntern": "EMO SpeedWash 400 (Standard)",
+              "verfahren": "Spritz-Durchlaufreinigung",
+              "kaufpreis": 150000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 120000,
+              "comment": "Breite ~400 mm, modulares Baukastensystem (Waschen, Spülen, Trocknen), Basisausstattung, manuelles Rüsten."
+            },
+            {
+              "machineName": "Durchlaufwaschanlage (mittel) - High-End",
+              "machineNameIntern": "EMO SpeedWash 400 (Automotive-Special)",
+              "verfahren": "Spritz-Durchlaufreinigung",
+              "kaufpreis": 250000,
+              "power_kW": 18,
+              "throughputPartsPerYear": 150000,
+              "comment": "Mehrstufig (Vorwaschung, Hochdruck-Reinigung, Spülen, Trocknen), automatische Reinigungsmediumaufbereitung, MES-Schnittstelle."
+            },
+            {
+              "machineName": "Durchlaufwaschanlage (groß) - Standard",
+              "machineNameIntern": "Dürr EcoCLine 600 (Standard)",
+              "verfahren": "Spritz-Durchlaufreinigung",
+              "kaufpreis": 400000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 300000,
+              "comment": "Großes Förderband (~600 mm), Dreizonensystem (Waschen-Spülen-Trocknen), manuelle Werkzeug-/Düsenwechsel."
+            },
+            {
+              "machineName": "Durchlaufwaschanlage (groß) - High-End",
+              "machineNameIntern": "Dürr EcoCLine 600 (High-Capacity)",
+              "verfahren": "Spritz-Durchlaufreinigung",
+              "kaufpreis": 650000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 400000,
+              "comment": "Vollautomatischer Betrieb, integrierte Robot-Bestückung, mehrstufige Filtersysteme, Live-Überwachung der Prozessparameter."
+            },
+          
+            {
+              "machineName": "Vakuum-Entfettung (klein) - Standard",
+              "machineNameIntern": "Pero R0 (Standard)",
+              "verfahren": "Vakuum-Entfettung",
+              "kaufpreis": 120000,
+              "power_kW": 8,
+              "throughputPartsPerYear": 20000,
+              "comment": "Kleine Vakuumkammer (~Ø300 mm), Per-/Hydrocarbon-Lösemittel, manuelle Körbe, Basis-Vakuumpumpe."
+            },
+            {
+              "machineName": "Vakuum-Entfettung (klein) - High-End",
+              "machineNameIntern": "Pero R0 (Pro)",
+              "verfahren": "Vakuum-Entfettung",
+              "kaufpreis": 200000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 25000,
+              "comment": "Integrierter Destillationskreislauf, doppelter Sumpf (Vor-/Feinreinigung), SPS-Steuerung mit Rezeptverwaltung, Automatikklappe."
+            },
+            {
+              "machineName": "Vakuum-Entfettung (mittel) - Standard",
+              "machineNameIntern": "Pero R1 (Standard)",
+              "verfahren": "Vakuum-Entfettung",
+              "kaufpreis": 300000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 40000,
+              "comment": "Kammer Ø ~500 mm, rotierende Körbe, einfache Vakuumtechnik bis ~50 mbar, manuelle Be-/Entladung."
+            },
+            {
+              "machineName": "Vakuum-Entfettung (mittel) - High-End",
+              "machineNameIntern": "Pero R1 (Automotive-Special)",
+              "verfahren": "Vakuum-Entfettung",
+              "kaufpreis": 450000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 50000,
+              "comment": "Automatische Korbzuführung (Fördertechnik), Feinvakuum <20 mbar, integrierter Ultraschall-Reinigungsstep, MES-Anbindung."
+            },
+            {
+              "machineName": "Vakuum-Entfettung (groß) - Standard",
+              "machineNameIntern": "Ecoclean HKS 2000 (Standard)",
+              "verfahren": "Vakuum-Entfettung",
+              "kaufpreis": 600000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 80000,
+              "comment": "Große Kammer (Ø ~800 mm), rotier- und schwenkbar, Hydrocarbon-Lösemittel, Basisausstattung mit Destillationseinheit."
+            },
+            {
+              "machineName": "Vakuum-Entfettung (groß) - High-End",
+              "machineNameIntern": "Ecoclean HKS 2000 (High-Capacity)",
+              "verfahren": "Vakuum-Entfettung",
+              "kaufpreis": 900000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 100000,
+              "comment": "Automatische Beladungsstation, kombinierte Lösemittel- und Ultraschallreinigung, Feinvakuum <10 mbar, QS-Doku und Remote-Monitoring."
+            },
+            {
+              "machineName": "2D-Röntgenanlage (klein) - Standard",
+              "machineNameIntern": "Yxlon SmartRay 160 (Standard)",
+              "verfahren": "Röntgenprüfung (2D)",
+              "kaufpreis": 80000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 10000,
+              "comment": "Kompakte Anlage für kleinere Bauteile (bis ~5 kg), max. 160 kV, manuelle Drehtischposition, Grundauswertung via PC."
+            },
+            {
+              "machineName": "2D-Röntgenanlage (klein) - High-End",
+              "machineNameIntern": "Yxlon SmartRay 160 (Automated)",
+              "verfahren": "Röntgenprüfung (2D)",
+              "kaufpreis": 150000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 15000,
+              "comment": "Zusätzlicher Detektor hoher Auflösung, automatischer Bauteilhandling-Roboter, KI-gestützte Fehlererkennung, MES-Anbindung."
+            },
+            {
+              "machineName": "CT-Röntgenanlage (mittel) - Standard",
+              "machineNameIntern": "Nikon XT H 225 (Standard)",
+              "verfahren": "Computertomographie (CT)",
+              "kaufpreis": 350000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 5000,
+              "comment": "Bis 225 kV-Röhre, max. Bauteil-Ø ~200 mm, manuelle Laden/Entladen, einfache Rekonstruktionssoftware."
+            },
+            {
+              "machineName": "CT-Röntgenanlage (mittel) - High-End",
+              "machineNameIntern": "Nikon XT H 225 (High-Precision)",
+              "verfahren": "Computertomographie (CT)",
+              "kaufpreis": 600000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 6000,
+              "comment": "Automatischer Drehtisch mit µm-Positionierung, hochauflösender Detektor, umfangreiche Software (Fehleranalyse, Soll-Ist-Vergleich)."
+            },
+            {
+              "machineName": "CT-Röntgenanlage (groß) - Standard",
+              "machineNameIntern": "Zeiss Metrotom 1500 (Standard)",
+              "verfahren": "Computertomographie (CT)",
+              "kaufpreis": 800000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 3000,
+              "comment": "Große Kammer, max. Bauteil-Ø ~350 mm, 225–300 kV, Basisausstattung, manuelles Rüsten, 3D-Datenexport."
+            },
+            {
+              "machineName": "CT-Röntgenanlage (groß) - High-End",
+              "machineNameIntern": "Zeiss Metrotom 1500 (Aerospace/Automotive)",
+              "verfahren": "Computertomographie (CT)",
+              "kaufpreis": 1200000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 3500,
+              "comment": "Vollautomatisierte Achsensteuerung, höherer kV-Bereich (bis 450 kV), hochpräzise Kalibrierung, integrierte MES-Schnittstelle."
+            },
+          
+            {
+              "machineName": "Ultraschall-Handgerät (portable) - Standard",
+              "machineNameIntern": "Olympus EPOCH 650 (Standard)",
+              "verfahren": "Ultraschallprüfung",
+              "kaufpreis": 8000,
+              "power_kW": 0.05,
+              "throughputPartsPerYear": 5000,
+              "comment": "Tragbares Gerät, Frequenzbereich 0,5–20 MHz, manuelle Prüfkopf-Führung, Basisauswertung im Gerätedisplay."
+            },
+            {
+              "machineName": "Ultraschall-Handgerät (portable) - High-End",
+              "machineNameIntern": "Olympus EPOCH 650 (Advanced)",
+              "verfahren": "Ultraschallprüfung",
+              "kaufpreis": 12000,
+              "power_kW": 0.05,
+              "throughputPartsPerYear": 6000,
+              "comment": "Gleiche Hardware, aber erweiterte Software (A-Scan/B-Scan, Datenlogging), WLAN/Bluetooth, PC-Software für Berichte."
+            },
+            {
+              "machineName": "Stationäre Ultraschall-Prüfanlage (mittel) - Standard",
+              "machineNameIntern": "GE Krautkrämer USIP 40 (Standard)",
+              "verfahren": "Ultraschallprüfung",
+              "kaufpreis": 60000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 20000,
+              "comment": "Tauchbecken ~400 x 400 mm, x-y-Zustelltisch, einfache Auswertung, manuelles Be-/Entladen der Teile."
+            },
+            {
+              "machineName": "Stationäre Ultraschall-Prüfanlage (mittel) - High-End",
+              "machineNameIntern": "GE Krautkrämer USIP 40 (Automated)",
+              "verfahren": "Ultraschallprüfung",
+              "kaufpreis": 100000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 30000,
+              "comment": "Automatisches Scanning in x-y-z, Mehrfachprüfköpfe (Phased Array), 3D-Darstellung von Fehlern, QS-Dokumentation, MES-Anbindung."
+            },
+            {
+              "machineName": "Großanlage (Rundtisch) - Standard",
+              "machineNameIntern": "Olympus OmniScan TurnTable (Standard)",
+              "verfahren": "Ultraschallprüfung",
+              "kaufpreis": 180000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 40000,
+              "comment": "Rundtisch für zylindrische Teile bis ~Ø300 mm, Single-Phased-Array-Kopf, Grundsteuerung, manuelles Beladen."
+            },
+            {
+              "machineName": "Großanlage (Rundtisch) - High-End",
+              "machineNameIntern": "Olympus OmniScan TurnTable (Automotive)",
+              "verfahren": "Ultraschallprüfung",
+              "kaufpreis": 300000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 50000,
+              "comment": "Phased-Array mit mehreren Sende- und Empfangsköpfen, vollautomatischer Belade-/Entladekran, detaillierte Fehleranalyse-Software."
+            },
+          
+            {
+              "machineName": "Rockwell-Härteprüfer (klein) - Standard",
+              "machineNameIntern": "Mitutoyo HR-210 (Standard)",
+              "verfahren": "Härteprüfung",
+              "kaufpreis": 7000,
+              "power_kW": 0.1,
+              "throughputPartsPerYear": 3000,
+              "comment": "Manuelles Aufsetzen, Lastbereich 60–150 kg, digitale Anzeige, einfache Protokollierung."
+            },
+            {
+              "machineName": "Rockwell-Härteprüfer (klein) - High-End",
+              "machineNameIntern": "Mitutoyo HR-210 (Automated)",
+              "verfahren": "Härteprüfung",
+              "kaufpreis": 12000,
+              "power_kW": 0.1,
+              "throughputPartsPerYear": 4000,
+              "comment": "Motorisierte Lastaufbringung, integrierte Statistiksoftware, optionaler Datentransfer zum PC/MES."
+            },
+            {
+              "machineName": "Universal-Zugprüfmaschine (10 kN) - Standard",
+              "machineNameIntern": "ZwickRoell Z010 (Standard)",
+              "verfahren": "Zugprüfung",
+              "kaufpreis": 30000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 5000,
+              "comment": "10 kN Prüfrahmen, manuelle Probenklemme, einfache TestXpert-Software, Grundausstattung (nur Zug)."
+            },
+            {
+              "machineName": "Universal-Zugprüfmaschine (10 kN) - High-End",
+              "machineNameIntern": "ZwickRoell Z010 (Automated)",
+              "verfahren": "Zugprüfung",
+              "kaufpreis": 50000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 7000,
+              "comment": "Motorisierte Probenklemmen, erweiterte Softwaremodule (Zug/Druck/Biege), Videodehnungsmessung, QS-Report direkt an MES."
+            },
+            {
+              "machineName": "Große Zugprüfmaschine (100 kN) - Standard",
+              "machineNameIntern": "Instron 5982 (Standard)",
+              "verfahren": "Zugprüfung",
+              "kaufpreis": 70000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 3000,
+              "comment": "100 kN Prüfbereich, mechanische Probenklemme, Basisauswertung, manuelle Kalibrierung."
+            },
+            {
+              "machineName": "Große Zugprüfmaschine (100 kN) - High-End",
+              "machineNameIntern": "Instron 5982 (Aerospace-Special)",
+              "verfahren": "Zugprüfung",
+              "kaufpreis": 120000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 4000,
+              "comment": "Hydraulische Probenklemme, hochdynamische Regelung, Temperierkammer-Option, umfangreiche Testsoftware (Fatigue, Crack Growth)."
+            },
+          
+            {
+              "machineName": "3D-KMG (klein) - Standard",
+              "machineNameIntern": "Zeiss Contura 7/6/6 (Standard)",
+              "verfahren": "Koordinatenmesstechnik (taktil)",
+              "kaufpreis": 80000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 20000,
+              "comment": "Messbereich ~700 x 600 x 600 mm, taktile Messung, Basisausstattung (manuelle Werkstückaufspannung)."
+            },
+            {
+              "machineName": "3D-KMG (klein) - High-End",
+              "machineNameIntern": "Zeiss Contura 7/6/6 (RDS/Scan)",
+              "verfahren": "Koordinatenmesstechnik (taktil/scanning)",
+              "kaufpreis": 120000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 25000,
+              "comment": "Scanning-Messkopf, automatischer Dreh-/Schwenkgelenkkopf (RDS), umfangreiche Software (Calypso), MES-Anbindung."
+            },
+            {
+              "machineName": "3D-KMG (mittel) - Standard",
+              "machineNameIntern": "Hexagon Global S 09.15.08 (Standard)",
+              "verfahren": "Koordinatenmesstechnik (taktil)",
+              "kaufpreis": 150000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 30000,
+              "comment": "Messbereich ~900 x 1500 x 800 mm, Luftlagerführung, manuelle Tasterwechsel, Basisauswertung mit PC-DMIS."
+            },
+            {
+              "machineName": "3D-KMG (mittel) - High-End",
+              "machineNameIntern": "Hexagon Global S 09.15.08 (Scantouch)",
+              "verfahren": "Koordinatenmesstechnik (taktil/scanning)",
+              "kaufpreis": 250000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 40000,
+              "comment": "Vollautomatischer Tasterwechsel (Wechselrack), hochdynamisches Scanning, Temperaturkompensation (18–22°C), QS-Datenexport."
+            },
+            {
+              "machineName": "Laser-Tracker (mobil) - Standard",
+              "machineNameIntern": "Leica AT402 (Standard)",
+              "verfahren": "Laser-Tracker",
+              "kaufpreis": 60000,
+              "power_kW": 0.3,
+              "throughputPartsPerYear": 5000,
+              "comment": "Mobil einsetzbar, max. Reichweite ~80 m, manuelle Auswertung, simpler Controller, Messgenauigkeit ~10–20 µm/m."
+            },
+            {
+              "machineName": "Laser-Tracker (mobil) - High-End",
+              "machineNameIntern": "Leica AT960 (High-Precision)",
+              "verfahren": "Laser-Tracker",
+              "kaufpreis": 120000,
+              "power_kW": 0.3,
+              "throughputPartsPerYear": 6000,
+              "comment": "6DoF-Funktion mit Handheld-Taster, Reichweite bis 120 m, advanced W-LAN Interface, MES/ERP-Schnittstelle, ±5 µm/m Genauigkeit."
+            },
+          
+            {
+              "machineName": "Rauhigkeitsmessgerät (taktile) - Standard",
+              "machineNameIntern": "Mitutoyo SJ-210 (Standard)",
+              "verfahren": "Rauheitsmessung (taktil)",
+              "kaufpreis": 4000,
+              "power_kW": 0.01,
+              "throughputPartsPerYear": 3000,
+              "comment": "Handgerät mit Diamant-Tastspitze, Messlänge ~4 mm, Anzeige von Ra/Rz, einfacher Speicher."
+            },
+            {
+              "machineName": "Rauhigkeitsmessgerät (taktile) - High-End",
+              "machineNameIntern": "Mitutoyo SJ-410 (Advanced)",
+              "verfahren": "Rauheitsmessung (taktil)",
+              "kaufpreis": 8000,
+              "power_kW": 0.01,
+              "throughputPartsPerYear": 4000,
+              "comment": "Höhere Messauflösung, größere Messlänge ~12,5 mm, PC-Software für Kurvenauswertung, USB-Schnittstelle."
+            },
+            {
+              "machineName": "Optisches Profilometer (2D/3D) - Standard",
+              "machineNameIntern": "Keyence VR-3000 (Standard)",
+              "verfahren": "Oberflächenprüfung (optisch)",
+              "kaufpreis": 40000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 5000,
+              "comment": "2D/3D-Scan ~200 x 100 mm Messfeld, einfache Auswertung (Höhenkarte), manuelles Positionieren, LED-Beleuchtung."
+            },
+            {
+              "machineName": "Optisches Profilometer (2D/3D) - High-End",
+              "machineNameIntern": "Keyence VR-6000 (High-Resolution)",
+              "verfahren": "Oberflächenprüfung (optisch)",
+              "kaufpreis": 70000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 6000,
+              "comment": "Höhere Auflösung (sub-µm), motorische Achsen, Auto-Fokus, integrierte Software (CAD-Vergleich, Rauheitsanalyse), QS-Datenexport."
+            },
+            {
+              "machineName": "Konfokales 3D-Mikroskop (Labor) - Standard",
+              "machineNameIntern": "Zeiss Smartproof 5 (Standard)",
+              "verfahren": "Oberflächenprüfung (mikro)",
+              "kaufpreis": 80000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 2000,
+              "comment": "Konfokale Optik bis 50x Vergrößerung, manuelle Objektivrevolver, einfacher Datentransfer, Laborumgebung nötig."
+            },
+            {
+              "machineName": "Konfokales 3D-Mikroskop (Labor) - High-End",
+              "machineNameIntern": "Zeiss Smartproof 5 (High-Res)",
+              "verfahren": "Oberflächenprüfung (mikro)",
+              "kaufpreis": 120000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 2500,
+              "comment": "Automatischer Objektivrevolver, Motorischer Tisch (x-y-z), hochauflösende Kamera, umfassende Software (3D-Rauheit, Topografie)."
+            },
+            {
+              "machineName": "SMD-Bestücker (klein) - Standard",
+              "machineNameIntern": "Yamaha YS12 (Standard)",
+              "verfahren": "SMD-Bestückung",
+              "kaufpreis": 80000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 3000000,
+              "comment": "Kompakte Pick-&-Place, Bestückleistung ~12.000 Bauteile/h, max. PCB-Größe ~460 x 440 mm, manuelle Tray-Station."
+            },
+            {
+              "machineName": "SMD-Bestücker (klein) - High-End",
+              "machineNameIntern": "Yamaha YS12 (High-Speed)",
+              "verfahren": "SMD-Bestückung",
+              "kaufpreis": 120000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 4000000,
+              "comment": "Verbesserte Feeder-Stationen, intelligente Kamerasysteme für Bauteilinspektion, optionales Auto-Feeder-Wechselsystem."
+            },
+            {
+              "machineName": "SMD-Bestücker (mittel) - Standard",
+              "machineNameIntern": "ASM SIPLACE SX1 (Standard)",
+              "verfahren": "SMD-Bestückung",
+              "kaufpreis": 200000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 10000000,
+              "comment": "Bestückleistung ~30.000 Bauteile/h, Dual-Head-System, automatischer Düsenwechsel, Basisausstattung."
+            },
+            {
+              "machineName": "SMD-Bestücker (mittel) - High-End",
+              "machineNameIntern": "ASM SIPLACE SX2 (Automotive)",
+              "verfahren": "SMD-Bestückung",
+              "kaufpreis": 350000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 15000000,
+              "comment": "Bis ~50.000 Bauteile/h (optimiert), erweiterte Heads (schwere Bauteile), THT-Steckermontageoption, MES-Anbindung."
+            },
+            {
+              "machineName": "SMD-Bestücker (High-Volume) - Standard",
+              "machineNameIntern": "Fuji NXT III (Standard)",
+              "verfahren": "SMD-Bestückung",
+              "kaufpreis": 400000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 30000000,
+              "comment": "Modulare Plattform, ~75.000 Bauteile/h in Line-Konfiguration, manuelles Feeder-Shuttling, flexible Kopfmodule."
+            },
+            {
+              "machineName": "SMD-Bestücker (High-Volume) - High-End",
+              "machineNameIntern": "Fuji NXT III (Ultra-High-Speed)",
+              "verfahren": "SMD-Bestückung",
+              "kaufpreis": 600000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 40000000,
+              "comment": "Bis zu ~100.000 Bauteile/h, automatische Feeder-Umrüstung, Inline-Feeder-Kontrolle, integrierte Vision-Überwachung."
+            },
+          
+            {
+              "machineName": "Reflow-Ofen (klein) - Standard",
+              "machineNameIntern": "BTU Pyramax 100 (Standard)",
+              "verfahren": "Reflow-Löten",
+              "kaufpreis": 40000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 500000,
+              "comment": "5-Zonen-Konfiguration (3 Heizzonen + 1 Peakzone + 1 Kühlzone), manuelles Ein-/Auslaufband, Profil-Software basic."
+            },
+            {
+              "machineName": "Reflow-Ofen (klein) - High-End",
+              "machineNameIntern": "BTU Pyramax 100 (Automated)",
+              "verfahren": "Reflow-Löten",
+              "kaufpreis": 70000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 700000,
+              "comment": "7-Zonen-Ausführung, automatische Kettenbreitenverstellung, lückenlose Temperaturprofilaufzeichnung, N2-Option (Stickstoff)."
+            },
+            {
+              "machineName": "Reflow-Ofen (mittel) - Standard",
+              "machineNameIntern": "Heller 1707 MK5 (Standard)",
+              "verfahren": "Reflow-Löten",
+              "kaufpreis": 100000,
+              "power_kW": 18,
+              "throughputPartsPerYear": 2000000,
+              "comment": "7-Heizzonen + 2 Kühlzonen, max. PCB-Breite ~400 mm, Basis-Kühlmodul, Steuerung via Touchscreen."
+            },
+            {
+              "machineName": "Reflow-Ofen (mittel) - High-End",
+              "machineNameIntern": "Heller 1707 MK5 (Smart)",
+              "verfahren": "Reflow-Löten",
+              "kaufpreis": 150000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 2500000,
+              "comment": "Automatische Profil-Anpassung, MES-Konnektivität, Low-O2-Funktion, präzise Temperatursensorik, Wartungsassistent."
+            },
+            {
+              "machineName": "Wellenlötanlage (THT) - Standard",
+              "machineNameIntern": "ERSA EWS330 (Standard)",
+              "verfahren": "Wellenlöten",
+              "kaufpreis": 60000,
+              "power_kW": 8,
+              "throughputPartsPerYear": 300000,
+              "comment": "Max. PCB-Breite ~330 mm, konventionelle Welle (Bleihaltig oder Bleifrei), manuelle Fluxer, Basic Vorheizung."
+            },
+            {
+              "machineName": "Wellenlötanlage (THT) - High-End",
+              "machineNameIntern": "ERSA EWS330 (Automotive)",
+              "verfahren": "Wellenlöten",
+              "kaufpreis": 100000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 500000,
+              "comment": "Sprühfluxer, duale Welle (Chip/Fine-Pitch), integrierte Prozessüberwachung (Temperatur, Wellenhöhe), automatisch einstellbare Lötparameter."
+            },
+          
+            {
+              "machineName": "AOI (2D) - Standard",
+              "machineNameIntern": "Omron VT-S1080 (Standard)",
+              "verfahren": "AOI (Optische Inspektion)",
+              "kaufpreis": 50000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 800000,
+              "comment": "2D-Kamera, max. PCB-Größe ~350 x 250 mm, manuelle Programmierung, Grundfehlererkennung (Falschpolung, fehlende Bauteile)."
+            },
+            {
+              "machineName": "AOI (2D) - High-End",
+              "machineNameIntern": "Omron VT-S1080 (Automotive)",
+              "verfahren": "AOI (Optische Inspektion)",
+              "kaufpreis": 80000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 1000000,
+              "comment": "Schnellere Kameras, automatische Programmierung (CAD-Daten), Farb- und OCR-Erkennung, MES-Anbindung für Rückverfolgung."
+            },
+            {
+              "machineName": "3D-AOI (Inline) - Standard",
+              "machineNameIntern": "Viscom S3088 (Standard)",
+              "verfahren": "AOI (Optische Inspektion)",
+              "kaufpreis": 120000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 1500000,
+              "comment": "3D-Höhenmessung für Lötstellen, bis ~400 x 300 mm PCB, Basisauswertung, manuelle Separierung von i.O./n.i.O."
+            },
+            {
+              "machineName": "3D-AOI (Inline) - High-End",
+              "machineNameIntern": "Viscom S3088 (High-Speed)",
+              "verfahren": "AOI (Optische Inspektion)",
+              "kaufpreis": 180000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 2000000,
+              "comment": "Höhere Kamerauflösung, Multi-Angle-Projektoren, umfassende Software (Fehlerklassifizierung, SPC), Robot-Interface."
+            },
+            {
+              "machineName": "Inline-Röntgen (AXI) - Standard",
+              "machineNameIntern": "Viscom X8011 (Standard)",
+              "verfahren": "Röntgenprüfung (Inline)",
+              "kaufpreis": 300000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 500000,
+              "comment": "2D-Röntgen für BGAs, QFN, verdeckte Lötstellen, max. PCB-Größe ~300 x 250 mm, einfache Fehlersortierung."
+            },
+            {
+              "machineName": "Inline-Röntgen (AXI) - High-End",
+              "machineNameIntern": "Viscom X8011 (Automotive)",
+              "verfahren": "Röntgenprüfung (Inline)",
+              "kaufpreis": 500000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 700000,
+              "comment": "3D-Röntgen-Slice-Technologie (Planar CT), automatische Fehleranalyse, integrierter Produktions-Feedback (Closed Loop), MES-Anbindung."
+            },
+          
+            {
+              "machineName": "PCB-Bohrautomation (klein) - Standard",
+              "machineNameIntern": "LPKF ProtoMat S64 (Standard)",
+              "verfahren": "PCB-Bohren/Fräsen",
+              "kaufpreis": 30000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 20000,
+              "comment": "Prototypen-Bearbeitung, Spindel ~60.000 U/min, max. PCB-Größe ~229 x 305 mm, manuelle Beladung, Basisauswertung."
+            },
+            {
+              "machineName": "PCB-Bohrautomation (klein) - High-End",
+              "machineNameIntern": "LPKF ProtoMat S64 (Advanced)",
+              "verfahren": "PCB-Bohren/Fräsen",
+              "kaufpreis": 50000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 30000,
+              "comment": "Höherdrehende Spindel ~100.000 U/min, automatische Werkzeugwechsler, kamerabasierte Fiducial-Erkennung, CAD-Import."
+            },
+            {
+              "machineName": "Industrie-PCB-Bohrmaschine (mittel) - Standard",
+              "machineNameIntern": "Schmoll Maschinen LM2 (Standard)",
+              "verfahren": "PCB-Bohren",
+              "kaufpreis": 120000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 100000,
+              "comment": "Max. Panelgröße ~600 x 500 mm, bis 150.000 U/min Spindel, manuelle Werkzeugbestückung, einfache CNC-Steuerung."
+            },
+            {
+              "machineName": "Industrie-PCB-Bohrmaschine (mittel) - High-End",
+              "machineNameIntern": "Schmoll Maschinen LM4 (Pro)",
+              "verfahren": "PCB-Bohren",
+              "kaufpreis": 200000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 150000,
+              "comment": "Multi-Spindelkonzept (2–4), automatischer Werkzeugwechsler, optische Registrierung, Bohrloch-Inspektion, MES-Anbindung."
+            },
+            {
+              "machineName": "PCB-Pressanlage (Laminierung) - Standard",
+              "machineNameIntern": "Burkle EasyPress 300 (Standard)",
+              "verfahren": "PCB-Pressen (Lagenaufbau)",
+              "kaufpreis": 80000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 50000,
+              "comment": "Für Multilayer-Laminierung, max. Format ~450 x 600 mm, Heizplatten bis 200°C, manuelle Bedienung, Basiskontrolle."
+            },
+            {
+              "machineName": "PCB-Pressanlage (Laminierung) - High-End",
+              "machineNameIntern": "Burkle EasyPress 300 (Automated)",
+              "verfahren": "PCB-Pressen (Lagenaufbau)",
+              "kaufpreis": 150000,
+              "power_kW": 18,
+              "throughputPartsPerYear": 70000,
+              "comment": "Vollautomatisches Handling (Ein-/Ausstapeln der Lagen), präzise Druckregelung, Prozessdatenerfassung (Temperatur, Druck), QS-Protokolle."
+            },
+            {
+              "machineName": "Manuelle Montageinsel (klein) - Standard",
+              "machineNameIntern": "ErgoStation Basic (Standard)",
+              "verfahren": "Manuelle Montage",
+              "kaufpreis": 20000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 80000,
+              "comment": "Ergonomischer Arbeitsplatz mit höhenverstellbarer Tischplatte, einfache Handwerkzeuge, manuelles Rüsten und Teilebereitstellung."
+            },
+            {
+              "machineName": "Manuelle Montageinsel (klein) - High-End",
+              "machineNameIntern": "ErgoStation Basic (Pick-by-Light)",
+              "verfahren": "Manuelle Montage",
+              "kaufpreis": 35000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 100000,
+              "comment": "Zusätzlich Pick-by-Light-Rahmen, digitales Schraubsystem mit Drehmomentüberwachung, optionaler Barcode-Scanner und MES-Interface."
+            },
+            {
+              "machineName": "Manuelle Montageinsel (mittel) - Standard",
+              "machineNameIntern": "ErgoStation Advanced (Standard)",
+              "verfahren": "Manuelle Montage",
+              "kaufpreis": 40000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 120000,
+              "comment": "Höhenverstellbares Arbeitsmodul, pneumatische Schraubsysteme, Arbeitsplatzbeleuchtung, manuelle Teilezuführung über Regale."
+            },
+            {
+              "machineName": "Manuelle Montageinsel (mittel) - High-End",
+              "machineNameIntern": "ErgoStation Advanced (SmartAssist)",
+              "verfahren": "Manuelle Montage",
+              "kaufpreis": 60000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 150000,
+              "comment": "Pick-to-Light und Werker-Assistenz, digitales Arbeitsanweisungsdisplay, Null-Fehler-Konzepte (Screw-OK-Feedback), MES-Kopplung."
+            },
+          
+            {
+              "machineName": "Halbautomatische Rundtischstation (klein) - Standard",
+              "machineNameIntern": "RotaryAssembly RT4 (Standard)",
+              "verfahren": "Halbautomatische Montage",
+              "kaufpreis": 80000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 200000,
+              "comment": "4-Stationen-Rundtisch, manuelles Einlegen, pneumatisches Fügen oder Verpressen, Basisausstattung (kein QS-Sensor)."
+            },
+            {
+              "machineName": "Halbautomatische Rundtischstation (klein) - High-End",
+              "machineNameIntern": "RotaryAssembly RT4 (Automated)",
+              "verfahren": "Halbautomatische Montage",
+              "kaufpreis": 120000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 250000,
+              "comment": "Rundtisch mit 4 Stationen, elektrisch angetriebene Presssysteme, Kraft-Weg-Überwachung, optionaler Kamera-Check, MES-Anbindung."
+            },
+            {
+              "machineName": "Transfersystem (mittel) - Standard",
+              "machineNameIntern": "LinearTransfer LT8 (Standard)",
+              "verfahren": "Halbautomatische Montage",
+              "kaufpreis": 150000,
+              "power_kW": 8,
+              "throughputPartsPerYear": 300000,
+              "comment": "Lineares Transfersystem mit 8 Stationen, manuelle Teilezufuhr, einfache pneumatische oder elektrische Montageprozesse."
+            },
+            {
+              "machineName": "Transfersystem (mittel) - High-End",
+              "machineNameIntern": "LinearTransfer LT8 (SmartLine)",
+              "verfahren": "Halbautomatische Montage",
+              "kaufpreis": 250000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 400000,
+              "comment": "8 Stationen, vollautomatische Teilezuführung (Vibrationsförderer oder Roboter), Prozessüberwachung (Drehmoment, Kraft-Weg), QS-Kamera."
+            },
+          
+            {
+              "machineName": "Vollautomatische Transferstraße (klein) - Standard",
+              "machineNameIntern": "TransLine T4 Basic (Standard)",
+              "verfahren": "Vollautomatische Montage",
+              "kaufpreis": 300000,
+              "power_kW": 12,
+              "throughputPartsPerYear": 600000,
+              "comment": "Kompakte Linie mit 4 Stationen, Drehtisch oder Linearsystem, einfache SPS-Steuerung, manuelle Werkstückzufuhr."
+            },
+            {
+              "machineName": "Vollautomatische Transferstraße (klein) - High-End",
+              "machineNameIntern": "TransLine T4 Basic (Robotic)",
+              "verfahren": "Vollautomatische Montage",
+              "kaufpreis": 450000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 800000,
+              "comment": "4 Stationen + Roboter-Bestückung, integrierte Qualitätskontrolle (Kamera oder Laser), MES-Datenaustausch in Echtzeit."
+            },
+            {
+              "machineName": "Große Transferstraße (mittel) - Standard",
+              "machineNameIntern": "FlexAssembly FA8 (Standard)",
+              "verfahren": "Vollautomatische Montage",
+              "kaufpreis": 800000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 1500000,
+              "comment": "8 Stationen, Taktzeit ~10 s, vollautomatische Zuführsysteme, manuelle Nachbestückung von Bauteilträgern."
+            },
+            {
+              "machineName": "Große Transferstraße (mittel) - High-End",
+              "machineNameIntern": "FlexAssembly FA8 (Automotive-Special)",
+              "verfahren": "Vollautomatische Montage",
+              "kaufpreis": 1200000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 2000000,
+              "comment": "Hochdynamische Transfersysteme (z.B. Linearmotoren), Taktzeit ~5–8 s, integrierte Roboterzellen, lückenlose Prozessdatenerfassung."
+            },
+            {
+              "machineName": "FMS (Flexible Manufacturing System) - Standard",
+              "machineNameIntern": "FMS BaseCell (Standard)",
+              "verfahren": "Automatisierte Montage / Fertigung",
+              "kaufpreis": 1500000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 3000000,
+              "comment": "Zentrale Steuerung mit modularen Bearbeitungs-/Montagestationen, einfache Roboterhandling, RFID-Teileverfolgung möglich."
+            },
+            {
+              "machineName": "FMS (Flexible Manufacturing System) - High-End",
+              "machineNameIntern": "FMS BaseCell (Full Integration)",
+              "verfahren": "Automatisierte Montage / Fertigung",
+              "kaufpreis": 2500000,
+              "power_kW": 40,
+              "throughputPartsPerYear": 4000000,
+              "comment": "Vollvernetzte Anlage mit automatischem Werkstücktransport (AGVs oder Shuttle), komplett digitaler Zwilling, KI-gestützte Prozessoptimierung."
+            },
+          
+            {
+              "machineName": "Cobot (5 kg) - Standard",
+              "machineNameIntern": "Universal Robots UR5e (Standard)",
+              "verfahren": "Mensch-Roboter-Kollaboration",
+              "kaufpreis": 30000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 50000,
+              "comment": "5 kg Traglast, Reichweite ~850 mm, intuitive Teach-Pendant, grundlegende Sicherheitsfunktionen (Kraft-/Momentensensorik)."
+            },
+            {
+              "machineName": "Cobot (5 kg) - High-End",
+              "machineNameIntern": "Universal Robots UR5e (Vision)",
+              "verfahren": "Mensch-Roboter-Kollaboration",
+              "kaufpreis": 50000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 80000,
+              "comment": "Zusätzlich integrierte 2D/3D-Kamera, fortgeschrittene Sicherheitszonen, Drag&Drop-Programmierung, MES-Anbindung."
+            },
+            {
+              "machineName": "Cobot (10 kg) - Standard",
+              "machineNameIntern": "KUKA LBR iisy 10 (Standard)",
+              "verfahren": "Mensch-Roboter-Kollaboration",
+              "kaufpreis": 45000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 60000,
+              "comment": "10 kg Traglast, 7-Achs-Kinematik, einfache Inbetriebnahme, Grund-Teach-Funktion, manuelle Werkstückzuführung."
+            },
+            {
+              "machineName": "Cobot (10 kg) - High-End",
+              "machineNameIntern": "KUKA LBR iisy 10 (SmartVision)",
+              "verfahren": "Mensch-Roboter-Kollaboration",
+              "kaufpreis": 70000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 100000,
+              "comment": "Erweiterte Sensorik (Vision, Kraftkontrolle), sichere MRK-Features mit Performance Level d, Cloud-Connectivity und Wartungspaket."
+            },
+          
+            {
+              "machineName": "AGV (klein) - Standard",
+              "machineNameIntern": "MiR100 (Standard)",
+              "verfahren": "Autonomes FTS",
+              "kaufpreis": 20000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 50000,
+              "comment": "Nutzlast ~100 kg, 2D-Laser-Scanner für Navigation, manuelles Aufsetzen von Racks/Behältern, WLAN-Schnittstelle."
+            },
+            {
+              "machineName": "AGV (klein) - High-End",
+              "machineNameIntern": "MiR100 (Shelf-Lift)",
+              "verfahren": "Autonomes FTS",
+              "kaufpreis": 35000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 70000,
+              "comment": "Zusätzliches Shelf-Lift-Modul für automatischen Transport von Rollwagen, fortgeschrittenes Navigationssystem (SLAM), Flottenmanager-Anbindung."
+            },
+            {
+              "machineName": "AGV (mittel) - Standard",
+              "machineNameIntern": "KUKA KMP 1500 (Standard)",
+              "verfahren": "Autonomes FTS",
+              "kaufpreis": 50000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 100000,
+              "comment": "Nutzlast ~1500 kg, Laserscanner + Sicherheitsbumper, manuelle Be-/Entladung von Paletten, einfache Routenplanung."
+            },
+            {
+              "machineName": "AGV (mittel) - High-End",
+              "machineNameIntern": "KUKA KMP 1500 (Integration)",
+              "verfahren": "Autonomes FTS",
+              "kaufpreis": 80000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 120000,
+              "comment": "Erweiterte Navigation (SLAM + QR-Codes), automatischer Palettenheber, Integration in MES/ERP, Flottenkontrolle (mehrere AGVs)."
+            },
+            {
+              "machineName": "AGV (groß) - Standard",
+              "machineNameIntern": "Still iGo Systems (Standard)",
+              "verfahren": "Autonomes FTS",
+              "kaufpreis": 100000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 150000,
+              "comment": "Autonomer Gabelstapler bis 1,6 t Traglast, Navigationslaser, Basisausstattung, manuelle Ladestation."
+            },
+            {
+              "machineName": "AGV (groß) - High-End",
+              "machineNameIntern": "Still iGo Systems (Advanced Fleet)",
+              "verfahren": "Autonomes FTS",
+              "kaufpreis": 150000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 200000,
+              "comment": "Erweiterte Sicherheitsfunktionen (3D-Kollisionsvermeidung), Automatik-Ladestation, Kommunikation mit Transportleitsystem, Echtzeit-Routenoptimierung."
+            },
+            {
+              "machineName": "6-Achs-Roboter (10 kg) - Standard",
+              "machineNameIntern": "KUKA KR10 R1420 (Standard)",
+              "verfahren": "Industrieroboter (6-Achs)",
+              "kaufpreis": 35000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 100000,
+              "comment": "10 kg Traglast, Reichweite ~1420 mm, Basis-KRC-Steuerung, manuelle Programmierung via Teach Pendant."
+            },
+            {
+              "machineName": "6-Achs-Roboter (10 kg) - High-End",
+              "machineNameIntern": "KUKA KR10 R1420 (Vision-Ready)",
+              "verfahren": "Industrieroboter (6-Achs)",
+              "kaufpreis": 55000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 120000,
+              "comment": "Mit integrierter Vision-Schnittstelle, erweiterte Sicherheitsfunktionen (SafeOperation), Offline-Programmiersoftware, MES-Anbindung."
+            },
+            {
+              "machineName": "6-Achs-Roboter (25 kg) - Standard",
+              "machineNameIntern": "Fanuc M-20iD/25 (Standard)",
+              "verfahren": "Industrieroboter (6-Achs)",
+              "kaufpreis": 50000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 150000,
+              "comment": "25 kg Traglast, Reichweite ~1830 mm, R-30iB-Steuerung, manuelle Rüstabläufe, optionales iPendant."
+            },
+            {
+              "machineName": "6-Achs-Roboter (25 kg) - High-End",
+              "machineNameIntern": "Fanuc M-20iD/25 (SmartVision)",
+              "verfahren": "Industrieroboter (6-Achs)",
+              "kaufpreis": 75000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 180000,
+              "comment": "Integrierte 2D/3D-Vision, kollisionsarme Bewegungsplanung, KI-basierte Prozessoptimierung, Remote-Monitoring."
+            },
+            {
+              "machineName": "6-Achs-Roboter (120 kg) - Standard",
+              "machineNameIntern": "ABB IRB 6700-150/3.2 (Standard)",
+              "verfahren": "Industrieroboter (6-Achs)",
+              "kaufpreis": 90000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 80000,
+              "comment": "120 kg Traglast, Reichweite ~3,2 m, IRC5-Steuerung, robustes Gussgehäuse, geeignet für Schweißen, Handling, Lackierung."
+            },
+            {
+              "machineName": "6-Achs-Roboter (120 kg) - High-End",
+              "machineNameIntern": "ABB IRB 6700-150/3.2 (Automotive-Special)",
+              "verfahren": "Industrieroboter (6-Achs)",
+              "kaufpreis": 130000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 100000,
+              "comment": "Optimierter Energieverbrauch, SafeMove2-Funktionen, erweiterte Achsgeschwindigkeiten, integrierte Messtechnik für Predictive Maintenance."
+            },
+          
+            {
+              "machineName": "SCARA-Roboter (4 kg) - Standard",
+              "machineNameIntern": "Epson LS3-B (Standard)",
+              "verfahren": "Scara-Roboter",
+              "kaufpreis": 15000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 100000,
+              "comment": "Traglast bis 4 kg, Reichweite ~400 mm, einfache Steuerung, manuelle Programmierung, Basiskamera optional."
+            },
+            {
+              "machineName": "SCARA-Roboter (4 kg) - High-End",
+              "machineNameIntern": "Epson LS3-B (Vision)",
+              "verfahren": "Scara-Roboter",
+              "kaufpreis": 25000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 120000,
+              "comment": "Integrierte Vision-Guided-Pick&Place, höhere Achsgeschwindigkeit, QS-Kamera, MES-/Cloud-Anbindung."
+            },
+            {
+              "machineName": "SCARA-Roboter (10 kg) - Standard",
+              "machineNameIntern": "Yamaha YK600XG (Standard)",
+              "verfahren": "Scara-Roboter",
+              "kaufpreis": 30000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 150000,
+              "comment": "Traglast bis 10 kg, Reichweite ~600 mm, Basic-Einrichtung, lineare/kreisförmige Interpolation, manuelle Rüstabläufe."
+            },
+            {
+              "machineName": "SCARA-Roboter (10 kg) - High-End",
+              "machineNameIntern": "Yamaha YK600XG (Advanced)",
+              "verfahren": "Scara-Roboter",
+              "kaufpreis": 45000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 180000,
+              "comment": "Schnellere Zykluszeit (0,29 s typ.), integrierte Tools (Greifer-/Screwdriver-Interfaces), optionaler Kraftsensor, Remote-Monitoring."
+            },
+          
+            {
+              "machineName": "Delta-Roboter (1 kg) - Standard",
+              "machineNameIntern": "Fanuc M-1iA/0.5 (Standard)",
+              "verfahren": "Delta-Roboter",
+              "kaufpreis": 18000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 120000,
+              "comment": "Traglast 1 kg, Arbeitsraum ~280 mm Durchmesser, sehr schnelle Zykluszeiten (0,5 s), Basic Vision optional."
+            },
+            {
+              "machineName": "Delta-Roboter (1 kg) - High-End",
+              "machineNameIntern": "Fanuc M-1iA/0.5 (Vision)",
+              "verfahren": "Delta-Roboter",
+              "kaufpreis": 30000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 150000,
+              "comment": "Integrierte iRVision, komplexe Bahnplanung (Bewegungen auf Förderband), fortgeschrittene Fehlererkennung, MES-Schnittstelle."
+            },
+            {
+              "machineName": "Delta-Roboter (5 kg) - Standard",
+              "machineNameIntern": "ABB FlexPicker IRB 360/8 (Standard)",
+              "verfahren": "Delta-Roboter",
+              "kaufpreis": 50000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 300000,
+              "comment": "Traglast 5 kg, Reichweite ~1130 mm, hoher Durchsatz (bis ~100 Picks/min), Grundausstattung (Controller IRC5)."
+            },
+            {
+              "machineName": "Delta-Roboter (5 kg) - High-End",
+              "machineNameIntern": "ABB FlexPicker IRB 360/8 (Vision)",
+              "verfahren": "Delta-Roboter",
+              "kaufpreis": 70000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 400000,
+              "comment": "Fortschrittliche Vision-Anbindung (CV2), integrierte Fehlerausschleusung, KI-basierte Greifmustererkennung, MES-Anbindung."
+            },
+          
+            {
+              "machineName": "Parallelgreifer (pneumatisch) - Standard",
+              "machineNameIntern": "Schunk PGN-plus 40 (Standard)",
+              "verfahren": "Greifersystem",
+              "kaufpreis": 1000,
+              "power_kW": 0,
+              "throughputPartsPerYear": 100000,
+              "comment": "Pneumatische Ansteuerung, Greifkraft bis ~140 N, Hub pro Backe ~5 mm, robustes Aufbau, manuelle Justierung."
+            },
+            {
+              "machineName": "Parallelgreifer (pneumatisch) - High-End",
+              "machineNameIntern": "Schunk PGN-plus 40 (Sensor Ready)",
+              "verfahren": "Greifersystem",
+              "kaufpreis": 2000,
+              "power_kW": 0,
+              "throughputPartsPerYear": 120000,
+              "comment": "Integrierte Näherungssensorik zur Backenstellung, IO-Link fähig, verschleißarme Bauweise, optional Kraftregelung."
+            },
+            {
+              "machineName": "Elektrischer 2-Backengreifer - Standard",
+              "machineNameIntern": "Robotiq 2F-85 (Standard)",
+              "verfahren": "Greifersystem",
+              "kaufpreis": 4000,
+              "power_kW": 0.2,
+              "throughputPartsPerYear": 80000,
+              "comment": "Greifkraft einstellbar, Hub 85 mm, Plug&Play mit UR-Robotern, Basic Kraftsensor, manuelle Konfiguration."
+            },
+            {
+              "machineName": "Elektrischer 2-Backengreifer - High-End",
+              "machineNameIntern": "Robotiq 2F-85 (Adaptive)",
+              "verfahren": "Greifersystem",
+              "kaufpreis": 6000,
+              "power_kW": 0.2,
+              "throughputPartsPerYear": 100000,
+              "comment": "Adaptive Greifmodi (Pinch, Wide, Parallel), integrierte Kraft/Moment-Sensorik, fortgeschrittene URcap-Funktionen, MES-Anbindung."
+            },
+            {
+              "machineName": "Vakuumgreifer (Flächengreifsystem) - Standard",
+              "machineNameIntern": "Schmalz FXP (Standard)",
+              "verfahren": "Vakuumgreifer",
+              "kaufpreis": 3000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 150000,
+              "comment": "Flächengreifmodul ~400 x 200 mm, externer Vakuumerzeuger, flexible Dichtschaummatte, manuelle Konfiguration."
+            },
+            {
+              "machineName": "Vakuumgreifer (Flächengreifsystem) - High-End",
+              "machineNameIntern": "Schmalz FXP (SmartVac)",
+              "verfahren": "Vakuumgreifer",
+              "kaufpreis": 6000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 200000,
+              "comment": "Sensorische Überwachung (Vakuumlevel, Leckageerkennung), automatischer Anschlag, IO-Link Kommunikation, MES-Integration."
+            },
+          
+            {
+              "machineName": "Palettierroboter (80 kg) - Standard",
+              "machineNameIntern": "Fanuc M-410iB/140H (Standard)",
+              "verfahren": "Palettierroboter",
+              "kaufpreis": 50000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 400000,
+              "comment": "80 kg Traglast, Reichweite ~2,4 m, simpler Palettier-Greifer, manuelles Setup für Layer-Muster, Basisauswertung."
+            },
+            {
+              "machineName": "Palettierroboter (80 kg) - High-End",
+              "machineNameIntern": "Fanuc M-410iB/140H (SmartPallet)",
+              "verfahren": "Palettierroboter",
+              "kaufpreis": 70000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 500000,
+              "comment": "Optimierter Palettier-Greifer (Vakuum/Balancer), Offline-Konfiguration von Layer-Mustern, Vision-Sensoren zur Lageerkennung, MES-Anbindung."
+            },
+            {
+              "machineName": "Palettierroboter (200 kg) - Standard",
+              "machineNameIntern": "KUKA KR 700 PA (Standard)",
+              "verfahren": "Palettierroboter",
+              "kaufpreis": 80000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 300000,
+              "comment": "200 kg Traglast, 5-Achs-Kinematik für schnelle Takte, Basisausstattung mit Pneumatik-Greifer, manuelles Teach."
+            },
+            {
+              "machineName": "Palettierroboter (200 kg) - High-End",
+              "machineNameIntern": "KUKA KR 700 PA (Advanced)",
+              "verfahren": "Palettierroboter",
+              "kaufpreis": 110000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 400000,
+              "comment": "High-Speed-Controller, automatisches Paletten- und Layer-Programm, intelligente Greiferwechselsysteme, Remote-Service."
+            },
+          
+            {
+              "machineName": "MRK-Kit (Light) - Standard",
+              "machineNameIntern": "Pilz Safety-Kit Basic (Standard)",
+              "verfahren": "MRK-Nachrüstung",
+              "kaufpreis": 20000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 40000,
+              "comment": "Sicherheits-Laserscanner + Softhaube für Roboterarm, einfache Geschwindigkeitsreduzierung bei Menschannäherung, Basisauswertung."
+            },
+            {
+              "machineName": "MRK-Kit (Light) - High-End",
+              "machineNameIntern": "Pilz Safety-Kit Advanced",
+              "verfahren": "MRK-Nachrüstung",
+              "kaufpreis": 35000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 50000,
+              "comment": "Sicherheits-Laserscanner, 3D-Kamera, adaptives Brems-/Stoppverhalten, dynamische Geschwindigkeitsanpassung, MES-Anbindung."
+            },
+            {
+              "machineName": "MRK-Kit (Force-Sensor) - Standard",
+              "machineNameIntern": "Schunk ForceKit Basic",
+              "verfahren": "MRK-Nachrüstung",
+              "kaufpreis": 15000,
+              "power_kW": 0.2,
+              "throughputPartsPerYear": 20000,
+              "comment": "Externer Kraftsensor an Roboterflansch, simpler Kalibriervorgang, Auswertung auf separater Steuerung, manuelle Programmierung."
+            },
+            {
+              "machineName": "MRK-Kit (Force-Sensor) - High-End",
+              "machineNameIntern": "Schunk ForceKit Advanced",
+              "verfahren": "MRK-Nachrüstung",
+              "kaufpreis": 30000,
+              "power_kW": 0.2,
+              "throughputPartsPerYear": 30000,
+              "comment": "Hochauflösende 6D-Kraft/Moment-Sensorik, Safety-Einbindung (Performance Level d), intuitive Parametrierung, QS-Datenerfassung."
+            },
+            {
+              "machineName": "Inline-Messsystem (taktil) - Standard",
+              "machineNameIntern": "Marposs Mida T25 (Standard)",
+              "verfahren": "Inline-Messung (taktil)",
+              "kaufpreis": 20000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 100000,
+              "comment": "Robuste Tastereinheit, direkt an der Werkzeugmaschine montiert (z.B. Fräsmaschine), einfache Nullpunkt- und Werkstückkontrolle."
+            },
+            {
+              "machineName": "Inline-Messsystem (taktil) - High-End",
+              "machineNameIntern": "Marposs Mida T25 (Automotive)",
+              "verfahren": "Inline-Messung (taktil)",
+              "kaufpreis": 35000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 120000,
+              "comment": "Erweiterte Funkschnittstelle, sub-µm-Genauigkeit, Temperaturkompensation, vollautomatischer Messablauf und MES-Anbindung."
+            },
+            {
+              "machineName": "Inline-Messsystem (optisch) - Standard",
+              "machineNameIntern": "Keyence IV2 (Standard)",
+              "verfahren": "Inline-Messung (optisch)",
+              "kaufpreis": 8000,
+              "power_kW": 0.1,
+              "throughputPartsPerYear": 300000,
+              "comment": "Kompakte Kamera für einfache Lagekontrolle, Fehlerprüfung (z.B. Anwesenheit), LED-Beleuchtung integriert, Basiskonfiguration."
+            },
+            {
+              "machineName": "Inline-Messsystem (optisch) - High-End",
+              "machineNameIntern": "Keyence IV2 (3D/Advanced)",
+              "verfahren": "Inline-Messung (optisch)",
+              "kaufpreis": 15000,
+              "power_kW": 0.1,
+              "throughputPartsPerYear": 400000,
+              "comment": "3D-Snapshot-Fähigkeit, KI-basierte Fehlererkennung (Kratzer, Grat), schnelle Trigger (~50 ms Zyklus), MES/SCADA-Schnittstelle."
+            },
+            {
+              "machineName": "Inline-3D-Scanner (Laser-Triangulation) - Standard",
+              "machineNameIntern": "ScanControl 2900 (Standard)",
+              "verfahren": "Inline-Messung (3D-Laser)",
+              "kaufpreis": 40000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 200000,
+              "comment": "Laserlinien-Scanner, Auflösung ~10 µm, Erfassung von Konturen, einfache Auswertung, manuelle Schnittstellenintegration."
+            },
+            {
+              "machineName": "Inline-3D-Scanner (Laser-Triangulation) - High-End",
+              "machineNameIntern": "ScanControl 2900 (Automotive)",
+              "verfahren": "Inline-Messung (3D-Laser)",
+              "kaufpreis": 70000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 300000,
+              "comment": "Höhere Scanrate (~2000 Profile/s), Plug&Play in Automationssysteme, Echtzeit-Auswertung (Soll-Ist-Vergleich), QS-Protokolle."
+            },
+          
+            {
+              "machineName": "MES-Software (Basis) - Standard",
+              "machineNameIntern": "MPDV Hydra Basic (Standard)",
+              "verfahren": "Prozessdatenerfassung (MES)",
+              "kaufpreis": 50000,
+              "power_kW": 0,
+              "throughputPartsPerYear": 0,
+              "comment": "Grundmodul für Betriebsdatenerfassung (BDE), Personal- und Auftragsverwaltung, einfache SQL-Datenbank, manuelle Anbindung an Maschinen."
+            },
+            {
+              "machineName": "MES-Software (Basis) - High-End",
+              "machineNameIntern": "MPDV Hydra Basic (Advanced)",
+              "verfahren": "Prozessdatenerfassung (MES)",
+              "kaufpreis": 100000,
+              "power_kW": 0,
+              "throughputPartsPerYear": 0,
+              "comment": "Erweiterte Module (Qualitätsdaten, MDE, OEE-Dashboard), automatische Datenschnittstellen (OPC UA, MQTT), Web-Interface, Cloud-Option."
+            },
+            {
+              "machineName": "SCADA-System (Visualisierung) - Standard",
+              "machineNameIntern": "Siemens WinCC Basic (Standard)",
+              "verfahren": "Prozessdatenerfassung (SCADA)",
+              "kaufpreis": 25000,
+              "power_kW": 0,
+              "throughputPartsPerYear": 0,
+              "comment": "Grundlizenz zur Visualisierung, Alarming, Trendaufzeichnung, Anbindung an Siemens-SPS, manuelles Reporting."
+            },
+            {
+              "machineName": "SCADA-System (Visualisierung) - High-End",
+              "machineNameIntern": "Siemens WinCC Advanced (IoT)",
+              "verfahren": "Prozessdatenerfassung (SCADA)",
+              "kaufpreis": 50000,
+              "power_kW": 0,
+              "throughputPartsPerYear": 0,
+              "comment": "Erweiterte IoT-Funktionalität (MindSphere-Anbindung), Big-Data-Speicher, Web-Client mit HTML5, Multi-User-Management."
+            },
+            {
+              "machineName": "IoT-Plattform (Cloud) - Standard",
+              "machineNameIntern": "AWS IoT Core (Starter)",
+              "verfahren": "Prozessdatenerfassung (Cloud-IoT)",
+              "kaufpreis": 20000,
+              "power_kW": 0,
+              "throughputPartsPerYear": 0,
+              "comment": "Basis-Setup auf AWS, MQTT-Broker, Edge-Devices manuell konfiguriert, Dashboards mit CloudWatch, Pay-per-use."
+            },
+            {
+              "machineName": "IoT-Plattform (Cloud) - High-End",
+              "machineNameIntern": "AWS IoT Greengrass (Automotive)",
+              "verfahren": "Prozessdatenerfassung (Cloud-IoT)",
+              "kaufpreis": 50000,
+              "power_kW": 0,
+              "throughputPartsPerYear": 0,
+              "comment": "Edge-Rechenfunktionen (Lambda), automatisches Skalieren, Security (TLS, X.509), umfangreiche Analytic-Funktionen (SageMaker)."
+            },
+          
+            {
+              "machineName": "Predictive Maintenance Toolkit - Standard",
+              "machineNameIntern": "IBM Maximo APM (Basic)",
+              "verfahren": "Predictive Maintenance",
+              "kaufpreis": 30000,
+              "power_kW": 0,
+              "throughputPartsPerYear": 0,
+              "comment": "Basis-Analytics für Schwingungs-, Temperatur-, Druckdaten, einfacher Machine Learning-Ansatz, On-Premises oder Cloud."
+            },
+            {
+              "machineName": "Predictive Maintenance Toolkit - High-End",
+              "machineNameIntern": "IBM Maximo APM (Advanced)",
+              "verfahren": "Predictive Maintenance",
+              "kaufpreis": 70000,
+              "power_kW": 0,
+              "throughputPartsPerYear": 0,
+              "comment": "Erweiterte KI-Modelle (Deep Learning), Prognose von Wartungsintervallen, AR-gestützte Instandhaltungsanweisungen, MES-/ERP-Schnittstelle."
+            },
+            {
+              "machineName": "Lokales KI-Modul (Edge Device) - Standard",
+              "machineNameIntern": "Beckhoff IPC EdgeAI (Standard)",
+              "verfahren": "Predictive Maintenance",
+              "kaufpreis": 15000,
+              "power_kW": 0.5,
+              "throughputPartsPerYear": 0,
+              "comment": "IPC mit Atom-Prozessor, einfache ML-Bibliotheken (TensorFlow Lite), Anbindung an SPS (EtherCAT), manuelles Tuning."
+            },
+            {
+              "machineName": "Lokales KI-Modul (Edge Device) - High-End",
+              "machineNameIntern": "Beckhoff IPC EdgeAI (NPU)",
+              "verfahren": "Predictive Maintenance",
+              "kaufpreis": 30000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 0,
+              "comment": "Höherer Datendurchsatz, integrierte NPU/GPU, Advanced Analytics (Anomaly Detection), OPC UA & MQTT, Cloud-Hybrid-Option."
+            },
+          
+            {
+              "machineName": "Barcode-Drucker (Etikett) - Standard",
+              "machineNameIntern": "Zebra ZT230 (Standard)",
+              "verfahren": "Traceability (Barcode)",
+              "kaufpreis": 2000,
+              "power_kW": 0.1,
+              "throughputPartsPerYear": 500000,
+              "comment": "Thermotransfer-Drucker, bis ~150 mm/s Druckgeschwindigkeit, manuelle Etikettenentnahme, Basiskonfiguration."
+            },
+            {
+              "machineName": "Barcode-Drucker (Etikett) - High-End",
+              "machineNameIntern": "Zebra ZT510 (Auto-Label)",
+              "verfahren": "Traceability (Barcode)",
+              "kaufpreis": 4000,
+              "power_kW": 0.1,
+              "throughputPartsPerYear": 800000,
+              "comment": "Höhere Druckgeschwindigkeit (~305 mm/s), erweiterte Schnittstellen (Ethernet, WLAN), automatisches Label-Dispense-Modul, MES-Anbindung."
+            },
+            {
+              "machineName": "Laser-Beschriftung (Metall) - Standard",
+              "machineNameIntern": "Trumpf TruMark 1110 (Standard)",
+              "verfahren": "Traceability (Laser)",
+              "kaufpreis": 30000,
+              "power_kW": 1,
+              "throughputPartsPerYear": 100000,
+              "comment": "CW-Faserlaser, Gravier- und Anlassbeschriftung, max. Arbeitsfeld ~100 x 100 mm, manuelle Türausführung."
+            },
+            {
+              "machineName": "Laser-Beschriftung (Metall) - High-End",
+              "machineNameIntern": "Trumpf TruMark 5050 (Automotive)",
+              "verfahren": "Traceability (Laser)",
+              "kaufpreis": 60000,
+              "power_kW": 2,
+              "throughputPartsPerYear": 150000,
+              "comment": "Puls-Faserlaser ~50 W, großes Beschriftungsfeld (~180 x 180 mm), automatische Teilezuführung, integrierte Kamera für Barcode-Validierung."
+            },
+            {
+              "machineName": "RFID-System (Reader) - Standard",
+              "machineNameIntern": "Siemens Simatic RF200 (Standard)",
+              "verfahren": "Traceability (RFID)",
+              "kaufpreis": 5000,
+              "power_kW": 0.2,
+              "throughputPartsPerYear": 200000,
+              "comment": "HF-RFID (13,56 MHz), Leseabstand bis ~5 cm, manuelle Montage an Förderstrecke, Profinet-Schnittstelle, Basisauswertung."
+            },
+            {
+              "machineName": "RFID-System (Reader) - High-End",
+              "machineNameIntern": "Siemens Simatic RF600 (LongRange)",
+              "verfahren": "Traceability (RFID)",
+              "kaufpreis": 12000,
+              "power_kW": 0.3,
+              "throughputPartsPerYear": 300000,
+              "comment": "UHF-RFID (865–868 MHz), Leseabstand bis ~3 m, Multi-Antennentechnik, OPC UA, MES-Anbindung, Echtzeit-Positionsbestimmung."
+            },
+            {
+              "machineName": "Spritzlackieranlage (klein) - Standard",
+              "machineNameIntern": "Eisenmann CompactPaint 100 (Standard)",
+              "verfahren": "Lackieranlage (Flüssiglack)",
+              "kaufpreis": 80000,
+              "power_kW": 10,
+              "throughputPartsPerYear": 50000,
+              "comment": "Manuelle Vorbehandlung, 1 Spritzkabine mit Abluftfilter, einfache Förderstrecke, Basisausstattung ohne Trocknerofen."
+            },
+            {
+              "machineName": "Spritzlackieranlage (klein) - High-End",
+              "machineNameIntern": "Eisenmann CompactPaint 100 (Automated)",
+              "verfahren": "Lackieranlage (Flüssiglack)",
+              "kaufpreis": 120000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 70000,
+              "comment": "Automatische Spritzpistolen mit Roboterführung, integrierter Trocknerzone (~80 °C), VOC-Abgasreinigung, MES-Schnittstelle."
+            },
+            {
+              "machineName": "Pulverbeschichtungsanlage (mittel) - Standard",
+              "machineNameIntern": "Gema OptiCenter Basic (Standard)",
+              "verfahren": "Pulverlackierung",
+              "kaufpreis": 150000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 100000,
+              "comment": "Manuelle Pulverkabine, Wirbelstromförderung, Zyklonabscheider, Einbrennofen ~180–200 °C, Fördertechnik (Schienen- oder Bodenroller)."
+            },
+            {
+              "machineName": "Pulverbeschichtungsanlage (mittel) - High-End",
+              "machineNameIntern": "Gema OptiCenter Pro (Automotive)",
+              "verfahren": "Pulverlackierung",
+              "kaufpreis": 250000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 150000,
+              "comment": "Automatische Farbwechselstation, elektrostatische Hochspannung bis 100 kV, Robotersprühtechnik, vollautomatischer Einbrennofen (Konvektions+IR)."
+            },
+          
+            {
+              "machineName": "Verzinkungsanlage (Trommel) - Standard",
+              "machineNameIntern": "Atotech ZinkTrom 300 (Standard)",
+              "verfahren": "Galvanik (Verzinken)",
+              "kaufpreis": 100000,
+              "power_kW": 15,
+              "throughputPartsPerYear": 500000,
+              "comment": "Trommelanlage für Schüttgut (Kleinteile), alkalisches Zinkbad, Basisausstattung (manuelle Abwasserbehandlung, manuelle Warenträger)."
+            },
+            {
+              "machineName": "Verzinkungsanlage (Trommel) - High-End",
+              "machineNameIntern": "Atotech ZinkTrom 300 (Automated)",
+              "verfahren": "Galvanik (Verzinken)",
+              "kaufpreis": 180000,
+              "power_kW": 20,
+              "throughputPartsPerYear": 700000,
+              "comment": "Automatisierte Warenbewegung (Hebe-/Senkstation), integrierte Abwasseraufbereitung, Chrom(VI)-freies Passivieren, MES-Anbindung."
+            },
+            {
+              "machineName": "Vernickelungsanlage (Rack) - Standard",
+              "machineNameIntern": "Galvatek NickelRack 500 (Standard)",
+              "verfahren": "Galvanik (Vernickeln)",
+              "kaufpreis": 200000,
+              "power_kW": 25,
+              "throughputPartsPerYear": 200000,
+              "comment": "Rackanlage für größere Bauteile, Nickel-Sulfamat-Bad, einfache Luftabsaugung, manuelle Rüstprozesse."
+            },
+            {
+              "machineName": "Vernickelungsanlage (Rack) - High-End",
+              "machineNameIntern": "Galvatek NickelRack 500 (Aerospace)",
+              "verfahren": "Galvanik (Vernickeln)",
+              "kaufpreis": 350000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 300000,
+              "comment": "Automatisierter Ablauf (Transportportal), pH/Temperatur-Regelung in Echtzeit, Filtrationseinheit, optional Polierstation, QS-Datenprotokoll."
+            },
+          
+            {
+              "machineName": "Kammerofen (Härten) - Standard",
+              "machineNameIntern": "Nabertherm HardCam 600 (Standard)",
+              "verfahren": "Wärmebehandlung (Härten)",
+              "kaufpreis": 80000,
+              "power_kW": 30,
+              "throughputPartsPerYear": 50000,
+              "comment": "Kammergröße ~600 x 600 x 900 mm, max. Temperatur ~1100 °C, Luftumwälzung, Basiskonfiguration (manuelle Chargierung)."
+            },
+            {
+              "machineName": "Kammerofen (Härten) - High-End",
+              "machineNameIntern": "Nabertherm HardCam 600 (Automated)",
+              "verfahren": "Wärmebehandlung (Härten)",
+              "kaufpreis": 130000,
+              "power_kW": 40,
+              "throughputPartsPerYear": 70000,
+              "comment": "Automatischer Chargenwagen, Schutzgasoption (N2 oder Endogas), Temperaturregelung ±5 K, Data-Logger mit MES-Anbindung."
+            },
+            {
+              "machineName": "Vakuum-Härteanlage - Standard",
+              "machineNameIntern": "Ipsen Titan V100 (Standard)",
+              "verfahren": "Wärmebehandlung (Vakuum)",
+              "kaufpreis": 250000,
+              "power_kW": 50,
+              "throughputPartsPerYear": 30000,
+              "comment": "Arbeitsraum ~400 x 600 mm, Öl- oder Gasabschreckung, Vakuum bis ~10^-2 mbar, Basisausstattung (manuelle Beladung)."
+            },
+            {
+              "machineName": "Vakuum-Härteanlage - High-End",
+              "machineNameIntern": "Ipsen Titan V100 (Aerospace)",
+              "verfahren": "Wärmebehandlung (Vakuum)",
+              "kaufpreis": 400000,
+              "power_kW": 60,
+              "throughputPartsPerYear": 40000,
+              "comment": "Tiefe Vakuumstufen bis 10^-5 mbar, Hochdruck-Gasabschreckung (bis 20 bar), Temperaturuniformität ±3 K, vollautomatischer Chargenhandlingsystem."
+            },
+          
+            {
+              "machineName": "Tellerpolieranlage (klein) - Standard",
+              "machineNameIntern": "LangTec Polisher 300 (Standard)",
+              "verfahren": "Polieren",
+              "kaufpreis": 10000,
+              "power_kW": 3,
+              "throughputPartsPerYear": 30000,
+              "comment": "Ø300 mm Polierteller, manuelle Anpressung, Basisausstattung, Drehzahl ~1500 U/min, einfache Schleifpaste-Dosierung."
+            },
+            {
+              "machineName": "Tellerpolieranlage (klein) - High-End",
+              "machineNameIntern": "LangTec Polisher 300 (Auto-Feed)",
+              "verfahren": "Polieren",
+              "kaufpreis": 20000,
+              "power_kW": 4,
+              "throughputPartsPerYear": 50000,
+              "comment": "Automatischer Pastenzufluss, variabel regelbare Drehzahl (500–3000 U/min), Vorschubarm mit definierter Anpresskraft, MES-Anbindung."
+            },
+            {
+              "machineName": "Gleitschleifanlage (Trogvibrator) - Standard",
+              "machineNameIntern": "Rösler R220 (Standard)",
+              "verfahren": "Gleitschleifen",
+              "kaufpreis": 25000,
+              "power_kW": 5,
+              "throughputPartsPerYear": 80000,
+              "comment": "Trogvibrator ~220 Liter, manuelles Befüllen mit Schleifkörpern, einfache Wasser-/Compound-Dosierung, Basisauswertung."
+            },
+            {
+              "machineName": "Gleitschleifanlage (Trogvibrator) - High-End",
+              "machineNameIntern": "Rösler R220 (Automated)",
+              "verfahren": "Gleitschleifen",
+              "kaufpreis": 40000,
+              "power_kW": 6,
+              "throughputPartsPerYear": 100000,
+              "comment": "Automatische Dosierung von Schleifkörpern und Compound, integrierte Teile-/Medientrennung, SPS-Steuerung mit Rezeptverwaltung, MES-Schnittstelle."
+            }    
 ]
