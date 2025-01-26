@@ -17,6 +17,7 @@ from core.extensions import limiter, csrf
 takt_calc_bp = Blueprint('takt_calc_bp', __name__)
 
 @takt_calc_bp.route("/spritzguss", methods=["POST"])
+@csrf.exempt
 @limiter.limit("20/minute")
 def calc_spritzguss():
     """
