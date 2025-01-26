@@ -1974,7 +1974,7 @@
   <div class="modal-dialog modal-xl modal-sg" style="max-width:1000px;">
     <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
 
-      <!-- HEADER (Design analog) -->
+      <!-- HEADER -->
       <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title" id="spritzgussModalLabel">
           Spritzguss – Taktzeitrechner
@@ -2038,6 +2038,7 @@
 
         <!-- TAB-CONTENT -->
         <div class="tab-content mt-2" id="sgTabContent">
+
           <!-- TAB 1: BASIS -->
           <div
             class="tab-pane fade show active"
@@ -2145,6 +2146,7 @@
             </div>
           </div><!-- END TAB BASIC -->
 
+
           <!-- TAB 2: ERWEITERT => Accordion -->
           <div
             class="tab-pane fade"
@@ -2153,6 +2155,7 @@
             aria-labelledby="sg-adv-tab"
           >
             <div class="accordion" id="sgAccordionAdvanced">
+
               <!-- ACCORDION-EINTRAG 1: MASCHINE -->
               <div class="accordion-item">
                 <h2 class="accordion-header" id="sgAdvHeadOne">
@@ -2174,17 +2177,14 @@
                   data-bs-parent="#sgAccordionAdvanced"
                 >
                   <div class="accordion-body">
+                    <!-- Unverändert -->
                     <div class="row mb-2">
                       <div class="col-md-6">
                         <label class="form-label fw-bold mb-1">
                           Maschine (manuell)
                         </label>
-                        <select
-                          id="sgMachineCombo"
-                          class="form-select form-select-sm"
-                        >
+                        <select id="sgMachineCombo" class="form-select form-select-sm">
                           <option value="80t HighSpeed">80t HighSpeed</option>
-                          <!-- Beispiel-Ergänzung -->
                           <option value="80t Automotive">80t Automotive</option>
                           <option value="100t Standard">100t Standard</option>
                           <option value="120t AllElectric">120t AllElectric</option>
@@ -2213,10 +2213,7 @@
                         <label class="form-label fw-bold mb-1">
                           Formen-Innendruck (bar)
                         </label>
-                        <select
-                          id="sgPressureSelect"
-                          class="form-select form-select-sm"
-                        >
+                        <select id="sgPressureSelect" class="form-select form-select-sm">
                           <option value="300">300</option>
                           <option value="600">600</option>
                           <option value="800">800</option>
@@ -2235,6 +2232,7 @@
                   </div><!-- .accordion-body -->
                 </div><!-- #sgAdvCollapseOne -->
               </div><!-- .accordion-item -->
+
 
               <!-- ACCORDION-EINTRAG 2: ZUSÄTZLICHE OPTIONEN -->
               <div class="accordion-item">
@@ -2287,6 +2285,7 @@
                         Schieber? (+1.5s)
                       </label>
                     </div>
+
                     <label class="form-label fw-bold mb-1 mt-2">
                       Nachdruck/Haltedruck (s)
                     </label>
@@ -2296,6 +2295,7 @@
                       id="sgHoldPressure"
                       value="2.0"
                     />
+
                     <label class="form-label fw-bold mb-1 mt-2">
                       Min. Kühlzeit (s)
                     </label>
@@ -2316,34 +2316,36 @@
                       </label>
                     </div>
 
-          <!-- ### NEU: "Erweiterte Logik" & "Paralleles Plastifizieren" -->
-          <hr/>
-          <div class="form-check mb-1">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="sgAdvModeChk"
-            />
-            <label class="form-check-label" for="sgAdvModeChk">
-              Erweiterte Logik aktivieren
-            </label>
-          </div>
-          <div class="form-check mb-1 ms-4">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="sgParallelPlastChk"
-            />
-            <label class="form-check-label" for="sgParallelPlastChk">
-              Paralleles Plastifizieren
-            </label>
-          </div>
-          <!-- ENDE NEU -->
+                    <!-- ### NEU: "Erweiterte Logik" & "Paralleles Plastifizieren" -->
+                    <hr/>
+                    <div class="form-check mb-1">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="sgAdvModeChk"
+                      />
+                      <label class="form-check-label" for="sgAdvModeChk">
+                        Erweiterte Logik aktivieren
+                      </label>
+                    </div>
+                    <div class="form-check mb-1 ms-4">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="sgParallelPlastChk"
+                      />
+                      <label class="form-check-label" for="sgParallelPlastChk">
+                        Paralleles Plastifizieren
+                      </label>
+                    </div>
+                    <!-- ENDE NEU -->
+
                   </div><!-- .accordion-body -->
                 </div><!-- #sgAdvCollapseTwo -->
               </div><!-- .accordion-item -->
             </div><!-- .accordion -->
           </div><!-- END TAB ERWEITERT -->
+
 
           <!-- TAB 3: PROFILE -->
           <div
@@ -2471,7 +2473,8 @@
 
     </div><!-- .modal-content -->
   </div><!-- .modal-dialog -->
-</div><!-- #modalSpritzguss -->
+</div>
+<!-- =================== ENDE SPRITZGUSS-MODAL =================== -->
         <!-- DRUCKGUSS-MODAL (Fancy v2.0) -->
 <!-- =================== DRUCKGUSS – TAKTZEITRECHNER (DESIGN-ADAPTIERT) =================== -->
 <div class="modal fade" id="modalDruckguss" tabindex="-1" aria-labelledby="druckgussModalLabel" aria-hidden="true">
