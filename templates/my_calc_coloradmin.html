@@ -2184,6 +2184,8 @@
                           class="form-select form-select-sm"
                         >
                           <option value="80t HighSpeed">80t HighSpeed</option>
+                          <!-- Beispiel-Ergänzung -->
+                          <option value="80t Automotive">80t Automotive</option>
                           <option value="100t Standard">100t Standard</option>
                           <option value="120t AllElectric">120t AllElectric</option>
                           <option value="150t Automotive">150t Automotive</option>
@@ -3638,8 +3640,15 @@
 
         <!-- Rechter Block: Ergebnis "Maschinenkosten (€/h): XX" -->
         <div class="d-flex align-items-center gap-2">
-          <span style="font-weight:600;">Maschinenkosten (€/h):</span>
-          <span id="machResult" class="text-theme fw-bold">--</span>
+          <label style="font-weight:600;" for="machResult">Maschinenkosten (€/h):</label>
+          <!-- Wichtig: Falls dein JS "machResult.value = ..." nutzt => input.
+                       Falls "machResult.textContent = ..." => span. -->
+          <input type="text"
+                 class="form-control form-control-sm"
+                 id="machResult"
+                 value="--"
+                 readonly
+                 style="width:90px;"/>
         </div>
       </div><!-- /.modal-footer -->
     </div><!-- /.modal-content -->

@@ -1,7 +1,3 @@
-from flask import Blueprint, request, jsonify
-from flask_login import login_required
-from core.extensions import limiter, csrf
-
 from flask import Blueprint, request, jsonify, session
 from models.user import User
 from core.extensions import limiter, csrf
@@ -11,36 +7,9 @@ takt_calc_bp = Blueprint('takt_calc_bp', __name__)
 @takt_calc_bp.route("/spritzguss", methods=["POST"])
 @limiter.limit("20/minute")
 def calc_spritzguss():
-    """
-    POST /calc/takt/spritzguss
-    Erwartet JSON mit Feldern wie:
-      {
-        "material": "PP",
-        "cavities": 4,
-        "partWeight": 50.0,
-        "runnerWeight": 10.0,
-        "length_mm": 100.0,
-        "width_mm": 80.0,
-        "wall_mm": 2.0,
-        "machineKey": "80t HighSpeed",
-        "isMachineAuto": false,
-        "safe_pct": 30.0,
-        "press_bar": 300,
-        "isAutomotive": false,
-        "hasRobot": false,
-        "hasSlider": false,
-        "hold_s": 2.0,
-        "min_cool_s": 1.5,
-        "hasContour": false
-      }
-    """
     try:
-        # Hole die JSON-Daten aus dem Request
-        data = request.get_json()
-
         if "user_id" not in session:
             return jsonify({"error": "Not logged in"}), 403
-
         user = User.query.get(session["user_id"])
         if not user:
             return jsonify({"error": "User not found"}), 404
@@ -49,8 +18,10 @@ def calc_spritzguss():
         if lvl not in ["premium", "extended", "plus"]:
             return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
+        data = request.get_json()
+
         # ---------------------------------------------------
-        # 1) EINGABE-PARAMETER AUS JSON
+        # 1) EINGABE-PARAMETER
         # ---------------------------------------------------
         material       = data.get("material", "PP")
         cavities       = int(data.get("cavities", 4))
@@ -72,7 +43,7 @@ def calc_spritzguss():
         hasContour     = bool(data.get("hasContour", False))
 
         # ---------------------------------------------------
-        # 2) MASCHINEN- & MATERIAL-DATEN (vereint aus V1)
+        # 2) MASCHINEN- & MATERIAL-DATEN
         # ---------------------------------------------------
         machineData = {
             "50t Standard": {
@@ -86,6 +57,13 @@ def calc_spritzguss():
                 "openclose": 1.0,
                 "min_cycle": 2.5,
                 "flags": ["highspeed"]
+            },
+            # NEU: Zusätzliche Automotive-Variante
+            "80t Automotive": {
+                "tons": 80,
+                "openclose": 2.0,
+                "min_cycle": 4.5,
+                "flags": ["automotive"]
             },
             "100t Standard": {
                 "tons": 100,
@@ -141,42 +119,34 @@ def calc_spritzguss():
             "PBT":     { "coolf": 0.42 }
         }
 
-        # ---------------------------------------------------
-        # 3) HILFSFUNKTION => Maschine auto wählen
-        # ---------------------------------------------------
         def pick_auto_machine(tons_needed):
             bestKey = None
             bestVal = float("inf")
             for mk, info in machineData.items():
                 t = info["tons"]
+                # Nur Maschinen >= benötigte Tons
                 if t >= tons_needed and t < bestVal:
                     bestVal = t
                     bestKey = mk
+            # Keine passende gefunden => größte wählen
             if not bestKey:
-                # Falls keine Maschine tonnenmäßig reicht => größte
                 bestKey = max(machineData.keys(), key=lambda x: machineData[x]["tons"])
             return bestKey
 
         # ---------------------------------------------------
-        # 4) BERECHNUNG => Aus V1-Logik ins Backend übernommen
+        # 3) BERECHNUNG
         # ---------------------------------------------------
-        # (a) Material-Kühlfaktor
         matObj = materialData.get(material, materialData["PP"])
         coolFactor = matObj["coolf"]
 
-        # (b) Schussgewicht
         shotWeight_g = (partWeight + runnerWeight) * cavities
 
-        # (c) Projizierte Fläche (cm²)
         projArea_cm2 = (length_mm * width_mm) / 100.0
-
-        # (d) Schließkraft (t)
         closure_tons = projArea_cm2 * press_bar * 0.0001 * cavities
         closure_tons *= (1 + safe_pct / 100.0)
         if isAutomotive:
-            closure_tons *= 1.2  # +20%
+            closure_tons *= 1.2  # +20% Reserve
 
-        # (e) Maschine
         chosenKey = machineKey
         if chosenKey not in machineData:
             chosenKey = "80t HighSpeed"
@@ -185,36 +155,23 @@ def calc_spritzguss():
 
         chosenMachine = machineData[chosenKey]
 
-        # (f) Kühlzeit
         rawCool_s = coolFactor * (wall_mm ** 2)
         if rawCool_s < min_cool_s:
             rawCool_s = min_cool_s
         if hasContour:
-            rawCool_s *= 0.8  # -20%
+            rawCool_s *= 0.8
 
-        # (g) Handling
         handle_s = 2.0 if hasRobot else 0.5
         slider_s = 1.5 if hasSlider else 0.0
-
-        # (h) Einspritzen + Halten
         injection_s = 1.0 + hold_s
-
-        # (i) Maschine open/close
         oc_s = chosenMachine["openclose"]
 
-        # (j) Gesamte Zykluszeit pro Schuss
         rawCycleShot = oc_s + injection_s + rawCool_s + handle_s + slider_s
-        #     => nicht unter Maschinen-Minimalzyklus
-        minCycle = chosenMachine["min_cycle"]
-        if rawCycleShot < minCycle:
-            rawCycleShot = minCycle
+        if rawCycleShot < chosenMachine["min_cycle"]:
+            rawCycleShot = chosenMachine["min_cycle"]
 
-        # (k) Zyklus pro Teil
         cyclePart_s = rawCycleShot / cavities
 
-        # ---------------------------------------------------
-        # 5) Ergebnis => JSON
-        # ---------------------------------------------------
         machineExplain = (
             f"Maschine '{chosenKey}' gewählt, "
             f"da mindestens {round(closure_tons,1)} t benötigt werden."
@@ -233,16 +190,16 @@ def calc_spritzguss():
                 round(handle_s + slider_s, 2)
             ],
             "machineExplain": machineExplain,
-            # Noch nicht kalkuliert => None => UI zeigt "--"
             "costEach": None,
             "throughput": None,
-            "msg": "Spritzguss-Berechnung aus V1-Logik (Backend)."
+            "msg": "Spritzguss-Berechnung (Backend)."
         }
 
         return jsonify(result), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @takt_calc_bp.route("/druckguss", methods=["POST"])
 @csrf.exempt  # Falls du globalen CSRF nutzt, und dein Frontend den Token nicht mitsendet.
