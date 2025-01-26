@@ -2581,3 +2581,74 @@ async function exportComparisonExcel() {
 // Ende JS
 // ------------------------------------------------------
 
+async function exportBaugruppenPowerPoint() {
+  // 1) Einsammeln der Tab1-4 Daten (genau wie bei Excel)
+  const tab1 = {
+    projectName: document.getElementById("txtProjectName")?.value || "",
+    partName: document.getElementById("txtPartName")?.value || "",
+    sgaPct: parseFloat(document.getElementById("sgaPct")?.value) || 0,
+    profitPct: parseFloat(document.getElementById("profitPct")?.value) || 0,
+    // etc...
+  };
+  const tab2 = {
+    matName: document.getElementById("matName")?.value || "",
+    matPrice: parseFloat(document.getElementById("matPrice")?.value) || 0,
+    matWeight: parseFloat(document.getElementById("matWeight")?.value) || 0,
+    fremdValue: parseFloat(document.getElementById("fremdValue")?.value) || 0,
+    // ...
+  };
+  // Tab3 => bis zu 8 steps
+  const rows = document.querySelectorAll("#fertTable tbody tr");
+  const tab3 = [];
+  rows.forEach((row, idx) => {
+    if (idx < 8) {
+      const cells = row.querySelectorAll("td");
+      tab3.push({
+        stepName: cells[0].querySelector("input")?.value || `Step ${idx+1}`,
+        cycTime: parseFloat(cells[1].querySelector("input")?.value) || 0,
+        kosten_100: parseFloat(cells[8].querySelector("span")?.innerText) || 0,
+        co2_100: parseFloat(cells[9].querySelector("span")?.innerText) || 0
+      });
+    }
+  });
+  // Tab4 => Summary
+  const tab4 = {
+    matEinzel: parseFloat(document.getElementById("tdMatEinzel")?.innerText) || 0,
+    fremd: parseFloat(document.getElementById("tdFremd")?.innerText) || 0,
+    herstell: parseFloat(document.getElementById("tdHerstell")?.innerText) || 0,
+    sga: parseFloat(document.getElementById("tdSGA")?.innerText) || 0,
+    profit: parseFloat(document.getElementById("tdProfit")?.innerText) || 0,
+    total: parseFloat(document.getElementById("tdTotal")?.innerText) || 0,
+    co2_100: parseFloat(document.getElementById("tdCo2Total")?.innerText) || 0
+  };
+
+  // 2) POST an /exports/baugruppe/ppt
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
+  const resp = await fetch("/exports/baugruppe/ppt", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken
+    },
+    body: JSON.stringify({ tab1, tab2, tab3, tab4 })
+  });
+
+  if (!resp.ok) {
+    let errData = null;
+    try { errData = await resp.json(); } catch(e){}
+    if (errData?.error) alert("Fehler: " + errData.error);
+    else alert("Fehler: " + resp.status);
+    return;
+  }
+
+  // 3) Download
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "ParetoKalk_Presentation.pptx";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}

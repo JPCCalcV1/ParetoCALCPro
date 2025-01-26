@@ -1,85 +1,50 @@
-# ==================================================
-# FILE: exports/excel.py
-# ==================================================
-import xlsxwriter
 import io
 import os
-from datetime import datetime
+import xlsxwriter
 from flask import current_app
-
-# ------------------------------
-# (Vorher ggf. weitere Imports)
-# ------------------------------
-
-def export_baugruppe_excel(baugruppen_list, filename="baugruppe_export.xlsx"):
-    """
-    Deine ursprüngliche Funktion, um 'Baugruppen-Liste' in ein schnelles, einfaches Excel zu schreiben.
-    baugruppen_list => Liste von Dicts, z.B.:
-      [ {name:"TeilA", matEinzel:10, matGemein:5, ...}, {...} ]
-    Gibt ein BytesIO zurück, das man als Download schicken kann.
-    """
-    output = io.BytesIO()
-    workbook = xlsxwriter.Workbook(output, {"in_memory": True})
-    ws = workbook.add_worksheet("Baugruppe")
-
-    # Kopfzeile
-    headers = ["Bauteilname","Verfahren","MatEinzel","MatGemein","Fremd","Mach",
-               "Lohn","FGK","Herstell","SGA","Profit","Total","CO2_100"]
-    for col_idx, h in enumerate(headers):
-        ws.write(0, col_idx, h)
-
-    # Daten
-    row = 1
-    for item in baugruppen_list:
-        ws.write(row, 0, item.get("name",""))
-        ws.write(row, 1, item.get("verfahren",""))
-        ws.write(row, 2, round(item.get("matEinzel",0), 2))
-        ws.write(row, 3, round(item.get("matGemein",0), 2))
-        ws.write(row, 4, round(item.get("fremd",0), 2))
-        ws.write(row, 5, round(item.get("mach",0), 2))
-        ws.write(row, 6, round(item.get("lohn",0), 2))
-        ws.write(row, 7, round(item.get("fgk",0), 2))
-        ws.write(row, 8, round(item.get("herstell",0), 2))
-        ws.write(row, 9, round(item.get("sga",0), 2))
-        ws.write(row, 10, round(item.get("profit",0), 2))
-        ws.write(row, 11, round(item.get("total",0), 2))
-        ws.write(row, 12, round(item.get("co2_100",0), 2))
-        row += 1
-
-    workbook.close()
-    output.seek(0)
-    return output, filename
+from datetime import datetime
 
 
-# --------------------------------------------------
-# NEUE FUNKTION: export_baugruppe_comparison_excel
-# --------------------------------------------------
-
-def export_baugruppe_comparison_excel(
-    tab1_data,
-    tab2_data,
-    tab3_steps,  # Liste mit max 8 Dict-Einträgen
-    tab4_summary,
-    filename="ParetoKalk_Comparison.xlsx"
+def export_baugruppe_eight_steps_excel(
+        tab1_data,  # dict (Projekt: scrapPct, sgaPct, profitPct, ...)
+        tab2_data,  # dict (Material: matPrice, matWeight, fremdValue, ...)
+        tab3_steps,  # list of dict (bis zu 8 Schritte)
+        tab4_summary,  # dict (Gesamt-Summary)
+        filename="ParetoKalk_OnePager_8Steps.xlsx"
 ):
     """
-    Erstellt ein Excel mit zwei Worksheets:
-      1) FullOverview  => Alle Daten aus Tab1-Tab4 (ähnlich wie "episch")
-      2) SupplierCompare => Vergleichstabelle (Unsere Kalkulation vs. Lieferantenangaben + Delta)
+    Erstellt ein Worksheet mit (mind.) 18 Spalten:
+      - Spalte A: Zeilen-Beschriftung (Material, Fremd, Step-Namen, Rüst etc.)
+      - Spalten B..Y: Jeweils 8 Doppelsäulen (Kosten/100 + CO₂/100) für Step 1..8
+      - Dazu 2 Summenspalten (Spalte R und S oder weiter hinten),
+        um die Gesamt-Kosten und -CO₂ anzuzeigen.
 
-    tab1_data   => dict mit Daten aus Tab1 (projectName, partName, annualQty, lotSize, etc.)
-    tab2_data   => dict mit Daten aus Tab2 (Materialname, Preise, etc.)
-    tab3_steps  => bis zu 8 Fertigungsschritte (Tab3)
-    tab4_summary=> dict mit Ergebniswerten (Tab4: matEinzel, lohn, total usw.)
+    Layout grob (Zeile 1..2 als Beispiel):
 
-    Gibt ein BytesIO zurück, das man per send_file ausliefern kann.
+    Row1:
+      A1 = Titel "Pareto Kalk – 8-Schritt-Übersicht"
+      B1..Y1 = zusammengeführter Header / Logo / ...
+
+    Row2 (nur Überschriften):
+      A2 = "Kostenblöcke"
+      B2 = "Step1-Cost/100"
+      C2 = "Step1-CO₂/100"
+      D2 = "Step2-Cost/100"
+      E2 = "Step2-CO₂/100"
+      ...
+      P2 = "Step8-Cost/100"
+      Q2 = "Step8-CO₂/100"
+      R2 = "Gesamt-Cost"
+      S2 = "Gesamt-CO₂"
+
+    Dann Zeilen 3..N für "Material", "Fremd", "Tooling", "Rüst", "Herstellkosten", "SG&A" etc.
     """
     output = io.BytesIO()
     workbook = xlsxwriter.Workbook(output, {"in_memory": True})
 
-    # ------------------------
-    # Formatierungen
-    # ------------------------
+    # ------------------------------------------------
+    # 1) Format-Definitionen
+    # ------------------------------------------------
     title_format = workbook.add_format({
         "bold": True,
         "font_size": 16,
@@ -90,189 +55,195 @@ def export_baugruppe_comparison_excel(
         "bg_color": "#1F4E78",
         "font_color": "#FFFFFF",
         "bold": True,
-        "border": 1,
-        "align": "center"
+        "align": "center",
+        "valign": "vcenter",
+        "border": 1
     })
-    bold_format = workbook.add_format({"bold": True})
-    normal_border_format = workbook.add_format({"border": 1})
-    number_border_format = workbook.add_format({"border": 1, "num_format": "#,##0.00"})
-    percent_format = workbook.add_format({"border": 1, "num_format": "0.0%"})
-    # Für conditional formatting (Ampel) verwenden wir Worksheet-Methoden später.
+    label_format = workbook.add_format({
+        "bold": True,
+        "border": 1,
+        "valign": "vcenter"
+    })
+    normal_border = workbook.add_format({"border": 1})
+    number_format = workbook.add_format({"border": 1, "num_format": "#,##0.00"})
 
-    # =========================================
-    # 1) Worksheet "FullOverview"
-    # =========================================
-    ws_full = workbook.add_worksheet("FullOverview")
-    ws_full.set_column("A:A", 30)
-    ws_full.set_column("B:B", 18)
-    ws_full.set_column("C:D", 14)
+    # ------------------------------------------------
+    # 2) Worksheet anlegen + Spaltenbreiten
+    # ------------------------------------------------
+    ws = workbook.add_worksheet("8StepsOverview")
+    # Wir brauchen mind. 18 Spalten (A..R oder A..S).
+    # In diesem Beispiel: A..S
+    # B..Q => 8 Doppelsäulen + Summenspalten R und S
+    # Setze Breiten:
+    ws.set_column("A:A", 28)  # Beschriftungen
+    for col in range(1, 19):
+        ws.set_column(col, col, 12)  # Spalten B..S = 12er Breite
 
-    # Titel
-    ws_full.merge_range("A1:D1", "Pareto-Kalk – Gesamtübersicht", title_format)
+    # ------------------------------------------------
+    # 3) Titelzeile (Row=0)
+    # ------------------------------------------------
+    ws.merge_range("A1:S1", "Pareto-Kalk – 8-Schritt-Übersicht", title_format)
+    ws.set_row(0, 40)  # Zeile 1 höher
 
-    # Projekt-Parameter
-    row = 2
-    ws_full.write(row, 0, "Projektname", bold_format)
-    ws_full.write(row, 1, tab1_data.get("projectName", ""))
-    row += 1
-    ws_full.write(row, 0, "Bauteilname", bold_format)
-    ws_full.write(row, 1, tab1_data.get("partName", ""))
-    row += 1
-    ws_full.write(row, 0, "Jahresstückzahl", bold_format)
-    ws_full.write_number(row, 1, tab1_data.get("annualQty", 0))
-    row += 1
-    ws_full.write(row, 0, "Losgröße", bold_format)
-    ws_full.write_number(row, 1, tab1_data.get("lotSize", 0))
-    row += 1
-    ws_full.write(row, 0, "Ausschuss (%)", bold_format)
-    ws_full.write_number(row, 1, tab1_data.get("scrapPct", 0))
-    row += 1
-    ws_full.write(row, 0, "SG&A (%)", bold_format)
-    ws_full.write_number(row, 1, tab1_data.get("sgaPct", 0))
-    row += 1
-    ws_full.write(row, 0, "Profit (%)", bold_format)
-    ws_full.write_number(row, 1, tab1_data.get("profitPct", 0))
-    row += 1
-
-    # Material-Parameter
-    row += 1
-    ws_full.write(row, 0, "Materialname", bold_format)
-    ws_full.write(row, 1, tab2_data.get("matName", ""))
-    row += 1
-    ws_full.write(row, 0, "Materialpreis (€/kg)", bold_format)
-    ws_full.write_number(row, 1, tab2_data.get("matPrice", 0), number_border_format)
-    row += 1
-    ws_full.write(row, 0, "Material-CO₂ (kg/kg)", bold_format)
-    ws_full.write_number(row, 1, tab2_data.get("matCo2", 0), number_border_format)
-    row += 1
-    ws_full.write(row, 0, "Material-GK (%)", bold_format)
-    ws_full.write_number(row, 1, tab2_data.get("matGK", 0), number_border_format)
-    row += 1
-    ws_full.write(row, 0, "Bauteilgewicht (kg)", bold_format)
-    ws_full.write_number(row, 1, tab2_data.get("matWeight", 0), number_border_format)
-    row += 1
-    ws_full.write(row, 0, "Fremdzukauf (€)", bold_format)
-    ws_full.write_number(row, 1, tab2_data.get("fremdValue", 0), number_border_format)
-    row += 2
-
-    # Fertigungsschritte (max. 8 Zeilen)
-    ws_full.write(row, 0, "Fertigungsschritte", header_format)
-    row += 1
-    fert_headers = [
-        "Arbeitsschritt", "Zyklus (s)", "MS (€/h)", "Lohn (€/h)",
-        "Rüst (€/Los)", "Tooling/100", "FGK (%)", "CO₂ (kg/h)",
-        "Kosten/100 (€)", "CO₂/100 (kg)"
-    ]
-    for col_idx, h in enumerate(fert_headers):
-        ws_full.write(row, col_idx, h, header_format)
-    row += 1
-
-    start_row_fert = row
-    for i, step in enumerate(tab3_steps[:8]):
-        ws_full.write(row, 0, step.get("stepName", f"Step {i+1}"), normal_border_format)
-        ws_full.write_number(row, 1, step.get("zyklus_s", 0), number_border_format)
-        ws_full.write_number(row, 2, step.get("ms_eur_h", 0), number_border_format)
-        ws_full.write_number(row, 3, step.get("lohn_eur_h", 0), number_border_format)
-        ws_full.write_number(row, 4, step.get("ruest_eur_los", 0), number_border_format)
-        ws_full.write_number(row, 5, step.get("tooling_eur_100", 0), number_border_format)
-        ws_full.write_number(row, 6, step.get("fgk_pct", 0), number_border_format)
-        ws_full.write_number(row, 7, step.get("co2_kg_h", 0), number_border_format)
-        ws_full.write_number(row, 8, step.get("kosten_100", 0), number_border_format)
-        ws_full.write_number(row, 9, step.get("co2_100", 0), number_border_format)
-        row += 1
-
-    row += 2
-
-    # Zusammenfassung (Tab 4)
-    ws_full.write(row, 0, "Ergebnis (Zusammenfassung)", header_format)
-    row += 1
-    summary_items = [
-        ("Material-Einzelkosten/100", "matEinzel"),
-        ("Material-Gemeinkosten/100", "matGemein"),
-        ("Fremdzukauf/100", "fremd"),
-        ("Maschinenkosten/100", "mach"),
-        ("Lohnkosten/100", "lohn"),
-        ("Fertigungsgemeinkosten/100", "fgk"),
-        ("Herstellkosten/100", "herstell"),
-        ("SG&A", "sga"),
-        ("Profit", "profit"),
-        ("Gesamtkosten/100", "total"),
-        ("CO₂/100 (kg)", "co2_100")
-    ]
-    for label, key in summary_items:
-        ws_full.write(row, 0, label, bold_format)
-        ws_full.write_number(row, 1, tab4_summary.get(key, 0), number_border_format)
-        row += 1
-
-    # Logo (optional) oben rechts
+    # Optional: Logo oben links
     logo_path = os.path.join(current_app.root_path, "static", "img", "logo.png")
     if os.path.exists(logo_path):
-        ws_full.insert_image("D1", logo_path, {"x_scale": 0.5, "y_scale": 0.5})
+        # Logo in A1 (mit x_offset,y_offset anpassen):
+        ws.insert_image("A1", logo_path, {"x_scale": 0.6, "y_scale": 0.6, "x_offset": 0, "y_offset": 0})
 
-    # =========================================
-    # 2) Worksheet "SupplierCompare"
-    # =========================================
-    ws_comp = workbook.add_worksheet("SupplierCompare")
-    ws_comp.set_column("A:A", 35)
-    ws_comp.set_column("B:D", 16)
+    # ------------------------------------------------
+    # 4) Spaltenüberschriften in Row=1
+    # ------------------------------------------------
+    ws.write(1, 0, "Kosten-Blöcke", header_format)
 
-    ws_comp.merge_range("A1:D1", "Lieferanten-Vergleich", title_format)
-    ws_comp.write("A2", "Hinweis:", bold_format)
-    ws_comp.merge_range("B2:D2",
-        "In Spalte C kann der Lieferant seine Werte eintragen. Spalte D zeigt das prozentuale Delta an.",
-        workbook.add_format({"text_wrap": True}))
+    # Je 2 Spalten pro Step (cost, co2)
+    step_headers = []
+    for i in range(8):
+        step_headers.append((f"Step{i + 1} Cost/100", f"Step{i + 1} CO₂/100"))
 
-    # Kopfzeilen
-    ws_comp.write(3, 0, "Kalkulationsposition", header_format)
-    ws_comp.write(3, 1, "Unsere Kalkulation", header_format)
-    ws_comp.write(3, 2, "Lieferant", header_format)
-    ws_comp.write(3, 3, "Delta", header_format)
+    col_start = 1
+    for i, (costLabel, co2Label) in enumerate(step_headers):
+        ws.write(1, col_start, costLabel, header_format)
+        ws.write(1, col_start + 1, co2Label, header_format)
+        col_start += 2
 
-    # Ab Zeile 4 => summary items
-    start_row = 4
-    for idx, (label, key) in enumerate(summary_items):
-        row_i = start_row + idx
-        ws_comp.write(row_i, 0, label, normal_border_format)
-        # Unsere Kalkulation
-        ws_comp.write_number(
-            row_i, 1,
-            tab4_summary.get(key, 0),
-            number_border_format
-        )
-        # Lieferant (leer, kann vom Kunden befüllt werden)
-        ws_comp.write(row_i, 2, "", number_border_format)
-        # Delta => Formel (Spalte D = (C - B)/B ), Index = row_i + 1 (1-based in Excel)
-        ws_comp.write_formula(
-            row_i, 3,
-            f"=(C{row_i+1}-B{row_i+1})/B{row_i+1}",
-            percent_format
-        )
+    # Summenspalten
+    ws.write(1, col_start, "Σ-Cost", header_format)  # col_start -> R
+    ws.write(1, col_start + 1, "Σ-CO₂", header_format)  # col_start+1 -> S
 
-    # Conditional Formatting für Delta-Spalte (Spalte D), 0 => Spalte A, D => 3
-    comp_range = f"D{start_row+1}:D{start_row+len(summary_items)}"
-    ws_comp.conditional_format(
-        comp_range,
-        {
-            "type": "3_color_scale",
-            "min_color": "#63BE7B",  # Grün
-            "mid_color": "#FFEB84",  # Gelb
-            "max_color": "#F8696B"   # Rot
-        }
-    )
+    # ------------------------------------------------
+    # 5) Inhaltliche Zeilen definieren
+    # ------------------------------------------------
+    # Ab Zeile 2 (Index=2) beginnen wir mit Material, Fremd, ...
+    row_idx = 2
 
-    # Footer
-    end_row = start_row + len(summary_items) + 2
-    ws_comp.write(end_row, 0, "Legende:", bold_format)
-    ws_comp.merge_range(end_row, 1, end_row, 3,
-        "Grün = Unter 0% Abweichung (günstiger), Gelb = leichte Abweichung, Rot = deutliche Abweichung",
-        workbook.add_format({"text_wrap": True, "italic": True})
-    )
+    # Hilfsfunktion, um pro Zeile: label, 8 cost-Werte, 8 co2-Werte, sum cost, sum co2 zu schreiben
+    def write_cost_line(label, row, cost_values, co2_values):
+        """
+        label: Zeilenbeschriftung
+        cost_values: list[float] oder None => bis zu 8
+        co2_values:  list[float] oder None => bis zu 8
+        Schreibt in Spalten B..Q, Summen in R,S
+        """
+        ws.write(row, 0, label, label_format)
+        # 8 Steps
+        c_col = 1
+        total_cost = 0.0
+        total_co2 = 0.0
+        for i in range(8):
+            c_val = cost_values[i] if i < len(cost_values) else 0
+            co2_val = co2_values[i] if i < len(co2_values) else 0
+            ws.write_number(row, c_col, c_val, number_format)  # cost
+            ws.write_number(row, c_col + 1, co2_val, number_format)  # co2
+            total_cost += c_val
+            total_co2 += co2_val
+            c_col += 2
 
-    # workbook schließen und zurückgeben
+        # Summen in Spalte R,S
+        ws.write_number(row, c_col, total_cost, number_format)
+        ws.write_number(row, c_col + 1, total_co2, number_format)
+
+    # ------------------------------------------------------------------
+    # 5.1) Material-Zeilen (Bsp: Material, Fremd, MGK, Scrap, Summen)
+    # ------------------------------------------------------------------
+    # Du kannst aus tab2_data oder tab4_summary ableiten.
+    # Hier als DEMO:
+    material_cost = tab4_summary.get("matEinzel", 0)  # z.B. reiner Materialeinzel-Anteil
+    mat_gemein = tab4_summary.get("matGemein", 0)  # Material-Gemeinkosten
+    mat_fremd = tab4_summary.get("fremd", 0)
+    # Zusammen als 1-D array => "in Step 1..8" könnte man es verteilen.
+    # Wenn du nur *einen* Wert hast, und alles in Summe steckst, nimmst du "cost_values = [0,0,..., deinWert]" oder du verteilst den Wert uniform.
+    # Hier vereinfachend: alle in Step1 => (material_cost, 0,0, ...). Oder komplett in Summenspalte? Du entscheidest.
+
+    #  – Zeile Material-Einzel
+    write_cost_line("Material-Einzel", row_idx, [material_cost, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0])
+    row_idx += 1
+
+    #  – Zeile Fremdzukauf
+    write_cost_line("Fremdzukauf", row_idx, [mat_fremd, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0])
+    row_idx += 1
+
+    #  – Zeile Material-Gemein
+    write_cost_line("Material-GK", row_idx, [mat_gemein, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0])
+    row_idx += 1
+
+    #  – Summen-Zeile Material
+    mat_sum = material_cost + mat_gemein + mat_fremd
+    write_cost_line("Material-Gesamt", row_idx, [mat_sum, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0])
+    row_idx += 1
+
+    # ------------------------------------------------------------------
+    # 5.2) Acht Fertigungsschritte
+    # ------------------------------------------------------------------
+    # In tab3_steps liegen pro Step i.d.R. Zyklus, msRate, lohnRate, ...
+    # Falls du Dir *pro Step* schon "cost/100" + "co2/100" aus tab3 holst:
+    #   step["kosten_100"], step["co2_100"]
+    # Dann kannst du es hier 1:1 in die Spalten packen:
+
+    # Im Normalfall: cost_values[i] = step i Kosten, co2_values[i] = step i CO₂
+    fert_cost_arr = [0] * 8
+    fert_co2_arr = [0] * 8
+
+    for i in range(min(len(tab3_steps), 8)):
+        fert_cost_arr[i] = tab3_steps[i].get("kosten_100", 0)
+        fert_co2_arr[i] = tab3_steps[i].get("co2_100", 0)
+
+    write_cost_line("Fertigung (8 Steps)", row_idx, fert_cost_arr, fert_co2_arr)
+    row_idx += 1
+
+    # ------------------------------------------------------------------
+    # 5.3) Rüst & Tooling als Extra-Zeilen
+    # ------------------------------------------------------------------
+    ruest_100 = tab4_summary.get("ruest", 0)
+    tooling_100 = tab4_summary.get("tooling", 0)
+    # Ggf. verteilen auf Steps oder alles in Summenspalte => hier Example:
+    write_cost_line("Rüstkosten", row_idx, [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0])
+    # Du könntest den Wert z.B. in den Summenspalten (Spalte R = total cost) packen =>
+    ws.write_number(row_idx, 17, ruest_100, number_format)  # Spalte R = index 17
+    row_idx += 1
+
+    write_cost_line("Tooling", row_idx, [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0])
+    ws.write_number(row_idx, 17, tooling_100, number_format)
+    row_idx += 1
+
+    # ------------------------------------------------------------------
+    # 5.4) Gesamt-Herstellkosten
+    # ------------------------------------------------------------------
+    herstell = tab4_summary.get("herstell", 0)
+    write_cost_line("Herstellkosten", row_idx, [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0])
+    ws.write_number(row_idx, 17, herstell, number_format)
+    row_idx += 1
+
+    # ------------------------------------------------------------------
+    # 5.5) SG&A und Profit
+    # ------------------------------------------------------------------
+    sga_val = tab4_summary.get("sga", 0)
+    profit_val = tab4_summary.get("profit", 0)
+
+    write_cost_line("SG&A", row_idx, [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0])
+    ws.write_number(row_idx, 17, sga_val, number_format)
+    row_idx += 1
+
+    write_cost_line("Profit", row_idx, [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0])
+    ws.write_number(row_idx, 17, profit_val, number_format)
+    row_idx += 1
+
+    # ------------------------------------------------------------------
+    # 5.6) Gesamtkosten/100 (Endpreis)
+    # ------------------------------------------------------------------
+    total_val = tab4_summary.get("total", 0)
+    write_cost_line("Finaler Preis/100", row_idx, [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0])
+    ws.write_number(row_idx, 17, total_val, number_format)
+    row_idx += 1
+
+    # ------------------------------------------------
+    # 6) Footer / Erstell-Datum
+    # ------------------------------------------------
+    footer_row = row_idx + 1
+    ws.write(footer_row, 0, "Export-Datum:")
+    ws.write(footer_row, 1, datetime.now().strftime("%d.%m.%Y %H:%M"))
+
+    # Workbook abschließen
     workbook.close()
     output.seek(0)
     return output, filename
-
-# --------------------------------------------------
-# (Nachfolgend könnten weitere Hilfsfunktionen sein)
-# --------------------------------------------------

@@ -4,7 +4,7 @@ from .excel import (
     export_baugruppe_excel,
     export_baugruppe_comparison_excel
 )
-
+from .powerpoint import export_baugruppe_ppt
 exports_bp = Blueprint("exports_bp", __name__)
 
 # ------------------------------------------------------------------------
@@ -78,3 +78,54 @@ def baugruppe_pdf_export():
 
     pdf_io, filename = export_baugruppe_pdf(items)
     return send_file(pdf_io, download_name=filename, as_attachment=True, mimetype="application/pdf")
+
+@exports_bp.route("/baugruppe/ppt", methods=["POST"])
+def baugruppe_ppt_export():
+    """
+    Erstellt eine PowerPoint-Präsentation (One-Pager + optional extra Folien)
+    auf Basis der Tab1..Tab4-Daten. KEIN License-Check.
+    """
+    data = request.get_json() or {}
+    tab1 = data.get("tab1", {})
+    tab2 = data.get("tab2", {})
+    tab3 = data.get("tab3", [])  # list of dict
+    tab4 = data.get("tab4", {})  # summary
+
+    ppt_bytes, filename = export_baugruppe_ppt(tab1, tab2, tab3, tab4)
+
+    return send_file(
+        ppt_bytes,
+        download_name=filename,
+        as_attachment=True,
+        mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    )
+
+@exports_bp.route("/baugruppe/ppt", methods=["POST"])
+def baugruppe_ppt_export():
+    """
+    Erstellt eine PowerPoint-Präsentation (3 Slides):
+      1) Deckblatt (Logo + Projektinfo)
+      2) Kalkulation (Tab1-4)
+      3) Vergleich (Unsere Kalkulation vs. Lieferant)
+
+    KEIN License-Check.
+    Erwartet JSON-Body mit "tab1", "tab2", "tab3" (Liste max.8), "tab4".
+    """
+    data = request.get_json() or {}
+    # Sammle die Dicts, identisch wie beim Excel-Export
+    tab1 = data.get("tab1", {})
+    tab2 = data.get("tab2", {})
+    tab3 = data.get("tab3", [])
+    tab4 = data.get("tab4", {})
+
+    try:
+        ppt_bytes, filename = export_baugruppe_pptx(tab1, tab2, tab3, tab4)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    return send_file(
+        ppt_bytes,
+        download_name=filename,
+        as_attachment=True,
+        mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    )
