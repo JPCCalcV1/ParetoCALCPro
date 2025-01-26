@@ -3278,24 +3278,29 @@
    - Stromverbrauch (%) voreingestellt auf 85.0
    - Jahreskosten-Feld optional sichtbar
 -->
+<!-- ======================== MASCHINENSTUNDENSATZ MODAL (Berechnung aktiv) ======================== -->
+<!-- 1) STYLE-BLOCK für read-only Felder -->
 <style>
-  /* Kleines Extra-CSS für read-only Felder (grau) */
+  /* Lesezeichen: grauer Hintergrund bei readonly Feldern */
   .form-control[readonly], .form-control:disabled {
     background-color: #e9ecef !important;
     cursor: not-allowed;
   }
 </style>
 
+<!-- 2) MODAL-STRUKTUR -->
 <div class="modal fade" id="modalMachine" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl" style="max-width:1000px;"> <!-- Extra-breit -->
     <div class="modal-content" style="font-size: 0.9rem;">
+
+      <!-- HEADER -->
       <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title">Maschinenstundensatz – Erweitert</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
+      <!-- BODY: 2 Tabs (Abschreibung + Energie) -->
       <div class="modal-body p-2">
-        <!-- TABS: "Abschreibung/Kapital" & "Energie/Betrieb" -->
         <ul class="nav nav-tabs nav-tabs-v2" role="tablist" style="margin-bottom: 0.5rem;">
           <li class="nav-item">
             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#machTabCapital" type="button">
@@ -3310,10 +3315,10 @@
         </ul>
 
         <div class="tab-content p-2">
-          <!-- TAB 1: Abschreibung & Kapital -->
+          <!-- TAB 1: Abschreibung/Kapital -->
           <div class="tab-pane fade show active" id="machTabCapital">
             <div class="row mb-2">
-              <!-- Kaufpreis + Aus Liste... -->
+              <!-- Kaufpreis -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Kaufpreis (€)</label>
                 <div class="col-7 d-flex gap-2">
@@ -3356,7 +3361,7 @@
                   />
                 </div>
               </div>
-              <!-- Zinssatz + Zins pro h -->
+              <!-- Zinssatz + Zins/h -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Zinssatz (%)</label>
                 <div class="col-7 d-flex gap-2">
@@ -3414,22 +3419,20 @@
                     disabled
                   />
                   <span>%</span>
-                  <!-- Mini Chat Icon (als Dummy) -->
-                  <div>
-                    <a href="javascript:void(0)" onclick="openMiniChatDedicated()" class="text-theme" style="font-size:1.2rem;">
-                      <i class="fa fa-question-circle"></i>
-                    </a>
-                  </div>
+                  <!-- Kleines Chat-Icon (Dummy) -->
+                  <a href="javascript:void(0)" onclick="openMiniChatDedicated()" class="text-theme" style="font-size:1.2rem;">
+                    <i class="fa fa-question-circle"></i>
+                  </a>
                 </div>
               </div>
             </div>
 
-            <!-- Minimales Chat-Fenster-Dummy (wird per JS ein-/ausgeblendet) -->
+            <!-- Minimales Chat-Fenster (Dedicated-Info) -->
             <div id="miniChatDedicated" class="border p-2 bg-light" style="display:none; margin-bottom: 0.5rem;">
               <strong>Dedicated? Was bedeutet das?</strong>
               <p class="mb-1" style="font-size:0.85rem;">
-                Das bedeutet, dass die Maschine nur für dieses Projekt genutzt wird.
-                Bei 100% Dedicated entfallen die Maschinenkosten komplett auf dieses Bauteil.
+                Die Maschine wird nur für dieses Projekt genutzt.
+                Bei 100% Dedicated entfallen die gesamten Kosten auf dieses Teil.
               </p>
               <button class="btn btn-sm btn-outline-secondary" onclick="closeMiniChatDedicated()">
                 Verstanden
@@ -3470,13 +3473,12 @@
                 </div>
               </div>
             </div>
-          </div>
-          <!-- END TAB1 -->
+          </div><!-- END TAB 1 -->
 
           <!-- TAB 2: Energie & Betrieb -->
           <div class="tab-pane fade" id="machTabEnergy">
             <div class="row mb-2">
-              <!-- Anschlusswert -->
+              <!-- Anschlusswert (kW) -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Anschlusswert (kW)</label>
                 <div class="col-7">
@@ -3488,7 +3490,7 @@
                   />
                 </div>
               </div>
-              <!-- Stromverbr. => standard 85% -->
+              <!-- Stromverbrauch (%) => 85.0 default -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Stromverbr. (%)</label>
                 <div class="col-7">
@@ -3503,7 +3505,7 @@
             </div>
 
             <div class="row mb-2">
-              <!-- Stromkosten -->
+              <!-- Stromkosten (€/kWh) + €/h -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Stromkosten (€/kWh)</label>
                 <div class="col-7 d-flex gap-2">
@@ -3520,7 +3522,6 @@
                     id="machStromCostHr"
                     placeholder="€/h"
                     readonly
-                    style="background-color:#e9ecef;"
                   />
                 </div>
               </div>
@@ -3534,7 +3535,6 @@
                     id="machCo2Hr"
                     placeholder="kg/h"
                     readonly
-                    style="background-color:#e9ecef;"
                   />
                 </div>
               </div>
@@ -3553,7 +3553,7 @@
                   />
                 </div>
               </div>
-              <!-- Flächenkosten -->
+              <!-- Flächenkosten (€/m²) + €/h -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Flächenkosten (€/m²)</label>
                 <div class="col-7 d-flex gap-2">
@@ -3570,7 +3570,6 @@
                     id="machFlaechenkostHr"
                     placeholder="€/h"
                     readonly
-                    style="background-color:#e9ecef;"
                   />
                 </div>
               </div>
@@ -3594,7 +3593,6 @@
                     id="machInstandHr"
                     placeholder="€/h"
                     readonly
-                    style="background-color:#e9ecef;"
                   />
                 </div>
               </div>
@@ -3615,36 +3613,41 @@
                     id="machBetriebHr"
                     placeholder="€/h"
                     readonly
-                    style="background-color:#e9ecef;"
                   />
                 </div>
               </div>
             </div>
-          </div>
-          <!-- END TAB2 -->
-        </div> <!-- /.tab-content -->
-      </div> <!-- END modal-body -->
+          </div><!-- END TAB 2 -->
+        </div><!-- /.tab-content -->
+      </div><!-- /.modal-body -->
 
-      <!-- FOOTER-ROW: Buttons + Ergebnis -->
+      <!-- FOOTER: Buttons + Maschinenkosten -->
       <div class="modal-footer d-flex justify-content-between align-items-center" style="padding:0.5rem 1rem;">
+        <!-- Linker Block: Berechnen, Übernehmen, Schließen -->
         <div class="d-flex align-items-center gap-2">
-          <!-- Berechnen -->
           <button type="button" class="btn btn-sm btn-theme" onclick="calcExtendedMachineRate()">
             <i class="fa fa-calculator me-1"></i> Berechnen
           </button>
-          <!-- Übernehmen -->
           <button type="button" class="btn btn-sm btn-success" onclick="acceptMachine()">
             <i class="fa fa-check me-1"></i> Übernehmen
           </button>
-          <!-- Schließen -->
           <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
             <i class="fa fa-times me-1"></i> Schließen
           </button>
         </div>
+
+        <!-- Rechter Block: Ergebnis "Maschinenkosten (€/h): XX" -->
         <div class="d-flex align-items-center gap-2">
-          <!-- Jahreskosten (falls du es brauchst) -->
+          <span style="font-weight:600;">Maschinenkosten (€/h):</span>
+          <span id="machResult" class="text-theme fw-bold">--</span>
+        </div>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- #modalMachine -->          <!-- Jahreskosten (falls du es brauchst) -->
         <script>
 /* Mini-Chat-Widget (Dedicated) */
+
 function openMiniChatDedicated(){
   document.getElementById('miniChatDedicated').style.display = 'block';
 }
@@ -3671,24 +3674,7 @@ function closeMiniChatDedicated(){
 </div> <!-- #modalMachine -->
 
 
-<script>
-/* Mini-Chat-Widget (Dedicated) */
-function openMiniChatDedicated(){
-  document.getElementById('miniChatDedicated').style.display = 'block';
-}
-function closeMiniChatDedicated(){
-  document.getElementById('miniChatDedicated').style.display = 'none';
-}
 
-/* ACHTUNG:
-   Stelle sicher, dass deine JS-Funktion
-   calcExtendedMachineRate()
-   exakt die IDs referenziert, die wir hier haben:
-   - machKaufpreis, machZinssatz, ...
-   - machZinsHr, machBetriebHr, machStromCostHr, ...
-   - Der Code muss 1:1 matchen
-*/
-</script>
         <!-- LOHN-LISTE MODAL -->
 <div
   class="modal fade"
