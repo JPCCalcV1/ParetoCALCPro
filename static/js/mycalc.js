@@ -1219,6 +1219,15 @@ function fillLohnTable(lohnArr) {
   });
   console.log("DEBUG: Exiting fillLohnTable()");
 }
+function selectLohnByIndex(idx) {
+  console.log("DEBUG: Entering selectLohnByIndex() with idx =", idx);
+
+  const row = document.querySelector(`#tblLohnList tbody tr[data-index="${idx}"]`);
+  if (!row) {
+    console.log("DEBUG: Row not found => returning");
+    return;
+  }
+} // <-- H
 
    // ===========================================================================
   // ALL-IN STUNDENSATZ AUS DATASET (Lohn) – selectLohn()
