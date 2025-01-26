@@ -120,13 +120,39 @@
     .app-header {
       min-height: 60px; /* minimal höher für Logo/Bereich */
     }
+
+    /* Beispiel: Floating Chat-Bubble */
+    #chatBubble {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      cursor: pointer;
+    }
+    #chatBubble img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+
+    /* Chat-Fenster-Card (ausgeblendet) */
+    #chatWindow {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      display: none; /* per JS togglen */
+      z-index: 9999;
+    }
   </style>
   <!-- Deine CSRF oder weitere Meta -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
 <!-- BEGIN #app -->
-<div id="app" class="app">
+<!-- Wichtig: 'app-sidebar-minified' sorgt dafür, dass Sidebar standardmäßig eingeklappt ist -->
+<div id="app" class="app app-sidebar-minified">
 
   <!-- BEGIN app-header -->
   <!-- Top-Header mit Logo, Kosten/CO₂, Login/Logout usw. -->
@@ -134,16 +160,23 @@
     <!-- NAV / Branding-Bereich -->
     <div class="navbar-header">
       <!-- Dein Logo -->
-      <a href="/" class="navbar-brand text-wrap">
+      <a href="/" class="navbar-brand text-wrap" style="white-space: nowrap;">
         <img src="{{ url_for('static', filename='img/jpc.jpeg') }}"
              alt="Logo"
-             style="height:60px; max-height:60px;"
+             style="height:40px; max-height:40px;"
         />
         <!-- kleiner Abstand, dein Titel -->
         <span class="ms-2">JPC CALC V2.0</span>
       </a>
-      <!-- Burger-Button, um Sidebar einzuklappen -->
-      <button type="button" class="navbar-mobile-toggler" data-toggle="app-sidebar" data-dismiss="app-sidebar">
+
+      <!-- Desktop-Burger: um Sidebar zu minifizieren -->
+      <button type="button" class="navbar-desktop-toggler" data-toggle="app-sidebar-minify">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <!-- Mobile-Burger: Sidebar für Smartphones -->
+      <button type="button" class="navbar-mobile-toggler" data-toggle="app-sidebar-mobile">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
@@ -196,28 +229,36 @@
     <div class="app-sidebar-content" data-scrollbar="true" data-height="100%">
       <!-- Deine Sidebar-Nav -->
       <div class="menu">
-  <div class="menu-header">Navigation</div>
-  <div class="nav">
-    <div class="nav-item">
-      <a href="/dashboard" class="nav-link">
-        <i class="fa fa-home nav-icon"></i>
-        <span class="nav-text">Dashboard</span>
-      </a>
-    </div>
-    <div class="nav-item">
-      <a href="/mycalc" class="nav-link active">
-        <i class="fa fa-calculator nav-icon"></i>
-        <span class="nav-text">MyCalc</span>
-      </a>
-    </div>
-    <div class="nav-item">
-      <a href="/account" class="nav-link">
-        <i class="fa fa-user nav-icon"></i>
-        <span class="nav-text">Account</span>
-      </a>
-    </div>
-  </div>
-</div>
+        <div class="menu-header">Navigation</div>
+        <div class="nav">
+          <!-- Beispiel: Dashboard-Link -->
+          <div class="nav-item">
+            <a href="javascript:;" class="nav-link">
+              <i class="fa fa-home nav-icon"></i>
+              <span class="nav-text">Dashboard</span>
+            </a>
+          </div>
+
+          <!-- MyCalc (aktuell) -->
+          <div class="nav-item">
+            <a href="javascript:;" class="nav-link active">
+              <i class="fa fa-calculator nav-icon"></i>
+              <span class="nav-text">MyCalc</span>
+            </a>
+          </div>
+
+          <!-- Optional: Weitere Menüpunkte -->
+          <div class="nav-item">
+            <a href="/account/" class="nav-link">
+              <i class="fa fa-user nav-icon"></i>
+              <span class="nav-text">Account</span>
+            </a>
+          </div>
+
+          <!-- Später: Branchenprofile, etc. -->
+          <!-- ... -->
+        </div>
+      </div>
     </div>
     <!-- Sidebar-Hintergrund (wenn eingeklappt) -->
     <button class="app-sidebar-mobile-backdrop" data-dismiss="sidebar"></button>
@@ -923,33 +964,23 @@
 </div> <!-- #modalParamTools -->
 
 <!-- =============== FEINGUSS MODAL (feingussModal) =============== -->
-<div
-  class="modal fade"
-  id="feingussModal"
-  tabindex="-1"
-  aria-labelledby="feingussModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
+```html
+<!-- =================== FEINGUSS-PARAMETRIC V2 (DESIGN-ADAPTIERT) =================== -->
+<div class="modal fade" id="feingussModal" tabindex="-1" aria-labelledby="feingussModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" style="max-width:1000px;">
+    <div class="modal-content" style="font-size: 0.9rem;">
 
       <!-- HEADER -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="feingussModalLabel">
-          Feinguss-Parametric V2
-        </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Schließen"
-        ></button>
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
+        <h5 class="modal-title" id="feingussModalLabel">Feinguss-Parametric V2</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Schließen"></button>
       </div>
 
       <!-- BODY -->
       <div class="modal-body p-2">
+
         <!-- NAV-TABS (Basis / Erweitert) -->
-        <ul class="nav nav-tabs" id="fgTabs" role="tablist">
+        <ul class="nav nav-tabs nav-tabs-v2" id="fgTabs" role="tablist" style="margin-bottom: 0.5rem;">
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
@@ -990,13 +1021,8 @@
           >
             <div class="row mb-2">
               <div class="col-md-6">
-                <label class="form-label fw-bold mb-1">
-                  Legierung / Material
-                </label>
-                <select
-                  id="fgMatSelect"
-                  class="form-select form-select-sm"
-                >
+                <label class="form-label fw-bold mb-1">Legierung / Material</label>
+                <select id="fgMatSelect" class="form-select form-select-sm">
                   <option value="Stahl">Stahl (Allg.)</option>
                   <option value="Alu">Aluminium</option>
                   <option value="Titan">Titan</option>
@@ -1005,10 +1031,7 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold mb-1">Standort</label>
-                <select
-                  id="fgLocationSelect"
-                  class="form-select form-select-sm"
-                >
+                <select id="fgLocationSelect" class="form-select form-select-sm">
                   <option value="DE">Deutschland</option>
                   <option value="CN">China</option>
                   <option value="PL">Polen</option>
@@ -1063,10 +1086,7 @@
             <div class="row mb-2">
               <div class="col-md-6">
                 <label class="form-label fw-bold mb-1">Komplexität</label>
-                <select
-                  id="fgComplexitySelect"
-                  class="form-select form-select-sm"
-                >
+                <select id="fgComplexitySelect" class="form-select form-select-sm">
                   <option value="Low">Low</option>
                   <option value="Medium" selected>Medium</option>
                   <option value="High">High</option>
@@ -1096,9 +1116,7 @@
                 />
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-bold mb-1">
-                  Gewinnrate (%)
-                </label>
+                <label class="form-label fw-bold mb-1">Gewinnrate (%)</label>
                 <input
                   type="number"
                   id="fgProfitRate"
@@ -1121,9 +1139,7 @@
                 />
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-bold mb-1">
-                  Nachbearb. (min/Teil)
-                </label>
+                <label class="form-label fw-bold mb-1">Nachbearb. (min/Teil)</label>
                 <input
                   type="number"
                   id="fgPostProcMin"
@@ -1134,7 +1150,6 @@
               </div>
             </div>
           </div><!-- #fgTabErweitert -->
-
         </div><!-- .tab-content -->
 
         <hr />
@@ -1168,27 +1183,37 @@
       </div><!-- .modal-body -->
 
       <!-- FOOTER -->
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary btn-sm"
-          data-bs-dismiss="modal"
-        >
-          Schließen
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary btn-sm"
-          id="fgCalcBtn"
-          onclick="calculateFeingussParametricV2()"
-        >
-          Berechnen
-        </button>
+      <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-theme me-2"
+            id="fgCalcBtn"
+            onclick="calculateFeingussParametricV2()"
+          >
+            <i class="fa fa-calculator me-1"></i> Berechnen
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-success me-2"
+            onclick="/* ggf. Funktion für Übernehmen */"
+          >
+            <i class="fa fa-check me-1"></i> Übernehmen
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+        </div>
       </div>
 
     </div><!-- .modal-content -->
   </div><!-- .modal-dialog -->
-</div><!-- #feingussModal --> END #content -->
+</div><!-- #feingussModal -->
+
 <!-- ============== SCHMIEDEN-MODAL ============== -->
 <div
   class="modal fade"
@@ -3309,6 +3334,23 @@
   </div>
 </div>
 <!-- =================== NEUES MASCHINENSTUNDENSATZ-MODAL =================== -->
+<!-- =================== NEUES MASCHINENSTUNDENSATZ-MODAL (FINAL VERSION) =================== -->
+<!--
+   - Mit 2 Tabs ("Abschreibung & Kapital" / "Energie & Betrieb")
+   - Kompakte Darstellung
+   - "Berechnen" ruft calcExtendedMachineRate() auf (IDs beibehalten)
+   - Read-only Felder in grau
+   - Stromverbrauch (%) voreingestellt auf 85.0
+   - Jahreskosten-Feld optional sichtbar
+-->
+<style>
+  /* Kleines Extra-CSS für read-only Felder (grau) */
+  .form-control[readonly], .form-control:disabled {
+    background-color: #e9ecef !important;
+    cursor: not-allowed;
+  }
+</style>
+
 <div class="modal fade" id="modalMachine" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl" style="max-width:1000px;"> <!-- Extra-breit -->
     <div class="modal-content" style="font-size: 0.9rem;">
@@ -3336,6 +3378,7 @@
           <!-- TAB 1: Abschreibung & Kapital -->
           <div class="tab-pane fade show active" id="machTabCapital">
             <div class="row mb-2">
+              <!-- Kaufpreis + Aus Liste... -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Kaufpreis (€)</label>
                 <div class="col-7 d-flex gap-2">
@@ -3350,6 +3393,7 @@
                   </button>
                 </div>
               </div>
+              <!-- Abschreibung pro Stunde -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Abschr. pro h</label>
                 <div class="col-7">
@@ -3365,6 +3409,7 @@
             </div>
 
             <div class="row mb-2">
+              <!-- Installationskosten -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Installationsk. (€)</label>
                 <div class="col-7">
@@ -3376,6 +3421,7 @@
                   />
                 </div>
               </div>
+              <!-- Zinssatz + Zins pro h -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Zinssatz (%)</label>
                 <div class="col-7 d-flex gap-2">
@@ -3398,6 +3444,7 @@
             </div>
 
             <div class="row mb-2">
+              <!-- Nutzungsdauer -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Nutzungsdauer (J.)</label>
                 <div class="col-7">
@@ -3409,6 +3456,7 @@
                   />
                 </div>
               </div>
+              <!-- Dedicated? -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Dedicated?</label>
                 <div class="col-7 d-flex align-items-center gap-2">
@@ -3454,6 +3502,7 @@
             </div>
 
             <div class="row mb-2">
+              <!-- Jahresauslastung -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Jahresauslastung (h)</label>
                 <div class="col-7">
@@ -3465,6 +3514,7 @@
                   />
                 </div>
               </div>
+              <!-- Verfügbarkeit -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Verfügbarkeit (%)</label>
                 <div class="col-7 d-flex gap-2">
@@ -3491,6 +3541,7 @@
           <!-- TAB 2: Energie & Betrieb -->
           <div class="tab-pane fade" id="machTabEnergy">
             <div class="row mb-2">
+              <!-- Anschlusswert -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Anschlusswert (kW)</label>
                 <div class="col-7">
@@ -3502,6 +3553,7 @@
                   />
                 </div>
               </div>
+              <!-- Stromverbr. => standard 85% -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Stromverbr. (%)</label>
                 <div class="col-7">
@@ -3509,13 +3561,14 @@
                     type="number"
                     class="form-control form-control-sm"
                     id="machStromPct"
-                    value="80.0"
+                    value="85.0"
                   />
                 </div>
               </div>
             </div>
 
             <div class="row mb-2">
+              <!-- Stromkosten -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Stromkosten (€/kWh)</label>
                 <div class="col-7 d-flex gap-2">
@@ -3532,9 +3585,11 @@
                     id="machStromCostHr"
                     placeholder="€/h"
                     readonly
+                    style="background-color:#e9ecef;"
                   />
                 </div>
               </div>
+              <!-- CO2 (kg/h) -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">CO₂ (kg/h)</label>
                 <div class="col-7">
@@ -3544,12 +3599,14 @@
                     id="machCo2Hr"
                     placeholder="kg/h"
                     readonly
+                    style="background-color:#e9ecef;"
                   />
                 </div>
               </div>
             </div>
 
             <div class="row mb-2">
+              <!-- Flächenbedarf -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Flächenbedarf (m²)</label>
                 <div class="col-7">
@@ -3561,6 +3618,7 @@
                   />
                 </div>
               </div>
+              <!-- Flächenkosten -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Flächenkosten (€/m²)</label>
                 <div class="col-7 d-flex gap-2">
@@ -3577,12 +3635,14 @@
                     id="machFlaechenkostHr"
                     placeholder="€/h"
                     readonly
+                    style="background-color:#e9ecef;"
                   />
                 </div>
               </div>
             </div>
 
             <div class="row mb-2">
+              <!-- Instandhaltung -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Instandhaltung (% v. KP)</label>
                 <div class="col-7 d-flex gap-2">
@@ -3599,9 +3659,11 @@
                     id="machInstandHr"
                     placeholder="€/h"
                     readonly
+                    style="background-color:#e9ecef;"
                   />
                 </div>
               </div>
+              <!-- Betriebskosten -->
               <div class="col-md-6 d-flex align-items-center">
                 <label class="col-form-label col-5">Betriebskosten (% v. KP)</label>
                 <div class="col-7 d-flex gap-2">
@@ -3618,6 +3680,7 @@
                     id="machBetriebHr"
                     placeholder="€/h"
                     readonly
+                    style="background-color:#e9ecef;"
                   />
                 </div>
               </div>
@@ -3625,64 +3688,64 @@
           </div>
           <!-- END TAB2 -->
         </div> <!-- /.tab-content -->
-
-        <!-- Jahreskosten / Summen, ausgeblendet? -->
-        <!-- Falls du das brauchst, könntest du es in ein Accordion packen. -->
-
       </div> <!-- END modal-body -->
 
       <!-- FOOTER-ROW: Buttons + Ergebnis -->
       <div class="modal-footer d-flex justify-content-between align-items-center" style="padding:0.5rem 1rem;">
-        <div>
-          <!-- 3 Buttons in einer Zeile -->
-          <button type="button" class="btn btn-sm btn-theme me-2" onclick="calcExtendedMachineRate()">
+        <div class="d-flex align-items-center gap-2">
+          <!-- Berechnen -->
+          <button type="button" class="btn btn-sm btn-theme" onclick="calcExtendedMachineRate()">
             <i class="fa fa-calculator me-1"></i> Berechnen
           </button>
-          <button type="button" class="btn btn-sm btn-success me-2" onclick="acceptMachine()">
+          <!-- Übernehmen -->
+          <button type="button" class="btn btn-sm btn-success" onclick="acceptMachine()">
             <i class="fa fa-check me-1"></i> Übernehmen
           </button>
+          <!-- Schließen -->
           <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
             <i class="fa fa-times me-1"></i> Schließen
           </button>
         </div>
-        <div>
-          <!-- Maschinenkosten & CO2 -->
+        <div class="d-flex align-items-center gap-2">
+          <!-- Jahreskosten (falls du es brauchst) -->
+          <label class="mb-0 fw-bold">Jahreskosten:</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            id="machSumYear"
+            style="width:100px; background-color:#e9ecef;"
+            value="0"
+            readonly
+          />
+          <!-- Maschinenkosten (€/h) -->
           <span style="font-weight:600;">Maschinenkosten (€/h):</span>
-          <span id="machResult" class="text-theme fw-bold ms-1 me-3">--</span>
+          <span id="machResult" class="text-theme fw-bold">--</span>
         </div>
       </div>
     </div> <!-- /.modal-content -->
   </div> <!-- /.modal-dialog -->
 </div> <!-- #modalMachine -->
 
+
 <script>
-// Mini-Chat-Widget-Dummy
+/* Mini-Chat-Widget (Dedicated) */
 function openMiniChatDedicated(){
   document.getElementById('miniChatDedicated').style.display = 'block';
 }
 function closeMiniChatDedicated(){
   document.getElementById('miniChatDedicated').style.display = 'none';
 }
-</script><!-- END: Maschinenstundensatz-Modal --><!-- END: Maschinenstundensatz-Modal -->
-<!--
-  Maschinen-Modal "modalMachine" – erweiterte Version
-  Alle Felder mit passendem Label:
-    - Kaufpreis
-    - Nutzungsdauer (Jahre)
-    - Jahresauslastung (h/Jahr)
-    - Anschlusswert (kW)
-    - Realer Stromverbrauch (%)
-    - Stromkosten (€/kWh)
-    - Flächenkosten (€/m²/Monat)
-    - Instandhaltung (% Kaufpreis)
-    - Betriebskosten (% Kaufpreis)
-    - Anlagenverfügbarkeit (%)
-    - Maschinenkosten (Ergebnis)
-  + je Feld "€ pro Stunde" – Display oder Input
-  + Button "Aus Maschinenliste"
-  + Buttons "Berechnen", "Übernehmen", "Schließen"
---><!-- END #modalSpritzguss -->
-<!-- LOHN-LISTE MODAL -->
+
+/* ACHTUNG:
+   Stelle sicher, dass deine JS-Funktion
+   calcExtendedMachineRate()
+   exakt die IDs referenziert, die wir hier haben:
+   - machKaufpreis, machZinssatz, ...
+   - machZinsHr, machBetriebHr, machStromCostHr, ...
+   - Der Code muss 1:1 matchen
+*/
+</script>
+        <!-- LOHN-LISTE MODAL -->
 <div
   class="modal fade"
   id="modalLohn"
@@ -3900,13 +3963,40 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   })();
 </script>
+<script>
+  // Starte das ColorAdmin App-Framework
+  document.addEventListener('DOMContentLoaded', function() {
+    App.init();
+  });
 
+  // Minimales Chat-Fenster an/aus
+  function toggleChatWindow(){
+    const cw = document.getElementById("chatWindow");
+    cw.style.display = (cw.style.display === "block") ? "none" : "block";
+  }
+</script>
 <hr/>
 <footer class="text-center my-3">
   <a href="/impressum">Impressum</a> |
   <a href="/datenschutz">Datenschutz</a> |
   <a href="/agb">AGB</a>
 </footer>
+<div id="chatBubble" onclick="toggleChatWindow()">
+  <img src="https://cdn-icons-png.flaticon.com/512/2990/2990675.png" alt="Chat Bubble" />
+</div>
 
+<!-- Minimales Chat-Fenster (ausgeblendet) -->
+<div id="chatWindow" class="card" style="">
+  <div class="card-header bg-theme text-white p-2">
+    <h6 class="mb-0">KI-Assistent</h6>
+  </div>
+  <div class="card-body p-2" style="max-height:200px; overflow-y:auto;">
+    <p style="font-size:0.85rem;">Hallo! Wie kann ich helfen?</p>
+    <!-- Evtl. ein Eingabefeld, Chat-Verlauf, etc. -->
+  </div>
+  <div class="card-footer p-2">
+    <button class="btn btn-sm btn-secondary" onclick="toggleChatWindow()">Schließen</button>
+  </div>
+</div>
 </body>
 </html>
