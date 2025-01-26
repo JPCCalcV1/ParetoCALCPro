@@ -18,8 +18,8 @@ def baugruppe_excel_export():
     """
     # 1) License-Check
     license_level = session.get("license_tier", "test")
-    if license_level in ["plus", "test"]:
-        return jsonify({"error": "Abo zu niedrig für Excel-Export"}), 403
+    #if license_level in ["plus", "test"]:
+    #    return jsonify({"error": "Abo zu niedrig für Excel-Export"}), 403
 
     # 2) Baugruppen-Daten aus JSON Body
     data = request.get_json() or {}
