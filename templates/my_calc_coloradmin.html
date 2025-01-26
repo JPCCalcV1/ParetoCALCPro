@@ -285,6 +285,25 @@
       display: none; /* per JS togglen */
       z-index: 9999;
     }
+    .app-header {
+  background: #fff; /* oder transparent */
+  border-bottom: 1px solid #ddd; /* leichte Trennlinie */
+}
+
+.app-header .navbar-brand img {
+  height: 60px; /* dein Wunsch */
+}
+
+.app-header label {
+  margin-bottom: 0; /* kein Zeilenumbruch unterm Label */
+}
+
+.app-header input[readonly] {
+  background: #e9ecef; /* grau hinterlegt, readonly */
+}
+.app-header {
+  padding-left: 2px;
+}
   </style>
   <!-- Deine CSRF oder weitere Meta -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
