@@ -19,79 +19,149 @@
       font-size: 14px;
       background-color: #f8f9fa;
     }
-        /* Größeres Logo & Minimales Layout-Anpassungen */
-    .navbar-header .navbar-brand img {
-      height: 80px !important; /* doppelte Höhe */
-      width: auto;
-    }
-    .navbar-header .navbar-brand {
-      white-space: nowrap;
-    }
-    /* Sorgt dafür, dass Logo/Text nicht in 2 Zeilen rutschen */
-    .navbar-header .navbar-brand span {
-      font-size: 18px; /* ggf. anpassen */
-      vertical-align: middle;
-      margin-left: 10px;
-    }
+/* Navbar-Header als flexbox-Container */
+.navbar-header {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Abstand zwischen Burger und Logo */
+  padding-left: 15px; /* Abstand zum linken Bildschirmrand */
+}
 
-    /* Sidebar nur Icons, kein Text (spart Platz) */
-    .nav-icon {
-      font-size: 1.2rem;
-    }
-    /* Verstecke .nav-text, wenn du nur die Symbole anzeigen willst */
-    .nav-text {
-      display: none !important;
-    }
+/* Das eigentliche Burger-Element */
+.navbar-desktop-toggler,
+.navbar-mobile-toggler {
+  font-size: 1rem;    /* statt 2rem */
+  line-height: 1;
+  background: none;
+  border: none;       /* kein Rahmen */
+  padding: 0;
+  margin: 0;
+}
 
-    /* Chat-Bubble und Chat-Fenster (innerhalb Modals) */
-    .modal-body {
-      position: relative; /* um absolute positioning zu ermöglichen */
-    }
-    #pcbChatBubble {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      z-index: 9999; /* überm Modal-Inhalt */
-    }
-    #pcbChatBubble img {
-      width: 100%;
-      height: auto;
-      border-radius: 50%;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
-    }
+/* Burger-Icon selbst (z. B. .fa-bars) dezenter darstellen */
+.navbar-desktop-toggler i.fa-bars,
+.navbar-mobile-toggler i.fa-bars {
+  font-size: 1.2rem;
+  color: #444;
+  margin-right: 5px; /* minimaler Abstand zur Kante */
+}
 
-    #pcbChatWindow {
-      position: absolute;
-      right: 60px;
-      bottom: 60px;
-      width: 280px;
-      background: #fff;
-      border: 1px solid #ccc;
-      box-shadow: 0 0 6px rgba(0,0,0,0.2);
-      z-index: 9999;
-      display: none; /* toggled via JS */
-    }
-    #pcbChatWindow .header {
-      background: #f0f0f0;
-      padding: 6px;
-      font-weight: bold;
-    }
-    #pcbChatWindow .body {
-      max-height: 150px;
-      overflow-y: auto;
-      padding: 6px;
-      font-size: 0.85rem;
-    }
-    #pcbChatWindow .footer {
-      padding: 6px;
-      text-align: right;
-    }
-    .nav-tabs .nav-link {
-      font-weight: 500;
-    }
+/* Logo + Text in einer Zeile, größer */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  white-space: nowrap; /* verhindert Zeilenumbruch */
+  gap: 10px;           /* Abstand zwischen Logo-Bild und Text */
+}
+
+/* Logo selbst doppelt so hoch wie sonst */
+.navbar-brand img,
+.navbar-header .navbar-brand img {
+  height: 80px !important; /* doppelte Höhe */
+  width: auto;
+}
+
+/* Text neben dem Logo (falls vorhanden) */
+.navbar-brand span,
+.navbar-header .navbar-brand span {
+  font-size: 18px;       /* größerer Text */
+  vertical-align: middle;
+  margin-left: 10px;     /* kleiner Seitenabstand */
+}
+
+/*
+   2) Sidebar (nur Icons, kein Text)
+      --------------------------------
+   - Falls du reine Icon-Navigation willst,
+     verstecke den Text
+*/
+
+/* Icon minimal vergrößern */
+.nav-icon {
+  font-size: 1.2rem;
+}
+
+/* Den .nav-text (Beschriftung) ausblenden,
+   wenn du nur Symbole anzeigen willst. */
+.nav-text {
+  display: none !important;
+}
+
+/* Falls du in der rechten Navbar
+   (z. B. "Zu meinem Account")
+   einen Rand vom Bildschirm haben möchtest */
+.navbar-nav {
+  margin-right: 20px;
+}
+
+/*
+   3) Chat-Bubble + Fenster (im Modal)
+      --------------------------------
+   - Für dein PCB-Modal (oder andere Modals).
+   - Position: unten rechts im Modal
+   - Kleines Overlay-Fenster
+*/
+
+/* Modal-Body relative => absolute Bubble */
+.modal-body {
+  position: relative;
+}
+
+/* Chat-Bubble (Icon) unten rechts */
+#pcbChatBubble {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 9999; /* über Modal-Inhalt */
+}
+#pcbChatBubble img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+/* Chat-Fenster: absolutes Panel */
+#pcbChatWindow {
+  position: absolute;
+  right: 60px;
+  bottom: 60px;
+  width: 280px;
+  background: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  z-index: 9999;
+  display: none; /* per JS togglen */
+}
+
+/* Kopf-/Body-/Footer-Bereiche im Chat-Fenster */
+#pcbChatWindow .header {
+  background: #f0f0f0;
+  padding: 6px;
+  font-weight: bold;
+}
+#pcbChatWindow .body {
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 6px;
+  font-size: 0.85rem;
+}
+#pcbChatWindow .footer {
+  padding: 6px;
+  text-align: right;
+}
+
+/*
+   4) Sonstige Tab-Styles
+      --------------------------------
+   - Leicht erhöhte Schrift im Tab.
+*/
+.nav-tabs .nav-link {
+  font-weight: 500;
+}
     .table-sm td,
     .table-sm th {
       padding: 0.3rem;
