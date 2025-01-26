@@ -292,66 +292,65 @@
 <body>
 <!-- BEGIN #app -->
 <!-- Wichtig: 'app-sidebar-minified' sorgt dafür, dass Sidebar standardmäßig eingeklappt ist -->
-<div id="app" class="app app-sidebar-minified">
+<div id="header" class="app-header d-flex align-items-center" style="min-height: 60px;">
 
-  <!-- BEGIN app-header -->
-  <!-- Top-Header mit Logo, Kosten/CO₂, Login/Logout usw. -->
-  <div id="header" class="app-header">
-    <div class="navbar-header">
-      <!-- 1) Burger links -->
-      <button type="button"
-              class="navbar-desktop-toggler"
-              data-toggle="app-sidebar-minify"
-              style="margin-right:10px;">
-        <i class="fa fa-bars fa-2x text-dark"></i>
-      </button>
+  <!-- 1) Burger + Logo links (flex-start) -->
+  <div class="d-flex align-items-center" style="gap:10px;">
+    <!-- Burger -->
+    <button type="button"
+            class="navbar-desktop-toggler"
+            data-toggle="app-sidebar-minify"
+            style="border:none;background:none;padding:0;margin:0;">
+      <i class="fa fa-bars fa-lg text-dark"></i>
+    </button>
 
-      <!-- 2) Logo + Text -->
-      <a href="/" class="navbar-brand text-wrap">
-        <img src="/static/img/jpc.jpeg" alt="Logo" />
-        <span>JPC CALC V2.0</span>
-      </a>
+    <!-- Logo + Text -->
+    <a href="/" class="navbar-brand d-flex align-items-center" style="gap:10px;white-space:nowrap;">
+      <img src="/static/img/jpc.jpeg"
+           alt="Logo"
+           style="height:60px;width:auto;" />
+      <!-- Wenn du keinen Text willst, kommentiere die nächste Zeile aus -->
+      <span style="font-size:16px;">JPC CALC V2.0</span>
+    </a>
+  </div>
+
+  <!-- 2) Kosten/CO₂ in der Mitte (mit flex-grow) -->
+  <div class="flex-grow-1 d-flex justify-content-center align-items-center" style="gap:20px;">
+    <!-- Kosten / 100 -->
+    <div>
+      <label class="fw-bold me-1">Kosten/100 (€):</label>
+      <input type="text"
+             id="txtCosts100"
+             class="form-control form-control-sm d-inline-block"
+             style="width:70px;"
+             readonly />
     </div>
-    <!-- Rechts vom Navbar -->
-    <div class="navbar-nav">
-      <!-- Beispiel: Kosten & CO₂ Felder inline -->
-      <div class="navbar-item d-flex align-items-center">
-        <!-- Kosten / CO2 -->
-        <form class="d-inline-block me-3">
-          <label class="me-1 fw-bold">Kosten/100 (€):</label>
-          <input
-            type="text"
-            id="txtCosts100"
-            class="form-control form-control-sm d-inline-block me-3"
-            style="width: 70px;"
-            readonly
-          />
-          <label class="me-1 fw-bold">CO₂/100(kg):</label>
-          <input
-            type="text"
-            id="txtCo2Per100"
-            class="form-control form-control-sm d-inline-block"
-            style="width: 70px;"
-            readonly
-          />
-        </form>
-
-        <!-- User-Info (wird ggf. per JS ein-/ausgeblendet) -->
-        <div id="userInfo" style="display:none;" class="me-3">
-          <span id="spanUserEmail"></span>
-          <button class="btn btn-sm btn-primary small-text" onclick="doLogout()">
-            Logout
-          </button>
-        </div>
-
-        <!-- Account-Button -->
-        <button class="btn btn-sm btn-info"
-                onclick="window.location.href='/account/'">
-          Zu meinem Account
-        </button>
-      </div>
+    <!-- CO₂ / 100 -->
+    <div>
+      <label class="fw-bold me-1">CO₂/100 (kg):</label>
+      <input type="text"
+             id="txtCo2Per100"
+             class="form-control form-control-sm d-inline-block"
+             style="width:70px;"
+             readonly />
     </div>
   </div>
+
+  <!-- 3) Account-Button rechts (flex-end) -->
+  <div class="d-flex align-items-center" style="gap:10px; margin-right:20px;">
+    <!-- User Info (falls du willst) -->
+    <div id="userInfo" style="display:none;">
+      <span id="spanUserEmail"></span>
+      <button class="btn btn-sm btn-primary" onclick="doLogout()">Logout</button>
+    </div>
+    <!-- Account-Button -->
+    <button class="btn btn-sm btn-info"
+            onclick="window.location.href='/account/'">
+      Zu meinem Account
+    </button>
+  </div>
+
+</div>
   <!-- END app-header -->
 
   <!-- BEGIN app-sidebar (klappbare Sidebar) -->
