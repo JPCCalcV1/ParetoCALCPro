@@ -1229,6 +1229,10 @@ function selectLohn(idx) {
     return;
   }
 
+ // ===========================================================================
+// ALL-IN STUNDENSATZ AUS DATASET (Lohn) – selectLohn()
+// ===========================================================================
+function selectLohn(row) {
   // All-In Stundensatz aus dataset
   const baseRate = parseFloat(row.dataset.allIneurh) || 0;
   const ops      = parseFloat(document.getElementById("operatorsPerMachine")?.value) || 0.5;
@@ -1242,7 +1246,7 @@ function selectLohn(idx) {
 
   // In #fertTable übernehmen
   const fertRows = document.querySelectorAll("#fertTable tbody tr");
-  if (currentLohnRow >= 0 && currentLohnRow < fertRows.length) {
+  if (typeof currentLohnRow !== "undefined" && currentLohnRow >= 0 && currentLohnRow < fertRows.length) {
     fertRows[currentLohnRow].cells[3].querySelector("input").value = lohnGesc.toFixed(2);
   }
 
@@ -1257,12 +1261,9 @@ function selectLohn(idx) {
   console.log("DEBUG: Exiting selectLohn()");
 }
 
-// ---------------------------------------------
-// calcExtendedMachineRate()
-//  - Liest Input-Felder (#machKaufpreis, #machNutzdauer, #machAuslast, ...)
-//  - Rechnet Jahreskosten + €/h
-//  - Speichert Ergebnisse in globale (oder gibt sie zurück)
-// ---------------------------------------------
+// ===========================================================================
+// HILFSFUNKTIONEN FÜR MASCHINENSTUNDENSATZ
+// ===========================================================================
 /************************************************************
  * parseFloatAllowZero() – parst eine Zahl oder gibt fallback zurück,
  *   ABER 0 bleibt 0 und führt NICHT zum fallback.
@@ -1321,101 +1322,82 @@ function toggleDedicatedPct() {
   }
 }
 
-/************************************************************
- * calcExtendedMachineRate() – Hauptfunktion zur Berechnung
- * des Maschinenstundensatzes (Dedicated-Logik + Summierung
- * der 6 Felder).
- ************************************************************/
+// ===========================================================================
+// calcExtendedMachineRate() – Hauptfunktion zur Berechnung des Maschinenstundensatzes
+// ===========================================================================
 function calcExtendedMachineRate() {
   console.log("DEBUG: Entering calcExtendedMachineRate()");
 
   // 1) Felder aus dem DOM – parseFloatAllowZero()
-  const kaufpreis   = parseFloatAllowZero(document.getElementById("machKaufpreis").value,   100000);
-  const instCost    = parseFloatAllowZero(document.getElementById("machInstCost").value,    0);
-  const jahre       = parseFloatAllowZero(document.getElementById("machNutzdauer").value,   5);
-  const auslast     = parseFloatAllowZero(document.getElementById("machAuslast").value,     6000);
-  const availPct    = parseFloatAllowZero(document.getElementById("machAvailPct").value,    85);
+  const kaufpreis    = parseFloatAllowZero(document.getElementById("machKaufpreis").value,   100000);
+  const instCost     = parseFloatAllowZero(document.getElementById("machInstCost").value,    0);
+  const jahre        = parseFloatAllowZero(document.getElementById("machNutzdauer").value,   5);
+  const auslast      = parseFloatAllowZero(document.getElementById("machAuslast").value,     6000);
+  const availPct     = parseFloatAllowZero(document.getElementById("machAvailPct").value,    85);
 
-  const chkDedicated= document.getElementById("chkDedicated").checked;
-  const dedicatedPct= parseFloatAllowZero(document.getElementById("machDedicatedPct").value, 100);
+  const chkDedicated = document.getElementById("chkDedicated").checked;
+  const dedicatedPct = parseFloatAllowZero(document.getElementById("machDedicatedPct").value, 100);
 
-  const kw          = parseFloatAllowZero(document.getElementById("machKW").value,          100.0);
-  const stromPct    = parseFloatAllowZero(document.getElementById("machStromPct").value,    80.0);
-  const stromCost   = parseFloatAllowZero(document.getElementById("machStromCost").value,   0.20);
+  const kw           = parseFloatAllowZero(document.getElementById("machKW").value,          100.0);
+  const stromPct     = parseFloatAllowZero(document.getElementById("machStromPct").value,    80.0);
+  const stromCost    = parseFloatAllowZero(document.getElementById("machStromCost").value,   0.20);
 
-  const flaecheBedarf = parseFloatAllowZero(document.getElementById("machFlaecheBedarf").value, 20.0);
-  const flaecheCost   = parseFloatAllowZero(document.getElementById("machFlaechenkost").value,  7.0);
+  const flaecheBedarf= parseFloatAllowZero(document.getElementById("machFlaecheBedarf").value, 20.0);
+  const flaecheCost  = parseFloatAllowZero(document.getElementById("machFlaechenkost").value,  7.0);
 
-  const instPct    = parseFloatAllowZero(document.getElementById("machInstandPct").value,   3.0);
-  const betrPct    = parseFloatAllowZero(document.getElementById("machBetriebPct").value,   2.0);
+  const instPct      = parseFloatAllowZero(document.getElementById("machInstandPct").value,   3.0);
+  const betrPct      = parseFloatAllowZero(document.getElementById("machBetriebPct").value,   2.0);
 
   // Zinssatz (z. B. 3 => 3%)
-  const inputZins  = parseFloatAllowZero(document.getElementById("machZinssatz").value,     3.0);
-  const zinssatz   = inputZins / 100.0;
+  const inputZins    = parseFloatAllowZero(document.getElementById("machZinssatz").value,     3.0);
+  const zinssatz     = inputZins / 100.0;
 
   console.log("DEBUG: Input Values =>", {
     kaufpreis, instCost, jahre, auslast, availPct, chkDedicated, dedicatedPct,
-    kw, stromPct, stromCost,
-    flaecheBedarf, flaecheCost,
-    instPct, betrPct,
-    zinssatz
+    kw, stromPct, stromCost, flaecheBedarf, flaecheCost, instPct, betrPct, zinssatz
   });
 
   // 2) Fixkosten pro Jahr
-  // (A) Abschreibung: (Kauf + Install) / jahre
-  const depYear = (kaufpreis + instCost) / jahre;
-  // (B) Zinsen (50% vom (Kauf+Install) * Zinssatz)
+  const depYear      = (kaufpreis + instCost) / jahre;
   const interestYear = (kaufpreis + instCost) * 0.5 * zinssatz;
-  // (C) Instandhaltung
-  const instYear = kaufpreis * (instPct / 100.0);
-  // (D) Betriebskosten
-  const betrYear = kaufpreis * (betrPct / 100.0);
-  // (E) Fläche (m² * €/m²/Monat * 12)
-  const flaecheYear = flaecheBedarf * flaecheCost * 12;
+  const instYear     = kaufpreis * (instPct / 100.0);
+  const betrYear     = kaufpreis * (betrPct / 100.0);
+  const flaecheYear  = flaecheBedarf * flaecheCost * 12;
 
   // Summe fixe Jahreskosten (ohne Strom)
   let fixYear = depYear + interestYear + instYear + betrYear + flaecheYear;
 
   // 3) Variable Kosten (Strom) pro Jahr
-  //    Strom orientiert sich an den tatsächlichen Laufstunden.
   const usedKW   = kw * (stromPct / 100.0); // effektive kW
   const stromHour= usedKW * stromCost;      // €/h
-  // Standard: wir nehmen "Basis-Laufstunden" = auslast * (availPct/100)
   const baseEffHours = auslast * (availPct / 100.0);
-  // => varYear
-  let varYear = stromHour * baseEffHours;
+  let varYear    = stromHour * baseEffHours;
 
-  // 4) Dedicated-Prozentsatz (falls Checkbox aktiv)
-  //    - Wir reduzieren die anrechenbaren Fixkosten + die Laufstunden + die variablen Kosten
-  //      auf (dedicatedPct / 100).
+  // 4) Dedicated-Logik
   let usageFactor = 1.0;
   if (chkDedicated) {
     usageFactor = dedicatedPct / 100.0; // z. B. 0.5, wenn 50% eingetragen
   }
-
-  // a) Fixkosten anteilig
   fixYear *= usageFactor;
-  // b) Laufstunden
   const effHours = baseEffHours * usageFactor;
-  // c) Variable Kosten
   varYear *= usageFactor;
 
   console.log("DEBUG: fixYear=", fixYear, "varYear=", varYear, "effHours=", effHours);
 
-  // 5) Gesamte Jahreskosten
+  // 5) Jahreskosten
   const sumYear = fixYear + varYear;
 
-  // 6) Kosten pro Stunde (nur wenn effHours > 0)
+  // 6) Maschinenkosten pro Stunde
   let costPerHour = 0;
   if (effHours > 0) {
     costPerHour = sumYear / effHours;
   }
 
-  // 7) CO₂ pro Stunde (Dummy: 0.38 kg pro kWh)
+  // 7) CO₂ pro Stunde (Dummy-Faktor)
   const co2_per_hour = usedKW * 0.38;
 
-  // 8) Ausgabe in Felder
-  // 8a) Auf Stunden umgelegt => 2 Nachkommastellen + " €"
+  // 8) Felder befüllen
+  // Abschreibung, Zins, ...
   document.getElementById("machKaufpreisHr").value =
     effHours > 0 ? formatHourCurrency(depYear / effHours) : "0,00 €";
   document.getElementById("machZinsHr").value =
@@ -1429,25 +1411,23 @@ function calcExtendedMachineRate() {
   document.getElementById("machStromCostHr").value =
     effHours > 0 ? formatHourCurrency(varYear / effHours) : "0,00 €";
 
-  // 8b) Effektive Stunden
+  // Effektive Stunden
   document.getElementById("machAvailHr").value =
-    effHours.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) +
-    " h eff.";
+    effHours.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " h eff.";
 
-  // 8c) CO₂ (2 Nachkommastellen, kg/h => kein €-Zeichen)
+  // CO₂ kg/h
   document.getElementById("machCo2Hr").value =
     co2_per_hour.toLocaleString("de-DE", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
 
-  // 8d) Jahreskosten (tausender-Punkte, keine Nachkommastellen + " €")
-  document.getElementById("machSumYear").value = formatIntCurrency(sumYear);
+  // Jahreskosten (falls Feld vorhanden)
+  if (document.getElementById("machSumYear")) {
+    document.getElementById("machSumYear").value = formatIntCurrency(sumYear);
+  }
 
-  // 8e) **Maschinenkosten (€/h)** – neu: Summe der 6 Teilwerte
-  //     => wir addieren einfach all diese Felder => EXACT so,
-  //     wie sie "Abschreibung/h", "Zins/h", etc. anzeigen.
-
+  // Summe der 6 Einzelwerte => machResult
   let sumOfSix = 0;
   if (effHours > 0) {
     sumOfSix =
@@ -1460,7 +1440,7 @@ function calcExtendedMachineRate() {
   }
   document.getElementById("machResult").textContent = formatHourCurrency(sumOfSix);
 
-  // 9) Speichern in globaler Variable (für acceptMachine() o. Ä.)
+  // 9) Globale Variable für acceptMachine()
   window.extMachCalc = {
     depYear,
     interestYear,
@@ -1473,23 +1453,28 @@ function calcExtendedMachineRate() {
     effHours,
     co2_per_hour,
     usageFactor,
-    costPerHour: sumOfSix // NEU: so "Maschinenkosten (€/h)" = Summe der 6 Felder
+    costPerHour: sumOfSix
   };
 
   console.log("DEBUG: Exiting calcExtendedMachineRate(), costPerHour=", sumOfSix);
 }
+
+// ===========================================================================
+// acceptMachine() – Übernimmt den berechneten Maschinenstundenansatz in die Tabelle
+// ===========================================================================
 function acceptMachine() {
   console.log("DEBUG: Entering acceptMachine() => currentMachineRow:", currentMachineRow);
   console.log("DEBUG: Checking if window.extMachCalc is defined");
-  // 1) Prüfen, ob calcExtendedMachineRate() schon aufgerufen wurde => extMachCalc existiert
+
   if (!window.extMachCalc) {
     console.log("DEBUG: window.extMachCalc is falsy => alerting user");
     alert("Bitte zuerst 'Berechnen' klicken!");
     return;
   }
+
   const rows = document.querySelectorAll("#fertTable tbody tr");
   console.log("DEBUG: rows.length =", rows.length);
-  if (currentMachineRow < 0 || currentMachineRow >= rows.length) {
+  if (typeof currentMachineRow === "undefined" || currentMachineRow < 0 || currentMachineRow >= rows.length) {
     console.error("Ungültige Zeilen-ID:", currentMachineRow);
     alert("Es wurde keine gültige Zeile ausgewählt oder currentMachineRow ist -1.");
     return;
@@ -1497,23 +1482,24 @@ function acceptMachine() {
 
   const {
     depYear, interestYear, instYear, betrYear,
-    flaecheYear, stromYear, sumYear, effHours,
+    flaecheYear, varYear, sumYear, effHours,
     costPerHour, co2_per_hour
   } = window.extMachCalc;
   console.log("DEBUG: destructured extMachCalc =", {
-    depYear, interestYear, instYear, betrYear, flaecheYear, stromYear, sumYear, effHours, costPerHour, co2_per_hour
+    depYear, interestYear, instYear, betrYear, flaecheYear, varYear, sumYear, effHours, costPerHour, co2_per_hour
   });
 
-  // 2) Einzelwerte pro Stunde
-  const depHour   = effHours > 0 ? depYear      / effHours : 0;
-  const intHour   = effHours > 0 ? interestYear / effHours : 0;
-  const instHour  = effHours > 0 ? instYear     / effHours : 0;
-  const betrHour  = effHours > 0 ? betrYear     / effHours : 0;
-  const flaechHour= effHours > 0 ? flaecheYear  / effHours : 0;
-  const stromHour = effHours > 0 ? stromYear    / effHours : 0;
+  // Einzelwerte pro Stunde:
+  const depHour    = effHours > 0 ? depYear      / effHours : 0;
+  const intHour    = effHours > 0 ? interestYear / effHours : 0;
+  const instHour   = effHours > 0 ? instYear     / effHours : 0;
+  const betrHour   = effHours > 0 ? betrYear     / effHours : 0;
+  const flaechHour = effHours > 0 ? flaecheYear  / effHours : 0;
+  const stromHour  = effHours > 0 ? varYear      / effHours : 0;
+
   console.log("DEBUG: calcHourly =>", { depHour, intHour, instHour, betrHour, flaechHour, stromHour });
 
-  // 3) In die Textfelder
+  // In die Textfelder (Modal)
   document.getElementById("machKaufpreisHr").value  = depHour.toFixed(2);
   document.getElementById("machZinsHr").value       = intHour.toFixed(2);
   document.getElementById("machInstandHr").value    = instHour.toFixed(2);
@@ -1524,38 +1510,38 @@ function acceptMachine() {
   document.getElementById("machResult").textContent = costPerHour.toFixed(2);
   document.getElementById("machCo2Hr").value        = co2_per_hour.toFixed(2);
 
-  // 4) Endsumme = costPerHour
-  // => in #machResult (z. B. <span id="machResult">)
-  // (bereits gesetzt oben)
-
-  // 6) In Tab3 die Zeile => cells[2] = msRate, etc.
+  // In #fertTable übernehmen
   const row = rows[currentMachineRow];
   console.log("DEBUG: Setting row.cells[2].querySelector(input).value =", costPerHour.toFixed(2));
-  row.cells[2].querySelector("input").value = costPerHour.toFixed(2);   // msRate
+  row.cells[2].querySelector("input").value = costPerHour.toFixed(2);   // Maschinen-€/h
   console.log("DEBUG: Setting row.cells[7].querySelector(input).value =", co2_per_hour.toFixed(2));
   row.cells[7].querySelector("input").value = co2_per_hour.toFixed(2); // co2/h
 
-  // => Modal schließen?
+  // Modal schließen
   const modalEl = document.getElementById("modalMachine");
   console.log("DEBUG: Attempting to close modalMachine");
-  let bsModal = bootstrap.Modal.getInstance(modalEl);
+  const bsModal = bootstrap.Modal.getInstance(modalEl);
   bsModal.hide();
 
   console.log("DEBUG: Exiting acceptMachine()");
 }
 
+// ===========================================================================
+// updateResultTable() – ggf. für andere Summen / Endergebnisse
+// ===========================================================================
 function updateResultTable(e) {
   console.log("DEBUG: Entering updateResultTable() with object e =", e);
-  document.getElementById("tdMatEinzel").textContent  = (e.matEinzel100 ?? 0).toFixed(2),
-  document.getElementById("tdMatGemein").textContent  = (e.matGemein100 ?? 0).toFixed(2),
-  document.getElementById("tdFremd").textContent      = (e.fremd100     ?? 0).toFixed(2),
-  document.getElementById("tdMach").textContent       = (e.mach100      ?? 0).toFixed(2),
-  document.getElementById("tdLohn").textContent       = (e.lohn100      ?? 0).toFixed(2),
-  document.getElementById("tdFGK").textContent        = (e.fgk100       ?? 0).toFixed(2),
-  document.getElementById("tdHerstell").textContent   = (e.herstell100  ?? 0).toFixed(2),
-  document.getElementById("tdSGA").textContent        = (e.sga100       ?? 0).toFixed(2),
-  document.getElementById("tdProfit").textContent     = (e.profit100    ?? 0).toFixed(2),
+  document.getElementById("tdMatEinzel").textContent  = (e.matEinzel100 ?? 0).toFixed(2);
+  document.getElementById("tdMatGemein").textContent  = (e.matGemein100 ?? 0).toFixed(2);
+  document.getElementById("tdFremd").textContent      = (e.fremd100     ?? 0).toFixed(2);
+  document.getElementById("tdMach").textContent       = (e.mach100      ?? 0).toFixed(2);
+  document.getElementById("tdLohn").textContent       = (e.lohn100      ?? 0).toFixed(2);
+  document.getElementById("tdFGK").textContent        = (e.fgk100       ?? 0).toFixed(2);
+  document.getElementById("tdHerstell").textContent   = (e.herstell100  ?? 0).toFixed(2);
+  document.getElementById("tdSGA").textContent        = (e.sga100       ?? 0).toFixed(2);
+  document.getElementById("tdProfit").textContent     = (e.profit100    ?? 0).toFixed(2);
   document.getElementById("tdTotal").textContent      = (e.totalAll100  ?? 0).toFixed(2);
+
   console.log("DEBUG: Exiting updateResultTable()");
 }
 

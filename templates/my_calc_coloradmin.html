@@ -3284,7 +3284,8 @@
 <!-- 1) STYLE-BLOCK für read-only Felder -->
 <style>
   /* Lesezeichen: grauer Hintergrund bei readonly Feldern */
-  .form-control[readonly], .form-control:disabled {
+  .form-control[readonly],
+  .form-control:disabled {
     background-color: #e9ecef !important;
     cursor: not-allowed;
   }
@@ -3641,46 +3642,33 @@
         <!-- Rechter Block: Ergebnis "Maschinenkosten (€/h): XX" -->
         <div class="d-flex align-items-center gap-2">
           <label style="font-weight:600;" for="machResult">Maschinenkosten (€/h):</label>
-          <!-- Wichtig: Falls dein JS "machResult.value = ..." nutzt => input.
-                       Falls "machResult.textContent = ..." => span. -->
-          <input type="text"
-                 class="form-control form-control-sm"
-                 id="machResult"
-                 value="--"
-                 readonly
-                 style="width:90px;"/>
+          <!-- Statt <input>, damit .textContent = ... im JS funktioniert -->
+          <span id="machResult" class="fw-bold text-theme">--</span>
         </div>
+
+        <script>
+          function openMiniChatDedicated(){
+            document.getElementById('miniChatDedicated').style.display = 'block';
+          }
+          function closeMiniChatDedicated(){
+            document.getElementById('miniChatDedicated').style.display = 'none';
+          }
+          /* ACHTUNG:
+             Stelle sicher, dass deine JS-Funktion
+             calcExtendedMachineRate()
+             exakt die IDs referenziert, die wir hier haben:
+             - machKaufpreis, machZinssatz, ...
+             - machZinsHr, machBetriebHr, machStromCostHr, ...
+             - Der Code muss 1:1 matchen
+          */
+        </script>
       </div><!-- /.modal-footer -->
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
-</div><!-- #modalMachine -->          <!-- Jahreskosten (falls du es brauchst) -->
-        <script>
-/* Mini-Chat-Widget (Dedicated) */
+</div><!-- #modalMachine -->
+<!-- Jahreskosten (falls du es brauchst) -->
 
-function openMiniChatDedicated(){
-  document.getElementById('miniChatDedicated').style.display = 'block';
-}
-function closeMiniChatDedicated(){
-  document.getElementById('miniChatDedicated').style.display = 'none';
-}
 
-/* ACHTUNG:
-   Stelle sicher, dass deine JS-Funktion
-   calcExtendedMachineRate()
-   exakt die IDs referenziert, die wir hier haben:
-   - machKaufpreis, machZinssatz, ...
-   - machZinsHr, machBetriebHr, machStromCostHr, ...
-   - Der Code muss 1:1 matchen
-*/
-</script>
-          <!-- Maschinenkosten (€/h) -->
-          <span style="font-weight:600;">Maschinenkosten (€/h):</span>
-          <span id="machResult" class="text-theme fw-bold">--</span>
-        </div>
-      </div>
-    </div> <!-- /.modal-content -->
-  </div> <!-- /.modal-dialog -->
-</div> <!-- #modalMachine -->
 
 
 
