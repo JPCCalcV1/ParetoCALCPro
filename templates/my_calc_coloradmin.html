@@ -2,16 +2,15 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>JPC CALC V2.0 (ColorAdmin)</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>JPC CALC V2.0 (ColorAdmin) - Final</title>
 
   <!-- ================== BEGIN ColorAdmin core CSS ================== -->
-  <!-- Statt Bootstrap-CDN nutzen wir ColorAdmin (enthält Bootstrap + FontAwesome) -->
   <link href="/static/coloradmin/css/vendor.min.css" rel="stylesheet" />
   <link href="/static/coloradmin/css/app.min.css" rel="stylesheet" />
   <!-- ================== END ColorAdmin core CSS ================== -->
 
-  <!-- Behalte dein Custom-Style (leicht angepasst, falls nötig) -->
-    <style>
+  <style>
     /* 1) GLOBAL BASIS */
     body {
       font-size: 14px;
@@ -251,6 +250,7 @@
     </div>
     <button class="app-sidebar-mobile-backdrop" data-dismiss="sidebar"></button>
   </div>
+  <!-- END Sidebar -->
   <!-- END Sidebar --><!-- END app-sidebar -->
 
   <!-- BEGIN #content -->
