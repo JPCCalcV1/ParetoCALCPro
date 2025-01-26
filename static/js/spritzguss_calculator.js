@@ -113,7 +113,7 @@ function calculateSpritzguss() {
   }
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
 
-  fetch("calc/takt/spritzguss", {
+  fetch("/calc/takt/spritzguss", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
