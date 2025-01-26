@@ -11,164 +11,152 @@
   <!-- ================== END ColorAdmin core CSS ================== -->
 
   <!-- Behalte dein Custom-Style (leicht angepasst, falls nötig) -->
-  <style>
-    /* -----------------------------
-       Deins: Aus deinem <style> Block
-       ----------------------------- */
+    <style>
+    /* 1) GLOBAL BASIS */
     body {
       font-size: 14px;
       background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
     }
-    #app.app-sidebar-minified { /* bewirkt standardmäßiges Minimieren */ }
-/* Navbar-Header als flexbox-Container */
-.navbar-header {
-  display: flex;
-  align-items: center;
-  gap: 15px; /* Abstand zwischen Burger und Logo */
-  padding-left: 15px; /* Abstand zum linken Bildschirmrand */
-}
+    /* #app mit Sidebar minified => standardmäßig eingeklappt */
+    #app.app-sidebar-minified { /* ColorAdmin-Klasse: Sidebar start-minimized */ }
 
-/* Das eigentliche Burger-Element */
-.navbar-desktop-toggler,
-.navbar-mobile-toggler {
-  font-size: 1rem;    /* statt 2rem */
-  line-height: 1;
-  background: none;
-  border: none;       /* kein Rahmen */
-  padding: 0;
-  margin: 0;
-}
+    /* 2) HEADER-BEREICH => Einzeiliges Flex-Layout */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between; /* Burger+Logo links, Account rechts */
+      min-height: 60px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      padding: 0 15px; /* etwas Horizontal-Padding */
+    }
+    /* Burger-Button links, Icon etc. */
+    .navbar-desktop-toggler, .navbar-mobile-toggler {
+      font-size: 1rem;
+      line-height: 1;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      cursor: pointer; /* wichtig, da button ohne border */
+    }
+    .navbar-desktop-toggler i.fa-bars {
+      font-size: 1.2rem;
+      color: #444;
+      margin-right: 5px;
+    }
 
-/* Burger-Icon selbst (z. B. .fa-bars) dezenter darstellen */
-.navbar-desktop-toggler i.fa-bars,
-.navbar-mobile-toggler i.fa-bars {
-  font-size: 1.2rem;
-  color: #444;
-  margin-right: 5px; /* minimaler Abstand zur Kante */
-}
+    /* Logo + Text */
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap; /* verhindert Zeilenumbruch */
+    }
+    /* Logo doppelt so hoch => 120px */
+    .navbar-brand img {
+      height: 120px !important;
+      width: auto;
+    }
+    /* Text neben Logo (wenn nicht erwünscht => entfernen) */
+    .navbar-brand span {
+      font-size: 18px;
+      vertical-align: middle;
+    }
 
-/* Logo + Text in einer Zeile, größer */
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  white-space: nowrap; /* verhindert Zeilenumbruch */
-  gap: 10px;           /* Abstand zwischen Logo-Bild und Text */
-}
+    /* Kosten/CO₂ mittig? => wir machen separate Div in Header,
+       oder man kippt es ins content.
+       Hier Demo: wir haben
+       .header-center .
+       Kann man flexibel gestalten.
+    */
+    .header-center {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .header-center label {
+      font-weight: 600;
+      margin-bottom: 0;
+    }
+    .header-center input[readonly] {
+      background: #e9ecef;
+    }
 
-/* Logo selbst doppelt so hoch wie sonst */
-.navbar-brand img,
-.navbar-header .navbar-brand img {
-  height: 120px !important; /* doppelte Höhe */
-  width: auto;
-}
+    /* 3) SIDEBAR => Minified + nur Icons (verstecke nav-text) */
+    .nav-text {
+      display: none !important; /* nur Icons */
+    }
+    .nav-icon {
+      font-size: 1.2rem;
+    }
 
-/* Text neben dem Logo (falls vorhanden) */
-.navbar-brand span,
-.navbar-header .navbar-brand span {
-  font-size: 18px;       /* größerer Text */
-  vertical-align: middle;
-  margin-left: 10px;     /* kleiner Seitenabstand */
-}
+    /* Scroll-Wrapper (ColorAdmin) => optional,
+       wir belassen data-scrollbar=... */
+    .app-sidebar {
+      /* standard style => left: 0; etc. -> wird von ColorAdmin gesteuert */
+    }
 
-/*
-   2) Sidebar (nur Icons, kein Text)
-      --------------------------------
-   - Falls du reine Icon-Navigation willst,
-     verstecke den Text
-*/
+    /* 4) CONTENT-BEREICH => (Tabs etc.) */
+    #content {
+      padding: 1rem;
+    }
+    .nav-tabs .nav-link {
+      font-weight: 500;
+    }
 
-/* Icon minimal vergrößern */
-.nav-icon {
-  font-size: 1.2rem;
-}
+    /* 5) PCB-Modal => Chat-Bubble + Chat-Fenster */
+    .modal-body {
+      position: relative;
+    }
+    #pcbChatBubble {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      z-index: 9999;
+    }
+    #pcbChatBubble img {
+      width: 100%;
+      height: auto;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+    #pcbChatWindow {
+      position: absolute;
+      right: 60px;
+      bottom: 60px;
+      width: 280px;
+      background: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 6px rgba(0,0,0,0.2);
+      z-index: 9999;
+      display: none;
+    }
+    #pcbChatWindow .header {
+      background: #f0f0f0;
+      padding: 6px;
+      font-weight: bold;
+    }
+    #pcbChatWindow .body {
+      max-height: 150px;
+      overflow-y: auto;
+      padding: 6px;
+      font-size: 0.85rem;
+    }
+    #pcbChatWindow .footer {
+      padding: 6px;
+      text-align: right;
+    }
 
-/* Den .nav-text (Beschriftung) ausblenden,
-   wenn du nur Symbole anzeigen willst. */
-.nav-text {
-  display: none !important;
-}
-
-/* Falls du in der rechten Navbar
-   (z. B. "Zu meinem Account")
-   einen Rand vom Bildschirm haben möchtest */
-.navbar-nav {
-  margin-right: 20px;
-}
-
-/*
-   3) Chat-Bubble + Fenster (im Modal)
-      --------------------------------
-   - Für dein PCB-Modal (oder andere Modals).
-   - Position: unten rechts im Modal
-   - Kleines Overlay-Fenster
-*/
-
-/* Modal-Body relative => absolute Bubble */
-.modal-body {
-  position: relative;
-}
-
-/* Chat-Bubble (Icon) unten rechts */
-#pcbChatBubble {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  z-index: 9999; /* über Modal-Inhalt */
-}
-#pcbChatBubble img {
-  width: 100%;
-  height: auto;
-  border-radius: 50%;
-  box-shadow: 0 0 5px rgba(0,0,0,0.3);
-}
-
-/* Chat-Fenster: absolutes Panel */
-#pcbChatWindow {
-  position: absolute;
-  right: 60px;
-  bottom: 60px;
-  width: 280px;
-  background: #fff;
-  border: 1px solid #ccc;
-  box-shadow: 0 0 6px rgba(0,0,0,0.2);
-  z-index: 9999;
-  display: none; /* per JS togglen */
-}
-
-/* Kopf-/Body-/Footer-Bereiche im Chat-Fenster */
-#pcbChatWindow .header {
-  background: #f0f0f0;
-  padding: 6px;
-  font-weight: bold;
-}
-#pcbChatWindow .body {
-  max-height: 150px;
-  overflow-y: auto;
-  padding: 6px;
-  font-size: 0.85rem;
-}
-#pcbChatWindow .footer {
-  padding: 6px;
-  text-align: right;
-}
-
-/*
-   4) Sonstige Tab-Styles
-      --------------------------------
-   - Leicht erhöhte Schrift im Tab.
-*/
-.nav-tabs .nav-link {
-  font-weight: 500;
-}
-    .table-sm td,
-    .table-sm th {
+    /* Sonstige Utility */
+    .table-sm td, .table-sm th {
       padding: 0.3rem;
     }
-
-    /* Beispiel: Hover-Effekt für Bilder */
     .img-choice {
       width: 120px;
       margin: 0.5rem;
@@ -179,241 +167,91 @@
     .img-choice:hover {
       border: 2px solid #007bff;
     }
-
-    /* Flex-Layout für Input + Button, wenn gewünscht */
     .flex-container {
       display: flex;
       flex-wrap: nowrap;
       align-items: center;
       justify-content: space-between;
     }
-    .flex-container .form-control {
-      width: 70%;
-    }
-    .flex-container .btn {
-      width: 30%;
-      margin-left: 0.25rem;
-    }
-
-    /* Beispiel-Slider */
-    input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 8px;
-      background: linear-gradient(
-        to right,
-        #ff0000 0%,
-        #ff0000 50%,
-        #ccc 50%,
-        #ccc 100%
-      );
-      border-radius: 5px;
-      outline: none;
-      opacity: 0.9;
-      transition: background 0.3s;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      background: #4caf50;
-      cursor: pointer;
-      border-radius: 50%;
-    }
-    input[type="range"]::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
-      background: #4caf50;
-      cursor: pointer;
-      border-radius: 50%;
-    }
-
-    /* Responsive Design für Smartphones */
-    @media (max-width: 768px) {
-      body {
-        transform: scale(0.8);
-        transform-origin: top left;
-      }
-      input[type="text"],
-      input[type="number"] {
-        width: 100%;
-        font-size: 12px;
-      }
-      .form-label {
-        font-size: 10px;
-      }
-      h1,
-      h2,
-      h3 {
-        font-size: 80%;
-      }
-      .btn {
-        font-size: 12px;
-        padding: 0.4rem 0.8rem;
-      }
-    }
-    /* Entfernte "Rumtricksereien" für Tab 5, nur minimaler Abstand */
-    /* Stattdessen nutzen wir die p-3-Klasse im Tab-Container selbst. */
-
-    /* Evtl. kleinere Anpassung, damit Sidebar & Header sauber aussehen */
-    .app-header {
-      min-height: 60px; /* minimal höher für Logo/Bereich */
-    }
-
-    /* Beispiel: Floating Chat-Bubble */
-    #chatBubble {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 9999;
-      cursor: pointer;
-    }
-    #chatBubble img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
-    }
-
-    /* Chat-Fenster-Card (ausgeblendet) */
-    #chatWindow {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      width: 300px;
-      display: none; /* per JS togglen */
-      z-index: 9999;
-    }
-    .app-header {
-  background: #fff; /* oder transparent */
-  border-bottom: 1px solid #ddd; /* leichte Trennlinie */
-}
-
-.app-header .navbar-brand img {
-  height: 60px; /* dein Wunsch */
-}
-
-.app-header label {
-  margin-bottom: 0; /* kein Zeilenumbruch unterm Label */
-}
-
-.app-header input[readonly] {
-  background: #e9ecef; /* grau hinterlegt, readonly */
-}
-.app-header {
-  padding-left: 8px;
-}
   </style>
-  <!-- Deine CSRF oder weitere Meta -->
-  <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
+
 <body>
-<!-- BEGIN #app -->
-<!-- Wichtig: 'app-sidebar-minified' sorgt dafür, dass Sidebar standardmäßig eingeklappt ist -->
+<!-- BEGIN #app => mit .app-sidebar-minified standardmäßig eingeklappt -->
 <div id="app" class="app app-sidebar-minified">
 
-  <!-- 1) Burger + Logo links (flex-start) -->
-  <div class="d-flex align-items-center" style="gap:10px;">
-    <!-- Burger -->
-    <button type="button"
-            class="navbar-desktop-toggler"
-            data-toggle="app-sidebar-minify"
-            style="border:none;background:none;padding:0;margin:0;">
-      <i class="fa fa-bars fa-lg text-dark"></i>
-    </button>
+  <!-- BEGIN Header -->
+  <div id="header" class="app-header">
 
-    <!-- Logo + Text -->
-    <a href="/" class="navbar-brand d-flex align-items-center" style="gap:10px;white-space:nowrap;">
-      <img src="/static/img/jpc.jpeg"
-           alt="Logo"
-           style="height:60px;width:auto;" />
-      <!-- Wenn du keinen Text willst, kommentiere die nächste Zeile aus -->
-      <span style="font-size:16px;">JPC CALC V2.0</span>
-    </a>
-  </div>
-
-  <!-- 2) Kosten/CO₂ in der Mitte (mit flex-grow) -->
-  <div class="flex-grow-1 d-flex justify-content-center align-items-center" style="gap:20px;">
-    <!-- Kosten / 100 -->
-    <div>
-      <label class="fw-bold me-1">Kosten/100 (€):</label>
-      <input type="text"
-             id="txtCosts100"
-             class="form-control form-control-sm d-inline-block"
-             style="width:70px;"
-             readonly />
+    <!-- Linker Teil: Burger + Logo -->
+    <div class="d-flex align-items-center" style="gap:15px;">
+      <!-- Burger -->
+      <button type="button" class="navbar-desktop-toggler" data-toggle="app-sidebar-minify">
+        <i class="fa fa-bars"></i>
+      </button>
+      <!-- Logo + Text -->
+      <a href="/" class="navbar-brand">
+        <img src="/static/img/jpc.jpeg" alt="Logo"/>
+        <span>JPC CALC V2.0</span>
+      </a>
     </div>
-    <!-- CO₂ / 100 -->
-    <div>
-      <label class="fw-bold me-1">CO₂/100 (kg):</label>
-      <input type="text"
-             id="txtCo2Per100"
-             class="form-control form-control-sm d-inline-block"
-             style="width:70px;"
-             readonly />
+
+    <!-- Mittlerer Teil: Kosten/CO₂ -->
+    <div class="header-center">
+      <div class="me-3">
+        <label>Kosten/100 (€):</label>
+        <input type="text" id="txtCosts100" class="form-control form-control-sm d-inline-block" style="width:70px;" readonly>
+      </div>
+      <div>
+        <label>CO₂/100 (kg):</label>
+        <input type="text" id="txtCo2Per100" class="form-control form-control-sm d-inline-block" style="width:70px;" readonly>
+      </div>
+    </div>
+
+    <!-- Rechter Teil: Account -->
+    <div class="d-flex align-items-center" style="gap:10px;">
+      <!-- User-Info optional -->
+      <div id="userInfo" style="display:none;">
+        <span id="spanUserEmail"></span>
+        <button class="btn btn-sm btn-primary" onclick="doLogout()">Logout</button>
+      </div>
+      <button class="btn btn-sm btn-info" onclick="window.location.href='/account/'">
+        Zu meinem Account
+      </button>
     </div>
   </div>
+  <!-- END Header -->
 
-  <!-- 3) Account-Button rechts (flex-end) -->
-  <div class="d-flex align-items-center" style="gap:10px; margin-right:20px;">
-    <!-- User Info (falls du willst) -->
-    <div id="userInfo" style="display:none;">
-      <span id="spanUserEmail"></span>
-      <button class="btn btn-sm btn-primary" onclick="doLogout()">Logout</button>
-    </div>
-    <!-- Account-Button -->
-    <button class="btn btn-sm btn-info"
-            onclick="window.location.href='/account/'">
-      Zu meinem Account
-    </button>
-  </div>
-
-</div>
-  <!-- END app-header -->
-
-  <!-- BEGIN app-sidebar (klappbare Sidebar) -->
+  <!-- BEGIN Sidebar -->
   <div id="sidebar" class="app-sidebar">
-    <!-- Scroll-Wrapper, falls Sidebar sehr lang ist -->
     <div class="app-sidebar-content" data-scrollbar="true" data-height="100%">
-      <!-- Deine Sidebar-Nav -->
       <div class="menu">
         <div class="menu-header">Navigation</div>
         <div class="nav">
-          <!-- Beispiel: Dashboard-Link -->
           <div class="nav-item">
-            <a href="javascript:;" class="nav-link">
+            <a href="#" class="nav-link">
               <i class="fa fa-home nav-icon"></i>
               <span class="nav-text">Dashboard</span>
             </a>
           </div>
-
-          <!-- MyCalc (aktuell) -->
           <div class="nav-item">
-            <a href="javascript:;" class="nav-link active">
+            <a href="#" class="nav-link active">
               <i class="fa fa-calculator nav-icon"></i>
               <span class="nav-text">MyCalc</span>
             </a>
           </div>
-
-          <!-- Optional: Weitere Menüpunkte -->
           <div class="nav-item">
             <a href="/account/" class="nav-link">
               <i class="fa fa-user nav-icon"></i>
               <span class="nav-text">Account</span>
             </a>
           </div>
-
-          <!-- Später: Branchenprofile, etc. -->
-          <!-- ... -->
         </div>
       </div>
     </div>
-    <!-- Sidebar-Hintergrund (wenn eingeklappt) -->
     <button class="app-sidebar-mobile-backdrop" data-dismiss="sidebar"></button>
   </div>
-  <!-- END app-sidebar -->
+  <!-- END Sidebar --><!-- END app-sidebar -->
 
   <!-- BEGIN #content -->
   <!-- Hier hinein packen wir 1:1 den Inhalt (Tabs, etc.) -->
@@ -1114,7 +952,7 @@
 </div> <!-- #modalParamTools -->
 
 <!-- =============== FEINGUSS MODAL (feingussModal) =============== -->
-```html
+
 <!-- =================== FEINGUSS-PARAMETRIC V2 (DESIGN-ADAPTIERT) =================== -->
 <div class="modal fade" id="feingussModal" tabindex="-1" aria-labelledby="feingussModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl" style="max-width:1000px;">
