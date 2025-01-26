@@ -41,10 +41,7 @@ def baugruppe_excel_comparison():
     Neue Route: Erstellt das 'FullOverview' + 'SupplierCompare'-Excel
     mit Ampelfunktion für Delta-Analyse.
     """
-    # 1) License-Check
-    license_level = session.get("license_tier", "test")
-    if license_level in ["plus", "test"]:
-        return jsonify({"error": "Abo zu niedrig für Comparison-Excel-Export"}), 403
+
 
     # 2) JSON Daten abrufen: Tab1, Tab2, Tab3, Tab4
     data = request.get_json() or {}
@@ -72,9 +69,7 @@ def baugruppe_excel_comparison():
 @exports_bp.route("/baugruppe/pdf", methods=["POST"])
 def baugruppe_pdf_export():
     # License-Check
-    license_level = session.get("license_tier","test")
-    if license_level in ["plus","test"]:
-        return jsonify({"error":"Abo zu niedrig für PDF-Export"}),403
+
 
     data = request.get_json() or {}
     items = data.get("baugruppenItems",[])
