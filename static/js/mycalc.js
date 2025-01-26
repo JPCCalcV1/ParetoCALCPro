@@ -1220,330 +1220,321 @@ function fillLohnTable(lohnArr) {
   console.log("DEBUG: Exiting fillLohnTable()");
 }
 
-function selectLohn(idx) {
-  console.log("DEBUG: Entering selectLohn() with idx =", idx);
+   // ===========================================================================
+  // ALL-IN STUNDENSATZ AUS DATASET (Lohn) – selectLohn()
+  // ===========================================================================
+  function selectLohn(row) {
+    // All-In Stundensatz aus dataset
+    const baseRate = parseFloat(row.dataset.allIneurh) || 0;
+    const ops      = parseFloat(document.getElementById("operatorsPerMachine")?.value) || 0.5;
+    const utilPct  = parseFloat(document.getElementById("lohnUtilPct")?.value) || 85.0;
 
-  const row = document.querySelector(`#tblLohnList tbody tr[data-index="${idx}"]`);
-  if (!row) {
-    console.log("DEBUG: Row not found => returning");
-    return;
+    // Beispiel-Formel
+    let effRate  = (utilPct > 0) ? (baseRate / (utilPct / 100.0)) : baseRate;
+    const lohnGesc = effRate * ops;
+
+    console.log("DEBUG: Calculated lohnGesc =", lohnGesc);
+
+    // In #fertTable übernehmen
+    const fertRows = document.querySelectorAll("#fertTable tbody tr");
+    if (typeof currentLohnRow !== "undefined" && currentLohnRow >= 0 && currentLohnRow < fertRows.length) {
+      fertRows[currentLohnRow].cells[3].querySelector("input").value = lohnGesc.toFixed(2);
+    }
+
+    // --------------------
+    // Modal schließen
+    // --------------------
+    console.log("DEBUG: Attempting to close modalLohn");
+    const modalEl = document.getElementById("modalLohn");
+    const bsModal = bootstrap.Modal.getInstance(modalEl);
+    bsModal.hide();
+
+    console.log("DEBUG: Exiting selectLohn()");
   }
 
- // ===========================================================================
-// ALL-IN STUNDENSATZ AUS DATASET (Lohn) – selectLohn()
-// ===========================================================================
-function selectLohn(row) {
-  // All-In Stundensatz aus dataset
-  const baseRate = parseFloat(row.dataset.allIneurh) || 0;
-  const ops      = parseFloat(document.getElementById("operatorsPerMachine")?.value) || 0.5;
-  const utilPct  = parseFloat(document.getElementById("lohnUtilPct")?.value) || 85.0;
-
-  // Beispiel-Formel
-  let effRate  = (utilPct > 0) ? (baseRate / (utilPct / 100.0)) : baseRate;
-  const lohnGesc = effRate * ops;
-
-  console.log("DEBUG: Calculated lohnGesc =", lohnGesc);
-
-  // In #fertTable übernehmen
-  const fertRows = document.querySelectorAll("#fertTable tbody tr");
-  if (typeof currentLohnRow !== "undefined" && currentLohnRow >= 0 && currentLohnRow < fertRows.length) {
-    fertRows[currentLohnRow].cells[3].querySelector("input").value = lohnGesc.toFixed(2);
+  // ===========================================================================
+  // HILFSFUNKTIONEN FÜR MASCHINENSTUNDENSATZ
+  // ===========================================================================
+  /************************************************************
+   * parseFloatAllowZero() – parst eine Zahl oder gibt fallback zurück,
+   *   ABER 0 bleibt 0 und führt NICHT zum fallback.
+   ************************************************************/
+  function parseFloatAllowZero(str, fallbackVal) {
+    const val = parseFloat(str);
+    if (isNaN(val)) {
+      return fallbackVal; // Nur bei wirklichem NaN
+    }
+    return val; // 0 bleibt 0
   }
 
-  // --------------------
-  // Modal schließen
-  // --------------------
-  console.log("DEBUG: Attempting to close modalLohn");
-  const modalEl = document.getElementById("modalLohn");
-  const bsModal = bootstrap.Modal.getInstance(modalEl);
-  bsModal.hide();
-
-  console.log("DEBUG: Exiting selectLohn()");
-}
-
-// ===========================================================================
-// HILFSFUNKTIONEN FÜR MASCHINENSTUNDENSATZ
-// ===========================================================================
-/************************************************************
- * parseFloatAllowZero() – parst eine Zahl oder gibt fallback zurück,
- *   ABER 0 bleibt 0 und führt NICHT zum fallback.
- ************************************************************/
-function parseFloatAllowZero(str, fallbackVal) {
-  const val = parseFloat(str);
-  if (isNaN(val)) {
-    return fallbackVal; // Nur bei wirklichem NaN
-  }
-  return val; // 0 bleibt 0
-}
-
-/************************************************************
- * formatIntCurrency(value):
- *  - Tausender-Punkte (de-DE)
- *  - Keine Nachkommastellen
- *  - " €" am Ende
- ************************************************************/
-function formatIntCurrency(value) {
-  return (
-    value.toLocaleString("de-DE", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }) + " €"
-  );
-}
-
-/************************************************************
- * formatHourCurrency(value):
- *  - Tausender-Punkte (de-DE)
- *  - 2 Nachkommastellen
- *  - " €" am Ende
- ************************************************************/
-function formatHourCurrency(value) {
-  return (
-    value.toLocaleString("de-DE", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }) + " €"
-  );
-}
-
-/************************************************************
- * toggleDedicatedPct() – wird aufgerufen, wenn Checkbox "Dedicated?"
- *   geändert wird. Aktiviert/Deaktiviert das Eingabefeld für den
- *   Ded.-Prozentsatz.
- ************************************************************/
-function toggleDedicatedPct() {
-  const cb = document.getElementById("chkDedicated");
-  const pctField = document.getElementById("machDedicatedPct");
-  if (cb.checked) {
-    pctField.disabled = false;
-  } else {
-    pctField.disabled = true;
-    pctField.value = "100";
-  }
-}
-
-// ===========================================================================
-// calcExtendedMachineRate() – Hauptfunktion zur Berechnung des Maschinenstundensatzes
-// ===========================================================================
-function calcExtendedMachineRate() {
-  console.log("DEBUG: Entering calcExtendedMachineRate()");
-
-  // 1) Felder aus dem DOM – parseFloatAllowZero()
-  const kaufpreis    = parseFloatAllowZero(document.getElementById("machKaufpreis").value,   100000);
-  const instCost     = parseFloatAllowZero(document.getElementById("machInstCost").value,    0);
-  const jahre        = parseFloatAllowZero(document.getElementById("machNutzdauer").value,   5);
-  const auslast      = parseFloatAllowZero(document.getElementById("machAuslast").value,     6000);
-  const availPct     = parseFloatAllowZero(document.getElementById("machAvailPct").value,    85);
-
-  const chkDedicated = document.getElementById("chkDedicated").checked;
-  const dedicatedPct = parseFloatAllowZero(document.getElementById("machDedicatedPct").value, 100);
-
-  const kw           = parseFloatAllowZero(document.getElementById("machKW").value,          100.0);
-  const stromPct     = parseFloatAllowZero(document.getElementById("machStromPct").value,    80.0);
-  const stromCost    = parseFloatAllowZero(document.getElementById("machStromCost").value,   0.20);
-
-  const flaecheBedarf= parseFloatAllowZero(document.getElementById("machFlaecheBedarf").value, 20.0);
-  const flaecheCost  = parseFloatAllowZero(document.getElementById("machFlaechenkost").value,  7.0);
-
-  const instPct      = parseFloatAllowZero(document.getElementById("machInstandPct").value,   3.0);
-  const betrPct      = parseFloatAllowZero(document.getElementById("machBetriebPct").value,   2.0);
-
-  // Zinssatz (z. B. 3 => 3%)
-  const inputZins    = parseFloatAllowZero(document.getElementById("machZinssatz").value,     3.0);
-  const zinssatz     = inputZins / 100.0;
-
-  console.log("DEBUG: Input Values =>", {
-    kaufpreis, instCost, jahre, auslast, availPct, chkDedicated, dedicatedPct,
-    kw, stromPct, stromCost, flaecheBedarf, flaecheCost, instPct, betrPct, zinssatz
-  });
-
-  // 2) Fixkosten pro Jahr
-  const depYear      = (kaufpreis + instCost) / jahre;
-  const interestYear = (kaufpreis + instCost) * 0.5 * zinssatz;
-  const instYear     = kaufpreis * (instPct / 100.0);
-  const betrYear     = kaufpreis * (betrPct / 100.0);
-  const flaecheYear  = flaecheBedarf * flaecheCost * 12;
-
-  // Summe fixe Jahreskosten (ohne Strom)
-  let fixYear = depYear + interestYear + instYear + betrYear + flaecheYear;
-
-  // 3) Variable Kosten (Strom) pro Jahr
-  const usedKW   = kw * (stromPct / 100.0); // effektive kW
-  const stromHour= usedKW * stromCost;      // €/h
-  const baseEffHours = auslast * (availPct / 100.0);
-  let varYear    = stromHour * baseEffHours;
-
-  // 4) Dedicated-Logik
-  let usageFactor = 1.0;
-  if (chkDedicated) {
-    usageFactor = dedicatedPct / 100.0; // z. B. 0.5, wenn 50% eingetragen
-  }
-  fixYear *= usageFactor;
-  const effHours = baseEffHours * usageFactor;
-  varYear *= usageFactor;
-
-  console.log("DEBUG: fixYear=", fixYear, "varYear=", varYear, "effHours=", effHours);
-
-  // 5) Jahreskosten
-  const sumYear = fixYear + varYear;
-
-  // 6) Maschinenkosten pro Stunde
-  let costPerHour = 0;
-  if (effHours > 0) {
-    costPerHour = sumYear / effHours;
+  /************************************************************
+   * formatIntCurrency(value):
+   *  - Tausender-Punkte (de-DE)
+   *  - Keine Nachkommastellen
+   *  - " €" am Ende
+   ************************************************************/
+  function formatIntCurrency(value) {
+    return (
+      value.toLocaleString("de-DE", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }) + " €"
+    );
   }
 
-  // 7) CO₂ pro Stunde (Dummy-Faktor)
-  const co2_per_hour = usedKW * 0.38;
+  /************************************************************
+   * formatHourCurrency(value):
+   *  - Tausender-Punkte (de-DE)
+   *  - 2 Nachkommastellen
+   *  - " €" am Ende
+   ************************************************************/
+  function formatHourCurrency(value) {
+    return (
+      value.toLocaleString("de-DE", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + " €"
+    );
+  }
 
-  // 8) Felder befüllen
-  // Abschreibung, Zins, ...
-  document.getElementById("machKaufpreisHr").value =
-    effHours > 0 ? formatHourCurrency(depYear / effHours) : "0,00 €";
-  document.getElementById("machZinsHr").value =
-    effHours > 0 ? formatHourCurrency(interestYear / effHours) : "0,00 €";
-  document.getElementById("machInstandHr").value =
-    effHours > 0 ? formatHourCurrency(instYear / effHours) : "0,00 €";
-  document.getElementById("machBetriebHr").value =
-    effHours > 0 ? formatHourCurrency(betrYear / effHours) : "0,00 €";
-  document.getElementById("machFlaechenkostHr").value =
-    effHours > 0 ? formatHourCurrency(flaecheYear / effHours) : "0,00 €";
-  document.getElementById("machStromCostHr").value =
-    effHours > 0 ? formatHourCurrency(varYear / effHours) : "0,00 €";
+  /************************************************************
+   * toggleDedicatedPct() – wird aufgerufen, wenn Checkbox "Dedicated?"
+   *   geändert wird. Aktiviert/Deaktiviert das Eingabefeld für den
+   *   Ded.-Prozentsatz.
+   ************************************************************/
+  function toggleDedicatedPct() {
+    const cb = document.getElementById("chkDedicated");
+    const pctField = document.getElementById("machDedicatedPct");
+    if (cb.checked) {
+      pctField.disabled = false;
+    } else {
+      pctField.disabled = true;
+      pctField.value = "100";
+    }
+  }
 
-  // Effektive Stunden
-  document.getElementById("machAvailHr").value =
-    effHours.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " h eff.";
+  // ===========================================================================
+  // calcExtendedMachineRate() – Hauptfunktion zur Berechnung des Maschinenstundensatzes
+  // ===========================================================================
+  function calcExtendedMachineRate() {
+    console.log("DEBUG: Entering calcExtendedMachineRate()");
 
-  // CO₂ kg/h
-  document.getElementById("machCo2Hr").value =
-    co2_per_hour.toLocaleString("de-DE", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+    // 1) Felder aus dem DOM – parseFloatAllowZero()
+    const kaufpreis    = parseFloatAllowZero(document.getElementById("machKaufpreis").value,   100000);
+    const instCost     = parseFloatAllowZero(document.getElementById("machInstCost").value,    0);
+    const jahre        = parseFloatAllowZero(document.getElementById("machNutzdauer").value,   5);
+    const auslast      = parseFloatAllowZero(document.getElementById("machAuslast").value,     6000);
+    const availPct     = parseFloatAllowZero(document.getElementById("machAvailPct").value,    85);
+
+    const chkDedicated = document.getElementById("chkDedicated").checked;
+    const dedicatedPct = parseFloatAllowZero(document.getElementById("machDedicatedPct").value, 100);
+
+    const kw           = parseFloatAllowZero(document.getElementById("machKW").value,          100.0);
+    const stromPct     = parseFloatAllowZero(document.getElementById("machStromPct").value,    80.0);
+    const stromCost    = parseFloatAllowZero(document.getElementById("machStromCost").value,   0.20);
+
+    const flaecheBedarf= parseFloatAllowZero(document.getElementById("machFlaecheBedarf").value, 20.0);
+    const flaecheCost  = parseFloatAllowZero(document.getElementById("machFlaechenkost").value,  7.0);
+
+    const instPct      = parseFloatAllowZero(document.getElementById("machInstandPct").value,   3.0);
+    const betrPct      = parseFloatAllowZero(document.getElementById("machBetriebPct").value,   2.0);
+
+    // Zinssatz (z. B. 3 => 3%)
+    const inputZins    = parseFloatAllowZero(document.getElementById("machZinssatz").value,     3.0);
+    const zinssatz     = inputZins / 100.0;
+
+    console.log("DEBUG: Input Values =>", {
+      kaufpreis, instCost, jahre, auslast, availPct, chkDedicated, dedicatedPct,
+      kw, stromPct, stromCost, flaecheBedarf, flaecheCost, instPct, betrPct, zinssatz
     });
 
-  // Jahreskosten (falls Feld vorhanden)
-  if (document.getElementById("machSumYear")) {
-    document.getElementById("machSumYear").value = formatIntCurrency(sumYear);
+    // 2) Fixkosten pro Jahr
+    const depYear      = (kaufpreis + instCost) / jahre;
+    const interestYear = (kaufpreis + instCost) * 0.5 * zinssatz;
+    const instYear     = kaufpreis * (instPct / 100.0);
+    const betrYear     = kaufpreis * (betrPct / 100.0);
+    const flaecheYear  = flaecheBedarf * flaecheCost * 12;
+
+    // Summe fixe Jahreskosten (ohne Strom)
+    let fixYear = depYear + interestYear + instYear + betrYear + flaecheYear;
+
+    // 3) Variable Kosten (Strom) pro Jahr
+    const usedKW   = kw * (stromPct / 100.0); // effektive kW
+    const stromHour= usedKW * stromCost;      // €/h
+    const baseEffHours = auslast * (availPct / 100.0);
+    let varYear    = stromHour * baseEffHours;
+
+    // 4) Dedicated-Logik
+    let usageFactor = 1.0;
+    if (chkDedicated) {
+      usageFactor = dedicatedPct / 100.0; // z. B. 0.5, wenn 50% eingetragen
+    }
+    fixYear *= usageFactor;
+    const effHours = baseEffHours * usageFactor;
+    varYear *= usageFactor;
+
+    console.log("DEBUG: fixYear=", fixYear, "varYear=", varYear, "effHours=", effHours);
+
+    // 5) Jahreskosten
+    const sumYear = fixYear + varYear;
+
+    // 6) Maschinenkosten pro Stunde
+    let costPerHour = 0;
+    if (effHours > 0) {
+      costPerHour = sumYear / effHours;
+    }
+
+    // 7) CO₂ pro Stunde (Dummy-Faktor)
+    const co2_per_hour = usedKW * 0.38;
+
+    // 8) Felder befüllen
+    // Abschreibung, Zins, ...
+    document.getElementById("machKaufpreisHr").value =
+      effHours > 0 ? formatHourCurrency(depYear / effHours) : "0,00 €";
+    document.getElementById("machZinsHr").value =
+      effHours > 0 ? formatHourCurrency(interestYear / effHours) : "0,00 €";
+    document.getElementById("machInstandHr").value =
+      effHours > 0 ? formatHourCurrency(instYear / effHours) : "0,00 €";
+    document.getElementById("machBetriebHr").value =
+      effHours > 0 ? formatHourCurrency(betrYear / effHours) : "0,00 €";
+    document.getElementById("machFlaechenkostHr").value =
+      effHours > 0 ? formatHourCurrency(flaecheYear / effHours) : "0,00 €";
+    document.getElementById("machStromCostHr").value =
+      effHours > 0 ? formatHourCurrency(varYear / effHours) : "0,00 €";
+
+    // Effektive Stunden
+    document.getElementById("machAvailHr").value =
+      effHours.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " h eff.";
+
+    // CO₂ kg/h
+    document.getElementById("machCo2Hr").value =
+      co2_per_hour.toLocaleString("de-DE", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+    // Jahreskosten (falls Feld vorhanden)
+    if (document.getElementById("machSumYear")) {
+      document.getElementById("machSumYear").value = formatIntCurrency(sumYear);
+    }
+
+    // Summe der 6 Einzelwerte => machResult
+    let sumOfSix = 0;
+    if (effHours > 0) {
+      sumOfSix =
+        (depYear / effHours) +
+        (interestYear / effHours) +
+        (instYear / effHours) +
+        (betrYear / effHours) +
+        (flaecheYear / effHours) +
+        (varYear / effHours);
+    }
+    document.getElementById("machResult").textContent = formatHourCurrency(sumOfSix);
+
+    // 9) Globale Variable für acceptMachine()
+    window.extMachCalc = {
+      depYear,
+      interestYear,
+      instYear,
+      betrYear,
+      flaecheYear,
+      fixYear,
+      varYear,
+      sumYear,
+      effHours,
+      co2_per_hour,
+      usageFactor,
+      costPerHour: sumOfSix
+    };
+
+    console.log("DEBUG: Exiting calcExtendedMachineRate(), costPerHour=", sumOfSix);
   }
 
-  // Summe der 6 Einzelwerte => machResult
-  let sumOfSix = 0;
-  if (effHours > 0) {
-    sumOfSix =
-      (depYear / effHours) +
-      (interestYear / effHours) +
-      (instYear / effHours) +
-      (betrYear / effHours) +
-      (flaecheYear / effHours) +
-      (varYear / effHours);
+  // ===========================================================================
+  // acceptMachine() – Übernimmt den berechneten Maschinenstundenansatz in die Tabelle
+  // ===========================================================================
+  function acceptMachine() {
+    console.log("DEBUG: Entering acceptMachine() => currentMachineRow:", currentMachineRow);
+    console.log("DEBUG: Checking if window.extMachCalc is defined");
+
+    if (!window.extMachCalc) {
+      console.log("DEBUG: window.extMachCalc is falsy => alerting user");
+      alert("Bitte zuerst 'Berechnen' klicken!");
+      return;
+    }
+
+    const rows = document.querySelectorAll("#fertTable tbody tr");
+    console.log("DEBUG: rows.length =", rows.length);
+    if (typeof currentMachineRow === "undefined" || currentMachineRow < 0 || currentMachineRow >= rows.length) {
+      console.error("Ungültige Zeilen-ID:", currentMachineRow);
+      alert("Es wurde keine gültige Zeile ausgewählt oder currentMachineRow ist -1.");
+      return;
+    }
+
+    const {
+      depYear, interestYear, instYear, betrYear,
+      flaecheYear, varYear, sumYear, effHours,
+      costPerHour, co2_per_hour
+    } = window.extMachCalc;
+    console.log("DEBUG: destructured extMachCalc =", {
+      depYear, interestYear, instYear, betrYear, flaecheYear, varYear, sumYear, effHours, costPerHour, co2_per_hour
+    });
+
+    // Einzelwerte pro Stunde:
+    const depHour    = effHours > 0 ? depYear      / effHours : 0;
+    const intHour    = effHours > 0 ? interestYear / effHours : 0;
+    const instHour   = effHours > 0 ? instYear     / effHours : 0;
+    const betrHour   = effHours > 0 ? betrYear     / effHours : 0;
+    const flaechHour = effHours > 0 ? flaecheYear  / effHours : 0;
+    const stromHour  = effHours > 0 ? varYear      / effHours : 0;
+
+    console.log("DEBUG: calcHourly =>", { depHour, intHour, instHour, betrHour, flaechHour, stromHour });
+
+    // In die Textfelder (Modal)
+    document.getElementById("machKaufpreisHr").value  = depHour.toFixed(2);
+    document.getElementById("machZinsHr").value       = intHour.toFixed(2);
+    document.getElementById("machInstandHr").value    = instHour.toFixed(2);
+    document.getElementById("machBetriebHr").value    = betrHour.toFixed(2);
+    document.getElementById("machFlaechenkostHr").value = flaechHour.toFixed(2);
+    document.getElementById("machStromCostHr").value  = stromHour.toFixed(2);
+    document.getElementById("machAvailHr").value      = effHours.toFixed(1) + " h eff.";
+    document.getElementById("machResult").textContent = costPerHour.toFixed(2);
+    document.getElementById("machCo2Hr").value        = co2_per_hour.toFixed(2);
+
+    // In #fertTable übernehmen
+    const row = rows[currentMachineRow];
+    console.log("DEBUG: Setting row.cells[2].querySelector(input).value =", costPerHour.toFixed(2));
+    row.cells[2].querySelector("input").value = costPerHour.toFixed(2);   // Maschinen-€/h
+    console.log("DEBUG: Setting row.cells[7].querySelector(input).value =", co2_per_hour.toFixed(2));
+    row.cells[7].querySelector("input").value = co2_per_hour.toFixed(2); // co2/h
+
+    // Modal schließen
+    const modalEl = document.getElementById("modalMachine");
+    console.log("DEBUG: Attempting to close modalMachine");
+    const bsModal = bootstrap.Modal.getInstance(modalEl);
+    bsModal.hide();
+
+    console.log("DEBUG: Exiting acceptMachine()");
   }
-  document.getElementById("machResult").textContent = formatHourCurrency(sumOfSix);
 
-  // 9) Globale Variable für acceptMachine()
-  window.extMachCalc = {
-    depYear,
-    interestYear,
-    instYear,
-    betrYear,
-    flaecheYear,
-    fixYear,
-    varYear,
-    sumYear,
-    effHours,
-    co2_per_hour,
-    usageFactor,
-    costPerHour: sumOfSix
-  };
+  // ===========================================================================
+  // updateResultTable() – ggf. für andere Summen / Endergebnisse
+  // ===========================================================================
+  function updateResultTable(e) {
+    console.log("DEBUG: Entering updateResultTable() with object e =", e);
+    document.getElementById("tdMatEinzel").textContent  = (e.matEinzel100 ?? 0).toFixed(2);
+    document.getElementById("tdMatGemein").textContent  = (e.matGemein100 ?? 0).toFixed(2);
+    document.getElementById("tdFremd").textContent      = (e.fremd100     ?? 0).toFixed(2);
+    document.getElementById("tdMach").textContent       = (e.mach100      ?? 0).toFixed(2);
+    document.getElementById("tdLohn").textContent       = (e.lohn100      ?? 0).toFixed(2);
+    document.getElementById("tdFGK").textContent        = (e.fgk100       ?? 0).toFixed(2);
+    document.getElementById("tdHerstell").textContent   = (e.herstell100  ?? 0).toFixed(2);
+    document.getElementById("tdSGA").textContent        = (e.sga100       ?? 0).toFixed(2);
+    document.getElementById("tdProfit").textContent     = (e.profit100    ?? 0).toFixed(2);
+    document.getElementById("tdTotal").textContent      = (e.totalAll100  ?? 0).toFixed(2);
 
-  console.log("DEBUG: Exiting calcExtendedMachineRate(), costPerHour=", sumOfSix);
-}
-
-// ===========================================================================
-// acceptMachine() – Übernimmt den berechneten Maschinenstundenansatz in die Tabelle
-// ===========================================================================
-function acceptMachine() {
-  console.log("DEBUG: Entering acceptMachine() => currentMachineRow:", currentMachineRow);
-  console.log("DEBUG: Checking if window.extMachCalc is defined");
-
-  if (!window.extMachCalc) {
-    console.log("DEBUG: window.extMachCalc is falsy => alerting user");
-    alert("Bitte zuerst 'Berechnen' klicken!");
-    return;
+    console.log("DEBUG: Exiting updateResultTable()");
   }
-
-  const rows = document.querySelectorAll("#fertTable tbody tr");
-  console.log("DEBUG: rows.length =", rows.length);
-  if (typeof currentMachineRow === "undefined" || currentMachineRow < 0 || currentMachineRow >= rows.length) {
-    console.error("Ungültige Zeilen-ID:", currentMachineRow);
-    alert("Es wurde keine gültige Zeile ausgewählt oder currentMachineRow ist -1.");
-    return;
-  }
-
-  const {
-    depYear, interestYear, instYear, betrYear,
-    flaecheYear, varYear, sumYear, effHours,
-    costPerHour, co2_per_hour
-  } = window.extMachCalc;
-  console.log("DEBUG: destructured extMachCalc =", {
-    depYear, interestYear, instYear, betrYear, flaecheYear, varYear, sumYear, effHours, costPerHour, co2_per_hour
-  });
-
-  // Einzelwerte pro Stunde:
-  const depHour    = effHours > 0 ? depYear      / effHours : 0;
-  const intHour    = effHours > 0 ? interestYear / effHours : 0;
-  const instHour   = effHours > 0 ? instYear     / effHours : 0;
-  const betrHour   = effHours > 0 ? betrYear     / effHours : 0;
-  const flaechHour = effHours > 0 ? flaecheYear  / effHours : 0;
-  const stromHour  = effHours > 0 ? varYear      / effHours : 0;
-
-  console.log("DEBUG: calcHourly =>", { depHour, intHour, instHour, betrHour, flaechHour, stromHour });
-
-  // In die Textfelder (Modal)
-  document.getElementById("machKaufpreisHr").value  = depHour.toFixed(2);
-  document.getElementById("machZinsHr").value       = intHour.toFixed(2);
-  document.getElementById("machInstandHr").value    = instHour.toFixed(2);
-  document.getElementById("machBetriebHr").value    = betrHour.toFixed(2);
-  document.getElementById("machFlaechenkostHr").value = flaechHour.toFixed(2);
-  document.getElementById("machStromCostHr").value  = stromHour.toFixed(2);
-  document.getElementById("machAvailHr").value      = effHours.toFixed(1) + " h eff.";
-  document.getElementById("machResult").textContent = costPerHour.toFixed(2);
-  document.getElementById("machCo2Hr").value        = co2_per_hour.toFixed(2);
-
-  // In #fertTable übernehmen
-  const row = rows[currentMachineRow];
-  console.log("DEBUG: Setting row.cells[2].querySelector(input).value =", costPerHour.toFixed(2));
-  row.cells[2].querySelector("input").value = costPerHour.toFixed(2);   // Maschinen-€/h
-  console.log("DEBUG: Setting row.cells[7].querySelector(input).value =", co2_per_hour.toFixed(2));
-  row.cells[7].querySelector("input").value = co2_per_hour.toFixed(2); // co2/h
-
-  // Modal schließen
-  const modalEl = document.getElementById("modalMachine");
-  console.log("DEBUG: Attempting to close modalMachine");
-  const bsModal = bootstrap.Modal.getInstance(modalEl);
-  bsModal.hide();
-
-  console.log("DEBUG: Exiting acceptMachine()");
-}
-
-// ===========================================================================
-// updateResultTable() – ggf. für andere Summen / Endergebnisse
-// ===========================================================================
-function updateResultTable(e) {
-  console.log("DEBUG: Entering updateResultTable() with object e =", e);
-  document.getElementById("tdMatEinzel").textContent  = (e.matEinzel100 ?? 0).toFixed(2);
-  document.getElementById("tdMatGemein").textContent  = (e.matGemein100 ?? 0).toFixed(2);
-  document.getElementById("tdFremd").textContent      = (e.fremd100     ?? 0).toFixed(2);
-  document.getElementById("tdMach").textContent       = (e.mach100      ?? 0).toFixed(2);
-  document.getElementById("tdLohn").textContent       = (e.lohn100      ?? 0).toFixed(2);
-  document.getElementById("tdFGK").textContent        = (e.fgk100       ?? 0).toFixed(2);
-  document.getElementById("tdHerstell").textContent   = (e.herstell100  ?? 0).toFixed(2);
-  document.getElementById("tdSGA").textContent        = (e.sga100       ?? 0).toFixed(2);
-  document.getElementById("tdProfit").textContent     = (e.profit100    ?? 0).toFixed(2);
-  document.getElementById("tdTotal").textContent      = (e.totalAll100  ?? 0).toFixed(2);
-
-  console.log("DEBUG: Exiting updateResultTable()");
-}
 
 function onSliderMaterialChange(e) {
   console.log("DEBUG: Entering onSliderMaterialChange() with e =", e);
