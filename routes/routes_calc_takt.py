@@ -1,3 +1,15 @@
+###########################################################
+# calc_spritzguss.py
+#
+# Enthält:
+#  - Deine V1-Basis (leicht gekürzt)
+#  - Erweiterte Logik (Advanced) für Pareto-Mehrwert
+#  - Nur EIN Flask-Endpoint "/spritzguss"
+#
+# Du kannst das 1:1 übernehmen und in deinem Projekt
+# statt der aktuellen calc_spritzguss.py verwenden.
+###########################################################
+
 from flask import Blueprint, request, jsonify, session
 from models.user import User
 from core.extensions import limiter, csrf
@@ -7,7 +19,36 @@ takt_calc_bp = Blueprint('takt_calc_bp', __name__)
 @takt_calc_bp.route("/spritzguss", methods=["POST"])
 @limiter.limit("20/minute")
 def calc_spritzguss():
+    """
+    POST /spritzguss
+    Erwartet JSON mit Feldern wie:
+      {
+        "material": "PP",
+        "cavities": 4,
+        "partWeight": 50.0,
+        "runnerWeight": 10.0,
+        "length_mm": 100.0,
+        "width_mm": 80.0,
+        "wall_mm": 2.0,
+        "machineKey": "80t HighSpeed",
+        "isMachineAuto": false,
+        "safe_pct": 30.0,
+        "press_bar": 300,
+        "isAutomotive": false,
+        "hasRobot": false,
+        "hasSlider": false,
+        "hold_s": 2.0,
+        "min_cool_s": 1.5,
+        "hasContour": false,
+        ### NEU / OPTIONAL für Advanced:
+        "isAdvanced": false,
+        "parallelPlast": false
+      }
+    """
     try:
+        # ---------------------------------------------------
+        # 0) Sicherheit / Lizenz
+        # ---------------------------------------------------
         if "user_id" not in session:
             return jsonify({"error": "Not logged in"}), 403
         user = User.query.get(session["user_id"])
@@ -18,11 +59,13 @@ def calc_spritzguss():
         if lvl not in ["premium", "extended", "plus"]:
             return jsonify({"error": "Feinguss erfordert mindestens Premium."}), 403
 
-        data = request.get_json()
+        # ---------------------------------------------------
+        # 1) JSON-Parameter einlesen
+        # ---------------------------------------------------
+        data           = request.get_json()
+        isAdvanced     = bool(data.get("isAdvanced", False))  # NEU
+        parallelPlast  = bool(data.get("parallelPlast", False))
 
-        # ---------------------------------------------------
-        # 1) EINGABE-PARAMETER
-        # ---------------------------------------------------
         material       = data.get("material", "PP")
         cavities       = int(data.get("cavities", 4))
         partWeight     = float(data.get("partWeight", 50.0))
@@ -43,162 +86,399 @@ def calc_spritzguss():
         hasContour     = bool(data.get("hasContour", False))
 
         # ---------------------------------------------------
-        # 2) MASCHINEN- & MATERIAL-DATEN
+        # 2) Gemeinsame Maschinen- & Materialdaten
         # ---------------------------------------------------
+        # => Wir führen ALLE Maschinen in einem dict,
+        #    erweitern sie ggf. um "parallelPlast" & "shotVolumeMax" (optional).
+        #    So können wir dieselbe Datengrundlage verwenden,
+        #    Basic vs. Advanced macht nur die *Auswertung* anders.
+
         machineData = {
             "50t Standard": {
                 "tons": 50,
                 "openclose": 1.8,
                 "min_cycle": 3.5,
-                "flags": []
+                "flags": [],
+                "parallelPlast": False,    # NEU: ob Maschine plastifizieren parallel kann
+                "shotVolumeMax": 80        # NEU: Beispiel cm³
             },
             "80t HighSpeed": {
                 "tons": 80,
                 "openclose": 1.0,
                 "min_cycle": 2.5,
-                "flags": ["highspeed"]
+                "flags": ["highspeed"],
+                "parallelPlast": True,
+                "shotVolumeMax": 120
             },
-            # NEU: Zusätzliche Automotive-Variante
             "80t Automotive": {
                 "tons": 80,
                 "openclose": 2.0,
                 "min_cycle": 4.5,
-                "flags": ["automotive"]
+                "flags": ["automotive"],
+                "parallelPlast": False,
+                "shotVolumeMax": 110
             },
             "100t Standard": {
                 "tons": 100,
                 "openclose": 1.5,
                 "min_cycle": 4.0,
-                "flags": []
+                "flags": [],
+                "parallelPlast": True,
+                "shotVolumeMax": 150
             },
             "120t AllElectric": {
                 "tons": 120,
                 "openclose": 1.2,
                 "min_cycle": 3.5,
-                "flags": ["electric"]
+                "flags": ["electric"],
+                "parallelPlast": True,
+                "shotVolumeMax": 180
             },
             "150t Automotive": {
                 "tons": 150,
                 "openclose": 2.2,
                 "min_cycle": 6.0,
-                "flags": ["automotive"]
+                "flags": ["automotive"],
+                "parallelPlast": True,
+                "shotVolumeMax": 300
             },
             "200t Standard": {
                 "tons": 200,
                 "openclose": 1.6,
                 "min_cycle": 4.5,
-                "flags": []
+                "flags": [],
+                "parallelPlast": True,
+                "shotVolumeMax": 350
             },
             "250t Standard": {
                 "tons": 250,
                 "openclose": 2.0,
                 "min_cycle": 5.0,
-                "flags": []
+                "flags": [],
+                "parallelPlast": True,
+                "shotVolumeMax": 450
             },
             "350t Automotive": {
                 "tons": 350,
                 "openclose": 2.2,
                 "min_cycle": 6.0,
-                "flags": ["automotive"]
+                "flags": ["automotive"],
+                "parallelPlast": True,
+                "shotVolumeMax": 800
             },
             "400t Standard": {
                 "tons": 400,
                 "openclose": 2.5,
                 "min_cycle": 7.0,
-                "flags": []
+                "flags": [],
+                "parallelPlast": True,
+                "shotVolumeMax": 1000
             }
         }
 
         materialData = {
-            "PP":      { "coolf": 0.30 },
-            "ABS":     { "coolf": 0.35 },
-            "PA6GF30": { "coolf": 0.45 },
-            "PC":      { "coolf": 0.40 },
-            "POM":     { "coolf": 0.38 },
-            "TPE":     { "coolf": 0.25 },
-            "PBT":     { "coolf": 0.42 }
+            "PP":      { "coolf": 0.30, "density_gcm3": 0.90, "melt_temp": 220, "mold_temp": 40 },
+            "ABS":     { "coolf": 0.35, "density_gcm3": 1.04, "melt_temp": 240, "mold_temp": 60 },
+            "PA6GF30": { "coolf": 0.45, "density_gcm3": 1.30, "melt_temp": 280, "mold_temp": 80 },
+            "PC":      { "coolf": 0.40, "density_gcm3": 1.20, "melt_temp": 280, "mold_temp": 90 },
+            "POM":     { "coolf": 0.38, "density_gcm3": 1.42, "melt_temp": 190, "mold_temp": 80 },
+            "TPE":     { "coolf": 0.25, "density_gcm3": 0.95, "melt_temp": 190, "mold_temp": 40 },
+            "PBT":     { "coolf": 0.42, "density_gcm3": 1.30, "melt_temp": 240, "mold_temp": 60 }
         }
 
-        def pick_auto_machine(tons_needed):
-            bestKey = None
-            bestVal = float("inf")
-            for mk, info in machineData.items():
-                t = info["tons"]
-                # Nur Maschinen >= benötigte Tons
-                if t >= tons_needed and t < bestVal:
-                    bestVal = t
-                    bestKey = mk
-            # Keine passende gefunden => größte wählen
-            if not bestKey:
-                bestKey = max(machineData.keys(), key=lambda x: machineData[x]["tons"])
-            return bestKey
-
         # ---------------------------------------------------
-        # 3) BERECHNUNG
+        # 3) Decision: Basic vs. Advanced
         # ---------------------------------------------------
-        matObj = materialData.get(material, materialData["PP"])
-        coolFactor = matObj["coolf"]
-
-        shotWeight_g = (partWeight + runnerWeight) * cavities
-
-        projArea_cm2 = (length_mm * width_mm) / 100.0
-        closure_tons = projArea_cm2 * press_bar * 0.0001 * cavities
-        closure_tons *= (1 + safe_pct / 100.0)
-        if isAutomotive:
-            closure_tons *= 1.2  # +20% Reserve
-
-        chosenKey = machineKey
-        if chosenKey not in machineData:
-            chosenKey = "80t HighSpeed"
-        if isMachineAuto:
-            chosenKey = pick_auto_machine(closure_tons)
-
-        chosenMachine = machineData[chosenKey]
-
-        rawCool_s = coolFactor * (wall_mm ** 2)
-        if rawCool_s < min_cool_s:
-            rawCool_s = min_cool_s
-        if hasContour:
-            rawCool_s *= 0.8
-
-        handle_s = 2.0 if hasRobot else 0.5
-        slider_s = 1.5 if hasSlider else 0.0
-        injection_s = 1.0 + hold_s
-        oc_s = chosenMachine["openclose"]
-
-        rawCycleShot = oc_s + injection_s + rawCool_s + handle_s + slider_s
-        if rawCycleShot < chosenMachine["min_cycle"]:
-            rawCycleShot = chosenMachine["min_cycle"]
-
-        cyclePart_s = rawCycleShot / cavities
-
-        machineExplain = (
-            f"Maschine '{chosenKey}' gewählt, "
-            f"da mindestens {round(closure_tons,1)} t benötigt werden."
-        )
-
-        result = {
-            "ok": True,
-            "closure_tons": round(closure_tons, 1),
-            "chosenMachine": chosenKey,
-            "rawCycleShot": round(rawCycleShot, 2),
-            "cyclePart_s": round(cyclePart_s, 2),
-            "rawSegmentVals": [
-                round(oc_s, 2),
-                round(injection_s, 2),
-                round(rawCool_s, 2),
-                round(handle_s + slider_s, 2)
-            ],
-            "machineExplain": machineExplain,
-            "costEach": None,
-            "throughput": None,
-            "msg": "Spritzguss-Berechnung (Backend)."
-        }
+        if isAdvanced:
+            # => Erweitertes Rechenmodell
+            result = calculate_advanced_cycle(
+                data, machineData, materialData,
+                parallelPlast=parallelPlast
+            )
+        else:
+            # => Standard-Berechnung
+            result = calculate_basic_cycle(data, machineData, materialData)
 
         return jsonify(result), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+###########################################################
+# BASIC (V1) => Unverändert aus deinem bestehenden Code
+###########################################################
+def calculate_basic_cycle(data, machineData, materialData):
+    """
+    Deine Standard-V1-Logik:
+    - Schließkraft über proj. Fläche + press_bar + safe_pct
+    - Einfaches pick_auto_machine (nur Tonnage)
+    - Kühlzeit = coolFactor * wall^2 (falls < min_cool => min_cool)
+    - Zyklus = openclose + injection + cool + handling
+    """
+    # Eingabedaten
+    material     = data.get("material", "PP")
+    cavities     = int(data.get("cavities", 4))
+    partWeight   = float(data.get("partWeight", 50.0))
+    runnerWeight = float(data.get("runnerWeight", 10.0))
+    length_mm    = float(data.get("length_mm", 100.0))
+    width_mm     = float(data.get("width_mm", 80.0))
+    wall_mm      = float(data.get("wall_mm", 2.0))
+
+    machineKey   = data.get("machineKey", "80t HighSpeed")
+    isMachineAuto= bool(data.get("isMachineAuto", False))
+    safe_pct     = float(data.get("safe_pct", 30.0))
+    press_bar    = float(data.get("press_bar", 300.0))
+    isAutomotive = bool(data.get("isAutomotive", False))
+    hasRobot     = bool(data.get("hasRobot", False))
+    hasSlider    = bool(data.get("hasSlider", False))
+    hold_s       = float(data.get("hold_s", 2.0))
+    min_cool_s   = float(data.get("min_cool_s", 1.5))
+    hasContour   = bool(data.get("hasContour", False))
+
+    # Materialobjekt
+    matObj = materialData.get(material, materialData["PP"])
+    coolFactor = matObj["coolf"]
+
+    # Schussgewicht
+    shotWeight_g = (partWeight + runnerWeight) * cavities
+
+    # Schließkraft
+    projArea_cm2 = (length_mm * width_mm) / 100.0
+    closure_tons = projArea_cm2 * press_bar * 0.0001 * cavities
+    closure_tons *= (1 + safe_pct / 100.0)
+    if isAutomotive:
+        closure_tons *= 1.2
+
+    # Maschine auswählen
+    if machineKey not in machineData:
+        machineKey = "80t HighSpeed"
+    if isMachineAuto:
+        machineKey = pick_auto_machine(closure_tons, machineData)
+
+    chosenMachine = machineData[machineKey]
+
+    # Kühlzeit
+    rawCool_s = coolFactor * (wall_mm ** 2)
+    if rawCool_s < min_cool_s:
+        rawCool_s = min_cool_s
+    if hasContour:
+        rawCool_s *= 0.8
+
+    # Handling
+    handle_s = 2.0 if hasRobot else 0.5
+    slider_s = 1.5 if hasSlider else 0.0
+
+    # Einspritzen
+    injection_s = 1.0 + hold_s
+
+    # Öffnen/Schließen
+    oc_s = chosenMachine["openclose"]
+
+    # Gesamtzyklus
+    rawCycleShot = oc_s + injection_s + rawCool_s + handle_s + slider_s
+    if rawCycleShot < chosenMachine["min_cycle"]:
+        rawCycleShot = chosenMachine["min_cycle"]
+
+    cyclePart_s = rawCycleShot / cavities
+
+    # Erklärung
+    machineExplain = (
+        f"Maschine '{machineKey}' gewählt, "
+        f"da mindestens {round(closure_tons,1)} t benötigt werden."
+    )
+
+    result = {
+        "ok": True,
+        "closure_tons": round(closure_tons, 1),
+        "chosenMachine": machineKey,
+        "rawCycleShot": round(rawCycleShot, 2),
+        "cyclePart_s": round(cyclePart_s, 2),
+        "rawSegmentVals": [
+            round(oc_s, 2),
+            round(injection_s, 2),
+            round(rawCool_s, 2),
+            round(handle_s + slider_s, 2)
+        ],
+        "machineExplain": machineExplain,
+        "costEach": None,
+        "throughput": None,
+        "msg": "Spritzguss-Berechnung (Basic)."
+    }
+    return result
+
+
+def pick_auto_machine(tons_needed, machineData):
+    """
+    V1-Version: Wählt kleinste Maschine, die >= tons_needed hat.
+    """
+    bestKey = None
+    bestVal = float("inf")
+    for mk, info in machineData.items():
+        t = info["tons"]
+        if t >= tons_needed and t < bestVal:
+            bestVal = t
+            bestKey = mk
+    if not bestKey:
+        bestKey = max(machineData.keys(), key=lambda x: machineData[x]["tons"])
+    return bestKey
+
+
+###########################################################
+# ADVANCED => V1 Extended (Pareto)
+###########################################################
+def calculate_advanced_cycle(data, machineData, materialData, parallelPlast=False):
+    """
+    Erweiterte Berechnung:
+    1) Schließkraft wie gewohnt,
+       plus minimaler Variation (z. B. Automotive-Faktor).
+    2) Maschine auto => Berücksichtigung von shotVolumeMax
+    3) Kühlzeit mit optionaler Thermik-Formel
+    4) Paralleles Plastifizieren => Zeitoptimierung
+    """
+    material     = data.get("material", "PP")
+    cavities     = int(data.get("cavities", 4))
+    partWeight   = float(data.get("partWeight", 50.0))
+    runnerWeight = float(data.get("runnerWeight", 10.0))
+    length_mm    = float(data.get("length_mm", 100.0))
+    width_mm     = float(data.get("width_mm", 80.0))
+    wall_mm      = float(data.get("wall_mm", 2.0))
+
+    machineKey   = data.get("machineKey", "80t HighSpeed")
+    isMachineAuto= bool(data.get("isMachineAuto", False))
+    safe_pct     = float(data.get("safe_pct", 30.0))
+    press_bar    = float(data.get("press_bar", 300.0))
+    isAutomotive = bool(data.get("isAutomotive", False))
+    hasRobot     = bool(data.get("hasRobot", False))
+    hasSlider    = bool(data.get("hasSlider", False))
+    hold_s       = float(data.get("hold_s", 2.0))
+    min_cool_s   = float(data.get("min_cool_s", 1.5))
+    hasContour   = bool(data.get("hasContour", False))
+
+    matObj = materialData.get(material, materialData["PP"])
+    coolFactor   = matObj["coolf"]
+    density      = matObj["density_gcm3"]
+    meltTemp     = matObj["melt_temp"]  # NEU: optional, Du kannst es verfeinern
+    moldTemp     = matObj["mold_temp"]
+
+    # Schussgewicht
+    shotWeight_g = (partWeight + runnerWeight) * cavities
+    # => Shot-Volumen in cm³
+    shotVolume_cm3 = shotWeight_g / density  # sehr rudimentär
+
+    # Schließkraft
+    projArea_cm2 = (length_mm * width_mm) / 100.0
+    closure_tons = projArea_cm2 * press_bar * 0.0001 * cavities
+    closure_tons *= (1 + safe_pct / 100.0)
+    if isAutomotive:
+        closure_tons *= 1.2
+
+    # Maschine wählen => advancedPick mit Schließkraft + shotVolume
+    if machineKey not in machineData:
+        machineKey = "80t HighSpeed"
+    if isMachineAuto:
+        machineKey = pick_auto_machine_advanced(closure_tons, shotVolume_cm3, machineData)
+
+    chosenMachine = machineData[machineKey]
+
+    # => Kühlzeit (etwas verfeinert, plus hasContour)
+    rawCool_s = advanced_cooling_time(wall_mm, coolFactor, min_cool_s, hasContour, meltTemp, moldTemp)
+
+    # Handling
+    handle_s = 2.0 if hasRobot else 0.5
+    slider_s = 1.5 if hasSlider else 0.0
+
+    # Einspritzen + Halten
+    injection_s = 1.0 + hold_s
+
+    # Plastifizierzeit (sehr rudimentär)
+    # => wir tun so, als ob wir 0.5 s pro 100 cm³ brauchen
+    plasticize_s = (shotVolume_cm3 / 100.0) * 0.5
+    if plasticize_s < 0.5:
+        plasticize_s = 0.5  # Mindestens 0.5 s
+
+    # Open/Close
+    oc_s = chosenMachine["openclose"]
+
+    # => Wenn parallelPlast und Maschine parallel kann, verringert sich Zyklus
+    if parallelPlast and chosenMachine["parallelPlast"]:
+        # 2 Haupt-Abschnitte: inj + hold vs. cooling + plast
+        # Zeit = open/close + handling + max(injection, plasticize, cool)
+        # (sehr vereinfachtes Modell)
+        mainStage_s = max(injection_s, rawCool_s, plasticize_s)
+        rawCycleShot = oc_s + mainStage_s + handle_s + slider_s
+    else:
+        # Standard => injection + plast + cooling addieren
+        # => injection + plast kann sequentiell sein
+        rawCycleShot = oc_s + injection_s + plasticize_s + rawCool_s + handle_s + slider_s
+
+    # Maschinen-min_cycle check
+    if rawCycleShot < chosenMachine["min_cycle"]:
+        rawCycleShot = chosenMachine["min_cycle"]
+
+    cyclePart_s = rawCycleShot / cavities
+
+    machineExplain = (
+        f"[ADV] Maschine '{machineKey}' gewählt, "
+        f"da >= {round(closure_tons,1)} t und Volumen OK."
+    )
+
+    result = {
+        "ok": True,
+        "closure_tons": round(closure_tons, 1),
+        "chosenMachine": machineKey,
+        "rawCycleShot": round(rawCycleShot, 2),
+        "cyclePart_s": round(cyclePart_s, 2),
+        "rawSegmentVals": [
+            round(oc_s, 2),
+            round(injection_s, 2),   # NICHT paralleles Plast => injection, s.o.
+            round(rawCool_s, 2),
+            round(handle_s + slider_s, 2)
+        ],
+        "machineExplain": machineExplain,
+        "costEach": None,
+        "throughput": None,
+        "msg": "Spritzguss-Berechnung (Advanced)."
+    }
+    return result
+
+
+def pick_auto_machine_advanced(tons_needed, shotVolumeNeeded, machineData):
+    """
+    NEU: Wählt die kleinste Maschine, die:
+    1) >= tons_needed
+    2) shotVolumeMax >= shotVolumeNeeded
+    """
+    bestKey = None
+    bestVal = float("inf")
+    for mk, info in machineData.items():
+        t  = info["tons"]
+        sv = info["shotVolumeMax"]
+        if (t >= tons_needed) and (sv >= shotVolumeNeeded) and (t < bestVal):
+            bestVal = t
+            bestKey = mk
+    if not bestKey:
+        # Falls keine Maschine beides erfüllt => größte
+        bestKey = max(machineData.keys(), key=lambda x: machineData[x]["tons"])
+    return bestKey
+
+
+def advanced_cooling_time(wall_mm, coolFactor, min_cool_s, hasContour, meltTemp, moldTemp):
+    """
+    Beispiel einer 'etwas' fortgeschrittenen Kühlzeit:
+    - t_cool_base = coolFactor * (wall_mm^2)
+    - Abhängig von DeltaT = (meltTemp - moldTemp)
+    - Konturnah => -20%
+    - minCool_S als Untergrenze
+    """
+    deltaT = (meltTemp - moldTemp)
+    # kleine Variation: +0.002 * deltaT pro mm^2, rein exemplarisch
+    t_cool = (coolFactor * (wall_mm**2)) + (0.002 * deltaT)
+    if hasContour:
+        t_cool *= 0.8
+    if t_cool < min_cool_s:
+        t_cool = min_cool_s
+    return t_cool
 
 
 @takt_calc_bp.route("/druckguss", methods=["POST"])

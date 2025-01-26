@@ -1,3 +1,11 @@
+/******************************************************
+ * spritzguss_calculator_merged.js
+ *
+ * V1-Basis + erweiterte Logik optional:
+ *  - "isAdvanced" => wenn angehakt, ruft das Backend
+ *    "calculate_advanced_cycle" auf.
+ *  - "parallelPlast" => schaltet paralleles Plastifizieren.
+ ******************************************************/
 "use strict";
 
 let sgChart = null;
@@ -18,7 +26,10 @@ const fieldLabels = {
   sgAutomotiveChk:  "Automotive-Profil",
   sgRobotChk:       "Roboter",
   sgSliderChk:      "Schieber",
-  sgHoldPressure:   "Nachdruck (s)"
+  sgHoldPressure:   "Nachdruck (s)",
+  // NEU:
+  sgAdvModeChk:     "Erweiterte Logik",
+  sgParallelPlastChk: "Paralleles Plastifizieren"
 };
 
 const sgConfig = {
@@ -48,12 +59,13 @@ function initSpritzgussModal() {
       }
     });
   }
+
   const btnUebernehmen = document.getElementById("btnSpritzgussUebernehmen");
   if (btnUebernehmen) {
     btnUebernehmen.addEventListener("click", applySpritzgussResult);
   }
 
-  // Flag-Listener
+  // Flags
   const wallEl = document.getElementById("sgWallThickness");
   if (wallEl) {
     wallEl.addEventListener("change", () => {
@@ -101,7 +113,7 @@ function calculateSpritzguss() {
   }
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
 
-  fetch("/calc/takt/spritzguss", {
+  fetch("/spritzguss", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -154,6 +166,10 @@ function buildSpritzgussPayload() {
   const minCoolEl= document.getElementById("sgMinCool");
   const contChk  = document.getElementById("sgContourCoolChk");
 
+  // NEU:
+  const advModeChk   = document.getElementById("sgAdvModeChk");
+  const plastChk     = document.getElementById("sgParallelPlastChk");
+
   return {
     material:       matSel?.value || "PP",
     cavities:       parseInt(cavEl?.value)   || 4,
@@ -172,7 +188,11 @@ function buildSpritzgussPayload() {
     hasSlider:      !!slidChk?.checked,
     hold_s:         parseFloat(holdEl?.value) || sgConfig.defaultHoldTime,
     min_cool_s:     parseFloat(minCoolEl?.value) || 1.5,
-    hasContour:     !!contChk?.checked
+    hasContour:     !!contChk?.checked,
+
+    // NEU:
+    isAdvanced:     !!advModeChk?.checked,
+    parallelPlast:  !!plastChk?.checked
   };
 }
 
@@ -201,7 +221,7 @@ function fillSpritzgussUI(data) {
   document.getElementById("sgClosureForce").textContent =
     data.closure_tons?.toFixed(1) ?? "--";
 
-  // Wichtig: Dropdown aktualisieren => echte Maschine
+  // Dropdown aktualisieren => echte Maschine
   const machineDropdown = document.getElementById("sgMachineCombo");
   if (machineDropdown && data.chosenMachine) {
     machineDropdown.value = data.chosenMachine;
@@ -318,7 +338,7 @@ function loadProfile(profileType) {
     setCheckbox(id, boolVal);
   }
 
-  // Profile-spezifische Einstellungen
+  // Profile-spezifische Einstellungen (Standard/Packaging/Automotive)
   if (profileType === "standard") {
     setFormValue("sgMachineCombo", "100t Standard");
     setCheckbox("sgAutomotiveChk", false);
@@ -361,7 +381,6 @@ function loadProfile(profileType) {
     }
   }
 
-  // Meldung ausgeben
   if (changes.length === 0) {
     sgProfileMsg += "Keine relevanten Felder verändert.";
   } else {
