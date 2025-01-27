@@ -3756,27 +3756,7 @@ btn btn-teal: ein ColorAdmin-Farbton.
       </div>
 
       <!-- CHAT-BUBBLE (NEU) -->
-      <div id="machChatBubble" onclick="toggleMachChatWindow()">
-        <img src="https://cdn-icons-png.flaticon.com/512/2990/2990675.png" alt="Chat" />
-      </div>
 
-      <!-- CHAT-FENSTER (NEU) -->
-      <div id="machChatWindow">
-        <div class="header">KI-Assistent</div>
-        <div class="body" id="machChatBody">
-          <p>Hallo, wie kann ich helfen?</p>
-        </div>
-        <div class="footer">
-          <input
-            type="text"
-            id="machChatInput"
-            class="form-control form-control-sm"
-            placeholder="Frage eingeben..."
-          />
-          <button class="btn btn-sm btn-primary" onclick="sendMachChat()">Senden</button>
-          <button class="btn btn-sm btn-secondary" onclick="toggleMachChatWindow()">Schließen</button>
-        </div>
-      </div>
       <!-- ENDE CHAT-BEREICH -->
 
       <!-- BODY: 2 Tabs (Abschreibung + Energie) -->
@@ -4109,10 +4089,34 @@ btn btn-teal: ein ColorAdmin-Farbton.
           </div><!-- END TAB 2 -->
         </div><!-- /.tab-content -->
       </div><!-- /.modal-body -->
+      <div id="machChatBubble" onclick="toggleMachChatWindow()">
+        <img src="https://cdn-icons-png.flaticon.com/512/2990/2990675.png" alt="Chat" />
+      </div>
 
+      <!-- CHAT-FENSTER (NEU) -->
+      <div id="machChatWindow">
+        <div class="header">KI-Assistent</div>
+        <div class="body" id="machChatBody">
+          <p>Hallo, wie kann ich helfen?</p>
+        </div>
+        <div class="footer">
+          <input
+            type="text"
+            id="machChatInput"
+            class="form-control form-control-sm"
+            placeholder="Frage eingeben..."
+          />
+          <button class="btn btn-sm btn-primary" onclick="sendMachChat()">Senden</button>
+          <button class="btn btn-sm btn-secondary" onclick="toggleMachChatWindow()">Schließen</button>
+        </div>
+      </div>
       <!-- FOOTER: Buttons + Maschinenkosten -->
       <div class="modal-footer d-flex justify-content-between align-items-center" style="padding:0.5rem 1rem;">
         <!-- Linker Block: Berechnen, Übernehmen, Schließen -->
+        <button type="button" class="btn btn-info btn-sm mt-2"
+        onclick="askMachPredefined('Wie berechne ich den Maschinenstundensatz?')">
+        ...
+      </button>
         <div class="d-flex align-items-center gap-2">
           <button type="button" class="btn btn-sm btn-theme" onclick="calcExtendedMachineRate()">
             <i class="fa fa-calculator me-1"></i> Berechnen
