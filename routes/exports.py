@@ -1,7 +1,7 @@
 
 from flask import Blueprint, request, send_file, session, jsonify
 from .excel import (
-    export_baugruppe_excel,
+    export_baugruppe_eight_steps_excel,
     export_baugruppe_comparison_excel
 )
 from .powerpoint import export_baugruppe_ppt
@@ -11,26 +11,6 @@ exports_bp = Blueprint("exports_bp", __name__)
 # Einige Zeilen Kontext / andere Routen
 # ------------------------------------------------------------------------
 
-@exports_bp.route("/baugruppe/excel", methods=["POST"])
-def baugruppe_excel_export():
-    """
-    EXISTIERENDE Route: Erzeugt das einfache Excel für Baugruppen.
-    """
-
-    # 2) Baugruppen-Daten aus JSON Body
-    data = request.get_json() or {}
-    items = data.get("baugruppenItems", [])
-    if not items:
-        return jsonify({"error": "Keine Einträge in Baugruppe"}), 400
-
-    # 3) Rufe alte Funktion auf
-    excel_bytes, filename = export_baugruppe_excel(items)
-    return send_file(
-        excel_bytes,
-        download_name=filename,
-        as_attachment=True,
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
 
 # ------------------------------------------------------------------------
 # NEUE Route: Erzeugt fancy/vergleichende Excel-Auswertung
@@ -82,27 +62,6 @@ def baugruppe_pdf_export():
 @exports_bp.route("/baugruppe/ppt", methods=["POST"])
 def baugruppe_ppt_export():
     """
-    Erstellt eine PowerPoint-Präsentation (One-Pager + optional extra Folien)
-    auf Basis der Tab1..Tab4-Daten. KEIN License-Check.
-    """
-    data = request.get_json() or {}
-    tab1 = data.get("tab1", {})
-    tab2 = data.get("tab2", {})
-    tab3 = data.get("tab3", [])  # list of dict
-    tab4 = data.get("tab4", {})  # summary
-
-    ppt_bytes, filename = export_baugruppe_ppt(tab1, tab2, tab3, tab4)
-
-    return send_file(
-        ppt_bytes,
-        download_name=filename,
-        as_attachment=True,
-        mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    )
-
-@exports_bp.route("/baugruppe/ppt", methods=["POST"])
-def baugruppe_ppt_export():
-    """
     Erstellt eine PowerPoint-Präsentation (3 Slides):
       1) Deckblatt (Logo + Projektinfo)
       2) Kalkulation (Tab1-4)
@@ -128,6 +87,7 @@ def baugruppe_ppt_export():
         download_name=filename,
         as_attachment=True,
         mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    )
     )
 
 @exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
