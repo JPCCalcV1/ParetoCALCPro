@@ -319,6 +319,85 @@
     border-radius: 4px;
   }
   */
+  /* ————————————————————————————
+   1) Charts-Hintergrund an SliderContainer anpassen (Light Mode)
+   ———————————————————————————— */
+#tab4 #apexCostChart,
+#tab4 #apexCo2Chart {
+  /* Gleiche Farbe wie sliderContainer (f8f9fa) */
+  background-color: #f8f9fa !important;
+}
+
+/* ————————————————————————————
+   2) Dark Mode – Lesbarkeit in Tab4 verbessern
+   ———————————————————————————— */
+/* Accordion-Body dunkler / Text heller */
+.app-theme-dark-mode #tab4 .accordion-body {
+  background-color: #333 !important; /* Oder #2d2d2d, wenn dir #333 zu hell ist */
+  color: #ccc !important;
+}
+
+/* Summenzeilen mit .table-active dunkler + Text in weiß */
+.app-theme-dark-mode #tab4 .table-active th,
+.app-theme-dark-mode #tab4 .table-active td {
+  background-color: #505050 !important; /* etwas dunkler, damit es Kontrast hat */
+  color: #fff !important;
+}
+
+/* Normale Zeilen in den Detailtabellen (Material/Fertigung) können gerne leicht abgesetzt sein */
+.app-theme-dark-mode #tab4 table.table-sm tbody tr th,
+.app-theme-dark-mode #tab4 table.table-sm tbody tr td {
+  /* Falls gewünscht: #444 statt #2d2d2d */
+  background-color: #444 !important;
+  color: #fff !important;
+}
+
+/* ————————————————————————————
+   3) Spalten rechtsbündig ausrichten
+   (Materialsumme, Fertigungssumme, u.a.)
+   ———————————————————————————— */
+#tab4 table.table-sm tbody td,
+#tab4 table.table-sm tfoot td,
+#tab4 table.table-sm tfoot th {
+  text-align: right;  /* Zahlenwerte rechtsbündig */
+}
+#tab4 table.table-sm tbody td:first-child,
+#tab4 table.table-sm thead th:first-child {
+  text-align: left;   /* Erste Spalte links */
+}
+
+/* ————————————————————————————
+   4) Button-Ausrichtung:
+   „In Baugruppe übernehmen“ nicht tiefer als die anderen
+   ———————————————————————————— */
+/* Oft reicht ein "margin: 0" oder align-items: baseline */
+#tab4 .d-flex.gap-2.align-items-center > button {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* ————————————————————————————
+   5) (Optional) Slider-Style im Dark Mode heller
+      + Nullmarkierung
+   ———————————————————————————— */
+/* a) Slider-Farbe anpassen */
+.app-theme-dark-mode #tab4 input[type="range"] {
+  /* neutraler (heller) Hintergrund */
+  background-color: #666 !important;
+}
+
+/* b) Schmale Nullmarkierung ohne Layout zu sprengen
+   Trick: linear-gradient, in der Mitte ein dünner Strich */
+#tab4 input[type="range"] {
+  /* Beispielhaft: 50% heller/grauer Strich */
+  background-image: linear-gradient(to right,
+                                    transparent 49.5%,
+                                    #bbb 49.5%,
+                                    #bbb 50.5%,
+                                    transparent 50.5%);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
 
 </style>
 
