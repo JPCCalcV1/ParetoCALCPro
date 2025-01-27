@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>JPC CALC V2.0 (ColorAdmin) - Final</title>
+  <title>ParetoCALC by JPC</title>
 
   <!-- ================== BEGIN ColorAdmin core CSS ================== -->
   <link href="/static/coloradmin/css/vendor.min.css" rel="stylesheet" />
@@ -19,7 +19,7 @@
   <!-- =========================================================
        1) Deine bisherigen globalen Styles
       ========================================================= -->
-       <style>
+<style>
   /* 1) GLOBAL BASIS */
   body {
     font-size: 14px;
@@ -233,7 +233,7 @@
   .app-theme-dark-mode .accordion-button {
     color: #ccc;
   }
-  /* Optional: Gesamt-Hintergrund im Dark Mode */
+  /* Gesamt-Hintergrund im Dark Mode */
   .app-theme-dark-mode #content,
   .app-theme-dark-mode .app-content {
     background-color: #2d2d2d;
@@ -258,12 +258,10 @@
   }
 
   /*********************************************
-   * Zusätzliche Overrides laut Wunsch
+   * Zusätzliche Overrides laut neuen Wünschen
    *********************************************/
 
-  /* 1) Tab1 vs. Tab2 => Felder angleichen.
-       => Erzeuge in Tab2 denselben Stil wie .input-custom
-         (ohne das HTML zu ändern). */
+  /* 1) Tab2 => Felder angleichen an Tab1 (input-custom) */
   #tab2 .form-control {
     background-color: #fff;
     color: #000;
@@ -274,38 +272,59 @@
     color: #fff;
   }
 
-  /* 2) Tab3 => Tabelle im Dark Mode dennoch weiß + dunkler Text
-        (so wie Nicht-Dark-Mode) */
+  /* 2) Tab3 => Auch im Dark Mode bleibt Tabelle weiß + schwarzer Text */
   .app-theme-dark-mode #tab3 table {
     background-color: #fff;
     color: #000;
   }
 
-  /* 2b) Tab3: Letzte zwei Spalten => rechtsbündig
-        (Kosten/100, CO₂/100) - im thead haben wir evtl. <th> zentriert,
-         also nur body-Spalten. */
+  /* 2b) Tab3 => Letzte zwei Spalten "Kosten/100, CO₂/100" => rechtsbündig (bereits text-end, nur zur Sicherheit) */
   #tab3 tbody td:nth-last-child(2),
-  #tab3 tbody td:nth-last-child(1) {
+  #tab3 tbody td:last-child {
     text-align: right;
   }
 
-  /* 3) Tab4 => Slider & Charts IMMER hell, selbst in Dark Mode */
-  .app-theme-dark-mode #tab4 #sliderContainer,
+  /* 3) Tab4 => Slider & Charts sollen im Dark Mode DUNKEL sein
+       (statt weiß) + optional weiße Border oder helles Grau */
+  .app-theme-dark-mode #tab4 #sliderContainer {
+    background-color: #333 !important;
+    color: #ccc !important;
+    border: 1px solid #555;
+  }
   .app-theme-dark-mode #tab4 #apexCostChart,
   .app-theme-dark-mode #tab4 #apexCo2Chart {
-    background-color: #fff !important;
-    color: #000 !important;
+    background-color: #333 !important;
+    color: #ccc !important;
+    border: 1px solid #555 !important;
   }
 
-  /* 3b) Tab4 => Zeilen: (Herstellkosten, SG&A, Profit, Gesamtkosten)
-        bleiben in Dark Mode genauso hell wie in Light Mode.
-        => Das sind die 4 Zeilen im tbody, du kannst es pauschal ansteuern. */
+  /* 3a) Optional: Mini-Beispiel für eine Null-Linie im Slider
+     (eher Proof-of-concept – kann man verfeinern per vendor-prefixes) */
+  #tab4 input[type="range"] {
+    /*
+    background: linear-gradient(to right, #bbb 50%, #eee 50%);
+    border-radius: 4px;
+    */
+  }
+
+  /* 3b) Summenzeilen in Tab4 => "Herstellkosten/100", "SG&A", "Profit", "Gesamtkosten/100"
+        Sollen im Dark Mode NICHT schwarz bleiben => wir geben th + td einen hellen Hintergrund */
+  .app-theme-dark-mode #tab4 table.table-sm tbody tr th,
   .app-theme-dark-mode #tab4 table.table-sm tbody tr td {
-    background-color: #fff;
-    color: #000;
+    background-color: #444;
+    color: #fff;
   }
 
-  /* 4) Tab5 => Tabelle auch in Dark Mode weiß + schwarze Schrift */
+  /* Falls du "Gesamtkosten" identisch wie "Summe Fertigung/100" haben möchtest (grau/Hover-Effekt),
+     kannst du stattdessen #tab4 .table-active th, #tab4 .table-active td
+     anpassen. Hier machen wir's pauschal: Alle Summenzeilen = #444 */
+  .app-theme-dark-mode #tab4 .table-active th,
+  .app-theme-dark-mode #tab4 .table-active td {
+    background-color: #555;
+    color: #fff;
+  }
+
+  /* 4) Tab5 => Tabelle bleibt auch im Dark Mode weiß + schwarze Schrift */
   .app-theme-dark-mode #tab5 table {
     background-color: #fff;
     color: #000;
@@ -3966,46 +3985,54 @@ btn btn-teal: ein ColorAdmin-Farbton.
 </div><!-- #modalMachine -->
 <!-- Jahreskosten (falls du es brauchst) -->
 
-<!-- MATERIAL MODAL -->
+<!-- =================== MATERIAL MODAL (Design wie PCB-Kalkulator) =================== -->
 <div
   class="modal fade"
   id="modalMaterial"
   tabindex="-1"
   aria-hidden="true"
 >
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
-      <div class="modal-header">
+  <!-- "modal-xl" + style="max-width:1000px;" => wie PCB-Modal -->
+  <div class="modal-dialog modal-xl" style="max-width:1000px;">
+    <!-- Modal-Content mit einheitlicher Schrift, Overflow etc. -->
+    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
+
+      <!-- HEADER: dunkel ("bg-theme text-white"), mit engem Padding -->
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title">Materialliste</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <!-- Schließen-Knopf in Weiß -->
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <div class="modal-body">
-        <!-- Filterfeld -->
-        <div class="mb-3 d-flex gap-2">
-  <div class="flex-grow-1">
-    <label for="matFilterInput" class="form-label"
-      >Filter (Materialname oder Verfahren)</label
-    >
-    <input
-      type="text"
-      class="form-control"
-      id="matFilterInput"
-      placeholder="z.B. 'AlSi9' oder 'Guss'"
-      oninput="filterMaterialList()"
-    />
-  </div>
-  <div class="align-self-end">
-    <button
-      class="btn btn-sm btn-outline-secondary"
-      onclick="clearMaterialFilter()"
-      style="margin-top: 1.8rem;" <!-- optional zum Ausrichten -->
-    >
-      Filter zurücksetzen
-    </button>
-  </div>
-</div>
+      <!-- BODY: p-2 + position-relative für evtl. Chat-Bubbles -->
+      <div class="modal-body p-2 position-relative">
 
+        <!-- Filterfeld (unverändert) -->
+        <div class="mb-3 d-flex gap-2">
+          <div class="flex-grow-1">
+            <label for="matFilterInput" class="form-label"
+              >Filter (Materialname oder Verfahren)</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="matFilterInput"
+              placeholder="z.B. 'AlSi9' oder 'Guss'"
+              oninput="filterMaterialList()"
+            />
+          </div>
+          <div class="align-self-end">
+            <button
+              class="btn btn-sm btn-outline-secondary"
+              onclick="clearMaterialFilter()"
+              style="margin-top: 1.8rem;"
+            >
+              Filter zurücksetzen
+            </button>
+          </div>
+        </div>
+
+        <!-- Material-Tabelle (ID & Inhalt unverändert) -->
         <table class="table table-sm" id="tblMaterialList">
           <thead>
             <tr>
@@ -4018,41 +4045,58 @@ btn btn-teal: ein ColorAdmin-Farbton.
             </tr>
           </thead>
           <tbody>
-            <!-- Dynamisch gefüllt via JS -->
+            <!-- Dynamisch gefüllt via JS (e.g. loadMaterialList()) -->
           </tbody>
         </table>
-      </div>
 
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Schließen
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+      </div><!-- /.modal-body -->
+
+      <!-- FOOTER: minimal, Buttons analog PCB-Style -->
+      <div
+        class="modal-footer d-flex justify-content-between align-items-center"
+        style="padding: 0.5rem 1rem;"
+      >
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+        </div>
+      </div><!-- /.modal-footer -->
+
+    </div><!-- /.modal-content -->
+  </div><
+    </div><!-- /.modal-dialog -->
+
 
 
 
         <!-- LOHN-LISTE MODAL -->
+<!-- =================== LOHNLISTEN-MODAL (DESIGN WIE PCB-PARAMETRIK) =================== -->
 <div
   class="modal fade"
   id="modalLohn"
   tabindex="-1"
   aria-hidden="true"
 >
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content" style="max-height: 70vh; overflow-y: auto;">
-      <div class="modal-header">
+  <!-- "modal-xl" + style="max-width:1000px;" => analog zum PCB-Design -->
+  <div class="modal-dialog modal-xl" style="max-width:1000px;">
+    <!-- Modal-Content mit einheitlicher Schrift, Overflow etc. -->
+    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
+
+      <!-- HEADER: dunkel ("bg-theme text-white"), mit engem Padding -->
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title">Lohnliste</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <!-- Schließen-Knopf in Weiß -->
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <div class="modal-body">
+      <!-- BODY: p-2 + position-relative -->
+      <div class="modal-body p-2 position-relative">
+
         <!-- Eingabefeld für Anzahl Bediener -->
         <div class="mb-3">
           <label for="operatorsPerMachine" class="form-label">
@@ -4067,7 +4111,7 @@ btn btn-teal: ein ColorAdmin-Farbton.
           />
         </div>
 
-        <!-- NEU: Eingabefeld für Arbeitsauslastung (Utilization) -->
+        <!-- Arbeitsauslastung (Utilization) -->
         <div class="mb-3">
           <label for="lohnUtilPct" class="form-label">
             Arbeitsauslastung (%)
@@ -4084,7 +4128,7 @@ btn btn-teal: ein ColorAdmin-Farbton.
           </small>
         </div>
 
-        <!-- NEU: Filter-Feld + Button zum Zurücksetzen -->
+        <!-- Filter-Feld + Button zum Zurücksetzen -->
         <div class="mb-3 d-flex gap-2">
           <input
             type="text"
@@ -4116,37 +4160,50 @@ btn btn-teal: ein ColorAdmin-Farbton.
             <!-- Dynamische Inhalte per JavaScript -->
           </tbody>
         </table>
-      </div>
 
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Schließen
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+      </div><!-- /.modal-body -->
 
-<!-- MASCHINENLISTE MODAL -->
+      <!-- FOOTER: minimal, wie PCB-Style -->
+      <div
+        class="modal-footer d-flex justify-content-between align-items-center"
+        style="padding: 0.5rem 1rem;"
+      >
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+        </div>
+      </div><!-- /.modal-footer -->
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- =================== MASCHINENLISTE-MODAL (PCB-Style) =================== -->
 <div
   class="modal fade"
   id="modalMachineList"
   tabindex="-1"
   aria-hidden="true"
 >
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content" style="max-height: 70vh; overflow-y: auto;">
-      <div class="modal-header">
+  <!-- "modal-xl" + style="max-width:1000px;" => analog zu deinen PCB-Modals -->
+  <div class="modal-dialog modal-xl" style="max-width:1000px;">
+    <!-- Modal-Content mit einheitlicher Schrift, Overflow etc. -->
+    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
+
+      <!-- HEADER: dunkel ("bg-theme text-white"), mit engem Padding -->
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title">Maschinenliste</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <!-- Schließen-Knopf in Weiß -->
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <div class="modal-body">
-        <!-- NEU: Filter-Feld + Button zum Zurücksetzen -->
+      <!-- BODY: p-2 + position-relative -->
+      <div class="modal-body p-2 position-relative">
+        <!-- Filter-Feld + Button zum Zurücksetzen -->
         <div class="mb-3 d-flex gap-2">
           <input
             type="text"
@@ -4163,6 +4220,7 @@ btn btn-teal: ein ColorAdmin-Farbton.
           </button>
         </div>
 
+        <!-- Tabelle Maschinenliste -->
         <table class="table table-sm" id="tblMachineList">
           <thead>
             <tr>
@@ -4175,24 +4233,30 @@ btn btn-teal: ein ColorAdmin-Farbton.
             </tr>
           </thead>
           <tbody>
-            <!-- Befüllung via JS -->
+            <!-- Dynamische Inhalte per JavaScript -->
           </tbody>
         </table>
-      </div>
+      </div><!-- /.modal-body -->
 
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Schließen
-        </button>
-      </div>
-    </div>
-  </div>
-</div><!-- <input id="txtCosts100" type="text" class="form-control" /> -->
-<!--<input id="txtCo2Per100" type="text" class="form-control" /> -->
+      <!-- FOOTER: minimal, wie PCB-Style -->
+      <div
+        class="modal-footer d-flex justify-content-between align-items-center"
+        style="padding: 0.5rem 1rem;"
+      >
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+        </div>
+      </div><!-- /.modal-footer -->
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal --><!--<input id="txtCo2Per100" type="text" class="form-control" /> -->
 </div>
       <!-- ================== BEGIN ColorAdmin core JS ================== -->
 <script src="/static/coloradmin/js/vendor.min.js"></script>
