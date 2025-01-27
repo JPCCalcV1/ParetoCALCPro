@@ -337,6 +337,15 @@
     background-size: 100% 100%;
     background-repeat: no-repeat;
   }
+  /* Erzwingt im Dark Mode: Tabellen mit "table-lightmode-same"
+   bleiben weißer Hintergrund + schwarze Schrift */
+.app-theme-dark-mode .table-lightmode-same,
+.app-theme-dark-mode .table-lightmode-same th,
+.app-theme-dark-mode .table-lightmode-same td {
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
 </style>
   <!-- =========================================================
        Dark Mode Toggle Script
@@ -924,7 +933,7 @@
 
               >
                 <div class="accordion-body">
-                  <table class="table table-sm mb-0">
+                  <table class="table table-sm mb-0 table-lightmode-same">
                     <tbody>
                       <tr>
                         <td>Material-Einzelkosten/100</td>
@@ -975,7 +984,7 @@
                 data-bs-parent="#accCostsParent"
               >
                 <div class="accordion-body">
-                  <table class="table table-sm mb-0">
+                  <table class="table table-sm mb-0 table-lightmode-same">
                     <tbody>
                       <tr>
                         <td>Maschinenkosten/100</td>
@@ -1016,7 +1025,7 @@
           <!-- Ende Accordion -->
 
           <!-- Summenzeilen unten drunter -->
-          <table class="table table-striped table-sm">
+          <table class="table table-striped table-sm table-lightmode-same">
             <tbody>
               <tr>
                 <td>Herstellkosten/100</td>
