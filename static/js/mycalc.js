@@ -7,6 +7,9 @@ let material_factor = 1,
 let costChart = null, co2Chart = null;
 let chartInitialized = false;
 
+let apexCostChart = null;
+let apexCo2Chart = null;
+let apexInitialized = false;
 
 window.materialData = [];
 let currentTaktRow = null;
@@ -287,28 +290,28 @@ function calcAll() {
 
   // Beispiel: annualQty, lotSize, ...
   const annualQty = parseFloatAllowZero(
-      document.getElementById("annualQty")?.value,
-      1000
+    document.getElementById("annualQty")?.value,
+    1000
   );
   const lotSize = parseFloatAllowZero(
-      document.getElementById("lotSize")?.value,
-      100
+    document.getElementById("lotSize")?.value,
+    100
   );
   const scrapPct = parseFloatAllowZero(
-      document.getElementById("scrapPct")?.value,
-      5
+    document.getElementById("scrapPct")?.value,
+    5
   );
   const sgaPct = parseFloatAllowZero(
-      document.getElementById("sgaPct")?.value,
-      10
+    document.getElementById("sgaPct")?.value,
+    10
   );
   const profitPct = parseFloatAllowZero(
-      document.getElementById("profitPct")?.value,
-      5
+    document.getElementById("profitPct")?.value,
+    5
   );
   const zielPrice = parseFloatAllowZero(
-      document.getElementById("zielPrice")?.value,
-      200
+    document.getElementById("zielPrice")?.value,
+    200
   );
 
   // -------------------------
@@ -357,14 +360,15 @@ function calcAll() {
   // 4. Globale Faktoren anwenden
   // -------------------------
   console.log("DEBUG: Applying globale Faktoren to matPrice and steps...");
-  matPrice = matPrice * material_factor;
-  // MsRate / lohnRate / co2Hour mit labor_factor / co2_factor anreichern
+  // Beispiel: material_factor, labor_factor, co2_factor
+  // Du musst sicherstellen, dass diese Variablen global existieren!
+  matPrice = matPrice * (window.material_factor || 1);
   steps = steps.map(st => {
     return {
       ...st,
-      msRate: st.msRate * labor_factor,
-      lohnRate: st.lohnRate * labor_factor,
-      co2Hour: st.co2Hour * co2_factor
+      msRate: st.msRate * (window.labor_factor || 1),
+      lohnRate: st.lohnRate * (window.labor_factor || 1),
+      co2Hour: st.co2Hour * (window.co2_factor || 1)
     };
   });
 
@@ -382,9 +386,9 @@ function calcAll() {
     profitPct,
     zielPrice,
 
-    mat_factor: material_factor,
-    labor_factor: labor_factor,
-    co2_factor: co2_factor,
+    mat_factor: window.material_factor || 1,
+    labor_factor: window.labor_factor || 1,
+    co2_factor: window.co2_factor || 1,
 
     material: {
       name: matName,
@@ -412,47 +416,168 @@ function calcAll() {
     },
     body: JSON.stringify(payload)
   })
-      .then((res) => {
-        console.log("DEBUG: fetch(/mycalc/calc) response status =", res.status);
-        if (!res.ok) {
-          console.log("DEBUG: !res.ok => throwing error");
-          throw new Error("Server error: " + res.status);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Response from /mycalc/calc:", data);
-        if (data.error) {
-          console.log("DEBUG: data.error =", data.error);
-          alert("Fehler: " + data.error);
-          return;
-        }
+    .then((res) => {
+      console.log("DEBUG: fetch(/mycalc/calc) response status =", res.status);
+      if (!res.ok) {
+        console.log("DEBUG: !res.ok => throwing error");
+        throw new Error("Server error: " + res.status);
+      }
+      return res.json();
+    })
+    .then((data) => {
+      console.log("Response from /mycalc/calc:", data);
+      if (data.error) {
+        console.log("DEBUG: data.error =", data.error);
+        alert("Fehler: " + data.error);
+        return;
+      }
 
-        // (a) Ergebnis-Tabelle / Felder füllen
-        updateResultTable(data);
+      // (a) Ergebnis-Tabelle / Felder füllen
+      updateResultTable(data);
 
-        // z. B. top area "Kosten/100" und "CO2/100"
-        let cost_100 = data.totalAll100 ?? 0;
-        let co2_100 = (data.co2Mat100 ?? 0) + (data.co2Proc100 ?? 0);
+      // top area "Kosten/100" und "CO2/100"
+      let cost_100 = data.totalAll100 ?? 0;
+      let co2_100 = (data.co2Mat100 ?? 0) + (data.co2Proc100 ?? 0);
+      document.getElementById("txtCosts100").value = cost_100.toFixed(2);
+      document.getElementById("txtCo2Per100").value = co2_100.toFixed(2);
 
-        document.getElementById("txtCosts100").value = cost_100.toFixed(2);
-        document.getElementById("txtCo2Per100").value = co2_100.toFixed(2);
-
-        // (b) Charts erzeugen (einmalig) & aktualisieren
-        if (!chartInitialized) {
-          console.log("DEBUG: chartInitialized == false => calling initCharts()");
-          initCharts();  // Neue Funktion: hier nur 1x new Chart(...)
-        }
-        console.log("DEBUG: calling updateCharts(data)...");
-        updateCharts(data);
-        console.log("DEBUG: Exiting calcAll() after successful fetch & chart update");
-      })
-      .catch((err) => {
-        console.error("Fehler in calcAll():", err);
-        alert("calcAll() error: " + err);
-      });
+      // (b) ApexCharts erzeugen (einmalig) & aktualisieren
+      if (!apexInitialized) {
+        console.log("DEBUG: apexInitialized == false => calling initApexCharts()");
+        initApexCharts();
+      }
+      console.log("DEBUG: calling updateApexCharts(data)...");
+      updateApexCharts(data);
+      console.log("DEBUG: Exiting calcAll() after successful fetch & chart update");
+    })
+    .catch((err) => {
+      console.error("Fehler in calcAll():", err);
+      alert("calcAll() error: " + err);
+    });
 }
 
+/************************************************************
+ * initApexCharts() – Erstellt apexCostChart & apexCo2Chart
+ ************************************************************/
+function initApexCharts() {
+  console.log("DEBUG: Entering initApexCharts()");
+  // Falls schon existieren, zerstören
+  if (apexInitialized && apexCostChart) {
+    apexCostChart.destroy();
+  }
+  if (apexInitialized && apexCo2Chart) {
+    apexCo2Chart.destroy();
+  }
+
+  // 1) apexCostChart
+  let costChartOptions = {
+    chart: {
+      type: 'bar',
+      height: 200,
+      foreColor: '#666',
+      background: '#fdfdfd'
+    },
+    series: [{
+      name: 'Kosten/100 Stk',
+      data: [0, 0, 0]  // Material, Fertigung, Rest
+    }],
+    xaxis: {
+      categories: ['Material', 'Fertigung', 'Rest']
+    },
+    yaxis: {
+      labels: {
+        formatter: function(val) {
+          return val.toFixed(1);
+        }
+      }
+    },
+    colors: ['#008FFB'],
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '55%'
+      }
+    }
+  };
+  apexCostChart = new ApexCharts(
+    document.querySelector("#apexCostChart"),
+    costChartOptions
+  );
+  apexCostChart.render();
+
+  // 2) apexCo2Chart
+  let co2ChartOptions = {
+    chart: {
+      type: 'bar',
+      height: 200,
+      foreColor: '#666',
+      background: '#fdfdfd'
+    },
+    series: [{
+      name: 'CO₂/100 Stk',
+      data: [0, 0] // Material-CO2, Prozess-CO2
+    }],
+    xaxis: {
+      categories: ['Material-CO₂', 'Prozess-CO₂']
+    },
+    yaxis: {
+      labels: {
+        formatter: function(val) {
+          return val.toFixed(1) + ' kg';
+        }
+      }
+    },
+    colors: ['#9CCC65', '#FF7043']
+  };
+  apexCo2Chart = new ApexCharts(
+    document.querySelector("#apexCo2Chart"),
+    co2ChartOptions
+  );
+  apexCo2Chart.render();
+
+  apexInitialized = true;
+  console.log("DEBUG: Exiting initApexCharts() => apexInitialized set to", apexInitialized);
+}
+
+/************************************************************
+ * updateApexCharts(data) – übernimmt neue Daten vom Server
+ ************************************************************/
+function updateApexCharts(resultData) {
+  console.log("DEBUG: Entering updateApexCharts() with resultData =", resultData);
+  if (!apexInitialized) {
+    console.log("DEBUG: apexInitialized is false -> calling initApexCharts() as fallback");
+    initApexCharts();
+  }
+
+  // Beispiel:Material, Fertigung, Rest
+  let matVal = (resultData.matEinzel100 ?? 0) + (resultData.matGemein100 ?? 0);
+  let fertVal = (resultData.mach100 ?? 0) + (resultData.lohn100 ?? 0) + (resultData.fgk100 ?? 0);
+  let restVal = (resultData.sga100 ?? 0) + (resultData.profit100 ?? 0) + (resultData.fremd100 ?? 0);
+
+  console.log("DEBUG: matVal =", matVal, "fertVal =", fertVal, "restVal =", restVal);
+
+  // Update apexCostChart series
+  apexCostChart.updateSeries([
+    {
+      name: 'Kosten/100 Stk',
+      data: [matVal, fertVal, restVal]
+    }
+  ]);
+
+  // CO2
+  let co2Mat = resultData.co2Mat100 ?? 0;
+  let co2Proc = resultData.co2Proc100 ?? 0;
+  console.log("DEBUG: co2Mat =", co2Mat, "co2Proc =", co2Proc);
+
+  apexCo2Chart.updateSeries([
+    {
+      name: 'CO₂/100 Stk',
+      data: [co2Mat, co2Proc]
+    }
+  ]);
+
+  console.log("DEBUG: Exiting updateApexCharts()");
+}
 /************************************************************
  * initCharts() – erstellt costChart & co2Chart falls nicht
  * vorhanden (oder zerstört alte, wenn chartInitialized=true).
@@ -1547,26 +1672,38 @@ function acceptMachine() {
 // ===========================================================================
 // updateResultTable() – ggf. für andere Summen / Endergebnisse
 // ===========================================================================
-function updateResultTable(e) {
-  console.log("DEBUG: Entering updateResultTable() with object e =", e);
-  document.getElementById("tdMatEinzel").textContent = (e.matEinzel100 ?? 0).toFixed(2);
-  document.getElementById("tdMatGemein").textContent = (e.matGemein100 ?? 0).toFixed(2);
-  document.getElementById("tdFremd").textContent = (e.fremd100 ?? 0).toFixed(2);
-  document.getElementById("tdMach").textContent = (e.mach100 ?? 0).toFixed(2);
-  document.getElementById("tdLohn").textContent = (e.lohn100 ?? 0).toFixed(2);
-  document.getElementById("tdFGK").textContent = (e.fgk100 ?? 0).toFixed(2);
-  document.getElementById("tdHerstell").textContent = (e.herstell100 ?? 0).toFixed(2);
-  document.getElementById("tdSGA").textContent = (e.sga100 ?? 0).toFixed(2);
-  document.getElementById("tdProfit").textContent = (e.profit100 ?? 0).toFixed(2);
-  document.getElementById("tdTotal").textContent = (e.totalAll100 ?? 0).toFixed(2);
+function updateResultTable(data) {
+  console.log("DEBUG: updateResultTable()", data);
+  // Beispiel, wo du die Werte in Accordion-IDs schreibst
+  // Material:
+  document.getElementById("tdMatEinzel").textContent = (data.matEinzel100 ?? 0).toFixed(2);
+  document.getElementById("tdMatGemein").textContent = (data.matGemein100 ?? 0).toFixed(2);
+  document.getElementById("tdFremd").textContent = (data.fremd100 ?? 0).toFixed(2);
+  // falls du extra "tdMatScrapDelta" usw. hast, kannst du sie hier updaten
+  let matSum = (data.matEinzel100 ?? 0) + (data.matGemein100 ?? 0) + (data.fremd100 ?? 0);
+  document.getElementById("tdMatSumDetailed").textContent = matSum.toFixed(2);
 
-  console.log("DEBUG: Exiting updateResultTable()");
+  // Fertigung:
+  document.getElementById("tdMach").textContent = (data.mach100 ?? 0).toFixed(2);
+  document.getElementById("tdLohn").textContent = (data.lohn100 ?? 0).toFixed(2);
+  document.getElementById("tdFGK").textContent = (data.fgk100 ?? 0).toFixed(2);
+  // optional: Fert-Scrap
+  let fertScrap = (data.fertScrapDelta100 ?? 0);
+  document.getElementById("tdFertScrapDelta").textContent = fertScrap.toFixed(2);
+  let fertSum = (data.mach100 ?? 0) + (data.lohn100 ?? 0) + (data.fgk100 ?? 0) + fertScrap;
+  document.getElementById("tdFertSumDetailed").textContent = fertSum.toFixed(2);
+
+  // Summen
+  document.getElementById("tdHerstell").textContent = (data.herstell100 ?? 0).toFixed(2);
+  document.getElementById("tdSGA").textContent = (data.sga100 ?? 0).toFixed(2);
+  document.getElementById("tdProfit").textContent = (data.profit100 ?? 0).toFixed(2);
+  document.getElementById("tdTotal").textContent = (data.totalAll100 ?? 0).toFixed(2);
 }
 
 function onSliderMaterialChange(e) {
   console.log("DEBUG: Entering onSliderMaterialChange() with e =", e);
   // e = int % (z.B. -30..+30)
-  material_factor = 1 + e / 100;
+  window.material_factor = 1 + e / 100;
   console.log("DEBUG: material_factor =", material_factor, "=> calling calcAll()");
   calcAll(); // Deine lokale Rechenfunktion
   console.log("DEBUG: Exiting onSliderMaterialChange()");
@@ -1577,7 +1714,7 @@ function onSliderMaterialChange(e) {
  */
 function onSliderLaborChange(e) {
   console.log("DEBUG: Entering onSliderLaborChange() with e =", e);
-  labor_factor = 1 + e / 100;
+  window.labor_factor = 1 + e / 100;
   console.log("DEBUG: labor_factor =", labor_factor, "=> calling calcAll()");
   calcAll();
   console.log("DEBUG: Exiting onSliderLaborChange()");
@@ -1588,7 +1725,7 @@ function onSliderLaborChange(e) {
  */
 function onSliderCO2Change(e) {
   console.log("DEBUG: Entering onSliderCO2Change() with e =", e);
-  co2_factor = 1 + e / 100;
+  window.co2_factor = 1 + e / 100;
   console.log("DEBUG: co2_factor =", co2_factor, "=> calling calcAll()");
   calcAll();
   console.log("DEBUG: Exiting onSliderCO2Change()");
