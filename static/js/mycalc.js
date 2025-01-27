@@ -1322,6 +1322,7 @@ function openLohnModal(rowIndex) {
 }
 
 /** fillLohnTable(lohnArr) => #tblLohnList */
+/** fillLohnTable(lohnArr) => #tblLohnList */
 function fillLohnTable(lohnArr) {
   console.log("DEBUG: Entering fillLohnTable() with lohnArr length =", lohnArr.length);
   const tbody = document.querySelector("#tblLohnList tbody");
@@ -1333,20 +1334,25 @@ function fillLohnTable(lohnArr) {
 
   lohnArr.forEach((item, idx) => {
     const countryStr = item.country || "Unbekannt";
-    const shiftMod = item.shiftModel || "N/A";
-    const allInVal = parseFloat(item.allInEURh || 0).toFixed(2);
-    const comment = item.comment || "";
+    const shiftMod   = item.shiftModel || "N/A";
+    const allInVal   = parseFloat(item.allInEURh || 0).toFixed(2);
+    const comment    = item.comment || "";
 
+    // Jede Zeile speichert den Index und allIneurh ins dataset,
+    // und ruft per Button-Klick 'selectLohn(idx)' auf:
     const tr = document.createElement("tr");
-    tr.dataset.index = idx;
+    tr.dataset.index     = idx;
     tr.dataset.allIneurh = allInVal;
+
     tr.innerHTML = `
       <td>${countryStr}</td>
       <td>${shiftMod}</td>
       <td>${allInVal}</td>
       <td>${comment}</td>
       <td>
-        <button class="btn btn-sm btn-primary" onclick="selectLohn(${idx})">Übernehmen</button>
+        <button class="btn btn-sm btn-primary" onclick="selectLohn(${idx})">
+          Übernehmen
+        </button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -1354,24 +1360,21 @@ function fillLohnTable(lohnArr) {
   console.log("DEBUG: Exiting fillLohnTable()");
 }
 
-function selectLohnByIndex(idx) {
-  console.log("DEBUG: Entering selectLohnByIndex() with idx =", idx);
+/** selectLohn(idx) => sucht anhand 'idx' das passende <tr> und trägt Wert in #fertTable ein. */
+function selectLohn(idx) {
+  console.log("DEBUG: Entering selectLohn() with idx =", idx);
 
+  // 1) Tabelleneintrag per data-index suchen
   const row = document.querySelector(`#tblLohnList tbody tr[data-index="${idx}"]`);
   if (!row) {
     console.log("DEBUG: Row not found => returning");
     return;
   }
-} // <-- H
 
-// ===========================================================================
-// ALL-IN STUNDENSATZ AUS DATASET (Lohn) – selectLohn()
-// ===========================================================================
-function selectLohn(row) {
-  // All-In Stundensatz aus dataset
+  // 2) All-In Stundensatz aus dataset
   const baseRate = parseFloat(row.dataset.allIneurh) || 0;
-  const ops = parseFloat(document.getElementById("operatorsPerMachine")?.value) || 0.5;
-  const utilPct = parseFloat(document.getElementById("lohnUtilPct")?.value) || 85.0;
+  const ops      = parseFloat(document.getElementById("operatorsPerMachine")?.value) || 0.5;
+  const utilPct  = parseFloat(document.getElementById("lohnUtilPct")?.value) || 85.0;
 
   // Beispiel-Formel
   let effRate = (utilPct > 0) ? (baseRate / (utilPct / 100.0)) : baseRate;
@@ -1379,15 +1382,13 @@ function selectLohn(row) {
 
   console.log("DEBUG: Calculated lohnGesc =", lohnGesc);
 
-  // In #fertTable übernehmen
+  // 3) In #fertTable übernehmen (Benutzung von currentLohnRow)
   const fertRows = document.querySelectorAll("#fertTable tbody tr");
   if (typeof currentLohnRow !== "undefined" && currentLohnRow >= 0 && currentLohnRow < fertRows.length) {
     fertRows[currentLohnRow].cells[3].querySelector("input").value = lohnGesc.toFixed(2);
   }
 
-  // --------------------
-  // Modal schließen
-  // --------------------
+  // 4) Modal schließen
   console.log("DEBUG: Attempting to close modalLohn");
   const modalEl = document.getElementById("modalLohn");
   const bsModal = bootstrap.Modal.getInstance(modalEl);
@@ -1395,6 +1396,8 @@ function selectLohn(row) {
 
   console.log("DEBUG: Exiting selectLohn()");
 }
+
+
 
 // ===========================================================================
 // HILFSFUNKTIONEN FÜR MASCHINENSTUNDENSATZ
