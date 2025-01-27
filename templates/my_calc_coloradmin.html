@@ -188,7 +188,6 @@
   .card-custom {
     background-color: #fff;
     color: #000;
-    /* Behalte gern border-0 wie gehabt */
   }
   .input-custom {
     background-color: #fff;
@@ -201,12 +200,12 @@
     color: #000;
   }
 
-  /* --- Tabs: Inaktive & aktive Farbabstufungen im LIGHT MODE --- */
+  /* Tabs: Inaktive & aktive Farbabstufungen im LIGHT MODE */
   .nav-tabs .nav-link {
     background-color: #fafafa;
     color: #000;
-    border: 1px solid #dee2e6; /* Optionaler Rahmen */
-    margin-right: 0.1rem;     /* Kleiner Abstand */
+    border: 1px solid #dee2e6;
+    margin-right: 0.1rem;
   }
   .nav-tabs .nav-link:hover {
     background-color: #e9ecef;
@@ -214,9 +213,34 @@
   .nav-tabs .nav-link.active {
     background-color: #ddd;
     color: #000;
-    border-color: #ccc #ccc #fff; /* oder nach Belieben */
+    border-color: #ccc #ccc #fff;
   }
 
+  /* Spezieller Wunsch: Tab4 Charts und Slider IM Light Mode -> angleichen */
+  #tab4 #sliderContainer,
+  #tab4 #apexCostChart,
+  #tab4 #apexCo2Chart {
+    background-color: #f8f9fa !important; /* Hell, passend zu Accordion-Body */
+    color: #000 !important;
+    border: 1px solid #ddd !important;
+  }
+  /* Tab2 Felder in Dark Mode trotzdem weiß */
+  .app-theme-dark-mode #tab2 .form-control {
+    background-color: #fff;
+    color: #000;
+  }
+
+  /* Tab3 Tabelle in Dark Mode trotzdem weiß */
+  .app-theme-dark-mode #tab3 table {
+    background-color: #fff;
+    color: #000;
+  }
+
+  /* Tab5 Tabelle in Dark Mode trotzdem weiß */
+  .app-theme-dark-mode #tab5 table {
+    background-color: #fff;
+    color: #000;
+  }
   /* =========================================================================
      DARK MODE Overrides (aktiv bei .app-theme-dark-mode auf #app)
      ========================================================================= */
@@ -240,7 +264,7 @@
     color: #ccc;
   }
 
-  /* --- Tabs im DARK MODE: Inaktive & aktive Farbabstufungen --- */
+  /* Tabs im DARK MODE: Inaktive & aktive Farbabstufungen */
   .app-theme-dark-mode .nav-tabs .nav-link {
     background-color: #333;
     color: #ccc;
@@ -258,39 +282,10 @@
   }
 
   /*********************************************
-   * Zusätzliche Overrides laut neuen Wünschen
+   * Tab4-Änderungen für den Dark Mode
    *********************************************/
-
-  /* 1) Tab2 => Felder angleichen an Tab1 (input-custom) */
-  #tab2 .form-control {
-    background-color: #fff;
-    color: #000;
-    border: 1px solid #ced4da;
-  }
-  .app-theme-dark-mode #tab2 .form-control {
-    background-color: #444;
-    color: #fff;
-  }
-
-  /* 2) Tab3 => Auch im Dark Mode bleibt Tabelle weiß + schwarzer Text */
-  .app-theme-dark-mode #tab3 table {
-    background-color: #fff;
-    color: #000;
-  }
-
-  /* 2b) Tab3 => Letzte zwei Spalten "Kosten/100, CO₂/100" => rechtsbündig (bereits text-end, nur zur Sicherheit) */
-  #tab3 tbody td:nth-last-child(2),
-  #tab3 tbody td:last-child {
-    text-align: right;
-  }
-
-  /* 3) Tab4 => Slider & Charts sollen im Dark Mode DUNKEL sein
-       (statt weiß) + optional weiße Border oder helles Grau */
-  .app-theme-dark-mode #tab4 #sliderContainer {
-    background-color: #333 !important;
-    color: #ccc !important;
-    border: 1px solid #555;
-  }
+  /* 1) Slider + Charts => Dunkel */
+  .app-theme-dark-mode #tab4 #sliderContainer,
   .app-theme-dark-mode #tab4 #apexCostChart,
   .app-theme-dark-mode #tab4 #apexCo2Chart {
     background-color: #333 !important;
@@ -298,43 +293,26 @@
     border: 1px solid #555 !important;
   }
 
-  /* 3a) Optional: Mini-Beispiel für eine Null-Linie im Slider
-     (eher Proof-of-concept – kann man verfeinern per vendor-prefixes) */
-  #tab4 input[type="range"] {
-    /*
-    background: linear-gradient(to right, #bbb 50%, #eee 50%);
-    border-radius: 4px;
-    */
-  }
-
-  /* 3b) Summenzeilen in Tab4 => "Herstellkosten/100", "SG&A", "Profit", "Gesamtkosten/100"
-        Sollen im Dark Mode NICHT schwarz bleiben => wir geben th + td einen hellen Hintergrund */
+  /* 2) Summenzeilen in Tab4 => helle Schrift + etwas dunklerer Hintergrund */
   .app-theme-dark-mode #tab4 table.table-sm tbody tr th,
   .app-theme-dark-mode #tab4 table.table-sm tbody tr td {
     background-color: #444;
     color: #fff;
   }
-
-  /* Falls du "Gesamtkosten" identisch wie "Summe Fertigung/100" haben möchtest (grau/Hover-Effekt),
-     kannst du stattdessen #tab4 .table-active th, #tab4 .table-active td
-     anpassen. Hier machen wir's pauschal: Alle Summenzeilen = #444 */
+  /* Falls <tr class="table-active"> => noch dunkler: #555 */
   .app-theme-dark-mode #tab4 .table-active th,
   .app-theme-dark-mode #tab4 .table-active td {
     background-color: #555;
     color: #fff;
   }
 
-  /* 4) Tab5 => Tabelle bleibt auch im Dark Mode weiß + schwarze Schrift */
-  .app-theme-dark-mode #tab5 table {
-    background-color: #fff;
-    color: #000;
+  /* 3) (Optional) Null-Linie im Slider: auskommentiert */
+  /*
+  #tab4 input[type="range"] {
+    background: linear-gradient(to right, #bbb 50%, #eee 50%);
+    border-radius: 4px;
   }
-
-  /* 5) Falls der Baugruppen-Button minimal versetzt ist:
-     => Du kannst alle Buttons angleichen, z.B.: */
-  #tab4 button.btn {
-    margin-top: 3px; /* pass an, falls du mehr/weniger möchtest */
-  }
+  */
 
 </style>
 
@@ -4270,6 +4248,8 @@ btn btn-teal: ein ColorAdmin-Farbton.
   src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"
 ></script>
 <!-- Externes JS -->
+  <!-- In base.html oder layout.html (im <head> oder unten vor </body>) -->
+
 <script src="/static/js/mycalc.js"></script>
 <script src="/static/js/feinguss_calculator.js"></script>
 <script src="/static/js/schmieden_calculator.js"></script>
