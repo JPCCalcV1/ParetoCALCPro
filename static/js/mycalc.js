@@ -3155,3 +3155,12 @@ function askMachPredefined(question) {
   // Optional: wenn du willst, dass es direkt gesendet wird:
   // sendMachChat();
 }
+function askPCBPredefined(question) {
+  togglePcbChatWindow(); // Chatfenster öffnen
+  const inputEl = document.getElementById("machChatInput");
+  if (inputEl) {
+    inputEl.value = question;
+  }
+  // Optional: wenn du willst, dass es direkt gesendet wird:
+  // sendMachChat();
+}
