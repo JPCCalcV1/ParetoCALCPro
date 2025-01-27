@@ -3157,7 +3157,7 @@ function askMachPredefined(question) {
 }
 function askPCBPredefined(question) {
   togglePcbChatWindow(); // Chatfenster öffnen
-  const inputEl = document.getElementById("machChatInput");
+  const inputEl = document.getElementById("PcbChatInput");
   if (inputEl) {
     inputEl.value = question;
   }
