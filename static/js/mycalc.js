@@ -1674,30 +1674,94 @@ function acceptMachine() {
 // ===========================================================================
 function updateResultTable(data) {
   console.log("DEBUG: updateResultTable()", data);
-  // Beispiel, wo du die Werte in Accordion-IDs schreibst
-  // Material:
-  document.getElementById("tdMatEinzel").textContent = (data.matEinzel100 ?? 0).toFixed(2);
-  document.getElementById("tdMatGemein").textContent = (data.matGemein100 ?? 0).toFixed(2);
-  document.getElementById("tdFremd").textContent = (data.fremd100 ?? 0).toFixed(2);
-  // falls du extra "tdMatScrapDelta" usw. hast, kannst du sie hier updaten
-  let matSum = (data.matEinzel100 ?? 0) + (data.matGemein100 ?? 0) + (data.fremd100 ?? 0);
+
+  // 1) Material-Einzel, -Gemein, Fremd
+  const matEinzel = data.matEinzel100 ?? 0;
+  const matGemein = data.matGemein100 ?? 0;
+  const fremd = data.fremd100 ?? 0;
+
+  // 2) Fertigung: Maschine, Lohn, FGK, Rüst, Tooling
+  const mach = data.mach100 ?? 0;
+  const lohn = data.lohn100 ?? 0;
+  const fgk = data.fgk100 ?? 0;
+  const ruest = data.ruest100 ?? 0;
+  const tooling = data.tooling100 ?? 0;
+
+  // 3) Sonstige Summen
+  const herstell = data.herstell100 ?? 0;
+  const sga = data.sga100 ?? 0;
+  const profit = data.profit100 ?? 0;
+  const totalAll = data.totalAll100 ?? 0;
+
+  // ----------------------------------------------------------------
+  // A) HTML-Felder direkt beschreiben
+  // ----------------------------------------------------------------
+  // Material
+  document.getElementById("tdMatEinzel").textContent = matEinzel.toFixed(2);
+  document.getElementById("tdMatGemein").textContent = matGemein.toFixed(2);
+  document.getElementById("tdFremd").textContent = fremd.toFixed(2);
+
+  // Fertigung
+  document.getElementById("tdMach").textContent = mach.toFixed(2);
+  document.getElementById("tdLohn").textContent = lohn.toFixed(2);
+  document.getElementById("tdFGK").textContent = fgk.toFixed(2);
+
+  // Neu: Rüst & Tooling
+  document.getElementById("tdRuestDetailed").textContent = ruest.toFixed(2);
+  document.getElementById("tdToolingDetailed").textContent = tooling.toFixed(2);
+
+  // Summen unten
+  document.getElementById("tdHerstell").textContent = herstell.toFixed(2);
+  document.getElementById("tdSGA").textContent = sga.toFixed(2);
+  document.getElementById("tdProfit").textContent = profit.toFixed(2);
+  document.getElementById("tdTotal").textContent = totalAll.toFixed(2);
+
+  // ----------------------------------------------------------------
+  // B) Ausschuss und Detail-Summen
+  // ----------------------------------------------------------------
+  // Material-Summe = (matEinzel + matGemein + fremd)
+  const matSum = matEinzel + matGemein + fremd;
   document.getElementById("tdMatSumDetailed").textContent = matSum.toFixed(2);
 
-  // Fertigung:
-  document.getElementById("tdMach").textContent = (data.mach100 ?? 0).toFixed(2);
-  document.getElementById("tdLohn").textContent = (data.lohn100 ?? 0).toFixed(2);
-  document.getElementById("tdFGK").textContent = (data.fgk100 ?? 0).toFixed(2);
-  // optional: Fert-Scrap
-  let fertScrap = (data.fertScrapDelta100 ?? 0);
-  document.getElementById("tdFertScrapDelta").textContent = fertScrap.toFixed(2);
-  let fertSum = (data.mach100 ?? 0) + (data.lohn100 ?? 0) + (data.fgk100 ?? 0) + fertScrap;
+  // Fertigungs-Summe = (mach + lohn + fgk + ruest + tooling)
+  const fertSum = mach + lohn + fgk + ruest + tooling;
   document.getElementById("tdFertSumDetailed").textContent = fertSum.toFixed(2);
 
-  // Summen
-  document.getElementById("tdHerstell").textContent = (data.herstell100 ?? 0).toFixed(2);
-  document.getElementById("tdSGA").textContent = (data.sga100 ?? 0).toFixed(2);
-  document.getElementById("tdProfit").textContent = (data.profit100 ?? 0).toFixed(2);
-  document.getElementById("tdTotal").textContent = (data.totalAll100 ?? 0).toFixed(2);
+  // Ausschuss: Falls du 'scrapPct' aus Tab1 hast, berechne Delta (nur Demo):
+  const scrapPctInput = document.getElementById("scrapPct");
+  let scrapPct = 0;
+  if (scrapPctInput) {
+    scrapPct = parseFloat(scrapPctInput.value) || 0;
+  }
+  const factorScrap = 1 + scrapPct / 100.0;
+
+  // (1) Material-Ausschuss
+  // Wir gehen davon aus, dass matEinzel100 (data.matEinzel100) bereits scrap-bereinigt ist.
+  // => Baseline (ohne Scrap) = matEinzel100 / factorScrap
+  const basisMatEinzel = matEinzel / factorScrap;
+  const matScrapDelta = matEinzel - basisMatEinzel;
+  document.getElementById("tdMatScrapDelta").textContent = matScrapDelta.toFixed(2);
+
+  // (2) Fertigungs-Ausschuss
+  // Bei dir werden (mach, lohn, tooling, fgk) mit scrap multipliziert, nur ruest NICHT.
+  // => Also Basis (ohne Scrap) = (mach/factorScrap) + (lohn/factorScrap) + (tooling/factorScrap) + (fgk/factorScrap) + ruest
+  // => Dann Differenz = fertSum - basis
+  const basisMach = mach / factorScrap;
+  const basisLohn = lohn / factorScrap;
+  const basisTool = tooling / factorScrap;
+  const basisFgk = fgk / factorScrap;
+  // Rüst bleibt unverändert (kein Scrap)
+  const basisFertSum = basisMach + basisLohn + basisTool + basisFgk + ruest;
+  const fertScrapDelta = fertSum - basisFertSum;
+
+  document.getElementById("tdFertScrapDelta").textContent = fertScrapDelta.toFixed(2);
+
+  // ----------------------------------------------------------------
+  // C) Debug-Log
+  // ----------------------------------------------------------------
+  console.log("DEBUG: updateResultTable() => matSum=", matSum, "fertSum=", fertSum);
+  console.log("DEBUG: matScrapDelta=", matScrapDelta, "fertScrapDelta=", fertScrapDelta);
+  console.log("DEBUG: Exiting updateResultTable()");
 }
 
 function onSliderMaterialChange(e) {

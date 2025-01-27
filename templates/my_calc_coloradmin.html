@@ -487,218 +487,230 @@
         </div>
         <!-- END Tab3 -->
 
-        <!-- TAB 4: ERGEBNIS -->
-        <div class="tab-pane fade p-3" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
-          <h5>Ergebnis</h5>
-          <div id="sliderContainer" class="text-center p-3 mb-3 border">
-            <div class="d-flex justify-content-around" style="gap: 30px;">
-              <!-- 1) Material-Slider -->
-              <div style="position: relative; width: 330px;">
-                <label class="form-label" style="font-size: 0.8em;">Materialpreis ±30%</label>
-                <input
-                  type="range"
-                  min="-30"
-                  max="30"
-                  step="1"
-                  value="0"
-                  oninput="onSliderMaterialChange(this.value)"
-                  style="width: 100%;"
-                />
-              </div>
-              <!-- 2) Lohn-Slider -->
-              <div style="position: relative; width: 330px;">
-                <label class="form-label" style="font-size: 0.8em;">Lohnkosten ±30%</label>
-                <input
-                  type="range"
-                  min="-30"
-                  max="30"
-                  step="1"
-                  value="0"
-                  oninput="onSliderLaborChange(this.value)"
-                  style="width: 100%;"
-                />
-              </div>
-              <!-- 3) CO2-Slider -->
-              <div style="position: relative; width: 330px;">
-                <label class="form-label" style="font-size: 0.8em;">CO₂+/-100% (@380gCO₂/kWh)</label>
-                <input
-                  type="range"
-                  min="-100"
-                  max="100"
-                  step="1"
-                  value="0"
-                  oninput="onSliderCO2Change(this.value)"
-                  style="width: 100%;"
-                />
-              </div>
-            </div>
-          </div>
+<!-- ====================
+     TAB 4: ERGEBNIS
+     ==================== -->
+<div class="tab-pane fade p-3" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
+  <h5>Ergebnis</h5>
+  <div id="sliderContainer" class="text-center p-3 mb-3 border">
+    <div class="d-flex justify-content-around" style="gap: 30px;">
+      <!-- 1) Material-Slider -->
+      <div style="position: relative; width: 330px;">
+        <label class="form-label" style="font-size: 0.8em;">Materialpreis ±30%</label>
+        <input
+          type="range"
+          min="-30"
+          max="30"
+          step="1"
+          value="0"
+          oninput="onSliderMaterialChange(this.value)"
+          style="width: 100%;"
+        />
+      </div>
+      <!-- 2) Lohn-Slider -->
+      <div style="position: relative; width: 330px;">
+        <label class="form-label" style="font-size: 0.8em;">Lohnkosten ±30%</label>
+        <input
+          type="range"
+          min="-30"
+          max="30"
+          step="1"
+          value="0"
+          oninput="onSliderLaborChange(this.value)"
+          style="width: 100%;"
+        />
+      </div>
+      <!-- 3) CO2-Slider -->
+      <div style="position: relative; width: 330px;">
+        <label class="form-label" style="font-size: 0.8em;">CO₂+/-100% (@380gCO₂/kWh)</label>
+        <input
+          type="range"
+          min="-100"
+          max="100"
+          step="1"
+          value="0"
+          oninput="onSliderCO2Change(this.value)"
+          style="width: 100%;"
+        />
+      </div>
+    </div>
+  </div>
 
-          <!-- NEU: ApexCharts-Container – wir ersetzen die Chart.js-Canvas -->
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <!-- Auskommentiert (alter Canvas):
-                   <canvas id="costChart" width="300" height="150" style="border: 1px solid #ccc;"></canvas>
-              -->
-              <div
-                id="apexCostChart"
-                style="
-                  border: 1px solid #ccc;
-                  min-height: 200px;
-                  margin-bottom: 1rem;
-                "
-              ></div>
-            </div>
-            <div class="col-md-6">
-              <!-- Auskommentiert (alter Canvas):
-                   <canvas id="co2Chart" width="300" height="150" style="border: 1px solid #ccc;"></canvas>
-              -->
-              <div
-                id="apexCo2Chart"
-                style="
-                  border: 1px solid #ccc;
-                  min-height: 200px;
-                  margin-bottom: 1rem;
-                "
-              ></div>
-            </div>
-          </div>
+  <!-- NEU: ApexCharts-Container – wir ersetzen die Chart.js-Canvas -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <!-- Auskommentiert (alter Canvas):
+           <canvas id="costChart" width="300" height="150" style="border: 1px solid #ccc;"></canvas>
+      -->
+      <div
+        id="apexCostChart"
+        style="
+          border: 1px solid #ccc;
+          min-height: 200px;
+          margin-bottom: 1rem;
+        "
+      ></div>
+    </div>
+    <div class="col-md-6">
+      <!-- Auskommentiert (alter Canvas):
+           <canvas id="co2Chart" width="300" height="150" style="border: 1px solid #ccc;"></canvas>
+      -->
+      <div
+        id="apexCo2Chart"
+        style="
+          border: 1px solid #ccc;
+          min-height: 200px;
+          margin-bottom: 1rem;
+        "
+      ></div>
+    </div>
+  </div>
 
-          <!-- Accordion-Bereich für Detailkosten (Material / Fertigung) -->
-          <div class="accordion mb-3" id="accCostsParent">
-            <!-- MATERIAL ACCORDION -->
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingMaterial">
-                <button
-                  class="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseMaterial"
-                  aria-expanded="false"
-                  aria-controls="collapseMaterial"
-                >
-                  Material-Kosten (Details)
-                </button>
-              </h2>
-              <div
-                id="collapseMaterial"
-                class="accordion-collapse collapse"
-                aria-labelledby="headingMaterial"
-                data-bs-parent="#accCostsParent"
-              >
-                <div class="accordion-body">
-                  <table class="table table-sm mb-0">
-                    <tbody>
-                      <tr>
-                        <td>Material-Einzelkosten/100</td>
-                        <td id="tdMatEinzel">0.00</td>
-                      </tr>
-                      <tr>
-                        <td>Material-Gemeinkosten/100</td>
-                        <td id="tdMatGemein">0.00</td>
-                      </tr>
-                      <tr>
-                        <td>Fremdzukauf/100</td>
-                        <td id="tdFremd">0.00</td>
-                      </tr>
-                      <tr>
-                        <td>Ausschuss (Material)/100</td>
-                        <td id="tdMatScrapDelta">0.00</td> <!-- optional -->
-                      </tr>
-                    </tbody>
-                    <tfoot>
-                      <tr class="table-active">
-                        <th>Summe Material/100</th>
-                        <th id="tdMatSumDetailed">0.00</th>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-              </div>
-            </div>
-            <!-- FERTIGUNG ACCORDION -->
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingFertigung">
-                <button
-                  class="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseFertigung"
-                  aria-expanded="false"
-                  aria-controls="collapseFertigung"
-                >
-                  Fertigungs-Kosten (Details)
-                </button>
-              </h2>
-              <div
-                id="collapseFertigung"
-                class="accordion-collapse collapse"
-                aria-labelledby="headingFertigung"
-                data-bs-parent="#accCostsParent"
-              >
-                <div class="accordion-body">
-                  <table class="table table-sm mb-0">
-                    <tbody>
-                      <tr>
-                        <td>Maschinenkosten/100</td>
-                        <td id="tdMach">0.00</td>
-                      </tr>
-                      <tr>
-                        <td>Lohnkosten/100</td>
-                        <td id="tdLohn">0.00</td>
-                      </tr>
-                      <tr>
-                        <td>Fertigungsgemeinkosten/100</td>
-                        <td id="tdFGK">0.00</td>
-                      </tr>
-                      <tr>
-                        <td>Ausschuss (Fertigung)/100</td>
-                        <td id="tdFertScrapDelta">0.00</td>
-                      </tr>
-                    </tbody>
-                    <tfoot>
-                      <tr class="table-active">
-                        <th>Summe Fertigung/100</th>
-                        <th id="tdFertSumDetailed">0.00</th>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Ende Accordion -->
-
-          <!-- Summenzeilen unten drunter -->
-          <table class="table table-striped table-sm">
+  <!-- Accordion-Bereich für Detailkosten (Material / Fertigung) -->
+  <div class="accordion mb-3" id="accCostsParent">
+    <!-- MATERIAL ACCORDION -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingMaterial">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseMaterial"
+          aria-expanded="false"
+          aria-controls="collapseMaterial"
+        >
+          Material-Kosten (Details)
+        </button>
+      </h2>
+      <div
+        id="collapseMaterial"
+        class="accordion-collapse collapse"
+        aria-labelledby="headingMaterial"
+        data-bs-parent="#accCostsParent"
+      >
+        <div class="accordion-body">
+          <table class="table table-sm mb-0">
             <tbody>
               <tr>
-                <td>Herstellkosten/100</td>
-                <td id="tdHerstell">0.00</td>
+                <td>Material-Einzelkosten/100</td>
+                <td id="tdMatEinzel">0.00</td>
               </tr>
               <tr>
-                <td>SG&A</td>
-                <td id="tdSGA">0.00</td>
+                <td>Material-Gemeinkosten/100</td>
+                <td id="tdMatGemein">0.00</td>
               </tr>
               <tr>
-                <td>Profit</td>
-                <td id="tdProfit">0.00</td>
+                <td>Fremdzukauf/100</td>
+                <td id="tdFremd">0.00</td>
               </tr>
               <tr>
-                <th>Gesamtkosten/100</th>
-                <th id="tdTotal">0.00</th>
+                <td>Ausschuss (Material)/100</td>
+                <td id="tdMatScrapDelta">0.00</td> <!-- NEU -->
               </tr>
             </tbody>
+            <tfoot>
+              <tr class="table-active">
+                <th>Summe Material/100</th>
+                <th id="tdMatSumDetailed">0.00</th>
+              </tr>
+            </tfoot>
           </table>
-
-          <button class="btn btn-primary mt-3" onclick="addResultToBaugruppeFromTab4()">
-            In Baugruppe übernehmen
-          </button>
-          <button onclick="exportComparisonExcel()">Excel Export</button>
-          <button onclick="export8StepsExcel()">Excel Export</button>
-          <button onclick="exportBaugruppenPowerPoint()">PDF Export</button>
         </div>
-        <!-- END Tab4 -->
+      </div>
+    </div>
+
+    <!-- FERTIGUNG ACCORDION -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingFertigung">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseFertigung"
+          aria-expanded="false"
+          aria-controls="collapseFertigung"
+        >
+          Fertigungs-Kosten (Details)
+        </button>
+      </h2>
+      <div
+        id="collapseFertigung"
+        class="accordion-collapse collapse"
+        aria-labelledby="headingFertigung"
+        data-bs-parent="#accCostsParent"
+      >
+        <div class="accordion-body">
+          <table class="table table-sm mb-0">
+            <tbody>
+              <tr>
+                <td>Maschinenkosten/100</td>
+                <td id="tdMach">0.00</td>
+              </tr>
+              <tr>
+                <td>Lohnkosten/100</td>
+                <td id="tdLohn">0.00</td>
+              </tr>
+              <tr>
+                <td>Fertigungsgemeinkosten/100</td>
+                <td id="tdFGK">0.00</td>
+              </tr>
+              <!-- NEU: Rüst- und Tooling-Zeilen -->
+              <tr>
+                <td>Rüstkosten/100</td>
+                <td id="tdRuestDetailed">0.00</td>
+              </tr>
+              <tr>
+                <td>Tooling/100</td>
+                <td id="tdToolingDetailed">0.00</td>
+              </tr>
+              <tr>
+                <td>Ausschuss (Fertigung)/100</td>
+                <td id="tdFertScrapDelta">0.00</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="table-active">
+                <th>Summe Fertigung/100</th>
+                <th id="tdFertSumDetailed">0.00</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Ende Accordion -->
+
+  <!-- Summenzeilen unten drunter -->
+  <table class="table table-striped table-sm">
+    <tbody>
+      <tr>
+        <td>Herstellkosten/100</td>
+        <td id="tdHerstell">0.00</td>
+      </tr>
+      <tr>
+        <td>SG&A</td>
+        <td id="tdSGA">0.00</td>
+      </tr>
+      <tr>
+        <td>Profit</td>
+        <td id="tdProfit">0.00</td>
+      </tr>
+      <tr>
+        <th>Gesamtkosten/100</th>
+        <th id="tdTotal">0.00</th>
+      </tr>
+    </tbody>
+  </table>
+
+  <button class="btn btn-primary mt-3" onclick="addResultToBaugruppeFromTab4()">
+    In Baugruppe übernehmen
+  </button>
+  <button onclick="exportComparisonExcel()">Excel Export</button>
+  <button onclick="export8StepsExcel()">Excel Export</button>
+  <button onclick="exportBaugruppenPowerPoint()">PDF Export</button>
+</div>
+<!-- END Tab4 -->
 
         <!-- TAB 5: Baugruppe -->
         <div
