@@ -5,6 +5,7 @@ from .excel import (
     export_baugruppe_comparison_excel
 )
 from .powerpoint import export_baugruppe_pptx
+from .powerpoint import export_pareto_kalk_epic
 exports_bp = Blueprint("exports_bp", __name__)
 
 # ------------------------------------------------------------------------
