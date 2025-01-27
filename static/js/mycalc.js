@@ -465,6 +465,10 @@ function calcAll() {
 function initApexCharts() {
   console.log("DEBUG: Entering initApexCharts()");
 
+  // 1) Check if Dark Mode aktiv ist
+  const appEl = document.getElementById('app');
+  const isDarkModeActive = appEl && appEl.classList.contains('app-theme-dark-mode');
+
   // (A) Falls schon existieren -> destroy
   if (apexInitialized && apexCostChart) {
     apexCostChart.destroy();
@@ -481,8 +485,9 @@ function initApexCharts() {
     chart: {
       type: 'pie',
       height: 180,
-      foreColor: '#ccc',
-      background: '#2d2d2d',  // Dunkler Hintergrund
+      // Dynamische Farbe je nach Dark/Light
+      foreColor: isDarkModeActive ? '#ccc' : '#000',
+      background: isDarkModeActive ? '#2d2d2d' : '#f8f9fa'
     },
     series: [0, 0, 0, 0],     // [Material, Fertigung, SGA, Profit]
     labels: ['Material', 'Fertigung', 'SG&A', 'Profit'],
@@ -506,8 +511,9 @@ function initApexCharts() {
     chart: {
       type: 'donut',
       height: 180,
-      foreColor: '#ccc',
-      background: '#2d2d2d',
+      // Dynamische Farbe je nach Dark/Light
+      foreColor: isDarkModeActive ? '#ccc' : '#000',
+      background: isDarkModeActive ? '#2d2d2d' : '#f8f9fa'
     },
     series: [0, 0],           // [Mat-CO2, Proc-CO2]
     labels: ['Material-CO2', 'Prozess-CO2'],
@@ -534,7 +540,6 @@ function initApexCharts() {
   apexInitialized = true;
   console.log("DEBUG: Exiting initApexCharts()");
 }
-
 /************************************************************
  * updateApexCharts(data) – Neues "data" vom Server
  ************************************************************/

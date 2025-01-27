@@ -224,29 +224,28 @@
     color: #000 !important;
     border: 1px solid #ddd !important;
   }
+
   /* Tab2 Felder in Dark Mode trotzdem weiß */
   .app-theme-dark-mode #tab2 .form-control {
     background-color: #fff;
     color: #000;
   }
-
-    /* Tab2 Felder in Dark Mode trotzdem weiß */
+  /* Tab1 Felder in Dark Mode trotzdem weiß */
   .app-theme-dark-mode #tab1 .form-control {
     background-color: #fff;
     color: #000;
   }
-
   /* Tab3 Tabelle in Dark Mode trotzdem weiß */
   .app-theme-dark-mode #tab3 table {
     background-color: #fff;
     color: #000;
   }
-
   /* Tab5 Tabelle in Dark Mode trotzdem weiß */
   .app-theme-dark-mode #tab5 table {
     background-color: #fff;
     color: #000;
   }
+
   /* =========================================================================
      DARK MODE Overrides (aktiv bei .app-theme-dark-mode auf #app)
      ========================================================================= */
@@ -289,8 +288,9 @@
 
   /*********************************************
    * Tab4-Änderungen für den Dark Mode
+     (Nur Slider/Charts und Accordion-Body!)
    *********************************************/
-  /* 1) Slider + Charts => Dunkel */
+  /* (1) Slider + Charts => Dunkel im Dark Mode */
   .app-theme-dark-mode #tab4 #sliderContainer,
   .app-theme-dark-mode #tab4 #apexCostChart,
   .app-theme-dark-mode #tab4 #apexCo2Chart {
@@ -299,122 +299,45 @@
     border: 1px solid #555 !important;
   }
 
-  /* 2) Summenzeilen in Tab4 => helle Schrift + etwas dunklerer Hintergrund */
-  .app-theme-dark-mode #tab4 table.table-sm tbody tr th,
-  .app-theme-dark-mode #tab4 table.table-sm tbody tr td {
-    background-color: #444;
-    color: #fff;
-  }
-  /* Falls <tr class="table-active"> => noch dunkler: #555 */
-  .app-theme-dark-mode #tab4 .table-active th,
-  .app-theme-dark-mode #tab4 .table-active td {
-    background-color: #555;
-    color: #fff;
+  /* (2) Accordion-Body in Tab4 dunkler + heller Text */
+  .app-theme-dark-mode #tab4 .accordion-body {
+    background-color: #333 !important;
+    color: #ccc !important;
   }
 
-  /* 3) (Optional) Null-Linie im Slider: auskommentiert */
   /*
-  #tab4 input[type="range"] {
-    background: linear-gradient(to right, #bbb 50%, #eee 50%);
-    border-radius: 4px;
-  }
+    >>>> TABELLEN in Tab4 sollen im Dark Mode genauso wie Light Mode bleiben
+    >>>> Daher KEINE Overrides mehr für .app-theme-dark-mode #tab4 table ...
   */
-  /* ————————————————————————————
-   1) Charts-Hintergrund an SliderContainer anpassen (Light Mode)
-   ———————————————————————————— */
-#tab4 #apexCostChart,
-#tab4 #apexCo2Chart {
-  /* Gleiche Farbe wie sliderContainer (f8f9fa) */
-  background-color: #f8f9fa !important;
-}
 
-.app-theme-dark-mode #tab4 .table-active th,
-.app-theme-dark-mode #tab4 .table-active td {
-  background-color: #444 !important;
-  color: #fff !important;
-}
+  /* (3) Spalten-Ausrichtung (für beide Modi gleich) */
+  #tab4 .table-sm td,
+  #tab4 .table-sm th {
+    text-align: right;
+  }
+  #tab4 .table-sm td:first-child,
+  #tab4 .table-sm th:first-child {
+    text-align: left;
+  }
 
-#tab4 .table-sm td,
-#tab4 .table-sm th {
-  text-align: right;
-}
-#tab4 .table-sm td:first-child,
-#tab4 .table-sm th:first-child {
-  text-align: left;
-}
-/* ————————————————————————————
-   2) Dark Mode – Lesbarkeit in Tab4 verbessern
-   ———————————————————————————— */
-/* Accordion-Body dunkler / Text heller */
-.app-theme-dark-mode #tab4 .accordion-body {
-  background-color: #333 !important; /* Oder #2d2d2d, wenn dir #333 zu hell ist */
-  color: #ccc !important;
-}
+  /* (4) Button-Ausrichtung in Tab4 */
+  #tab4 .d-flex.gap-2.align-items-center > button {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
 
-/* Summenzeilen mit .table-active dunkler + Text in weiß */
-.app-theme-dark-mode #tab4 .table-active th,
-.app-theme-dark-mode #tab4 .table-active td {
-  background-color: #505050 !important; /* etwas dunkler, damit es Kontrast hat */
-  color: #fff !important;
-}
-
-/* Normale Zeilen in den Detailtabellen (Material/Fertigung) können gerne leicht abgesetzt sein */
-.app-theme-dark-mode #tab4 table.table-sm tbody tr th,
-.app-theme-dark-mode #tab4 table.table-sm tbody tr td {
-  /* Falls gewünscht: #444 statt #2d2d2d */
-  background-color: #444 !important;
-  color: #fff !important;
-}
-
-/* ————————————————————————————
-   3) Spalten rechtsbündig ausrichten
-   (Materialsumme, Fertigungssumme, u.a.)
-   ———————————————————————————— */
-#tab4 table.table-sm tbody td,
-#tab4 table.table-sm tfoot td,
-#tab4 table.table-sm tfoot th {
-  text-align: right;  /* Zahlenwerte rechtsbündig */
-}
-#tab4 table.table-sm tbody td:first-child,
-#tab4 table.table-sm thead th:first-child {
-  text-align: left;   /* Erste Spalte links */
-}
-
-/* ————————————————————————————
-   4) Button-Ausrichtung:
-   „In Baugruppe übernehmen“ nicht tiefer als die anderen
-   ———————————————————————————— */
-/* Oft reicht ein "margin: 0" oder align-items: baseline */
-#tab4 .d-flex.gap-2.align-items-center > button {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-
-/* ————————————————————————————
-   5) (Optional) Slider-Style im Dark Mode heller
-      + Nullmarkierung
-   ———————————————————————————— */
-/* a) Slider-Farbe anpassen */
-.app-theme-dark-mode #tab4 input[type="range"] {
-  /* neutraler (heller) Hintergrund */
-  background-color: #666 !important;
-}
-
-/* b) Schmale Nullmarkierung ohne Layout zu sprengen
-   Trick: linear-gradient, in der Mitte ein dünner Strich */
-#tab4 input[type="range"] {
-  /* Beispielhaft: 50% heller/grauer Strich */
-  background-image: linear-gradient(to right,
-                                    transparent 49.5%,
-                                    #bbb 49.5%,
-                                    #bbb 50.5%,
-                                    transparent 50.5%);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-}
-
+  /* (5) (Optional) Slider-Style im Dark Mode heller + Nullmarkierung */
+  .app-theme-dark-mode #tab4 input[type="range"] {
+    background-color: #666 !important;
+    background-image: linear-gradient(to right,
+                                      transparent 49.5%,
+                                      #bbb 49.5%,
+                                      #bbb 50.5%,
+                                      transparent 50.5%);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
 </style>
-
   <!-- =========================================================
        Dark Mode Toggle Script
       ========================================================= -->
@@ -2031,312 +1954,324 @@ btn btn-teal: ein ColorAdmin-Farbton.
   </div><!-- /.modal-dialog -->
 </div><!-- #kaltfliessModal --><!-- End KaltfliessModal -->
 <!-- =================== PCB-KALKULATOR (PARAMETRIK) - DESIGN-ADAPTIERT =================== -->
-    <div class="modal fade" id="pcbModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-xl" style="max-width:1000px;">
-        <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
+<div class="modal fade" id="pcbModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl" style="max-width:1000px;">
+    <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
 
-          <!-- HEADER -->
-          <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
-            <h5 class="modal-title">PCB-Kalkulator (Parametrik)</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-          </div>
+      <!-- HEADER -->
+      <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
+        <h5 class="modal-title">PCB-Kalkulator (Parametrik)</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
 
-          <!-- BODY: position relative -->
-          <div class="modal-body p-2 position-relative">
-            <!-- NAV-TABS -->
-            <ul class="nav nav-tabs nav-tabs-v2" id="pcbTabs" role="tablist" style="margin-bottom: 0.5rem;">
-              <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link active"
-                  id="pcb-tab-input"
-                  data-bs-toggle="tab"
-                  data-bs-target="#pcb-tabpane-input"
-                  type="button"
-                  role="tab"
-                >
-                  Eingaben
-                </button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link"
-                  id="pcb-tab-adv"
-                  data-bs-toggle="tab"
-                  data-bs-target="#pcb-tabpane-adv"
-                  type="button"
-                  role="tab"
-                >
-                  Erweitert
-                </button>
-              </li>
-            </ul>
+      <!-- BODY: position relative -->
+      <div class="modal-body p-2 position-relative">
+        <!-- NAV-TABS -->
+        <ul class="nav nav-tabs nav-tabs-v2" id="pcbTabs" role="tablist" style="margin-bottom: 0.5rem;">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="pcb-tab-input"
+              data-bs-toggle="tab"
+              data-bs-target="#pcb-tabpane-input"
+              type="button"
+              role="tab"
+            >
+              Eingaben
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="pcb-tab-adv"
+              data-bs-toggle="tab"
+              data-bs-target="#pcb-tabpane-adv"
+              type="button"
+              role="tab"
+            >
+              Erweitert
+            </button>
+          </li>
+        </ul>
 
-            <div class="tab-content p-3" id="pcbTabContent">
-              <!-- TAB 1: EINGABEN -->
-              <div
-                class="tab-pane fade show active"
-                id="pcb-tabpane-input"
-                role="tabpanel"
-              >
-                <!-- L x B (mm) -->
-                <div class="row mb-3">
-                  <label class="col-sm-4 col-form-label">
-                    Abmessung:
-                  </label>
-                  <div class="col-sm-5 d-flex flex-wrap gap-2">
-                    <div class="input-group input-group-sm" style="width: 48%;">
-                      <span class="input-group-text">L (mm)</span>
-                      <input
-                        type="number"
-                        class="form-control"
-                        id="pcbLen"
-                        step="1"
-                        value="100"
-                      />
-                    </div>
-                    <div class="input-group input-group-sm" style="width: 48%;">
-                      <span class="input-group-text">B (mm)</span>
-                      <input
-                        type="number"
-                        class="form-control"
-                        id="pcbWid"
-                        step="1"
-                        value="80"
-                      />
-                    </div>
-                  </div>
+        <div class="tab-content p-3" id="pcbTabContent">
+          <!-- TAB 1: EINGABEN -->
+          <div
+            class="tab-pane fade show active"
+            id="pcb-tabpane-input"
+            role="tabpanel"
+          >
+            <!-- L x B (mm) -->
+            <div class="row mb-3">
+              <label class="col-sm-4 col-form-label">
+                Abmessung:
+              </label>
+              <div class="col-sm-5 d-flex flex-wrap gap-2">
+                <div class="input-group input-group-sm" style="width: 48%;">
+                  <span class="input-group-text">L (mm)</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="pcbLen"
+                    step="1"
+                    value="100"
+                  />
                 </div>
-
-                <!-- Lagenzahl -->
-                <div class="row mb-3">
-                  <label for="pcbLayer" class="col-sm-4 col-form-label">
-                    Lagenzahl
-                  </label>
-                  <div class="col-sm-5">
-                    <select class="form-select form-select-sm" id="pcbLayer">
-                      <option>2</option>
-                      <option>4</option>
-                      <option>6</option>
-                      <option>8</option>
-                    </select>
-                  </div>
+                <div class="input-group input-group-sm" style="width: 48%;">
+                  <span class="input-group-text">B (mm)</span>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="pcbWid"
+                    step="1"
+                    value="80"
+                  />
                 </div>
-
-                <!-- Stückzahl -->
-                <div class="row mb-3">
-                  <label for="pcbQty" class="col-sm-4 col-form-label">
-                    Stückzahl
-                  </label>
-                  <div class="col-sm-5">
-                    <input
-                      type="number"
-                      class="form-control form-control-sm"
-                      id="pcbQty"
-                      step="1"
-                      value="1000"
-                    />
-                  </div>
-                </div>
-
-                <!-- Land -->
-                <div class="row mb-3">
-                  <label for="pcbLand" class="col-sm-4 col-form-label">
-                    Land (Fertigung)
-                  </label>
-                  <div class="col-sm-5">
-                    <select class="form-select form-select-sm" id="pcbLand">
-                      <option>China</option>
-                      <option>Europa</option>
-                      <option>Sonst</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <!-- TAB 2: ERWEITERT -->
-              <div
-                class="tab-pane fade"
-                id="pcb-tabpane-adv"
-                role="tabpanel"
-              >
-                <!-- Dicke -->
-                <div class="row mb-3">
-                  <label for="pcbThick" class="col-sm-4 col-form-label">
-                    PCB-Dicke (mm)
-                  </label>
-                  <div class="col-sm-5">
-                    <input
-                      type="number"
-                      class="form-control form-control-sm"
-                      id="pcbThick"
-                      step="0.01"
-                      value="1.6"
-                    />
-                  </div>
-                </div>
-
-                <!-- Kupferdicke -->
-                <div class="row mb-3">
-                  <label for="pcbCu" class="col-sm-4 col-form-label">
-                    Kupferdicke
-                  </label>
-                  <div class="col-sm-5">
-                    <select class="form-select form-select-sm" id="pcbCu">
-                      <option>35µm</option>
-                      <option>70µm</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Finish -->
-                <div class="row mb-3">
-                  <label for="pcbFinish" class="col-sm-4 col-form-label">
-                    Oberfläche (Finish)
-                  </label>
-                  <div class="col-sm-5">
-                    <select class="form-select form-select-sm" id="pcbFinish">
-                      <option>HASL</option>
-                      <option>ENIG</option>
-                      <option>OSP</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Tooling-Kosten -->
-                <div class="row mb-3">
-                  <label for="pcbTooling" class="col-sm-4 col-form-label">
-                    Tooling-Kosten (€)
-                  </label>
-                  <div class="col-sm-5">
-                    <input
-                      type="number"
-                      class="form-control form-control-sm"
-                      id="pcbTooling"
-                      step="1"
-                      value="200"
-                    />
-                  </div>
-                </div>
-
-                <!-- CheckBox: "Einfache Bestückung?" -->
-                <div class="row mb-3">
-                  <div class="col-sm-4"></div>
-                  <div class="col-sm-8">
-                    <div class="form-check">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="pcbAssemblyCheck"
-                      />
-                      <label
-                        class="form-check-label"
-                        for="pcbAssemblyCheck"
-                      >
-                        Einfache Bestückung berücksichtigen?
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- SMD / THT Felder -->
-                <div class="row mb-3">
-                  <label for="pcbSmdCount" class="col-sm-4 col-form-label">
-                    SMD-Bauteile (Anzahl)
-                  </label>
-                  <div class="col-sm-5">
-                    <input
-                      type="number"
-                      class="form-control form-control-sm"
-                      id="pcbSmdCount"
-                      step="1"
-                      value="50"
-                    />
-                  </div>
-                </div>
-
-                <div class="row mb-3">
-                  <label for="pcbThtCount" class="col-sm-4 col-form-label">
-                    THT-Pins (Anzahl)
-                  </label>
-                  <div class="col-sm-5">
-                    <input
-                      type="number"
-                      class="form-control form-control-sm"
-                      id="pcbThtCount"
-                      step="1"
-                      value="10"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div><!-- .tab-content -->
-
-            <!-- Ergebnis-Bereich -->
-            <hr />
-            <div class="row">
-              <div class="col-sm-4" id="pcbResultText" style="font-size:0.85rem;">
-                <!-- Dynamisch gefüllt -->
-              </div>
-              <div class="col-sm-4 text-center">
-                <canvas
-                  id="pcbCostChart"
-                  width="200"
-                  height="200"
-                  style="border:1px solid #ccc;"
-                ></canvas>
-              </div>
-              <div class="col-sm-4 text-center">
-                <canvas
-                  id="pcbCo2Chart"
-                  width="200"
-                  height="200"
-                  style="border:1px solid #ccc;"
-                ></canvas>
               </div>
             </div>
 
-            <!-- Chat-Bubble + Chat-Fenster im Modal (Beispiel) -->
-            <div id="pcbChatBubble">
-              <img src="https://cdn-icons-png.flaticon.com/512/2990/2990675.png"
-                   alt="Chat"
-                   onclick="togglePcbChatWindow()"/>
-            </div>
-            <div id="pcbChatWindow">
-              <div class="header">KI-Assistent</div>
-              <div class="body">
-                <p>Hallo, wie kann ich helfen?</p>
-              </div>
-              <div class="footer">
-                <button class="btn btn-sm btn-secondary" onclick="togglePcbChatWindow()">Schließen</button>
+            <!-- Lagenzahl -->
+            <div class="row mb-3">
+              <label for="pcbLayer" class="col-sm-4 col-form-label">
+                Lagenzahl
+              </label>
+              <div class="col-sm-5">
+                <select class="form-select form-select-sm" id="pcbLayer">
+                  <option>2</option>
+                  <option>4</option>
+                  <option>6</option>
+                  <option>8</option>
+                </select>
               </div>
             </div>
 
-          </div><!-- .modal-body -->
+            <!-- Stückzahl -->
+            <div class="row mb-3">
+              <label for="pcbQty" class="col-sm-4 col-form-label">
+                Stückzahl
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="pcbQty"
+                  step="1"
+                  value="1000"
+                />
+              </div>
+            </div>
 
-          <!-- FOOTER -->
-          <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
-            <div>
-              <button
-                type="button"
-                class="btn btn-sm btn-theme me-2"
-                onclick="calculatePcb()"
-              >
-                <i class="fa fa-calculator me-1"></i> Berechnen
-              </button>
-              <button
-                type="button"
-                class="btn btn-sm btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                <i class="fa fa-times me-1"></i> Schließen
-              </button>
+            <!-- Land -->
+            <div class="row mb-3">
+              <label for="pcbLand" class="col-sm-4 col-form-label">
+                Land (Fertigung)
+              </label>
+              <div class="col-sm-5">
+                <select class="form-select form-select-sm" id="pcbLand">
+                  <option>China</option>
+                  <option>Europa</option>
+                  <option>Sonst</option>
+                </select>
+              </div>
             </div>
           </div>
 
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- #pcbModal --><!-- ================= SPRITZGUSS-MODAL ================= -->
-<!-- =================== SPRITZGUSS – TAKTZEITRECHNER (DESIGN-ADAPTIERT) =================== -->
+          <!-- TAB 2: ERWEITERT -->
+          <div
+            class="tab-pane fade"
+            id="pcb-tabpane-adv"
+            role="tabpanel"
+          >
+            <!-- Dicke -->
+            <div class="row mb-3">
+              <label for="pcbThick" class="col-sm-4 col-form-label">
+                PCB-Dicke (mm)
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="pcbThick"
+                  step="0.01"
+                  value="1.6"
+                />
+              </div>
+            </div>
+
+            <!-- Kupferdicke -->
+            <div class="row mb-3">
+              <label for="pcbCu" class="col-sm-4 col-form-label">
+                Kupferdicke
+              </label>
+              <div class="col-sm-5">
+                <select class="form-select form-select-sm" id="pcbCu">
+                  <option>35µm</option>
+                  <option>70µm</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Finish -->
+            <div class="row mb-3">
+              <label for="pcbFinish" class="col-sm-4 col-form-label">
+                Oberfläche (Finish)
+              </label>
+              <div class="col-sm-5">
+                <select class="form-select form-select-sm" id="pcbFinish">
+                  <option>HASL</option>
+                  <option>ENIG</option>
+                  <option>OSP</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Tooling-Kosten -->
+            <div class="row mb-3">
+              <label for="pcbTooling" class="col-sm-4 col-form-label">
+                Tooling-Kosten (€)
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="pcbTooling"
+                  step="1"
+                  value="200"
+                />
+              </div>
+            </div>
+
+            <!-- CheckBox: "Einfache Bestückung?" -->
+            <div class="row mb-3">
+              <div class="col-sm-4"></div>
+              <div class="col-sm-8">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="pcbAssemblyCheck"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="pcbAssemblyCheck"
+                  >
+                    Einfache Bestückung berücksichtigen?
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- SMD / THT Felder -->
+            <div class="row mb-3">
+              <label for="pcbSmdCount" class="col-sm-4 col-form-label">
+                SMD-Bauteile (Anzahl)
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="pcbSmdCount"
+                  step="1"
+                  value="50"
+                />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label for="pcbThtCount" class="col-sm-4 col-form-label">
+                THT-Pins (Anzahl)
+              </label>
+              <div class="col-sm-5">
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  id="pcbThtCount"
+                  step="1"
+                  value="10"
+                />
+              </div>
+            </div>
+          </div>
+        </div><!-- .tab-content -->
+
+        <!-- Ergebnis-Bereich -->
+        <hr />
+        <div class="row">
+          <div class="col-sm-4" id="pcbResultText" style="font-size:0.85rem;">
+            <!-- Dynamisch gefüllt -->
+          </div>
+          <div class="col-sm-4 text-center">
+            <canvas
+              id="pcbCostChart"
+              width="200"
+              height="200"
+              style="border:1px solid #ccc;"
+            ></canvas>
+          </div>
+          <div class="col-sm-4 text-center">
+            <canvas
+              id="pcbCo2Chart"
+              width="200"
+              height="200"
+              style="border:1px solid #ccc;"
+            ></canvas>
+          </div>
+        </div>
+
+        <!-- Chat-Bubble + Chat-Fenster im Modal (Beispiel) -->
+        <div id="pcbChatBubble">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2990/2990675.png"
+            alt="Chat"
+            onclick="togglePcbChatWindow()"
+          />
+        </div>
+
+        <div id="pcbChatWindow">
+          <div class="header">KI-Assistent</div>
+          <div class="body">
+            <p>Hallo, wie kann ich helfen?</p>
+          </div>
+          <div class="footer d-flex align-items-center" style="gap:5px;">
+            <!-- NEU: Eingabefeld + Senden-Button -->
+            <input
+              type="text"
+              id="pcbChatInput"
+              class="form-control form-control-sm"
+              placeholder="Frage eingeben..."
+              style="flex:1;"
+            />
+            <button class="btn btn-sm btn-primary" onclick="sendPcbChat()">Senden</button>
+            <button class="btn btn-sm btn-secondary" onclick="togglePcbChatWindow()">Schließen</button>
+          </div>
+        </div>
+
+      </div><!-- .modal-body -->
+
+      <!-- FOOTER -->
+      <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-theme me-2"
+            onclick="calculatePcb()"
+          >
+            <i class="fa fa-calculator me-1"></i> Berechnen
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            <i class="fa fa-times me-1"></i> Schließen
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- #pcbModal -->
+<!-- ================= SPRITZGUSS-MODAL ================= --><!-- =================== SPRITZGUSS – TAKTZEITRECHNER (DESIGN-ADAPTIERT) =================== -->
 <div class="modal fade" id="modalSpritzguss" tabindex="-1" aria-labelledby="spritzgussModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-sg" style="max-width:1000px;">
     <div class="modal-content" style="font-size: 0.9rem; max-height: 85vh; overflow-y: auto;">
