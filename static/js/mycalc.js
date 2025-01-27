@@ -2239,7 +2239,6 @@ function onAskGPT(inputId, outputId) {
         }
       });
 }
-
 /**
  * askCustomGPT(userQuestion):
  *  - Ruft /mycalc/gpt_ask auf, schickt {question}, holt {answer}
@@ -2255,7 +2254,7 @@ function askCustomGPT(userQuestion) {
       "Content-Type": "application/json",
       "X-CSRFToken": csrftoken
     },
-    body: JSON.stringify({question: userQuestion})
+    body: JSON.stringify({ question: userQuestion })
   })
       .then((res) => {
         if (!res.ok) {
@@ -2275,6 +2274,61 @@ function askCustomGPT(userQuestion) {
       });
 }
 
+function togglePcbChatWindow() {
+  const wnd = document.getElementById("pcbChatWindow");
+  if (!wnd) return;
+  if (wnd.style.display === "none" || !wnd.style.display) {
+    wnd.style.display = "block";
+  } else {
+    wnd.style.display = "none";
+  }
+}
+
+/**
+ * sendPcbChat()
+ *  - Liest den Wert aus #pcbChatInput,
+ *  - postet "Du: ..." ins Chat-Fenster,
+ *  - ruft askCustomGPT(...) auf => Antwort => "KI: ..." in Chat.
+ *  - Falls GPT usage exceeded => alert(...), Fehlermeldung in Chat.
+ */
+function sendPcbChat() {
+  const inputEl = document.getElementById("pcbChatInput");
+  const chatBody = document.querySelector("#pcbChatWindow .body");
+  if (!inputEl || !chatBody) return;
+
+  const userText = inputEl.value.trim();
+  if (!userText) return;
+
+  // 1) User-Text in den Chat schreiben
+  const userP = document.createElement("p");
+  userP.innerHTML = `<strong>Du:</strong> ${userText}`;
+  chatBody.appendChild(userP);
+  chatBody.scrollTop = chatBody.scrollHeight;
+
+  // 2) GPT anfragen
+  askCustomGPT(userText)
+    .then((reply) => {
+      const aiP = document.createElement("p");
+      aiP.innerHTML = `<strong>KI:</strong> ${reply}`;
+      chatBody.appendChild(aiP);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    })
+    .catch((err) => {
+      console.error("sendPcbChat error:", err);
+      const errP = document.createElement("p");
+      errP.style.color = "red";
+      errP.innerHTML = `Fehler: ${err.message}`;
+      chatBody.appendChild(errP);
+
+      if (err.message === "GPT usage limit exceeded") {
+        alert("Dein GPT-Kontingent ist aufgebraucht. Bitte upgrade dein Abo!");
+      }
+      chatBody.scrollTop = chatBody.scrollHeight;
+    });
+
+  // Eingabefeld leeren
+  inputEl.value = "";
+}
 /** ================= Login/Logout/Session ================ */
 
 /**
