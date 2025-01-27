@@ -19,164 +19,165 @@
   <!-- =========================================================
        1) Deine bisherigen globalen Styles
       ========================================================= -->
-  <style>
-    /* 1) GLOBAL BASIS */
-    body {
-      font-size: 14px;
-      background-color: #f8f9fa;
-      margin: 0;
-      padding: 0;
-    }
-    /* #app mit Sidebar minified => standardmäßig eingeklappt */
-    #app.app-sidebar-minified { /* ColorAdmin-Klasse: Sidebar start-minimized */ }
+    <style>
+      /* 1) GLOBAL BASIS */
+      body {
+        font-size: 14px;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+      /* #app mit Sidebar minified => standardmäßig eingeklappt */
+      #app.app-sidebar-minified { /* ColorAdmin-Klasse: Sidebar start-minimized */ }
 
-    /* 2) HEADER-BEREICH => Einzeiliges Flex-Layout */
-    .app-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between; /* Burger+Logo links, Account rechts */
-      min-height: 60px;
-      background: #fff;
-      border-bottom: 1px solid #ddd;
-      padding: 0 15px; /* etwas Horizontal-Padding */
-    }
-    .navbar-desktop-toggler, .navbar-mobile-toggler {
-      font-size: 1rem;
-      line-height: 1;
-      background: none;
-      border: none;
-      padding: 0;
-      margin: 0;
-      cursor: pointer; /* wichtig, da button ohne border */
-    }
-    .navbar-desktop-toggler i.fa-bars {
-      font-size: 1.2rem;
-      color: #444;
-      margin-right: 5px;
-    }
-    .navbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      white-space: nowrap; /* verhindert Zeilenumbruch */
-    }
-    .navbar-brand img {
-      height: 120px !important;
-      width: auto;
-    }
-    .navbar-brand span {
-      font-size: 18px;
-      vertical-align: middle;
-    }
-    .header-center {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .header-center label {
-      font-weight: 600;
-      margin-bottom: 0;
-    }
-    .header-center input[readonly] {
-      background: #e9ecef;
-    }
+      /* 2) HEADER-BEREICH => Einzeiliges Flex-Layout */
+      .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Burger+Logo links, Account rechts */
+        min-height: 60px;
+        background: #fff;
+        border-bottom: 1px solid #ddd;
+        padding: 0 15px; /* etwas Horizontal-Padding */
+      }
+      .navbar-desktop-toggler, .navbar-mobile-toggler {
+        font-size: 1rem;
+        line-height: 1;
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        cursor: pointer; /* wichtig, da button ohne border */
+      }
+      .navbar-desktop-toggler i.fa-bars {
+        font-size: 1.2rem;
+        color: #444;
+        margin-right: 5px;
+      }
+      .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        white-space: nowrap; /* verhindert Zeilenumbruch */
+      }
+      .navbar-brand img {
+        height: 120px !important;
+        width: auto;
+      }
+      .navbar-brand span {
+        font-size: 18px;
+        vertical-align: middle;
+      }
+      .header-center {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .header-center label {
+        font-weight: 600;
+        margin-bottom: 0;
+      }
+      .header-center input[readonly] {
+        background: #e9ecef;
+      }
 
-    /* 3) SIDEBAR => Minified + nur Icons (verstecke nav-text) */
-    .nav-text {
-      display: none !important; /* nur Icons */
-    }
-    .nav-icon {
-      font-size: 1.2rem;
-    }
-    .app-sidebar { /* standard style => left: 0; etc. -> von ColorAdmin gesteuert */ }
+      /* 3) SIDEBAR => Minified + nur Icons (verstecke nav-text) */
+      .nav-text {
+        display: none !important; /* nur Icons */
+      }
+      .nav-icon {
+        font-size: 1.2rem;
+      }
+      .app-sidebar { /* standard style => left: 0; etc. -> von ColorAdmin gesteuert */ }
 
-    /* 4) CONTENT-BEREICH => (Tabs etc.) */
-    #content {
-      padding: 1rem;
-    }
-    .nav-tabs .nav-link {
-      font-weight: 500;
-    }
+      /* 4) CONTENT-BEREICH => (Tabs etc.) */
+      #content {
+        padding: 1rem;
+      }
+      .nav-tabs .nav-link {
+        font-weight: 500;
+      }
 
-    /* 5) PCB-Modal => Chat-Bubble + Chat-Fenster */
-    .modal-body { position: relative; }
-    #pcbChatBubble {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      z-index: 9999;
-    }
-    #pcbChatBubble img {
-      width: 100%;
-      height: auto;
-      border-radius: 50%;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
-    }
-    #pcbChatWindow {
-      position: absolute;
-      right: 60px;
-      bottom: 60px;
-      width: 280px;
-      background: #fff;
-      border: 1px solid #ccc;
-      box-shadow: 0 0 6px rgba(0,0,0,0.2);
-      z-index: 9999;
-      display: none;
-    }
-    #pcbChatWindow .header {
-      background: #f0f0f0;
-      padding: 6px;
-      font-weight: bold;
-    }
-    #pcbChatWindow .body {
-      max-height: 150px;
-      overflow-y: auto;
-      padding: 6px;
-      font-size: 0.85rem;
-    }
-    #pcbChatWindow .footer {
-      padding: 6px;
-      text-align: right;
-    }
+      /* 5) PCB-Modal => Chat-Bubble + Chat-Fenster */
+      .modal-body { position: relative; }
+      #pcbChatBubble {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        z-index: 9999;
+      }
+      #pcbChatBubble img {
+        width: 100%;
+        height: auto;
+        border-radius: 50%;
+        box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      }
+      #pcbChatWindow {
+        position: absolute;
+        right: 60px;
+        bottom: 60px;
+        width: 280px;
+        background: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 6px rgba(0,0,0,0.2);
+        z-index: 9999;
+        display: none;
+      }
+      #pcbChatWindow .header {
+        background: #f0f0f0;
+        padding: 6px;
+        font-weight: bold;
+      }
+      #pcbChatWindow .body {
+        max-height: 150px;
+        overflow-y: auto;
+        padding: 6px;
+        font-size: 0.85rem;
+      }
+      #pcbChatWindow .footer {
+        padding: 6px;
+        text-align: right;
+      }
 
-    /* Sonstige Utility */
-    .table-sm td, .table-sm th {
-      padding: 0.3rem;
-    }
-    .img-choice {
-      width: 120px;
-      margin: 0.5rem;
-      border: 2px solid #ddd;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .img-choice:hover {
-      border: 2px solid #007bff;
-    }
-    .flex-container {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: center;
-      justify-content: space-between;
-    }
+      /* Sonstige Utility */
+      .table-sm td, .table-sm th {
+        padding: 0.3rem;
+      }
+      .img-choice {
+        width: 120px;
+        margin: 0.5rem;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .img-choice:hover {
+        border: 2px solid #007bff;
+      }
+      .flex-container {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+      }
 
-    /* Accordion Styling in Tab4 */
-    .accordion-button {
-      font-size: 0.9rem;
-    }
-    .accordion-body {
-      font-size: 0.85rem;
-      background: #f8f9fa;
-    }
-    .accordion-item {
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-bottom: 5px;
-    }
-  </style>
+      /* Accordion Styling in Tab4 */
+      .accordion-button {
+        font-size: 0.9rem;
+      }
+      .accordion-body {
+        font-size: 0.85rem;
+        background: #f8f9fa;
+      }
+      .accordion-item {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: 5px;
+      }
+
+    </style>
 
   <!-- =========================================================
        2) NEUE Light/Dark Style Definition
@@ -656,7 +657,7 @@
         >
           <h5>Fertigung</h5>
           <table class="table table-sm table-bordered align-middle" id="fertTable">
-            <thead>
+            <thead class="text-center">
               <tr>
                 <th>Arbeitsschritt</th>
                 <th>Zyklus (s)</th>
@@ -698,8 +699,8 @@
                 <td><input type="number" value="15" /></td>
                 <td><input type="number" value="10" /></td>
                 <td><input type="number" value="5" /></td>
-                <td><span>0.00</span></td>
-                <td><span>0.00</span></td>
+                <td class="text-end"><span>0.00</span></td>
+                <td class="text-end"><span>0.00</span></td>
               </tr>
               <!-- Dynamische Zeilen per JS -->
             </tbody>
@@ -808,7 +809,7 @@
                 id="collapseMaterial"
                 class="accordion-collapse collapse"
                 aria-labelledby="headingMaterial"
-                data-bs-parent="#accCostsParent"
+
               >
                 <div class="accordion-body">
                   <table class="table table-sm mb-0">
@@ -923,7 +924,7 @@
               </tr>
             </tbody>
           </table>
-
+          <div class="d-flex gap-2 align-items-center mt-2">
           <button class="btn btn-primary mt-3" onclick="addResultToBaugruppeFromTab4()">
             In Baugruppe übernehmen
           </button>
@@ -939,6 +940,7 @@
           <button class="btn btn-lime mt-2" onclick="exportData()">
             <i class="fa fa-upload me-1"></i> Export Data
           </button>
+            </div>
         </div>
         <!-- END Tab4 -->
 
@@ -3871,7 +3873,75 @@ btn btn-teal: ein ColorAdmin-Farbton.
 </div><!-- #modalMachine -->
 <!-- Jahreskosten (falls du es brauchst) -->
 
+<!-- MATERIAL MODAL -->
+<div
+  class="modal fade"
+  id="modalMaterial"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h5 class="modal-title">Materialliste</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
+      <div class="modal-body">
+        <!-- Filterfeld -->
+        <div class="mb-3 d-flex gap-2">
+  <div class="flex-grow-1">
+    <label for="matFilterInput" class="form-label"
+      >Filter (Materialname oder Verfahren)</label
+    >
+    <input
+      type="text"
+      class="form-control"
+      id="matFilterInput"
+      placeholder="z.B. 'AlSi9' oder 'Guss'"
+      oninput="filterMaterialList()"
+    />
+  </div>
+  <div class="align-self-end">
+    <button
+      class="btn btn-sm btn-outline-secondary"
+      onclick="clearMaterialFilter()"
+      style="margin-top: 1.8rem;" <!-- optional zum Ausrichten -->
+    >
+      Filter zurücksetzen
+    </button>
+  </div>
+</div>
+
+        <table class="table table-sm" id="tblMaterialList">
+          <thead>
+            <tr>
+              <th style="width: 25%;">Material</th>
+              <th style="width: 20%;">Verfahren</th>
+              <th style="width: 15%;">Preis/kg</th>
+              <th style="width: 10%;">CO₂/kg</th>
+              <th>Kommentar</th>
+              <th style="width: 10%;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamisch gefüllt via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Schließen
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
