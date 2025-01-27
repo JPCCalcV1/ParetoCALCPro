@@ -463,4 +463,258 @@ def export_baugruppe_comparison_excel(
     output.seek(0)
     return output, filename
 
+# ============================================================
+# FILE: routes/excel.py
+# ============================================================
+import io
+import os
+import xlsxwriter
+from flask import current_app
+from datetime import datetime
+
+# (Mind. 20 Zeilen Kontext, z.B. weitere Importe/Funktionen)
+
+def export_pareto_kalk_epic(
+    tab1_data,    # dict (Projekt: projectName, partName, annualQty, lotSize, scrapPct, sgaPct, profitPct, ...)
+    tab2_data,    # dict (Material: matName, matWeight, matPrice, fremdValue, mgk, ...)
+    tab3_steps,   # list of dict (bis zu 8 Steps: {stepName, cycTime, msRate, lohnRate, ruestVal, tooling, fgkPct, co2Hour, kosten_100, co2_100} )
+    tab4_summary, # dict (Ergebnisse: matEinzel, matGemein, fremd, summe, herstell, sga, profit, total, co2_100, etc.)
+    filename="ParetoKalk_Gesamtuebersicht.xlsx"
+):
+    """
+    Erstellt ein 'episches' Excel-Sheet nach dem Layout aus dem Screenshot:
+    - Titel oben
+    - Projekt- und Materialblock (Zeilen 2..14)
+    - Fertigungsschritte (8 Zeilen) ab Zeile ~18
+    - Summenzeilen darunter
+    - Keine Formeln, alle Werte direkt aus dem Backend
+    """
+    output = io.BytesIO()
+    workbook = xlsxwriter.Workbook(output, {"in_memory": True})
+
+    # ------------------------------------------------
+    # 1) Formatierungen
+    # ------------------------------------------------
+    title_format = workbook.add_format({
+        "bold": True,
+        "font_size": 14,
+        "align": "center",
+        "valign": "vcenter"
+    })
+    header_format = workbook.add_format({
+        "bold": True,
+        "bg_color": "#1F4E78",
+        "font_color": "#FFFFFF",
+        "border": 1,
+        "align": "center",
+        "valign": "vcenter"
+    })
+    label_format = workbook.add_format({
+        "bold": True,
+        "border": 0
+    })
+    bold_border = workbook.add_format({
+        "bold": True,
+        "border": 1
+    })
+    normal_border = workbook.add_format({"border": 1})
+    number_format = workbook.add_format({"border": 1, "num_format": "#,##0.00"})
+
+    # ------------------------------------------------
+    # 2) Worksheet anlegen, Spaltenbreiten, Titel
+    # ------------------------------------------------
+    ws = workbook.add_worksheet("Gesamtübersicht")
+    ws.set_column("A:A", 20)  # Labels
+    ws.set_column("B:B", 15)
+    ws.set_column("C:C", 12)
+    ws.set_column("D:D", 12)
+    ws.set_column("E:E", 12)
+    ws.set_column("F:F", 12)
+    ws.set_column("G:G", 12)
+    ws.set_column("H:H", 12)
+    ws.set_column("I:I", 15)
+    ws.set_column("J:J", 15)
+
+    # Titelzeile in row=0
+    ws.merge_range("A1:J1", "Pareto-Kalk – Gesamtübersicht", title_format)
+    ws.set_row(0, 25)  # Höhe anpassen
+
+    # ------------------------------------------------
+    # 3) Projekt-Daten (Tab1) in Zeilen 2..8
+    # ------------------------------------------------
+    # row=2 => Projektname
+    row = 2
+    ws.write(row, 0, "Projektname", label_format)
+    ws.write(row, 1, tab1_data.get("projectName", ""), normal_border)
+    row += 1
+    ws.write(row, 0, "Bauteilname", label_format)
+    ws.write(row, 1, tab1_data.get("partName", ""), normal_border)
+    row += 1
+    ws.write(row, 0, "Jahresstückzahl", label_format)
+    ws.write_number(row, 1, tab1_data.get("annualQty", 0), normal_border)
+    row += 1
+    ws.write(row, 0, "Losgröße", label_format)
+    ws.write_number(row, 1, tab1_data.get("lotSize", 0), normal_border)
+    row += 1
+    ws.write(row, 0, "Ausschuss (%)", label_format)
+    ws.write_number(row, 1, tab1_data.get("scrapPct", 0), normal_border)
+    row += 1
+    ws.write(row, 0, "SG&A (%)", label_format)
+    ws.write_number(row, 1, tab1_data.get("sgaPct", 0), normal_border)
+    row += 1
+    ws.write(row, 0, "Profit (%)", label_format)
+    ws.write_number(row, 1, tab1_data.get("profitPct", 0), normal_border)
+    row += 1
+
+    # Optional: Logo oben rechts
+    logo_path = os.path.join(current_app.root_path, "static", "img", "logo.png")
+    if os.path.exists(logo_path):
+        ws.insert_image("I1", logo_path, {"x_scale": 0.6, "y_scale": 0.6})
+
+    # ------------------------------------------------
+    # 4) Material-Blöcke (Tab2) ab Zeile 10
+    # ------------------------------------------------
+    row = 10
+    ws.write(row, 0, "Materialname", bold_border)
+    ws.write(row, 1, "Materialmenge", header_format)
+    ws.write(row, 2, "Materialpreis", header_format)
+    ws.write(row, 5, "Materialkosten/100", header_format)
+    ws.write(row, 6, "Material CO₂", header_format)
+
+    row += 1
+    matName = tab2_data.get("matName", "Aluminium")
+    matWeight = tab2_data.get("matWeight", 0)
+    matPrice = tab2_data.get("matPrice", 0)
+    fremdVal = tab2_data.get("fremdValue", 0)
+    mgk = tab2_data.get("matGK", 0)  # z. B. Material-Gemeinkosten
+
+    # Füllbeispiel:
+    ws.write(row, 0, matName, normal_border)
+    ws.write_number(row, 1, matWeight, number_format)
+    ws.write_number(row, 2, matPrice, number_format)
+
+    # Tab4 könnte dir z. B. matEinzel=..., co2=... etc. geben
+    # Machen wir hier als Demo:
+    mat_cost_100 = tab4_summary.get("matEinzel", 0)
+    mat_co2_100 = tab4_summary.get("matEinzel_co2", 0)
+    ws.write_number(row, 5, mat_cost_100, number_format)
+    ws.write_number(row, 6, mat_co2_100, number_format)
+
+    row += 2
+    ws.write(row, 0, "Fremdzukauf (€)", bold_border)
+    ws.write_number(row, 5, fremdVal, number_format)
+    # CO₂ z. B. 0 => anpassbar
+    row += 2
+    ws.write(row, 0, "MGK (%)", bold_border)
+    ws.write_number(row, 5, mgk, number_format)
+    # ...
+    row += 1
+
+    # Demo: Materialausschuss etc.
+    ws.write(row, 0, "Materialausschuss", bold_border)
+    mat_ausschuss_cost = tab4_summary.get("matAusschuss", 0)
+    mat_ausschuss_co2 = tab4_summary.get("matAusschuss_co2", 0)
+    ws.write_number(row, 5, mat_ausschuss_cost, number_format)
+    ws.write_number(row, 6, mat_ausschuss_co2, number_format)
+    row += 1
+
+    ws.write(row, 0, "Materialkosten gesamt", bold_border)
+    mat_ges_cost = tab4_summary.get("matGemein", 0)  # z. B. Summenkosten
+    mat_ges_co2 = tab4_summary.get("matGemein_co2", 0)
+    ws.write_number(row, 5, mat_ges_cost, number_format)
+    ws.write_number(row, 6, mat_ges_co2, number_format)
+    row += 2
+
+    # ------------------------------------------------
+    # 5) Fertigungsschritte ab z. B. Zeile 18
+    # ------------------------------------------------
+    ws.merge_range(row, 0, row, 9, "Fertigungsschritte", header_format)
+    row += 1
+    fert_headers = [
+        "Arbeitsschritt", "Zyklus (s)", "MS (€/h)", "Lohn (€/h)",
+        "Rüst (€/Los)", "Tooling/100", "FGK (%)", "CO₂ (kg/h)",
+        "Kosten/100 (€)", "CO₂/100 (kg)"
+    ]
+    for col_idx, head in enumerate(fert_headers):
+        ws.write(row, col_idx, head, header_format)
+    row += 1
+    start_fert_rows = row
+
+    # bis zu 8 Steps
+    for i, step in enumerate(tab3_steps[:8]):
+        ws.write(row, 0, step.get("stepName", f"Step {i+1}"), normal_border)
+        ws.write_number(row, 1, step.get("cycTime", 0), number_format)
+        ws.write_number(row, 2, step.get("msRate", 0), number_format)
+        ws.write_number(row, 3, step.get("lohnRate", 0), number_format)
+        ws.write_number(row, 4, step.get("ruestVal", 0), number_format)
+        ws.write_number(row, 5, step.get("tooling", 0), number_format)
+        ws.write_number(row, 6, step.get("fgkPct", 0), number_format)
+        ws.write_number(row, 7, step.get("co2Hour", 0), number_format)
+        ws.write_number(row, 8, step.get("kosten_100", 0), number_format)
+        ws.write_number(row, 9, step.get("co2_100", 0), number_format)
+        row += 1
+
+    # Summenzeile
+    ws.write(row, 0, "Summe", bold_border)
+    sum_cost = tab4_summary.get("summe_fert_cost", 0)
+    sum_co2 = tab4_summary.get("summe_fert_co2", 0)
+    ws.write_number(row, 8, sum_cost, number_format)
+    ws.write_number(row, 9, sum_co2, number_format)
+    row += 1
+
+    # Optionale Zeilen: FGK, Tooling, Ausschuss, Herstellkosten ...
+    ws.write(row, 0, "FGK", bold_border)
+    fgk_cost = tab4_summary.get("fgk_cost", 0)
+    fgk_co2 = tab4_summary.get("fgk_co2", 0)
+    ws.write_number(row, 8, fgk_cost, number_format)
+    ws.write_number(row, 9, fgk_co2, number_format)
+    row += 1
+
+    ws.write(row, 0, "Tooling", bold_border)
+    tool_cost = tab4_summary.get("tool_cost", 0)
+    tool_co2 = tab4_summary.get("tool_co2", 0)
+    ws.write_number(row, 8, tool_cost, number_format)
+    ws.write_number(row, 9, tool_co2, number_format)
+    row += 1
+
+    ws.write(row, 0, "Ausschuss", bold_border)
+    ausschuss_cost = tab4_summary.get("fertAusschuss_cost", 0)
+    ausschuss_co2 = tab4_summary.get("fertAusschuss_co2", 0)
+    ws.write_number(row, 8, ausschuss_cost, number_format)
+    ws.write_number(row, 9, ausschuss_co2, number_format)
+    row += 1
+
+    ws.write(row, 0, "Herstellkosten", bold_border)
+    herstell_cost = tab4_summary.get("herstell", 0)
+    herstell_co2 = tab4_summary.get("herstell_co2", 0)
+    ws.write_number(row, 8, herstell_cost, number_format)
+    ws.write_number(row, 9, herstell_co2, number_format)
+    row += 2
+
+    # SG&A, Profit, Gesamtkosten
+    ws.write(row, 0, "SG&A", bold_border)
+    ws.write_number(row, 1, tab4_summary.get("sga", 0), number_format)
+    ws.write_number(row, 8, tab4_summary.get("sga_cost", 0), number_format)
+    row += 1
+
+    ws.write(row, 0, "Profit", bold_border)
+    ws.write_number(row, 1, tab4_summary.get("profit", 0), number_format)
+    ws.write_number(row, 8, tab4_summary.get("profit_cost", 0), number_format)
+    row += 1
+
+    ws.write(row, 0, "Gesamtkosten/100", bold_border)
+    ws.write_number(row, 8, tab4_summary.get("total", 0), number_format)
+    ws.write_number(row, 9, tab4_summary.get("co2_100", 0), number_format)
+    row += 2
+
+    # ------------------------------------------------
+    # Fußzeile
+    # ------------------------------------------------
+    ws.write(row, 0, "Export-Datum:", label_format)
+    ws.write(row, 1, datetime.now().strftime("%d.%m.%Y %H:%M"))
+
+    # workbook schließen
+    workbook.close()
+    output.seek(0)
+    return output, filename
 

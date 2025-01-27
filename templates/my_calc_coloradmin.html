@@ -16,6 +16,9 @@
   <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"></script>
   <!-- ================== END ApexCharts ================== -->
 
+  <!-- =========================================================
+       1) Deine bisherigen globalen Styles
+      ========================================================= -->
   <style>
     /* 1) GLOBAL BASIS */
     body {
@@ -123,17 +126,26 @@
       z-index: 9999;
       display: none;
     }
-    #pcbChatWindow .header { background: #f0f0f0; padding: 6px; font-weight: bold; }
+    #pcbChatWindow .header {
+      background: #f0f0f0;
+      padding: 6px;
+      font-weight: bold;
+    }
     #pcbChatWindow .body {
       max-height: 150px;
       overflow-y: auto;
       padding: 6px;
       font-size: 0.85rem;
     }
-    #pcbChatWindow .footer { padding: 6px; text-align: right; }
+    #pcbChatWindow .footer {
+      padding: 6px;
+      text-align: right;
+    }
 
     /* Sonstige Utility */
-    .table-sm td, .table-sm th { padding: 0.3rem; }
+    .table-sm td, .table-sm th {
+      padding: 0.3rem;
+    }
     .img-choice {
       width: 120px;
       margin: 0.5rem;
@@ -141,7 +153,9 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    .img-choice:hover { border: 2px solid #007bff; }
+    .img-choice:hover {
+      border: 2px solid #007bff;
+    }
     .flex-container {
       display: flex;
       flex-wrap: nowrap;
@@ -163,44 +177,124 @@
       margin-bottom: 5px;
     }
   </style>
+
+  <!-- =========================================================
+       2) NEUE Light/Dark Style Definition
+      ========================================================= -->
+  <style>
+    /* =========================================================================
+       LIGHT MODE (Default)
+       ========================================================================= */
+    .card-custom {
+      background-color: #fff;
+      color: #000;
+      /* Behalte gern border-0 wie gehabt, falls gewünscht */
+    }
+    .input-custom {
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #ced4da; /* Standard-Bootstrap-Border */
+    }
+    /* Accordion Buttons, Labels, etc. in Light Mode */
+    .accordion-button,
+    .col-form-label {
+      color: #000;
+    }
+
+    /* =========================================================================
+       DARK MODE Overrides (aktiv bei .app-theme-dark-mode auf #app)
+       ========================================================================= */
+    .app-theme-dark-mode .card-custom {
+      background-color: #2d2d2d;
+      color: #ccc;
+    }
+    .app-theme-dark-mode .input-custom {
+      background-color: #444;
+      color: #fff;
+    }
+    /* Labels, Accordion Buttons etc. */
+    .app-theme-dark-mode .col-form-label,
+    .app-theme-dark-mode .accordion-button {
+      color: #ccc;
+    }
+    /* Optional: Gesamt-Hintergrund im Dark Mode */
+    .app-theme-dark-mode #content,
+    .app-theme-dark-mode .app-content {
+      background-color: #2d2d2d;
+      color: #ccc;
+    }
+  </style>
+
+  <!-- =========================================================
+       Dark Mode Toggle Script
+      ========================================================= -->
+  <script>
+    function toggleDarkMode() {
+      const appEl = document.getElementById('app');
+      appEl.classList.toggle('app-theme-dark-mode');
+    }
+  </script>
 </head>
 
 <body>
-<!-- BEGIN #app => mit .app-sidebar-minified standardmäßig eingeklappt -->
-<div id="app" class="app app-sidebar-minified">
+  <!-- BEGIN #app => mit .app-sidebar-minified standardmäßig eingeklappt -->
+  <div id="app" class="app app-sidebar-minified">
 
-  <!-- BEGIN Header -->
-  <div id="header" class="app-header">
-    <div class="d-flex align-items-center" style="gap:15px;">
-      <button type="button" class="navbar-desktop-toggler" data-toggle="app-sidebar-minify">
-        <i class="fa fa-bars"></i>
-      </button>
-      <a href="/" class="navbar-brand">
-        <img src="/static/img/jpc.jpeg" alt="Logo"/>
-        <span>JPC CALC V2.0</span>
-      </a>
-    </div>
-    <div class="header-center">
-      <div class="me-3">
-        <label>Kosten/100 (€):</label>
-        <input type="text" id="txtCosts100" class="form-control form-control-sm d-inline-block" style="width:70px;" readonly>
+    <!-- BEGIN Header -->
+    <div id="header" class="app-header">
+      <div class="d-flex align-items-center" style="gap:15px;">
+        <button
+          type="button"
+          class="navbar-desktop-toggler"
+          data-toggle="app-sidebar-minify"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+        <a href="/" class="navbar-brand">
+          <img src="/static/img/jpc.jpeg" alt="Logo"/>
+          <span>JPC CALC V2.0</span>
+        </a>
       </div>
-      <div>
-        <label>CO₂/100 (kg):</label>
-        <input type="text" id="txtCo2Per100" class="form-control form-control-sm d-inline-block" style="width:70px;" readonly>
+      <div class="header-center">
+        <div class="me-3">
+          <label>Kosten/100 (€):</label>
+          <input
+            type="text"
+            id="txtCosts100"
+            class="form-control form-control-sm d-inline-block"
+            style="width:70px;"
+            readonly
+          >
+        </div>
+        <div>
+          <label>CO₂/100 (kg):</label>
+          <input
+            type="text"
+            id="txtCo2Per100"
+            class="form-control form-control-sm d-inline-block"
+            style="width:70px;"
+            readonly
+          >
+        </div>
+      </div>
+      <div class="d-flex align-items-center" style="gap:10px;">
+        <div id="userInfo" style="display:none;">
+          <span id="spanUserEmail"></span>
+          <button class="btn btn-sm btn-primary" onclick="doLogout()">Logout</button>
+        </div>
+        <button class="btn btn-sm btn-info" onclick="window.location.href='/account/'">
+          Zu meinem Account
+        </button>
+
+        <!-- Unser neu eingefügter Dark-Mode-Button -->
+        <button
+          class="btn btn-sm btn-outline-secondary"
+          onclick="toggleDarkMode()"
+        >
+          <i class="fa fa-moon me-1"></i> Dark Mode
+        </button>
       </div>
     </div>
-    <div class="d-flex align-items-center" style="gap:10px;">
-      <div id="userInfo" style="display:none;">
-        <span id="spanUserEmail"></span>
-        <button class="btn btn-sm btn-primary" onclick="doLogout()">Logout</button>
-      </div>
-      <button class="btn btn-sm btn-info" onclick="window.location.href='/account/'">
-        Zu meinem Account
-      </button>
-    </div>
-  </div>
-  <!-- END Header -->
 
   <!-- BEGIN Sidebar -->
   <div id="sidebar" class="app-sidebar">
@@ -319,120 +413,247 @@
           role="tabpanel"
           aria-labelledby="tab1-tab"
         >
-          <h5>Parametric Tools</h5>
-          <div class="row mb-2">
-            <label for="txtProjectName" class="col-sm-3 col-form-label">Projektname</label>
-            <div class="col-sm-5">
-              <input type="text" class="form-control" id="txtProjectName" placeholder="Projekt ABC" />
+          <!-- Tab 1: "Projektübersicht" (vorher bg-gray-800 text-white) -->
+          <div class="card border-0 card-custom mb-3">
+            <div class="card-body">
+              <h5 class="mb-3">Parametric Tools</h5>
+              <div class="row mb-2">
+                <label for="txtProjectName" class="col-sm-3 col-form-label">
+                  Projektname
+                </label>
+                <div class="col-sm-5">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm input-custom"
+                    id="txtProjectName"
+                    placeholder="Projekt ABC"
+                  />
+                </div>
+              </div>
+              <div class="row mb-2">
+                <label for="txtPartName" class="col-sm-3 col-form-label">
+                  Bauteilname
+                </label>
+                <div class="col-sm-5">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm input-custom"
+                    id="txtPartName"
+                    placeholder="Bauteil X"
+                  />
+                </div>
+              </div>
+              <div class="row mb-2">
+                <label for="annualQty" class="col-sm-3 col-form-label">
+                  Jahresstückzahl
+                </label>
+                <div class="col-sm-3">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm input-custom"
+                    id="annualQty"
+                    value="1000"
+                  />
+                </div>
+              </div>
+              <div class="row mb-2">
+                <label for="lotSize" class="col-sm-3 col-form-label">
+                  Losgröße
+                </label>
+                <div class="col-sm-3">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm input-custom"
+                    id="lotSize"
+                    value="100"
+                  />
+                </div>
+              </div>
+              <div class="row mb-2">
+                <label for="scrapPct" class="col-sm-3 col-form-label">
+                  Globaler Ausschuss (%)
+                </label>
+                <div class="col-sm-3">
+                  <input
+                    type="number"
+                    step="0.1"
+                    class="form-control form-control-sm input-custom"
+                    id="scrapPct"
+                    value="5.0"
+                  />
+                </div>
+              </div>
+              <div class="row mb-2">
+                <label for="sgaPct" class="col-sm-3 col-form-label">
+                  SG&A (%)
+                </label>
+                <div class="col-sm-3">
+                  <input
+                    type="number"
+                    step="0.1"
+                    class="form-control form-control-sm input-custom"
+                    id="sgaPct"
+                    value="10.0"
+                  />
+                </div>
+              </div>
+              <div class="row mb-2">
+                <label for="profitPct" class="col-sm-3 col-form-label">
+                  Profit (%)
+                </label>
+                <div class="col-sm-3">
+                  <input
+                    type="number"
+                    step="0.1"
+                    class="form-control form-control-sm input-custom"
+                    id="profitPct"
+                    value="5.0"
+                  />
+                </div>
+              </div>
+              <div class="row mb-2">
+                <label for="yearSpin" class="col-sm-3 col-form-label">
+                  Kalkulationsjahr
+                </label>
+                <div class="col-sm-3">
+                  <input
+                    type="number"
+                    class="form-control form-control-sm input-custom"
+                    id="yearSpin"
+                    value="2024"
+                  />
+                </div>
+              </div>
+              <div class="row mb-2">
+                <label for="zielPrice" class="col-sm-3 col-form-label">
+                  Zielpreis / 100 Stk
+                </label>
+                <div class="col-sm-3">
+                  <input
+                    type="number"
+                    step="0.01"
+                    class="form-control form-control-sm input-custom"
+                    id="zielPrice"
+                    value="200.00"
+                  />
+                </div>
+              </div>
+              <button class="btn btn-teal mt-3" onclick="openParamToolsModal()">
+                <i class="fa fa-cogs me-1"></i> Parametric Tools
+              </button>
             </div>
           </div>
-          <div class="row mb-2">
-            <label for="txtPartName" class="col-sm-3 col-form-label">Bauteilname</label>
-            <div class="col-sm-5">
-              <input type="text" class="form-control" id="txtPartName" placeholder="Bauteil X" />
-            </div>
-          </div>
-          <div class="row mb-2">
-            <label for="annualQty" class="col-sm-3 col-form-label">Jahresstückzahl</label>
-            <div class="col-sm-3">
-              <input type="number" class="form-control" id="annualQty" value="1000" />
-            </div>
-          </div>
-          <div class="row mb-2">
-            <label for="lotSize" class="col-sm-3 col-form-label">Losgröße</label>
-            <div class="col-sm-3">
-              <input type="number" class="form-control" id="lotSize" value="100" />
-            </div>
-          </div>
-          <div class="row mb-2">
-            <label for="scrapPct" class="col-sm-3 col-form-label">Globaler Ausschuss (%)</label>
-            <div class="col-sm-3">
-              <input type="number" step="0.1" class="form-control" id="scrapPct" value="5.0" />
-            </div>
-          </div>
-          <div class="row mb-2">
-            <label for="sgaPct" class="col-sm-3 col-form-label">SG&A (%)</label>
-            <div class="col-sm-3">
-              <input type="number" step="0.1" class="form-control" id="sgaPct" value="10.0" />
-            </div>
-          </div>
-          <div class="row mb-2">
-            <label for="profitPct" class="col-sm-3 col-form-label">Profit (%)</label>
-            <div class="col-sm-3">
-              <input type="number" step="0.1" class="form-control" id="profitPct" value="5.0" />
-            </div>
-          </div>
-          <div class="row mb-2">
-            <label for="yearSpin" class="col-sm-3 col-form-label">Kalkulationsjahr</label>
-            <div class="col-sm-3">
-              <input type="number" class="form-control" id="yearSpin" value="2024" />
-            </div>
-          </div>
-          <div class="row mb-2">
-            <label for="zielPrice" class="col-sm-3 col-form-label">Zielpreis / 100 Stk</label>
-            <div class="col-sm-3">
-              <input
-                type="number"
-                step="0.01"
-                class="form-control"
-                id="zielPrice"
-                value="200.00"
-              />
-            </div>
-          </div>
-          <button class="btn btn-primary mt-3" onclick="openParamToolsModal()">
-            Parametric Tools
-          </button>
         </div>
         <!-- END Tab1 -->
 
         <!-- TAB 2 -->
-        <div class="tab-pane fade p-3" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+        <div
+          class="tab-pane fade p-3"
+          id="tab2"
+          role="tabpanel"
+          aria-labelledby="tab2-tab"
+        >
           <h5>Material</h5>
-          <button class="btn btn-secondary mb-3" onclick="openMaterialModal()">Materialliste laden</button>
+          <button class="btn btn-secondary mb-3" onclick="openMaterialModal()">
+            Materialliste laden
+          </button>
           <div class="mb-2 row">
-            <label class="col-sm-3 col-form-label" for="matName">Materialname</label>
+            <label class="col-sm-3 col-form-label" for="matName">
+              Materialname
+            </label>
             <div class="col-sm-4">
-              <input type="text" class="form-control" id="matName" value="Aluminium" />
+              <input
+                type="text"
+                class="form-control"
+                id="matName"
+                value="Aluminium"
+              />
             </div>
           </div>
           <div class="mb-2 row">
-            <label class="col-sm-3 col-form-label" for="matPrice">Materialpreis (€/kg)</label>
+            <label class="col-sm-3 col-form-label" for="matPrice">
+              Materialpreis (€/kg)
+            </label>
             <div class="col-sm-3">
-              <input type="number" class="form-control" step="0.01" id="matPrice" value="2.0" />
+              <input
+                type="number"
+                class="form-control"
+                step="0.01"
+                id="matPrice"
+                value="2.0"
+              />
             </div>
           </div>
           <div class="mb-2 row">
-            <label class="col-sm-3 col-form-label" for="matCo2">Material-CO₂ (kg/kg)</label>
+            <label class="col-sm-3 col-form-label" for="matCo2">
+              Material-CO₂ (kg/kg)
+            </label>
             <div class="col-sm-3">
-              <input type="number" class="form-control" step="0.1" id="matCo2" value="2.0" />
+              <input
+                type="number"
+                class="form-control"
+                step="0.1"
+                id="matCo2"
+                value="2.0"
+              />
             </div>
           </div>
           <div class="mb-2 row">
-            <label class="col-sm-3 col-form-label" for="matGK">Material-GK (%)</label>
+            <label class="col-sm-3 col-form-label" for="matGK">
+              Material-GK (%)
+            </label>
             <div class="col-sm-3">
-              <input type="number" class="form-control" step="0.1" id="matGK" value="5.0" />
+              <input
+                type="number"
+                class="form-control"
+                step="0.1"
+                id="matGK"
+                value="5.0"
+              />
             </div>
           </div>
           <div class="mb-2 row">
-            <label class="col-sm-3 col-form-label" for="matWeight">Bauteilgewicht (kg)</label>
+            <label class="col-sm-3 col-form-label" for="matWeight">
+              Bauteilgewicht (kg)
+            </label>
             <div class="col-sm-3">
-              <input type="number" class="form-control" step="0.01" id="matWeight" value="0.2" />
+              <input
+                type="number"
+                class="form-control"
+                step="0.01"
+                id="matWeight"
+                value="0.2"
+              />
             </div>
           </div>
           <div class="mb-2 row">
-            <label class="col-sm-3 col-form-label" for="fremdValue">Fremdzukauf (€)</label>
+            <label class="col-sm-3 col-form-label" for="fremdValue">
+              Fremdzukauf (€)
+            </label>
             <div class="col-sm-3">
-              <input type="number" class="form-control" step="0.01" id="fremdValue" value="0.0" />
+              <input
+                type="number"
+                class="form-control"
+                step="0.01"
+                id="fremdValue"
+                value="0.0"
+              />
             </div>
           </div>
 
-          <button class="btn btn-primary mt-3" onclick="calcAll()">Berechnen</button>
+          <button class="btn btn-primary mt-3" onclick="calcAll()">
+            Berechnen
+          </button>
         </div>
         <!-- END Tab2 -->
 
         <!-- TAB 3 -->
-        <div class="tab-pane fade p-3" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+        <div
+          class="tab-pane fade p-3"
+          id="tab3"
+          role="tabpanel"
+          aria-labelledby="tab3-tab"
+        >
           <h5>Fertigung</h5>
           <table class="table table-sm table-bordered align-middle" id="fertTable">
             <thead>
@@ -483,234 +704,243 @@
               <!-- Dynamische Zeilen per JS -->
             </tbody>
           </table>
-          <button class="btn btn-primary mt-3" onclick="calcAll()">Berechnen</button>
+          <button class="btn btn-primary mt-3" onclick="calcAll()">
+            Berechnen
+          </button>
         </div>
         <!-- END Tab3 -->
 
-<!-- ====================
-     TAB 4: ERGEBNIS
-     ==================== -->
-<div class="tab-pane fade p-3" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
-  <h5>Ergebnis</h5>
-  <div id="sliderContainer" class="text-center p-3 mb-3 border">
-    <div class="d-flex justify-content-around" style="gap: 30px;">
-      <!-- 1) Material-Slider -->
-      <div style="position: relative; width: 330px;">
-        <label class="form-label" style="font-size: 0.8em;">Materialpreis ±30%</label>
-        <input
-          type="range"
-          min="-30"
-          max="30"
-          step="1"
-          value="0"
-          oninput="onSliderMaterialChange(this.value)"
-          style="width: 100%;"
-        />
-      </div>
-      <!-- 2) Lohn-Slider -->
-      <div style="position: relative; width: 330px;">
-        <label class="form-label" style="font-size: 0.8em;">Lohnkosten ±30%</label>
-        <input
-          type="range"
-          min="-30"
-          max="30"
-          step="1"
-          value="0"
-          oninput="onSliderLaborChange(this.value)"
-          style="width: 100%;"
-        />
-      </div>
-      <!-- 3) CO2-Slider -->
-      <div style="position: relative; width: 330px;">
-        <label class="form-label" style="font-size: 0.8em;">CO₂+/-100% (@380gCO₂/kWh)</label>
-        <input
-          type="range"
-          min="-100"
-          max="100"
-          step="1"
-          value="0"
-          oninput="onSliderCO2Change(this.value)"
-          style="width: 100%;"
-        />
-      </div>
-    </div>
-  </div>
-
-  <!-- NEU: ApexCharts-Container – wir ersetzen die Chart.js-Canvas -->
-  <div class="row mb-3">
-    <div class="col-md-6">
-      <!-- Auskommentiert (alter Canvas):
-           <canvas id="costChart" width="300" height="150" style="border: 1px solid #ccc;"></canvas>
-      -->
-      <div
-        id="apexCostChart"
-        style="
-          border: 1px solid #ccc;
-          min-height: 200px;
-          margin-bottom: 1rem;
-        "
-      ></div>
-    </div>
-    <div class="col-md-6">
-      <!-- Auskommentiert (alter Canvas):
-           <canvas id="co2Chart" width="300" height="150" style="border: 1px solid #ccc;"></canvas>
-      -->
-      <div
-        id="apexCo2Chart"
-        style="
-          border: 1px solid #ccc;
-          min-height: 200px;
-          margin-bottom: 1rem;
-        "
-      ></div>
-    </div>
-  </div>
-
-  <!-- Accordion-Bereich für Detailkosten (Material / Fertigung) -->
-  <div class="accordion mb-3" id="accCostsParent">
-    <!-- MATERIAL ACCORDION -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingMaterial">
-        <button
-          class="accordion-button collapsed"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapseMaterial"
-          aria-expanded="false"
-          aria-controls="collapseMaterial"
+        <!-- ====================
+             TAB 4: ERGEBNIS
+             ==================== -->
+        <div
+          class="tab-pane fade p-3"
+          id="tab4"
+          role="tabpanel"
+          aria-labelledby="tab4-tab"
         >
-          Material-Kosten (Details)
-        </button>
-      </h2>
-      <div
-        id="collapseMaterial"
-        class="accordion-collapse collapse"
-        aria-labelledby="headingMaterial"
-        data-bs-parent="#accCostsParent"
-      >
-        <div class="accordion-body">
-          <table class="table table-sm mb-0">
+          <h5>Ergebnis</h5>
+          <div id="sliderContainer" class="text-center p-3 mb-3 border">
+            <div class="d-flex justify-content-around" style="gap: 30px;">
+              <!-- 1) Material-Slider -->
+              <div style="position: relative; width: 330px;">
+                <label class="form-label" style="font-size: 0.8em;">Materialpreis ±30%</label>
+                <input
+                  type="range"
+                  min="-30"
+                  max="30"
+                  step="1"
+                  value="0"
+                  oninput="onSliderMaterialChange(this.value)"
+                  style="width: 100%;"
+                />
+              </div>
+              <!-- 2) Lohn-Slider -->
+              <div style="position: relative; width: 330px;">
+                <label class="form-label" style="font-size: 0.8em;">Lohnkosten ±30%</label>
+                <input
+                  type="range"
+                  min="-30"
+                  max="30"
+                  step="1"
+                  value="0"
+                  oninput="onSliderLaborChange(this.value)"
+                  style="width: 100%;"
+                />
+              </div>
+              <!-- 3) CO2-Slider -->
+              <div style="position: relative; width: 330px;">
+                <label class="form-label" style="font-size: 0.8em;">CO₂+/-100% (@380gCO₂/kWh)</label>
+                <input
+                  type="range"
+                  min="-100"
+                  max="100"
+                  step="1"
+                  value="0"
+                  oninput="onSliderCO2Change(this.value)"
+                  style="width: 100%;"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- NEU: ApexCharts-Container -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div
+                id="apexCostChart"
+                style="
+                  border: 1px solid #ccc;
+                  min-height: 200px;
+                  margin-bottom: 1rem;
+                "
+              ></div>
+            </div>
+            <div class="col-md-6">
+              <div
+                id="apexCo2Chart"
+                style="
+                  border: 1px solid #ccc;
+                  min-height: 200px;
+                  margin-bottom: 1rem;
+                "
+              ></div>
+            </div>
+          </div>
+
+          <!-- Accordion-Bereich für Detailkosten -->
+          <div class="accordion mb-3" id="accCostsParent">
+            <!-- MATERIAL ACCORDION -->
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingMaterial">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseMaterial"
+                  aria-expanded="false"
+                  aria-controls="collapseMaterial"
+                >
+                  Material-Kosten (Details)
+                </button>
+              </h2>
+              <div
+                id="collapseMaterial"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingMaterial"
+                data-bs-parent="#accCostsParent"
+              >
+                <div class="accordion-body">
+                  <table class="table table-sm mb-0">
+                    <tbody>
+                      <tr>
+                        <td>Material-Einzelkosten/100</td>
+                        <td id="tdMatEinzel">0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Fremdzukauf/100</td>
+                        <td id="tdFremd">0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Material-Gemeinkosten/100</td>
+                        <td id="tdMatGemein">0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Ausschuss (Material)/100</td>
+                        <td id="tdMatScrapDelta">0.00</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr class="table-active">
+                        <th>Summe Material/100</th>
+                        <th id="tdMatSumDetailed">0.00</th>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- FERTIGUNG ACCORDION -->
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingFertigung">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseFertigung"
+                  aria-expanded="false"
+                  aria-controls="collapseFertigung"
+                >
+                  Fertigungs-Kosten (Details)
+                </button>
+              </h2>
+              <div
+                id="collapseFertigung"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingFertigung"
+                data-bs-parent="#accCostsParent"
+              >
+                <div class="accordion-body">
+                  <table class="table table-sm mb-0">
+                    <tbody>
+                      <tr>
+                        <td>Maschinenkosten/100</td>
+                        <td id="tdMach">0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Lohnkosten/100</td>
+                        <td id="tdLohn">0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Fertigungsgemeinkosten/100</td>
+                        <td id="tdFGK">0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Rüstkosten/100</td>
+                        <td id="tdRuestDetailed">0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Tooling/100</td>
+                        <td id="tdToolingDetailed">0.00</td>
+                      </tr>
+                      <tr>
+                        <td>Ausschuss (Fertigung)/100</td>
+                        <td id="tdFertScrapDelta">0.00</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr class="table-active">
+                        <th>Summe Fertigung/100</th>
+                        <th id="tdFertSumDetailed">0.00</th>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Ende Accordion -->
+
+          <!-- Summenzeilen unten drunter -->
+          <table class="table table-striped table-sm">
             <tbody>
               <tr>
-                <td>Material-Einzelkosten/100</td>
-                <td id="tdMatEinzel">0.00</td>
+                <td>Herstellkosten/100</td>
+                <td id="tdHerstell">0.00</td>
               </tr>
               <tr>
-                <td>Material-Gemeinkosten/100</td>
-                <td id="tdMatGemein">0.00</td>
+                <td>SG&A</td>
+                <td id="tdSGA">0.00</td>
               </tr>
               <tr>
-                <td>Fremdzukauf/100</td>
-                <td id="tdFremd">0.00</td>
+                <td>Profit</td>
+                <td id="tdProfit">0.00</td>
               </tr>
               <tr>
-                <td>Ausschuss (Material)/100</td>
-                <td id="tdMatScrapDelta">0.00</td> <!-- NEU -->
+                <th>Gesamtkosten/100</th>
+                <th id="tdTotal">0.00</th>
               </tr>
             </tbody>
-            <tfoot>
-              <tr class="table-active">
-                <th>Summe Material/100</th>
-                <th id="tdMatSumDetailed">0.00</th>
-              </tr>
-            </tfoot>
           </table>
+
+          <button class="btn btn-primary mt-3" onclick="addResultToBaugruppeFromTab4()">
+            In Baugruppe übernehmen
+          </button>
+          <button class="btn btn-indigo mt-2" onclick="exportComparisonExcel()">
+            <i class="fa fa-file-excel me-1"></i> Excel Export Vergleich
+          </button>
+          <button class="btn btn-indigo mt-2" onclick="export8StepsExcel()">
+            <i class="fa fa-file-excel me-1"></i> Excel Export 8 Schritte
+          </button>
+          <button class="btn btn-orange mt-2" onclick="exportBaugruppenPowerPoint()">
+            <i class="fa fa-file-powerpoint me-1"></i> PDF Export Baugruppen
+          </button>
+          <button class="btn btn-lime mt-2" onclick="exportData()">
+            <i class="fa fa-upload me-1"></i> Export Data
+          </button>
         </div>
-      </div>
-    </div>
-
-    <!-- FERTIGUNG ACCORDION -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingFertigung">
-        <button
-          class="accordion-button collapsed"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapseFertigung"
-          aria-expanded="false"
-          aria-controls="collapseFertigung"
-        >
-          Fertigungs-Kosten (Details)
-        </button>
-      </h2>
-      <div
-        id="collapseFertigung"
-        class="accordion-collapse collapse"
-        aria-labelledby="headingFertigung"
-        data-bs-parent="#accCostsParent"
-      >
-        <div class="accordion-body">
-          <table class="table table-sm mb-0">
-            <tbody>
-              <tr>
-                <td>Maschinenkosten/100</td>
-                <td id="tdMach">0.00</td>
-              </tr>
-              <tr>
-                <td>Lohnkosten/100</td>
-                <td id="tdLohn">0.00</td>
-              </tr>
-              <tr>
-                <td>Fertigungsgemeinkosten/100</td>
-                <td id="tdFGK">0.00</td>
-              </tr>
-              <!-- NEU: Rüst- und Tooling-Zeilen -->
-              <tr>
-                <td>Rüstkosten/100</td>
-                <td id="tdRuestDetailed">0.00</td>
-              </tr>
-              <tr>
-                <td>Tooling/100</td>
-                <td id="tdToolingDetailed">0.00</td>
-              </tr>
-              <tr>
-                <td>Ausschuss (Fertigung)/100</td>
-                <td id="tdFertScrapDelta">0.00</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr class="table-active">
-                <th>Summe Fertigung/100</th>
-                <th id="tdFertSumDetailed">0.00</th>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Ende Accordion -->
-
-  <!-- Summenzeilen unten drunter -->
-  <table class="table table-striped table-sm">
-    <tbody>
-      <tr>
-        <td>Herstellkosten/100</td>
-        <td id="tdHerstell">0.00</td>
-      </tr>
-      <tr>
-        <td>SG&A</td>
-        <td id="tdSGA">0.00</td>
-      </tr>
-      <tr>
-        <td>Profit</td>
-        <td id="tdProfit">0.00</td>
-      </tr>
-      <tr>
-        <th>Gesamtkosten/100</th>
-        <th id="tdTotal">0.00</th>
-      </tr>
-    </tbody>
-  </table>
-
-  <button class="btn btn-primary mt-3" onclick="addResultToBaugruppeFromTab4()">
-    In Baugruppe übernehmen
-  </button>
-  <button onclick="exportComparisonExcel()">Excel Export</button>
-  <button onclick="export8StepsExcel()">Excel Export</button>
-  <button onclick="exportBaugruppenPowerPoint()">PDF Export</button>
-</div>
-<!-- END Tab4 -->
+        <!-- END Tab4 -->
 
         <!-- TAB 5: Baugruppe -->
         <div
@@ -720,7 +950,11 @@
           aria-labelledby="tab5-tab"
         >
           <h4>Baugruppenliste</h4>
-          <table id="baugruppeTable" class="table table-sm" style="margin-bottom: 10px;">
+          <table
+            id="baugruppeTable"
+            class="table table-sm"
+            style="margin-bottom: 10px;"
+          >
             <thead>
               <tr>
                 <th>Bauteilname</th>
@@ -803,8 +1037,18 @@
           </div>
         </div>
         <!-- End KI-Assistent -->
-      </div><!-- .tab-content -->
+      </div>
+    </div>
+  </div>
+  <!-- END #content -->
+</div><!-- .tab-content -->
 
+<!--
+Erklärung:
+.card.border-0.bg-gray-800.text-white: dunkelgraue Card (ColorAdmin-Theme).
+class="form-control form-control-sm bg-dark text-white": passt für Inputs auf dunklem Hintergrund.
+btn btn-teal: ein ColorAdmin-Farbton.
+-->
 <div
   class="modal fade"
   id="modalParamTools"
@@ -3790,6 +4034,8 @@
       <!-- ================== BEGIN ColorAdmin core JS ================== -->
 <script src="/static/coloradmin/js/vendor.min.js"></script>
 <script src="/static/coloradmin/js/app.min.js"></script>
+    <script src="/static/plugins/apexcharts/apexcharts.min.js"></script>
+
 <!-- ================== END ColorAdmin core JS ================== -->
 <!-- Bootstrap-Bundle (JS + Popper) -->
 <!-- Chart.js -->

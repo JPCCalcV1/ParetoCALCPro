@@ -459,9 +459,13 @@ function calcAll() {
 /************************************************************
  * initApexCharts() – Erstellt apexCostChart & apexCo2Chart
  ************************************************************/
+/************************************************************
+ * initApexCharts() – Kompakter & "cooler" Style
+ ************************************************************/
 function initApexCharts() {
   console.log("DEBUG: Entering initApexCharts()");
-  // Falls schon existieren, zerstören
+
+  // (A) Falls schon existieren -> destroy
   if (apexInitialized && apexCostChart) {
     apexCostChart.destroy();
   }
@@ -469,112 +473,95 @@ function initApexCharts() {
     apexCo2Chart.destroy();
   }
 
-  // 1) apexCostChart
-  let costChartOptions = {
+  /********************************************************
+   * (B) Kostenverteilung als "Pie" (Kuchen)
+   * Wir verteilen Material, Fertigung, SG&A, Profit
+   *******************************************************/
+  let costPieOptions = {
     chart: {
-      type: 'bar',
-      height: 200,
-      foreColor: '#666',
-      background: '#fdfdfd'
+      type: 'pie',
+      height: 180,
+      foreColor: '#ccc',
+      background: '#2d2d2d',  // Dunkler Hintergrund
     },
-    series: [{
-      name: 'Kosten/100 Stk',
-      data: [0, 0, 0]  // Material, Fertigung, Rest
-    }],
-    xaxis: {
-      categories: ['Material', 'Fertigung', 'Rest']
-    },
-    yaxis: {
-      labels: {
-        formatter: function(val) {
-          return val.toFixed(1);
-        }
-      }
-    },
-    colors: ['#008FFB'],
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: '55%'
+    series: [0, 0, 0, 0],     // [Material, Fertigung, SGA, Profit]
+    labels: ['Material', 'Fertigung', 'SG&A', 'Profit'],
+    colors: ['#00c3ff', '#ffc107', '#fe6f5e', '#9b59b6'], // 4 Versch. Farben
+    tooltip: {
+      y: {
+        formatter: (val) => val.toFixed(2) + ' €'
       }
     }
   };
   apexCostChart = new ApexCharts(
     document.querySelector("#apexCostChart"),
-    costChartOptions
+    costPieOptions
   );
   apexCostChart.render();
 
-  // 2) apexCo2Chart
-  let co2ChartOptions = {
+  /********************************************************
+   * (C) CO2 Donut (Material vs. Prozess)
+   *******************************************************/
+  let co2DonutOptions = {
     chart: {
-      type: 'bar',
-      height: 200,
-      foreColor: '#666',
-      background: '#fdfdfd'
+      type: 'donut',
+      height: 180,
+      foreColor: '#ccc',
+      background: '#2d2d2d',
     },
-    series: [{
-      name: 'CO₂/100 Stk',
-      data: [0, 0] // Material-CO2, Prozess-CO2
-    }],
-    xaxis: {
-      categories: ['Material-CO₂', 'Prozess-CO₂']
-    },
-    yaxis: {
-      labels: {
-        formatter: function(val) {
-          return val.toFixed(1) + ' kg';
+    series: [0, 0],           // [Mat-CO2, Proc-CO2]
+    labels: ['Material-CO2', 'Prozess-CO2'],
+    colors: ['#9CCC65', '#FF7043'],  // Grün + Orange
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '55%'        // Loch-Anteil
         }
       }
     },
-    colors: ['#9CCC65', '#FF7043']
+    tooltip: {
+      y: {
+        formatter: (val) => val.toFixed(2) + ' kg'
+      }
+    }
   };
   apexCo2Chart = new ApexCharts(
     document.querySelector("#apexCo2Chart"),
-    co2ChartOptions
+    co2DonutOptions
   );
   apexCo2Chart.render();
 
   apexInitialized = true;
-  console.log("DEBUG: Exiting initApexCharts() => apexInitialized set to", apexInitialized);
+  console.log("DEBUG: Exiting initApexCharts()");
 }
 
 /************************************************************
- * updateApexCharts(data) – übernimmt neue Daten vom Server
+ * updateApexCharts(data) – Neues "data" vom Server
  ************************************************************/
 function updateApexCharts(resultData) {
   console.log("DEBUG: Entering updateApexCharts() with resultData =", resultData);
   if (!apexInitialized) {
-    console.log("DEBUG: apexInitialized is false -> calling initApexCharts() as fallback");
+    console.log("DEBUG: apexInitialized is false -> calling initApexCharts()");
     initApexCharts();
   }
 
-  // Beispiel:Material, Fertigung, Rest
-  let matVal = (resultData.matEinzel100 ?? 0) + (resultData.matGemein100 ?? 0);
-  let fertVal = (resultData.mach100 ?? 0) + (resultData.lohn100 ?? 0) + (resultData.fgk100 ?? 0);
-  let restVal = (resultData.sga100 ?? 0) + (resultData.profit100 ?? 0) + (resultData.fremd100 ?? 0);
+  // (1) Rechne Material & Fertigung zusammen
+  let material = (resultData.matEinzel100 ?? 0) + (resultData.matGemein100 ?? 0) + (resultData.fremd100 ?? 0);
+  let fertigung = (resultData.mach100 ?? 0) + (resultData.lohn100 ?? 0) + (resultData.fgk100 ?? 0);
+  let sgaVal = (resultData.sga100 ?? 0);
+  let profitVal = (resultData.profit100 ?? 0);
 
-  console.log("DEBUG: matVal =", matVal, "fertVal =", fertVal, "restVal =", restVal);
+  console.log("DEBUG: cost-dist =>", material, fertigung, sgaVal, profitVal);
 
-  // Update apexCostChart series
-  apexCostChart.updateSeries([
-    {
-      name: 'Kosten/100 Stk',
-      data: [matVal, fertVal, restVal]
-    }
-  ]);
+  // (2) Kosten-Kuchen updaten (Material, Fertigung, SGA, Profit)
+  apexCostChart.updateSeries([ material, fertigung, sgaVal, profitVal ]);
 
-  // CO2
-  let co2Mat = resultData.co2Mat100 ?? 0;
-  let co2Proc = resultData.co2Proc100 ?? 0;
-  console.log("DEBUG: co2Mat =", co2Mat, "co2Proc =", co2Proc);
+  // (3) CO2-Daten
+  let co2Mat = (resultData.co2Mat100 ?? 0);
+  let co2Proc = (resultData.co2Proc100 ?? 0);
+  console.log("DEBUG: co2-dist =>", co2Mat, co2Proc);
 
-  apexCo2Chart.updateSeries([
-    {
-      name: 'CO₂/100 Stk',
-      data: [co2Mat, co2Proc]
-    }
-  ]);
+  apexCo2Chart.updateSeries([ co2Mat, co2Proc ]);
 
   console.log("DEBUG: Exiting updateApexCharts()");
 }
@@ -2919,6 +2906,103 @@ async function export8StepsExcel() {
   const link = document.createElement("a");
   link.href = url;
   link.download = "ParetoKalk_OnePager_8Steps.xlsx";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+async function exportEpicExcel() {
+  // 1) Daten aus Tabs sammeln
+  const tab1 = {
+    projectName: document.getElementById("txtProjectName")?.value || "",
+    partName: document.getElementById("txtPartName")?.value || "",
+    annualQty: parseFloat(document.getElementById("annualQty")?.value) || 0,
+    lotSize: parseFloat(document.getElementById("lotSize")?.value) || 0,
+    scrapPct: parseFloat(document.getElementById("scrapPct")?.value) || 0,
+    sgaPct: parseFloat(document.getElementById("sgaPct")?.value) || 0,
+    profitPct: parseFloat(document.getElementById("profitPct")?.value) || 0
+  };
+  const tab2 = {
+    matName: document.getElementById("matName")?.value || "Aluminium",
+    matWeight: parseFloat(document.getElementById("matWeight")?.value) || 0,
+    matPrice: parseFloat(document.getElementById("matPrice")?.value) || 0,
+    fremdValue: parseFloat(document.getElementById("fremdValue")?.value) || 0,
+    matGK: parseFloat(document.getElementById("matGK")?.value) || 0
+  };
+
+  // Tab3 => 8 steps
+  const rows = document.querySelectorAll("#fertTable tbody tr");
+  const tab3 = [];
+  rows.forEach((tr, idx) => {
+    if(idx < 8){
+      const cells = tr.querySelectorAll("td");
+      tab3.push({
+        stepName: cells[0].querySelector("input")?.value || `Step${idx+1}`,
+        cycTime: parseFloat(cells[1].querySelector("input")?.value) || 0,
+        msRate: parseFloat(cells[2].querySelector("input")?.value) || 0,
+        lohnRate: parseFloat(cells[3].querySelector("input")?.value) || 0,
+        ruestVal: parseFloat(cells[4].querySelector("input")?.value) || 0,
+        tooling: parseFloat(cells[5].querySelector("input")?.value) || 0,
+        fgkPct: parseFloat(cells[6].querySelector("input")?.value) || 0,
+        co2Hour: parseFloat(cells[7].querySelector("input")?.value) || 0,
+        kosten_100: parseFloat(cells[8].querySelector("span")?.innerText) || 0,
+        co2_100: parseFloat(cells[9].querySelector("span")?.innerText) || 0
+      });
+    }
+  });
+
+  // Tab4 => Summen
+  const tab4 = {
+    matEinzel: parseFloat(document.getElementById("tdMatEinzel")?.innerText) || 0,
+    matEinzel_co2: 1.0,  // Beispiel
+    matAusschuss: 0.1,
+    matAusschuss_co2: 0.1,
+    matGemein: 0.1,
+    matGemein_co2: 1.1,
+    fremd: parseFloat(document.getElementById("tdFremd")?.innerText) || 0,
+    summe_fert_cost: 1,
+    summe_fert_co2: 1,
+    fgk_cost: 1,
+    fgk_co2: 1,
+    tool_cost: 1,
+    tool_co2: 1,
+    fertAusschuss_cost: 1,
+    fertAusschuss_co2: 1,
+    herstell: parseFloat(document.getElementById("tdHerstell")?.innerText) || 0,
+    herstell_co2: 1.0,
+    sga: parseFloat(document.getElementById("tdSGA")?.innerText) || 0,
+    sga_cost: 1.0,
+    profit: parseFloat(document.getElementById("tdProfit")?.innerText) || 0,
+    profit_cost: 1.0,
+    total: parseFloat(document.getElementById("tdTotal")?.innerText) || 0,
+    co2_100: 5.0
+  };
+
+  // 2) POST => /exports/baugruppe/excel_epic
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
+  const resp = await fetch("/exports/baugruppe/excel_epic", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken
+    },
+    body: JSON.stringify({ tab1, tab2, tab3, tab4 })
+  });
+
+  if(!resp.ok){
+    let errData = null;
+    try { errData = await resp.json();} catch(e){}
+    if(errData?.error) alert("Fehler: " + errData.error);
+    else alert("Fehler: " + resp.status);
+    return;
+  }
+
+  // 3) Download
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "ParetoKalk_Gesamtuebersicht.xlsx";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

@@ -118,3 +118,28 @@ def baugruppe_excel_8steps():
         as_attachment=True,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
+@exports_bp.route("/baugruppe/excel_epic", methods=["POST"])
+def baugruppe_excel_epic():
+    """
+    Route für das 'epische' Excel nach dem Layout deines Screenshots.
+    Erwartet JSON Body mit tab1, tab2, tab3, tab4.
+    Keine License-Checks, 1:1 Copy-Paste.
+    """
+    data = request.get_json() or {}
+    tab1 = data.get("tab1", {})
+    tab2 = data.get("tab2", {})
+    tab3 = data.get("tab3", [])
+    tab4 = data.get("tab4", {})
+
+    try:
+        excel_bytes, filename = export_pareto_kalk_epic(tab1, tab2, tab3, tab4)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    return send_file(
+        excel_bytes,
+        download_name=filename,
+        as_attachment=True,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
