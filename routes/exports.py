@@ -88,7 +88,6 @@ def baugruppe_ppt_export():
         as_attachment=True,
         mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation"
     )
-    )
 
 @exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
 def baugruppe_excel_8steps():
