@@ -4,7 +4,7 @@ from .excel import (
     export_baugruppe_eight_steps_excel,
     export_baugruppe_comparison_excel
 )
-from .powerpoint import export_baugruppe_ppt
+from .powerpoint import export_baugruppe_pptx
 exports_bp = Blueprint("exports_bp", __name__)
 
 # ------------------------------------------------------------------------
