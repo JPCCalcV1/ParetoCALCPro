@@ -3161,6 +3161,6 @@ function askPCBPredefined(question) {
   if (inputEl) {
     inputEl.value = question;
   }
-  // Optional: wenn du willst, dass es direkt gesendet wird:
-  // sendMachChat();
+
+  sendPcbChat();
 }
