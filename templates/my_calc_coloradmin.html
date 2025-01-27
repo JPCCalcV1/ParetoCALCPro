@@ -345,6 +345,77 @@
   background-color: #fff !important;
   color: #000 !important;
 }
+/* --------------------------------------------
+   1) Grunddesign der Slider
+   -------------------------------------------- */
+.mySlider {
+  width: 100%;
+  height: 6px;           /* flacher Slider */
+  margin: 0;
+  -webkit-appearance: none;  /* Entfernt Standardstil in Chrome/Safari */
+  background: transparent;   /* wir stylen track/gradients separat */
+  outline: none;
+  cursor: pointer;
+}
+
+/* Slider-Schiene (WebKit) */
+.mySlider::-webkit-slider-runnable-track {
+  height: 6px;
+  background: linear-gradient(to right,
+                              transparent 49.5%,
+                              #222 49.5%,
+                              #222 50.5%,
+                              transparent 50.5%);
+  border-radius: 2px;
+  border: 0;
+}
+.mySlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -4px;  /* Daumen zentrieren auf Schiene */
+  background: #666;
+  border: 2px solid #999;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Slider-Schiene (Firefox) */
+.mySlider::-moz-range-track {
+  height: 6px;
+  background: linear-gradient(to right,
+                              transparent 49.5%,
+                              #222 49.5%,
+                              #222 50.5%,
+                              transparent 50.5%);
+  border-radius: 2px;
+  border: none;
+}
+.mySlider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: #666;
+  border: 2px solid #999;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* --------------------------------------------
+   2) Das kleine Label über dem Slider
+   -------------------------------------------- */
+.slider-label {
+  position: absolute;
+  top: -22px;   /* Höhe über dem Slider */
+  left: 50%;    /* Start in der Mitte */
+  transform: translateX(-50%);
+  padding: 2px 5px;
+  font-size: 0.75rem;
+  background: #222;  /* dunkler Hintergrund */
+  color: #fff;       /* helle Schrift */
+  border-radius: 3px;
+  pointer-events: none; /* nicht anklickbar */
+  white-space: nowrap;
+}
 
 </style>
   <!-- =========================================================
@@ -842,49 +913,58 @@
           aria-labelledby="tab4-tab"
         >
           <h5>Ergebnis</h5>
-          <div id="sliderContainer" class="text-center p-3 mb-3 border">
-            <div class="d-flex justify-content-around" style="gap: 30px;">
-              <!-- 1) Material-Slider -->
-              <div style="position: relative; width: 330px;">
-                <label class="form-label" style="font-size: 0.8em;">Materialpreis ±30%</label>
-                <input
-                  type="range"
-                  min="-30"
-                  max="30"
-                  step="1"
-                  value="0"
-                  oninput="onSliderMaterialChange(this.value)"
-                  style="width: 100%;"
-                />
-              </div>
-              <!-- 2) Lohn-Slider -->
-              <div style="position: relative; width: 330px;">
-                <label class="form-label" style="font-size: 0.8em;">Lohnkosten ±30%</label>
-                <input
-                  type="range"
-                  min="-30"
-                  max="30"
-                  step="1"
-                  value="0"
-                  oninput="onSliderLaborChange(this.value)"
-                  style="width: 100%;"
-                />
-              </div>
-              <!-- 3) CO2-Slider -->
-              <div style="position: relative; width: 330px;">
-                <label class="form-label" style="font-size: 0.8em;">CO₂+/-100% (@380gCO₂/kWh)</label>
-                <input
-                  type="range"
-                  min="-100"
-                  max="100"
-                  step="1"
-                  value="0"
-                  oninput="onSliderCO2Change(this.value)"
-                  style="width: 100%;"
-                />
-              </div>
-            </div>
-          </div>
+<!-- =============== BEGIN SLIDERS & LABELS =============== -->
+<div id="sliderContainer" class="text-center p-3 mb-3 border" style="margin-top: 1rem;">
+  <div class="d-flex justify-content-around" style="gap: 30px; flex-wrap: wrap;">
+
+    <!-- 1) Material-Slider -->
+    <div class="slider-wrapper" style="width: 260px; position: relative;">
+      <label class="form-label" style="font-size: 0.8em;">Materialpreis ±30%</label>
+      <input
+        type="range"
+        min="-30"
+        max="30"
+        step="1"
+        value="0"
+        oninput="updateSliderLabel(this, 'lblMat'); onSliderMaterialChange(this.value)"
+        class="mySlider"
+      />
+      <span id="lblMat" class="slider-label">0</span>
+    </div>
+
+    <!-- 2) Lohn-Slider -->
+    <div class="slider-wrapper" style="width: 260px; position: relative;">
+      <label class="form-label" style="font-size: 0.8em;">Lohnkosten ±30%</label>
+      <input
+        type="range"
+        min="-30"
+        max="30"
+        step="1"
+        value="0"
+        oninput="updateSliderLabel(this, 'lblLohn'); onSliderLaborChange(this.value)"
+        class="mySlider"
+      />
+      <span id="lblLohn" class="slider-label">0</span>
+    </div>
+
+    <!-- 3) CO₂-Slider -->
+    <div class="slider-wrapper" style="width: 260px; position: relative;">
+      <label class="form-label" style="font-size: 0.8em;">CO₂±100% (@380g/kWh)</label>
+      <input
+        type="range"
+        min="-100"
+        max="100"
+        step="1"
+        value="0"
+        oninput="updateSliderLabel(this, 'lblCO2'); onSliderCO2Change(this.value)"
+        class="mySlider"
+      />
+      <span id="lblCO2" class="slider-label">0</span>
+    </div>
+
+  </div>
+</div>
+<!-- =============== END SLIDERS & LABELS =============== -->
 
           <!-- NEU: ApexCharts-Container -->
           <div class="row mb-3">

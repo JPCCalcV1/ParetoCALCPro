@@ -18,7 +18,7 @@ takt_calc_bp = Blueprint('takt_calc_bp', __name__)
 
 @takt_calc_bp.route("/spritzguss", methods=["POST"])
 @csrf.exempt
-@limiter.limit("20/minute")
+@limiter.limit("50/minute")
 def calc_spritzguss():
     """
     POST /spritzguss
@@ -484,7 +484,7 @@ def advanced_cooling_time(wall_mm, coolFactor, min_cool_s, hasContour, meltTemp,
 
 @takt_calc_bp.route("/druckguss", methods=["POST"])
 @csrf.exempt  # Falls du globalen CSRF nutzt, und dein Frontend den Token nicht mitsendet.
-@limiter.limit("20/minute")  # optional
+@limiter.limit("50/minute")  # optional
 def calc_druckguss():
     """
     POST /calc/takt/druckguss
@@ -671,7 +671,7 @@ def calc_druckguss():
 
 @takt_calc_bp.route("/milling", methods=["POST"])
 @csrf.exempt  # Falls du global CSRF aktiviert hast und dein Frontend den Token nicht mitsendet
-@limiter.limit("20/minute")  # optional
+@limiter.limit("50/minute")  # optional
 def calc_milling():
     """
     POST /calc/takt/milling
@@ -855,7 +855,7 @@ def calc_milling():
 
 @takt_calc_bp.route("/stamping", methods=["POST"])
 @csrf.exempt   # Falls du globalen CSRF-Schutz hast und dein Frontend den Token nicht mitsendet
-@limiter.limit("20/minute")  # optional
+@limiter.limit("50/minute")  # optional
 def calc_stamping():
     """
     POST /calc/takt/stamping

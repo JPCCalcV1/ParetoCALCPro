@@ -3067,3 +3067,10 @@ async function exportEpicExcel() {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
+
+function updateSliderLabel(rangeEl, labelId) {
+  const labelEl = document.getElementById(labelId);
+  if (!labelEl) return;
+  labelEl.textContent = rangeEl.value;
+}
