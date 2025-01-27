@@ -3077,3 +3077,81 @@ function updateSliderLabel(rangeEl, labelId) {
   if (!labelEl) return;
   labelEl.textContent = rangeEl.value;
 }
+/****************************************************************************
+ * Chat-Funktionen für Maschinenstundensatz (machChat)
+ ****************************************************************************/
+
+/**
+ * toggleMachChatWindow()
+ *  - Öffnet/Schließt das Chat-Fenster (#machChatWindow)
+ */
+function toggleMachChatWindow() {
+  const wnd = document.getElementById("machChatWindow");
+  if (!wnd) return;
+  if (wnd.style.display === "none" || !wnd.style.display) {
+    wnd.style.display = "flex";
+  } else {
+    wnd.style.display = "none";
+  }
+}
+
+/**
+ * sendMachChat()
+ *  - Liest #machChatInput
+ *  - Schreibt "Du: ..." in #machChatBody
+ *  - Ruft askCustomGPT(...) auf => "KI: ..." in #machChatBody
+ *  - Error-Handling wie gehabt (Limit => Alert etc.)
+ */
+function sendMachChat() {
+  const inputEl = document.getElementById("machChatInput");
+  const chatBody = document.getElementById("machChatBody");
+  if (!inputEl || !chatBody) return;
+
+  const userText = inputEl.value.trim();
+  if (!userText) return;
+
+  // 1) User-Text anzeigen
+  const userP = document.createElement("p");
+  userP.innerHTML = `<strong>Du:</strong> ${userText}`;
+  chatBody.appendChild(userP);
+  chatBody.scrollTop = chatBody.scrollHeight;
+
+  // 2) GPT anfragen
+  askCustomGPT(userText)
+    .then((reply) => {
+      const aiP = document.createElement("p");
+      aiP.innerHTML = `<strong>KI:</strong> ${reply}`;
+      chatBody.appendChild(aiP);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    })
+    .catch((err) => {
+      console.error("sendMachChat error:", err);
+      const errP = document.createElement("p");
+      errP.style.color = "red";
+      errP.innerHTML = `Fehler: ${err.message}`;
+      chatBody.appendChild(errP);
+
+      if (err.message === "GPT usage limit exceeded") {
+        alert("Dein GPT-Kontingent ist aufgebraucht. Bitte upgrade dein Abo!");
+      }
+      chatBody.scrollTop = chatBody.scrollHeight;
+    });
+
+  // Eingabefeld leeren
+  inputEl.value = "";
+}
+
+/**
+ * askMachPredefined(question)
+ *  - Vordefinierte Frage: Chat-Fenster öffnen, Input setzen,
+ *    und optional direkt abschicken (hier: manuell).
+ */
+function askMachPredefined(question) {
+  toggleMachChatWindow(); // Chatfenster öffnen
+  const inputEl = document.getElementById("machChatInput");
+  if (inputEl) {
+    inputEl.value = question;
+  }
+  // Optional: wenn du willst, dass es direkt gesendet wird:
+  // sendMachChat();
+}

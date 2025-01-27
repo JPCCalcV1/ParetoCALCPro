@@ -3741,15 +3741,40 @@ btn btn-teal: ein ColorAdmin-Farbton.
 </style>
 
 <!-- 2) MODAL-STRUKTUR -->
+<!-- 2) MODAL-STRUKTUR -->
 <div class="modal fade" id="modalMachine" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl" style="max-width:1000px;"> <!-- Extra-breit -->
-    <div class="modal-content" style="font-size: 0.9rem;">
+    <div class="modal-content" style="font-size: 0.9rem; position: relative;">
 
       <!-- HEADER -->
       <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
         <h5 class="modal-title">Maschinenstundensatz – Erweitert</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
+
+      <!-- CHAT-BUBBLE (NEU) -->
+      <div id="machChatBubble" onclick="toggleMachChatWindow()">
+        <img src="https://cdn-icons-png.flaticon.com/512/2990/2990675.png" alt="Chat" />
+      </div>
+
+      <!-- CHAT-FENSTER (NEU) -->
+      <div id="machChatWindow">
+        <div class="header">KI-Assistent</div>
+        <div class="body" id="machChatBody">
+          <p>Hallo, wie kann ich helfen?</p>
+        </div>
+        <div class="footer">
+          <input
+            type="text"
+            id="machChatInput"
+            class="form-control form-control-sm"
+            placeholder="Frage eingeben..."
+          />
+          <button class="btn btn-sm btn-primary" onclick="sendMachChat()">Senden</button>
+          <button class="btn btn-sm btn-secondary" onclick="toggleMachChatWindow()">Schließen</button>
+        </div>
+      </div>
+      <!-- ENDE CHAT-BEREICH -->
 
       <!-- BODY: 2 Tabs (Abschreibung + Energie) -->
       <div class="modal-body p-2">
@@ -3879,7 +3904,7 @@ btn btn-teal: ein ColorAdmin-Farbton.
               </div>
             </div>
 
-            <!-- Minimales Chat-Fenster (Dedicated-Info) -->
+            <!-- Minimales Info-Fenster (Dedicated) -->
             <div id="miniChatDedicated" class="border p-2 bg-light" style="display:none; margin-bottom: 0.5rem;">
               <strong>Dedicated? Was bedeutet das?</strong>
               <p class="mb-1" style="font-size:0.85rem;">
@@ -3925,6 +3950,15 @@ btn btn-teal: ein ColorAdmin-Farbton.
                 </div>
               </div>
             </div>
+
+            <!-- Beispiel-Button für 'vordefinierte Frage' -->
+            <button
+              type="button"
+              class="btn btn-info btn-sm mt-2"
+              onclick="askMachPredefined('Wie berechne ich den Maschinenstundensatz?')"
+            >
+              <i class="fa fa-question-circle me-1"></i> Chat: Wie berechne ich den Maschinenstundensatz?
+            </button>
           </div><!-- END TAB 1 -->
 
           <!-- TAB 2: Energie & Betrieb -->
@@ -4114,7 +4148,7 @@ btn btn-teal: ein ColorAdmin-Farbton.
       </div><!-- /.modal-footer -->
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
-</div><!-- #modalMachine -->
+</div><!-- #modalMachine --><!-- #modalMachine -->
 <!-- Jahreskosten (falls du es brauchst) -->
 
 <!-- =================== MATERIAL MODAL (Design wie PCB-Kalkulator) =================== -->
