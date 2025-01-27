@@ -19,7 +19,7 @@
   <!-- =========================================================
        1) Deine bisherigen globalen Styles
       ========================================================= -->
-    <style>
+        <style>
       /* 1) GLOBAL BASIS */
       body {
         font-size: 14px;
@@ -176,7 +176,6 @@
         border-radius: 4px;
         margin-bottom: 5px;
       }
-
     </style>
 
   <!-- =========================================================
@@ -202,6 +201,22 @@
       color: #000;
     }
 
+    /* --- Tabs: Inaktive & aktive Farbabstufungen im LIGHT MODE --- */
+    .nav-tabs .nav-link {
+      background-color: #fafafa;
+      color: #000;
+      border: 1px solid #dee2e6; /* Optionaler Rahmen */
+      margin-right: 0.1rem;     /* Kleiner Abstand */
+    }
+    .nav-tabs .nav-link:hover {
+      background-color: #e9ecef;
+    }
+    .nav-tabs .nav-link.active {
+      background-color: #ddd;
+      color: #000;
+      border-color: #ccc #ccc #fff; /* oder nach Belieben */
+    }
+
     /* =========================================================================
        DARK MODE Overrides (aktiv bei .app-theme-dark-mode auf #app)
        ========================================================================= */
@@ -223,6 +238,23 @@
     .app-theme-dark-mode .app-content {
       background-color: #2d2d2d;
       color: #ccc;
+    }
+
+    /* --- Tabs im DARK MODE: Inaktive & aktive Farbabstufungen --- */
+    .app-theme-dark-mode .nav-tabs .nav-link {
+      background-color: #333;
+      color: #ccc;
+      border: 1px solid #444;
+      margin-right: 0.1rem;
+    }
+    .app-theme-dark-mode .nav-tabs .nav-link:hover {
+      background-color: #3a3a3a;
+      color: #fff;
+    }
+    .app-theme-dark-mode .nav-tabs .nav-link.active {
+      background-color: #555;
+      color: #fff;
+      border-color: #777 #777 #555;
     }
   </style>
 
