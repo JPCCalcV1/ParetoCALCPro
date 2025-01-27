@@ -2652,3 +2652,74 @@ async function exportBaugruppenPowerPoint() {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
+async function export8StepsExcel() {
+  // 1) Daten aus Tab1..Tab4 sammeln
+  const tab1 = {
+    scrapPct: parseFloat(document.getElementById("scrapPct")?.value) || 5,
+    sgaPct: parseFloat(document.getElementById("sgaPct")?.value) || 10,
+    profitPct: parseFloat(document.getElementById("profitPct")?.value) || 5,
+    // ...
+  };
+  const tab2 = {
+    matPrice: parseFloat(document.getElementById("matPrice")?.value) || 2.0,
+    matWeight: parseFloat(document.getElementById("matWeight")?.value) || 0.2,
+    fremdValue: parseFloat(document.getElementById("fremdValue")?.value) || 0,
+    // ...
+  };
+  // tab3 => 8 Steps
+  const rows = document.querySelectorAll("#fertTable tbody tr");
+  const tab3 = [];
+  rows.forEach((tr, idx) => {
+    if(idx<8){
+      const cells = tr.querySelectorAll("td");
+      tab3.push({
+        stepName: cells[0].querySelector("input")?.value || "",
+        kosten_100: parseFloat(cells[8].querySelector("span")?.innerText) || 0,
+        co2_100: parseFloat(cells[9].querySelector("span")?.innerText) || 0
+      });
+    }
+  });
+  const tab4 = {
+    matEinzel: parseFloat(document.getElementById("tdMatEinzel")?.innerText) || 0,
+    matGemein: parseFloat(document.getElementById("tdMatGemein")?.innerText) || 0,
+    fremd: parseFloat(document.getElementById("tdFremd")?.innerText) || 0,
+    ruest: parseFloat(document.getElementById("tdRuest")?.innerText) || 0,
+    tooling: parseFloat(document.getElementById("tdTooling")?.innerText) || 0,
+    herstell: parseFloat(document.getElementById("tdHerstell")?.innerText) || 0,
+    sga: parseFloat(document.getElementById("tdSGA")?.innerText) || 0,
+    profit: parseFloat(document.getElementById("tdProfit")?.innerText) || 0,
+    total: parseFloat(document.getElementById("tdTotal")?.innerText) || 0,
+    co2_100: parseFloat(document.getElementById("tdCo2Total")?.innerText) || 0
+  };
+
+  // 2) Post => /exports/baugruppe/excel_8steps
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
+  const resp = await fetch("/exports/baugruppe/excel_8steps", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken
+    },
+    body: JSON.stringify({ tab1, tab2, tab3, tab4 })
+  });
+
+  if(!resp.ok){
+    let errData = null;
+    try {errData = await resp.json();} catch(e){}
+    if(errData?.error) alert("Fehler: " + errData.error);
+    else alert("Fehler: " + resp.status);
+    return;
+  }
+
+  // 3) Download
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "ParetoKalk_OnePager_8Steps.xlsx";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}

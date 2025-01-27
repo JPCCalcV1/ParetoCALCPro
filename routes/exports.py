@@ -129,3 +129,33 @@ def baugruppe_ppt_export():
         as_attachment=True,
         mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation"
     )
+
+@exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
+def baugruppe_excel_8steps():
+    """
+    Erstellt ein breites OnePager-Excel (8 Schritte in B..Q, Summen in R..S).
+    KEIN License-Check.
+    Erwartet JSON mit tab1, tab2, tab3, tab4.
+    """
+    data = request.get_json() or {}
+    tab1 = data.get("tab1", {})
+    tab2 = data.get("tab2", {})
+    tab3 = data.get("tab3", [])  # list of dict
+    tab4 = data.get("tab4", {})
+
+    try:
+        excel_bytes, filename = export_baugruppe_eight_steps_excel(
+            tab1_data=tab1,
+            tab2_data=tab2,
+            tab3_steps=tab3,
+            tab4_summary=tab4
+        )
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    return send_file(
+        excel_bytes,
+        download_name=filename,
+        as_attachment=True,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
