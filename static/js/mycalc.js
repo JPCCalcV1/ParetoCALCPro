@@ -436,14 +436,20 @@ function calcAll() {
       updateResultTable(data);
 
       // top area "Kosten/100" und "CO2/100"
-      let cost_100 = data.total ?? 0;
-      let co2_100 = (data.co2Mat ?? 0) + (data.co2Fert ?? 0);
+      // Hier nehmen wir an, dass 'data.total' und '(data.co2Mat + data.co2Fert)'
+      // jeweils den Wert pro Stück enthalten.
+      // Falls du "Kosten/Stück" in txtCosts100 anzeigen willst,
+      // war dein Code so gedacht, dass du cost_100 = (Wert pro 100) und
+      // cost_per_piece = cost_100 / 100. Also passen wir das minimal an:
+      let cost_100 = (data.total ?? 0) * 100;  // => Kosten für 100 Stück
+      let co2_100  = ((data.co2Mat ?? 0) + (data.co2Fert ?? 0)) * 100; // => CO₂ für 100 Stück
 
-        // Quick & Dirty => pro Stück
-  let cost_per_piece = cost_100 / 100;
-  let co2_per_piece  = co2_100  / 100;
+      // Quick & Dirty => pro Stück
+      let cost_per_piece = cost_100 / 100; // => wieder data.total
+      let co2_per_piece  = co2_100  / 100; // => again "co2Mat+co2Fert"
+
       document.getElementById("txtCosts100").value = cost_per_piece.toFixed(4);
-  document.getElementById("txtCo2Per100").value = co2_per_piece.toFixed(4);
+      document.getElementById("txtCo2Per100").value = co2_per_piece.toFixed(4);
 
       // (b) ApexCharts erzeugen (einmalig) & aktualisieren
       if (!apexInitialized) {
@@ -459,6 +465,7 @@ function calcAll() {
       alert("calcAll() error: " + err);
     });
 }
+
 
 /************************************************************
  * initApexCharts() – Erstellt apexCostChart & apexCo2Chart
