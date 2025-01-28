@@ -1687,126 +1687,114 @@ function acceptMachine() {
 function updateResultTable(data) {
   console.log("DEBUG: updateResultTable()", data);
 
-  //
-  // A) Rohe "pro 100"-Werte holen
-  //
-  // Material
-  const matEinzel_100 = data.matEinzel100 ?? 0;
-  const matGemein_100 = data.matGemein100 ?? 0;
-  const fremd_100     = data.fremd100 ?? 0;
-
-  // Fertigung
-  const mach_100    = data.mach100 ?? 0;
-  const lohn_100    = data.lohn100 ?? 0;
-  const fgk_100     = data.fgk100 ?? 0;
-  const ruest_100   = data.ruest100 ?? 0;
-  const tooling_100 = data.tooling100 ?? 0;
-
-  // Summen
-  const herstell_100 = data.herstell100 ?? 0;
-  const sga_100      = data.sga100 ?? 0;
-  const profit_100   = data.profit100 ?? 0;
-  const totalAll_100 = data.totalAll100 ?? 0;
-
-  //
-  // B) Quick & Dirty: Auf "pro Stück" umrechnen (jeweils /100)
-  //
-  // Material (pro Stück)
-  const matEinzel = matEinzel_100 / 100;
-  const matGemein = matGemein_100 / 100;
-  const fremd     = fremd_100     / 100;
-
-  // Fertigung (pro Stück)
-  const mach    = mach_100    / 100;
-  const lohn    = lohn_100    / 100;
-  const fgk     = fgk_100     / 100;
-  const ruest   = ruest_100   / 100;  // Rüstkosten/100 => Rüst pro Stück
-  const tooling = tooling_100 / 100;
-
-  // Summen (pro Stück)
-  const herstell = herstell_100 / 100;
-  const sga      = sga_100      / 100;
-  const profit   = profit_100   / 100;
-  const totalAll = totalAll_100 / 100;
-
-  //
-  // C) In HTML-Felder schreiben
-  //
-// Material:
-document.getElementById("tdMatEinzel").textContent = data.matEinzel.toFixed(2);
-document.getElementById("tdFremd").textContent     = data.fremd.toFixed(2);
-document.getElementById("tdMatScrapDelta").textContent = data.matScrap.toFixed(2);
-document.getElementById("tdMatGemein").textContent = data.matGemein.toFixed(2);
-document.getElementById("tdMatSumDetailed").textContent = data.matSum.toFixed(2);
-
-// Fertigung:
-document.getElementById("tdMach").textContent  = data.mach.toFixed(2);
-document.getElementById("tdLohn").textContent  = data.lohn.toFixed(2);
-document.getElementById("tdToolingDetailed").textContent = data.tooling.toFixed(2);
-document.getElementById("tdRuestDetailed").textContent    = data.ruest.toFixed(2);
-document.getElementById("tdFertScrapDelta").textContent   = data.scrapFert.toFixed(2);
-document.getElementById("tdFGK").textContent  = data.fgk.toFixed(2);
-document.getElementById("tdFertSumDetailed").textContent = data.fertSum.toFixed(2);
-
-// Summen
-document.getElementById("tdHerstell").textContent = data.herstell.toFixed(2);
-document.getElementById("tdSGA").textContent       = data.sga.toFixed(2);
-document.getElementById("tdProfit").textContent    = data.profit.toFixed(2);
-document.getElementById("tdTotal").textContent     = data.total.toFixed(2);
-
-  //
-  // D) Weitere Detail-Summen (pro Stück)
-  //
-  // z.B. Material-Gesamtsumme = (matEinzel_100 + matGemein_100 + fremd_100) /100
-  const matSum_100 = matEinzel_100 + matGemein_100 + fremd_100;
-  const matSum     = matSum_100 / 100;
-  document.getElementById("tdMatSumDetailed").textContent = matSum.toFixed(2);
-
-  // Fertigungs-Gesamtsumme = (mach_100 + lohn_100 + fgk_100 + ruest_100 + tooling_100) /100
-  const fertSum_100 = mach_100 + lohn_100 + fgk_100 + ruest_100 + tooling_100;
-  const fertSum     = fertSum_100 / 100;
-  document.getElementById("tdFertSumDetailed").textContent = fertSum.toFixed(2);
-
-  //
-  // E) Ausschuss-Delta-Berechnung pro Stück
-  //
-  const scrapPctInput = document.getElementById("scrapPct");
-  let scrapPct = 0;
-  if (scrapPctInput) {
-    scrapPct = parseFloat(scrapPctInput.value) || 0;
+  // ============================
+  // A) Material: Felder befüllen
+  // ============================
+  // (Z.B. matEinzel, fremd, matScrap, matGemein, matSum)
+  if (data.matEinzel !== undefined) {
+    document.getElementById("tdMatEinzel").textContent =
+      data.matEinzel.toFixed(2);
   }
-  const factorScrap = 1 + scrapPct / 100;
+  if (data.fremd !== undefined) {
+    document.getElementById("tdFremd").textContent =
+      data.fremd.toFixed(2);
+  }
+  if (data.matScrap !== undefined) {
+    document.getElementById("tdMatScrapDelta").textContent =
+      data.matScrap.toFixed(2);
+  }
+  if (data.matGemein !== undefined) {
+    document.getElementById("tdMatGemein").textContent =
+      data.matGemein.toFixed(2);
+  }
+  if (data.matSum !== undefined) {
+    document.getElementById("tdMatSumDetailed").textContent =
+      data.matSum.toFixed(2);
+  }
 
-  // (1) Material-Ausschuss
-  //   - matEinzel_100 enthält schon Ausschuss
-  //   - Basis ohne Ausschuss = (matEinzel_100 / factorScrap) / 100 => pro Stück
-  const basisMatEinzel_100 = matEinzel_100 / factorScrap;
-  const basisMatEinzel     = basisMatEinzel_100 / 100;
-  const matScrapDelta      = matEinzel - basisMatEinzel;
-  document.getElementById("tdMatScrapDelta").textContent = matScrapDelta.toFixed(2);
+  // ============================
+  // B) Fertigung: Felder befüllen
+  // ============================
+  // (Z.B. mach, lohn, tooling, scrapFert, fgk, ruest, fertSum)
+  if (data.mach !== undefined) {
+    document.getElementById("tdMach").textContent =
+      data.mach.toFixed(2);
+  }
+  if (data.lohn !== undefined) {
+    document.getElementById("tdLohn").textContent =
+      data.lohn.toFixed(2);
+  }
+  if (data.tooling !== undefined) {
+    document.getElementById("tdToolingDetailed").textContent =
+      data.tooling.toFixed(2);
+  }
+  if (data.ruest !== undefined) {
+    document.getElementById("tdRuestDetailed").textContent =
+      data.ruest.toFixed(2);
+  }
+  if (data.scrapFert !== undefined) {
+    document.getElementById("tdFertScrapDelta").textContent =
+      data.scrapFert.toFixed(2);
+  }
+  if (data.fgk !== undefined) {
+    document.getElementById("tdFGK").textContent =
+      data.fgk.toFixed(2);
+  }
+  if (data.fertSum !== undefined) {
+    document.getElementById("tdFertSumDetailed").textContent =
+      data.fertSum.toFixed(2);
+  }
 
-  // (2) Fertigungs-Ausschuss
-  //   - (mach_100, lohn_100, tooling_100, fgk_100) wurden mit Ausschuss multipliziert,
-  //     nur ruest_100 nicht
-  //   - Also baseline = (mach_100/factorScrap + lohn_100/factorScrap + tooling_100/factorScrap + fgk_100/factorScrap + ruest_100)
-  //   - Dann /100 => pro Stück
-  const basisMach_100   = mach_100    / factorScrap;
-  const basisLohn_100   = lohn_100    / factorScrap;
-  const basisTooling_100= tooling_100 / factorScrap;
-  const basisFgk_100    = fgk_100     / factorScrap;
-  // ruest_100 bleibt gleich
-  const basisFertSum_100 = basisMach_100 + basisLohn_100 + basisTooling_100 + basisFgk_100 + ruest_100;
-  const basisFertSum     = basisFertSum_100 / 100;
-  const fertScrapDelta   = fertSum - basisFertSum;
-  document.getElementById("tdFertScrapDelta").textContent = fertScrapDelta.toFixed(2);
+  // ============================
+  // C) Summen: Herstell / SGA / Profit / Total
+  // ============================
+  // (Z.B. herstell, sga, profit, total)
+  if (data.herstell !== undefined) {
+    document.getElementById("tdHerstell").textContent =
+      data.herstell.toFixed(2);
+  }
+  if (data.sga !== undefined) {
+    document.getElementById("tdSGA").textContent =
+      data.sga.toFixed(2);
+  }
+  if (data.profit !== undefined) {
+    document.getElementById("tdProfit").textContent =
+      data.profit.toFixed(2);
+  }
+  if (data.total !== undefined) {
+    document.getElementById("tdTotal").textContent =
+      data.total.toFixed(2);
+  }
 
-  //
-  // F) Debug-Log
-  //
-  console.log("DEBUG: updateResultTable() => matSum=", matSum, "fertSum=", fertSum);
-  console.log("DEBUG: matScrapDelta=", matScrapDelta, "fertScrapDelta=", fertScrapDelta);
+  // ============================
+  // D) Header-Felder (Kosten/Stk & CO₂/Stk)
+  // ============================
+  // Falls du oben "pro Stück" Werte hast, kannst du sie direkt verwenden.
+  // Beispiel: cost_per_piece = data.total
+  //           co2_per_piece  = data.co2Mat + data.co2Fert
+  const txtCostsEl = document.getElementById("txtCosts100");
+  const txtCo2El   = document.getElementById("txtCo2Per100");
+
+  if (txtCostsEl) {
+    let costPerPiece = data.total || 0;
+    // Falls du hier *pro 100* haben willst, multipliziere => costPerPiece * 100
+    txtCostsEl.value = costPerPiece.toFixed(2);
+  }
+  if (txtCo2El) {
+    // Falls du den CO₂-Wert getrennt bekommst
+    let co2Piece = 0.0;
+    if (data.co2Mat !== undefined && data.co2Fert !== undefined) {
+      co2Piece = (data.co2Mat + data.co2Fert);
+    } else if (data.co2Total !== undefined) {
+      co2Piece = data.co2Total;
+    }
+    // Ebenfalls *100 nehmen, wenn "pro 100" gewünscht
+    txtCo2El.value = co2Piece.toFixed(3);
+  }
+
   console.log("DEBUG: Exiting updateResultTable()");
 }
+
 
 
 
