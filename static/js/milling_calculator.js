@@ -195,11 +195,11 @@ function applyMillingResult() {
   // NEU: Nutze currentMillingRow statt starrer Index 0
   const fertRows = document.querySelectorAll("#fertTable tbody tr");
   if (
-    currentMillingRow !== null &&
-    currentMillingRow >= 0 &&
-    currentMillingRow < fertRows.length
+    currentTaktRow !== null &&
+    currentTaktRow >= 0 &&
+    currentTaktRow < fertRows.length
   ) {
-    fertRows[currentMillingRow]
+    fertRows[currentTaktRow]
       .cells[1]
       .querySelector("input").value = cycVal.toFixed(1);
   }
@@ -210,5 +210,5 @@ function applyMillingResult() {
     const bsModal = bootstrap.Modal.getInstance(modalEl);
     bsModal?.hide();
   }
-  console.log("applyMillingResult => Takt (s)", cycVal, "in Zeile", currentMillingRow, "eingetragen.");
+  console.log("applyMillingResult => Takt (s)", cycVal, "in Zeile", currentTaktRow, "eingetragen.");
 }

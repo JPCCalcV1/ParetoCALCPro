@@ -905,7 +905,7 @@ function updateRowCalc(rowIdx, lotSize) {
   // => Rüstkosten pro 100 (verteilt auf lotSize)
   const costRuest100 = (ruestVal / lotSize) * 100;
   // => Tooling (falls gewünscht 1:1 addieren, je 100)
-  const costTool100 = toolingVal; // oder (toolingVal / lotSize)*100, je nach V1-Logik?
+  const costTool100 = toolingVal * 100; // oder (toolingVal / lotSize)*100, je nach V1-Logik?
 
   // Summiere => spalte[8] (Kosten/100)
   const cost100 = costMach100 + costLohn100 + costRuest100 + costTool100;

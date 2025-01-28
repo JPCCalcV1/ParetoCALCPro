@@ -206,11 +206,11 @@ function applyDruckgussResult() {
   // NEU: Nutze currentDruckgussRow statt fix fertRows[0].
   const fertRows = document.querySelectorAll("#fertTable tbody tr");
   if (
-    currentDruckgussRow !== null &&
-    currentDruckgussRow >= 0 &&
-    currentDruckgussRow < fertRows.length
+    currentTaktRow !== null &&
+    currentTaktRow >= 0 &&
+    currentTaktRow < fertRows.length
   ) {
-    fertRows[currentDruckgussRow]
+    fertRows[currentTaktRow]
       .cells[1]
       .querySelector("input").value = cycVal.toFixed(1);
   }
@@ -221,5 +221,5 @@ function applyDruckgussResult() {
     const bsModal = bootstrap.Modal.getInstance(modalEl);
     bsModal?.hide();
   }
-  console.log("applyDruckgussResult => Zyklus (s)", cycVal, "in Zeile", currentDruckgussRow, "eingetragen.");
+  console.log("applyDruckgussResult => Zyklus (s)", cycVal, "in Zeile", currentTaktRow, "eingetragen.");
 }

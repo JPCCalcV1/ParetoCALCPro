@@ -8,7 +8,6 @@
  ******************************************************/
 
 // NEU: Speichert die aktuell geklickte Tabellenzeile
-let currentStampingRow = null;
 
 let stChart = null;
 
@@ -207,11 +206,11 @@ function applyStampingResult() {
   // NEU: statt immer fertRows[0] => currentStampingRow beachten
   const fertRows= document.querySelectorAll("#fertTable tbody tr");
   if (
-    currentStampingRow !== null &&
-    currentStampingRow >= 0 &&
-    currentStampingRow < fertRows.length
+    currentTaktRow !== null &&
+    currentTaktRow >= 0 &&
+    currentTaktRow < fertRows.length
   ) {
-    fertRows[currentStampingRow]
+    fertRows[currentTaktRow]
       .cells[1]
       .querySelector("input").value = cycVal.toFixed(1);
   }
@@ -222,5 +221,5 @@ function applyStampingResult() {
     const bsModal = bootstrap.Modal.getInstance(modalEl);
     bsModal?.hide();
   }
-  console.log("applyStampingResult => Zyklus", cycVal,"in Zeile", currentStampingRow,"eingetragen.");
+  console.log("applyStampingResult => Zyklus", cycVal,"in Zeile", currentTaktRow,"eingetragen.");
 }

@@ -11,7 +11,6 @@
 let sgChart = null;
 
 // NEU: Globale Variable, um die geklickte Zeile zu speichern:
-let currentSpritzgussRow = null;
 
 // Flag-Variablen
 let isWallEdited   = false;
@@ -296,11 +295,11 @@ function applySpritzgussResult() {
 
   const fertRows = document.querySelectorAll("#fertTable tbody tr");
   if (
-    currentSpritzgussRow !== null &&
-    currentSpritzgussRow >= 0 &&
-    currentSpritzgussRow < fertRows.length
+    currentTaktRow !== null &&
+    currentTaktRow >= 0 &&
+    currentTaktRow < fertRows.length
   ) {
-    fertRows[currentSpritzgussRow]
+    fertRows[currentTaktRow]
       .cells[1]
       .querySelector("input").value = cycVal.toFixed(1);
   }
@@ -313,7 +312,7 @@ function applySpritzgussResult() {
       bsModal.hide();
     }
   }
-  console.log("applySpritzgussResult => Zyklus", cycVal, "Sekunden in Zeile", currentSpritzgussRow, "übertragen.");
+  console.log("applySpritzgussResult => Zyklus", cycVal, "Sekunden in Zeile", currentTaktRow, "übertragen.");
 }
 
 /********************************************************
