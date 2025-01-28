@@ -562,10 +562,22 @@ function updateApexCharts(resultData) {
   }
 
   // (1) Rechne Material & Fertigung zusammen
-  let material = (resultData.matEinzel100 ?? 0) + (resultData.matGemein100 ?? 0) + (resultData.fremd100 ?? 0);
-  let fertigung = (resultData.mach100 ?? 0) + (resultData.lohn100 ?? 0) + (resultData.fgk100 ?? 0);
-  let sgaVal = (resultData.sga100 ?? 0);
-  let profitVal = (resultData.profit100 ?? 0);
+  //    => neues Konzept: matEinzel, matScrap, fremd, matGemein, mach, lohn, tooling, scrapFert, fgk, etc.
+  let material =
+    (resultData.matEinzel ?? 0) +
+    (resultData.matScrap ?? 0) +
+    (resultData.fremd ?? 0) +
+    (resultData.matGemein ?? 0);
+
+  let fertigung =
+    (resultData.mach ?? 0) +
+    (resultData.lohn ?? 0) +
+    (resultData.tooling ?? 0) +
+    (resultData.scrapFert ?? 0) +
+    (resultData.fgk ?? 0);
+
+  let sgaVal = (resultData.sga ?? 0);
+  let profitVal = (resultData.profit ?? 0);
 
   console.log("DEBUG: cost-dist =>", material, fertigung, sgaVal, profitVal);
 
@@ -573,14 +585,17 @@ function updateApexCharts(resultData) {
   apexCostChart.updateSeries([ material, fertigung, sgaVal, profitVal ]);
 
   // (3) CO2-Daten
-  let co2Mat = (resultData.co2Mat100 ?? 0);
-  let co2Proc = (resultData.co2Proc100 ?? 0);
+  //    => neues Konzept: co2Mat, co2Fert
+  let co2Mat = (resultData.co2Mat ?? 0);
+  let co2Proc = (resultData.co2Fert ?? 0); // wir nennen es hier co2Proc, um die Struktur beizubehalten
+
   console.log("DEBUG: co2-dist =>", co2Mat, co2Proc);
 
   apexCo2Chart.updateSeries([ co2Mat, co2Proc ]);
 
   console.log("DEBUG: Exiting updateApexCharts()");
 }
+
 /************************************************************
  * initCharts() – erstellt costChart & co2Chart falls nicht
  * vorhanden (oder zerstört alte, wenn chartInitialized=true).
@@ -966,8 +981,8 @@ function updateRowCalc(rowIdx, lotSize) {
   let co2_100WithScrap = co2_100 * factorScrap;
 
   // 7) Erneut in Spalte 8 & 9 anzeigen (überschreiben)
-  row[8].querySelector("span").textContent = (cost100WithScrap / 100).toFixed(4);
-  row[9].querySelector("span").textContent = (co2_100WithScrap / 100).toFixed(4);
+  row[8].querySelector("span").textContent = (cost100WithScrap / 100).toFixed(2);
+  row[9].querySelector("span").textContent = (co2_100WithScrap / 100).toFixed(2);
 
   console.log("DEBUG: cost100WithScrap=", cost100WithScrap, "co2_100WithScrap=", co2_100WithScrap);
   console.log("DEBUG: Exiting updateRowCalc()");
