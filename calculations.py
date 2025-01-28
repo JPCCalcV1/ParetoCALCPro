@@ -62,7 +62,7 @@ def calculate_all(data):
         co2_100 = cyc_hours * co2_hour * 100.0
 
         # Fertigungs-Kosten pro Step (ohne FGK)
-        step_fert_100 = mach_100 + lohn_100 + ruest_100 + tooling_100
+        step_fert_100 = mach_100 + lohn_100 + ruest_100 + tooling_100*100
 
         # FGK pro Step
         step_fgk_100 = step_fert_100 * (fgk_pct / 100.0)
