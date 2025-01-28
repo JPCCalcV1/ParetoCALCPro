@@ -1088,20 +1088,24 @@ function filterMaterialList() {
   console.log("DEBUG: Exiting filterMaterialList()");
 }
 
-/** openZyklusModalWithTakt(rowIndex) => #modalZyklusBild öffnen */
+/********************************************************
+ * NEU: MODAL ÖFFNEN FÜR EINEN BESTIMMTEN TABELLENINDEX
+ ********************************************************/
 function openZyklusModalWithTakt(rowIndex) {
-  console.log("DEBUG: Entering openZyklusModalWithTakt() with rowIndex =", rowIndex);
   currentTaktRow = rowIndex;
-  const modalEl = document.getElementById("modalZyklusBild");
-  if (!modalEl) {
-    console.log("DEBUG: #modalZyklusBild not found => returning");
+  console.log("openZyklusModalWithTakt => rowIndex =", rowIndex);
+
+  // Das Auswahlmodal #modalZyklusBild öffnen
+  const zyModalEl = document.getElementById("modalZyklusBild");
+  if (!zyModalEl) {
+    console.error("Modal '#modalZyklusBild' nicht gefunden!");
     return;
   }
-  const bsModal = new bootstrap.Modal(modalEl);
+  const bsModal = new bootstrap.Modal(zyModalEl);
   bsModal.show();
-  console.log("DEBUG: ZyklusModal shown for rowIndex =", rowIndex);
-  console.log("DEBUG: Exiting openZyklusModalWithTakt()");
+  console.log("Zykluszeit-Modal geöffnet (Zeile:", rowIndex, ").");
 }
+
 
 /** =========== Maschinen-Funktionen =========== */
 
@@ -2077,15 +2081,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //----------------------------------------------------------
 
 
-function openZyklusModalwithtakt() {
-  const zyklusModalEl = document.getElementById("modalZyklusBild");
-  if (!zyklusModalEl) {
-    console.error("modalZyklusBild not found!");
-    return;
-  }
-  const bsModal = new bootstrap.Modal(zyklusModalEl);
-  bsModal.show();
-}
+
 
 function closeZyklusModal() {
   const zyklusModalEl = document.getElementById("modalZyklusBild");

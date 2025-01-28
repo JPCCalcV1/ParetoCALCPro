@@ -7,6 +7,9 @@
  * - applyStampingResult() => Zyklus in Tab3
  ******************************************************/
 
+// NEU: Speichert die aktuell geklickte Tabellenzeile
+let currentStampingRow = null;
+
 let stChart = null;
 
 // Wenn DOM fertig
@@ -28,6 +31,26 @@ function initStampingModal() {
       pressSel.disabled = autoChk.checked;
     });
   }
+}
+
+/**
+ * NEU: Öffnet das Stamping-Modal für eine bestimmte Tabellenzeile.
+ * @param {number} rowIndex – Index der Zeile, auf die geklickt wurde
+ */
+function openStampingModalWithTakt(rowIndex) {
+  // 1) Zeilenindex merken
+  currentStampingRow = rowIndex;
+  console.log("openStampingModalWithTakt => rowIndex =", rowIndex);
+
+  // 2) Modal #modalStamping anzeigen
+  const modalEl = document.getElementById("modalStamping");
+  if (!modalEl) {
+    console.error("modalStamping not found!");
+    return;
+  }
+  const bsModal = new bootstrap.Modal(modalEl);
+  bsModal.show();
+  console.log("Stamping-Modal geöffnet (Zeile:", rowIndex, ")");
 }
 
 /**
@@ -181,10 +204,16 @@ function applyStampingResult() {
   const cycText= document.getElementById("stCycleTime").textContent;
   const cycVal= parseFloat(cycText) || 0;
 
-  // Falls du Tab3 => row(0), col(1) => "Zyklus (s)"
+  // NEU: statt immer fertRows[0] => currentStampingRow beachten
   const fertRows= document.querySelectorAll("#fertTable tbody tr");
-  if (fertRows.length>0) {
-    fertRows[0].cells[1].querySelector("input").value = cycVal.toFixed(1);
+  if (
+    currentStampingRow !== null &&
+    currentStampingRow >= 0 &&
+    currentStampingRow < fertRows.length
+  ) {
+    fertRows[currentStampingRow]
+      .cells[1]
+      .querySelector("input").value = cycVal.toFixed(1);
   }
 
   // Modal schließen
@@ -193,5 +222,5 @@ function applyStampingResult() {
     const bsModal = bootstrap.Modal.getInstance(modalEl);
     bsModal?.hide();
   }
-  console.log("applyStampingResult => Zyklus", cycVal,"eingetragen.");
+  console.log("applyStampingResult => Zyklus", cycVal,"in Zeile", currentStampingRow,"eingetragen.");
 }

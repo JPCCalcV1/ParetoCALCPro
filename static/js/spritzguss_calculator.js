@@ -10,6 +10,9 @@
 
 let sgChart = null;
 
+// NEU: Globale Variable, um die geklickte Zeile zu speichern:
+let currentSpritzgussRow = null;
+
 // Flag-Variablen
 let isWallEdited   = false;
 let isCavEdited    = false;
@@ -286,19 +289,31 @@ function drawSpritzgussChart(segmentVals) {
  * WERT ÜBERNEHMEN => Z.B. IN TABELLE
  ********************************************************/
 function applySpritzgussResult() {
+  // HIER die Änderung: Nutze die globale Variable currentSpritzgussRow
+  // statt immer Zeile 0 zu beschreiben.
   const cycText = document.getElementById("sgCyclePart")?.textContent || "0";
   const cycVal  = parseFloat(cycText) || 0;
 
   const fertRows = document.querySelectorAll("#fertTable tbody tr");
-  if (fertRows.length > 0) {
-    fertRows[0].cells[1].querySelector("input").value = cycVal.toFixed(1);
+  if (
+    currentSpritzgussRow !== null &&
+    currentSpritzgussRow >= 0 &&
+    currentSpritzgussRow < fertRows.length
+  ) {
+    fertRows[currentSpritzgussRow]
+      .cells[1]
+      .querySelector("input").value = cycVal.toFixed(1);
   }
+
+  // Modal schließen
   const modalEl = document.getElementById("modalSpritzguss");
   if (modalEl) {
     const bsModal = bootstrap.Modal.getInstance(modalEl);
-    if (bsModal) bsModal.hide();
+    if (bsModal) {
+      bsModal.hide();
+    }
   }
-  console.log("applySpritzgussResult => Zyklus", cycVal, "s übertragen.");
+  console.log("applySpritzgussResult => Zyklus", cycVal, "Sekunden in Zeile", currentSpritzgussRow, "übertragen.");
 }
 
 /********************************************************
@@ -393,3 +408,5 @@ function loadProfile(profileType) {
     profChgDiv.innerText = sgProfileMsg;
   }
 }
+
+

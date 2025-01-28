@@ -2,8 +2,11 @@
  * druckguss_calculator.js – AJAX-Variante
  *
  * Hier nur Felder sammeln & fetch('/calc/takt/druckguss',...).
- * Das Ergebnis (JSON) füllt wir ins Modal (#dgClosureForce, etc.).
+ * Das Ergebnis (JSON) füllen wir ins Modal (#dgClosureForce, etc.).
  ************************************************************/
+
+// NEU: Speichert, welche Tabellenzeile das Druckguss-Modal geöffnet hat
+let currentDruckgussRow = null;
 
 let dgChart = null; // Donut-Chart
 
@@ -16,6 +19,26 @@ function initDruckgussModal() {
   if (btnUebernehmen) {
     btnUebernehmen.addEventListener("click", applyDruckgussResult);
   }
+}
+
+/**
+ * NEU: Öffnet das Druckguss-Modal für eine bestimmte Tabellenzeile.
+ * @param {number} rowIndex Zeilenindex, der geklickt wurde
+ */
+function openDruckgussModalWithTakt(rowIndex) {
+  // 1) Merke den übergebenen Zeilenindex
+  currentDruckgussRow = rowIndex;
+  console.log("openDruckgussModalWithTakt => rowIndex =", rowIndex);
+
+  // 2) Modal holen und anzeigen
+  const modalEl = document.getElementById("modalDruckguss");
+  if (!modalEl) {
+    console.error("modalDruckguss not found!");
+    return;
+  }
+  const bsModal = new bootstrap.Modal(modalEl);
+  bsModal.show();
+  console.log("openDruckgussModalWithTakt => modalDruckguss shown");
 }
 
 /**
@@ -180,10 +203,16 @@ function applyDruckgussResult() {
   const cycText = document.getElementById("dgCyclePart").textContent;
   const cycVal  = parseFloat(cycText) || 0;
 
-  // z. B. Tab3 => row(0), col(1)
+  // NEU: Nutze currentDruckgussRow statt fix fertRows[0].
   const fertRows = document.querySelectorAll("#fertTable tbody tr");
-  if (fertRows.length > 0) {
-    fertRows[0].cells[1].querySelector("input").value = cycVal.toFixed(1);
+  if (
+    currentDruckgussRow !== null &&
+    currentDruckgussRow >= 0 &&
+    currentDruckgussRow < fertRows.length
+  ) {
+    fertRows[currentDruckgussRow]
+      .cells[1]
+      .querySelector("input").value = cycVal.toFixed(1);
   }
 
   // Modal schließen
@@ -192,5 +221,5 @@ function applyDruckgussResult() {
     const bsModal = bootstrap.Modal.getInstance(modalEl);
     bsModal?.hide();
   }
-  console.log("applyDruckgussResult => Zyklus (s)", cycVal, "eingetragen.");
+  console.log("applyDruckgussResult => Zyklus (s)", cycVal, "in Zeile", currentDruckgussRow, "eingetragen.");
 }

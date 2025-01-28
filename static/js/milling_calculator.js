@@ -6,6 +6,9 @@
  * - updateMillingUI()
  ******************************************************/
 
+// NEU: Zeilenindex, damit wir die Taktzeit in die richtige Zeile schreiben können
+let currentMillingRow = null;
+
 let millChart = null;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -25,6 +28,26 @@ function initMillingModal() {
       if (sel) sel.disabled = autoChk.checked;
     });
   }
+}
+
+/**
+ * NEU: Öffnet das Milling-Modal für eine bestimmte Tabellenzeile.
+ * @param {number} rowIndex – Index der angeklickten Zeile
+ */
+function openMillingModalWithTakt(rowIndex) {
+  // 1) Speichere den Zeilenindex in der globalen Variable
+  currentMillingRow = rowIndex;
+  console.log("openMillingModalWithTakt => rowIndex =", rowIndex);
+
+  // 2) Modal mit id="modalMilling" anzeigen
+  const modalEl = document.getElementById("modalMilling");
+  if (!modalEl) {
+    console.error("modalMilling not found!");
+    return;
+  }
+  const bsModal = new bootstrap.Modal(modalEl);
+  bsModal.show();
+  console.log("Modal Milling geöffnet (Zeile:", rowIndex, ")");
 }
 
 /**
@@ -118,16 +141,16 @@ function updateMillingUI(data) {
   document.getElementById("millCostEach").textContent      = data.costEach?.toFixed(2) ?? "--";
   document.getElementById("millCo2Each").textContent       = data.co2Each?.toFixed(2) ?? "--";
 
-  // Donut-Chart => 3 Segment (Material, Maschine, Rüst)
-  // Da das Backend nur Summen liefert, wir machen Demo-Split:
-  let matCost  = data.costEach ? data.costEach*0.40 : 0.0;
-  let machCost = data.costEach ? data.costEach*0.50 : 0.0;
-  let ruestCost= data.costEach ? data.costEach*0.10 : 0.0;
+  // Donut-Chart => 3 Segmente (Material, Maschine, Rüst)
+  // Für Demo-Split
+  let matCost  = data.costEach ? data.costEach * 0.40 : 0.0;
+  let machCost = data.costEach ? data.costEach * 0.50 : 0.0;
+  let ruestCost= data.costEach ? data.costEach * 0.10 : 0.0;
   drawMillingChart([matCost, machCost, ruestCost], data.costEach?? 0);
 }
 
 /**
- * Donut
+ * Donut-Chart
  */
 function drawMillingChart(segmentVals, totalCost) {
   const ctx = document.getElementById("millCostChart");
@@ -169,16 +192,23 @@ function applyMillingResult() {
   const cycTxt = document.getElementById("millCycleTime").textContent;
   const cycVal = parseFloat(cycTxt) || 0;
 
-  // row(0), col(1)
+  // NEU: Nutze currentMillingRow statt starrer Index 0
   const fertRows = document.querySelectorAll("#fertTable tbody tr");
-  if (fertRows.length>0) {
-    fertRows[0].cells[1].querySelector("input").value = cycVal.toFixed(1);
+  if (
+    currentMillingRow !== null &&
+    currentMillingRow >= 0 &&
+    currentMillingRow < fertRows.length
+  ) {
+    fertRows[currentMillingRow]
+      .cells[1]
+      .querySelector("input").value = cycVal.toFixed(1);
   }
+
   // Modal schließen
   const modalEl = document.getElementById("modalMilling");
   if (modalEl) {
     const bsModal = bootstrap.Modal.getInstance(modalEl);
     bsModal?.hide();
   }
-  console.log("applyMillingResult => Takt (s)", cycVal,"eingetragen.");
+  console.log("applyMillingResult => Takt (s)", cycVal, "in Zeile", currentMillingRow, "eingetragen.");
 }
