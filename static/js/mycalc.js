@@ -1732,23 +1732,27 @@ function updateResultTable(data) {
   //
   // C) In HTML-Felder schreiben
   //
-  // Material
-  document.getElementById("tdMatEinzel").textContent   = matEinzel.toFixed(2);
-  document.getElementById("tdMatGemein").textContent   = matGemein.toFixed(2);
-  document.getElementById("tdFremd").textContent       = fremd.toFixed(2);
+// Material:
+document.getElementById("tdMatEinzel").textContent = data.matEinzel.toFixed(2);
+document.getElementById("tdFremd").textContent     = data.fremd.toFixed(2);
+document.getElementById("tdMatScrapDelta").textContent = data.matScrap.toFixed(2);
+document.getElementById("tdMatGemein").textContent = data.matGemein.toFixed(2);
+document.getElementById("tdMatSumDetailed").textContent = data.matSum.toFixed(2);
 
-  // Fertigung
-  document.getElementById("tdMach").textContent        = mach.toFixed(2);
-  document.getElementById("tdLohn").textContent        = lohn.toFixed(2);
-  document.getElementById("tdFGK").textContent         = fgk.toFixed(2);
-  document.getElementById("tdRuestDetailed").textContent  = ruest.toFixed(2);
-  document.getElementById("tdToolingDetailed").textContent= tooling.toFixed(2);
+// Fertigung:
+document.getElementById("tdMach").textContent  = data.mach.toFixed(2);
+document.getElementById("tdLohn").textContent  = data.lohn.toFixed(2);
+document.getElementById("tdToolingDetailed").textContent = data.tooling.toFixed(2);
+document.getElementById("tdRuestDetailed").textContent    = data.ruest.toFixed(2);
+document.getElementById("tdFertScrapDelta").textContent   = data.scrapFert.toFixed(2);
+document.getElementById("tdFGK").textContent  = data.fgk.toFixed(2);
+document.getElementById("tdFertSumDetailed").textContent = data.fertSum.toFixed(2);
 
-  // Summen unten
-  document.getElementById("tdHerstell").textContent  = herstell.toFixed(2);
-  document.getElementById("tdSGA").textContent       = sga.toFixed(2);
-  document.getElementById("tdProfit").textContent    = profit.toFixed(2);
-  document.getElementById("tdTotal").textContent     = totalAll.toFixed(2);
+// Summen
+document.getElementById("tdHerstell").textContent = data.herstell.toFixed(2);
+document.getElementById("tdSGA").textContent       = data.sga.toFixed(2);
+document.getElementById("tdProfit").textContent    = data.profit.toFixed(2);
+document.getElementById("tdTotal").textContent     = data.total.toFixed(2);
 
   //
   // D) Weitere Detail-Summen (pro Stück)

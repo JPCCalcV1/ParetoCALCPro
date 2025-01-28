@@ -1,136 +1,157 @@
-# calculations.py
-
 import math
+
 
 def calculate_all(data):
     print("[calculate_all] Eingehende Daten:", data)
+    scrap_pct = data.get("scrapPct", 0.0)  # Ausschuss in %
+    sga_pct = data.get("sgaPct", 0.0)
+    profit_pct = data.get("profitPct", 0.0)
+    lot_size = data.get("lotSize", 100)
 
-    scrap_pct   = data.get("scrapPct",   0.0)
-    sga_pct     = data.get("sgaPct",     0.0)
-    profit_pct  = data.get("profitPct",  0.0)
-    lot_size    = data.get("lotSize",    100)
+    # --------------------------------------------------
+    # A) MATERIAL-KOSTEN (pro STÜCK, NICHT pro 100)
+    # --------------------------------------------------
+    mat_price = data["material"]["price"]  # €/kg
+    mat_weight = data["material"]["weight"]  # kg/Stk
+    mat_gk_pct = data["material"]["gk"]  # in %
+    fremd_val = data["material"]["fremdValue"]  # €/Stk
+    mat_co2 = data["material"]["co2"]  # kg CO2 / kg (falls du CO2 aufsplitten willst)
 
-    # A) MATERIAL-KOSTEN
-    mat_price   = data["material"]["price"]   # €/kg
-    mat_weight  = data["material"]["weight"]  # kg/Stk
-    mat_gk_pct  = data["material"]["gk"]      # in %
-    fremd_val   = data["material"]["fremdValue"]
-    mat_co2     = data["material"]["co2"]     # kgCO2/kg?
+    # 1) Einzelkosten (ohne Ausschuss)
+    mat_einzel_no_scrap = mat_price * mat_weight  # €/Stk
+    fremd_no_scrap = fremd_val  # €/Stk
 
-    # Einzelmaterial pro Stück (inkl. Ausschuss)
-    mat_einzel_pro_stk = mat_price * mat_weight
-    mat_einzel_pro_stk *= (1 + scrap_pct / 100.0)
-    mat_einzel_100 = mat_einzel_pro_stk * 100.0
+    # 2) Material-Ausschuss
+    mat_scrap_value = (mat_einzel_no_scrap + fremd_no_scrap) * (scrap_pct / 100.0)
 
-    # Fremdzukauf pro 100
-    fremd_100 = fremd_val * 100.0 * (1 + scrap_pct / 100.0)
+    # 3) Material-Gemeinkosten auf (Einzel + Fremd + Ausschuss)
+    mat_base_plus_scrap = mat_einzel_no_scrap + fremd_no_scrap + mat_scrap_value
+    mat_gemein_value = mat_base_plus_scrap * (mat_gk_pct / 100.0)
 
-    # Material-Gemeinkosten
-    mat_gemein_100 = (mat_einzel_100 + fremd_100) * (mat_gk_pct / 100.0)
+    # 4) Summen
+    sum_mat_per_piece = mat_base_plus_scrap + mat_gemein_value  # €/Stk
 
-    # B) PROZESS-KOSTEN (alle Steps)
-    sum_mach_100    = 0.0
-    sum_lohn_100    = 0.0
-    sum_ruest_100   = 0.0
-    sum_tooling_100 = 0.0
-    sum_co2_100     = 0.0
-    sum_fgk_100     = 0.0  # FGK pro Step
-
+    # --------------------------------------------------
+    # B) FERTIGUNGS-KOSTEN (pro STÜCK)
+    # --------------------------------------------------
     steps = data.get("steps", []) or []
+    sum_mach_no_scrap = 0.0  # Summe Maschinenkosten (ohne Ausschuss)
+    sum_lohn_no_scrap = 0.0  # Summe Lohnkosten (ohne Ausschuss)
+    sum_tool_no_scrap = 0.0  # Summe Tooling (ohne Ausschuss)
+    sum_ruest = 0.0  # Summe Rüstkosten (kein Ausschuss!)
+    sum_fgk = 0.0  # Fertigungs-Gemeinkosten
+    sum_fert_scrap = 0.0  # Fertigungsausschuss
+    sum_co2_proc = 0.0  # CO₂ in der Fertigung (falls du's getrennt haben willst)
+
     for idx, step in enumerate(steps):
-        cyc_sec   = step.get("cycTime", 0.0)
-        ms_rate   = step.get("msRate", 0.0)
-        lohn_rate = step.get("lohnRate", 0.0)
-        ruest_val = step.get("ruestVal", 0.0)
-        tool_100  = step.get("tooling100", 0.0)  # €/100
-        fgk_pct   = step.get("fgkPct", 0.0)
-        co2_hour  = step.get("co2Hour", 0.0)
+        cyc_sec = step.get("cycTime", 0.0)
+        ms_rate = step.get("msRate", 0.0)  # €/h
+        lohn_rate = step.get("lohnRate", 0.0)  # €/h
+        ruest_val = step.get("ruestVal", 0.0)  # €/Los
+        tool_val = step.get("tooling100", 0.0)  # €/Stk (oder €/100 je nach Interpretation)
+        fgk_pct = step.get("fgkPct", 0.0)  # %
+        co2_hour = step.get("co2Hour", 0.0)
 
         cyc_hours = cyc_sec / 3600.0
 
-        # Maschine + Lohn pro 100
-        mach_100 = cyc_hours * ms_rate * 100.0
-        lohn_100 = cyc_hours * lohn_rate * 100.0
+        # 1) Maschinen + Lohn + Tooling (ohne Ausschuss)
+        mach_cost_piece = cyc_hours * ms_rate  # €/Stk
+        lohn_cost_piece = cyc_hours * lohn_rate  # €/Stk
+        # Achtung: tooling100 kann bedeuten "pro 100" => hier als Bsp. /100
+        # Falls du tooling100 schon "pro 1 Stk" pflegst, nimmst du das 1:1
+        tool_cost_piece = tool_val  # z.B. "2€ pro 1 Stk"
 
-        # Rüst pro 100 => (Rüstkosten / Losgröße) * 100
-        ruest_100 = (ruest_val / lot_size) * 100.0
+        # 2) Ausschuss Fertigung (nur auf Maschine, Lohn, Tooling)
+        step_base_no_scrap = mach_cost_piece + lohn_cost_piece + tool_cost_piece
+        step_scrap_value = step_base_no_scrap * (scrap_pct / 100.0)
 
-        # Tooling pro 100 => tool_100
-        tooling_100 = tool_100
+        # 3) Fertigungs-Gemeinkosten (auf base + scrap)
+        step_base_plus_scrap = step_base_no_scrap + step_scrap_value
+        step_fgk_value = step_base_plus_scrap * (fgk_pct / 100.0)
 
-        # CO2 pro 100 => cyc_hours * co2_hour * 100
-        co2_100 = cyc_hours * co2_hour * 100.0
+        # 4) Rüstkosten verteilen
+        #   Rüstkosten/Los => Rüstkosten / lot_size => €/Stk
+        ruest_per_piece = ruest_val / lot_size
 
-        # Fertigungs-Kosten pro Step (ohne FGK)
-        step_fert_100 = mach_100 + lohn_100 + ruest_100 + tooling_100*100
+        # 5) Summen und CO₂
+        sum_mach_no_scrap += mach_cost_piece
+        sum_lohn_no_scrap += lohn_cost_piece
+        sum_tool_no_scrap += tool_cost_piece
+        sum_ruest += ruest_per_piece
+        sum_fert_scrap += step_scrap_value
+        sum_fgk += step_fgk_value
 
-        # FGK pro Step
-        step_fgk_100 = step_fert_100 * (fgk_pct / 100.0)
+        # CO₂ nur auf Maschinenlaufzeit => cyc_hours * co2_hour pro Stück
+        # Ggf. mit Ausschuss multiplizieren, wenn du willst, dass
+        # Ausschussanteil auch "mehr Maschinenzeit" bedeutet – optional.
+        proc_co2_piece = cyc_hours * co2_hour
+        sum_co2_proc += proc_co2_piece
 
-        # Summieren
-        sum_mach_100    += mach_100
-        sum_lohn_100    += lohn_100
-        sum_ruest_100   += ruest_100
-        sum_tooling_100 += tooling_100 *100
-        sum_co2_100     += co2_100
-        sum_fgk_100     += step_fgk_100
-
-        # Debug-Print für jeden Step:
-        print(f"[calculate_all] Step {idx+1}: cycTime={cyc_sec}, ms={ms_rate}, lohn={lohn_rate}, "
-              f"ruest={ruest_val}, tooling100={tool_100}, fgkPct={fgk_pct}, co2Hour={co2_hour} => "
-              f"mach_100={mach_100:.2f}, lohn_100={lohn_100:.2f}, ruest_100={ruest_100:.2f}, "
-              f"tooling_100={tooling_100:.2f}, fgk_100={step_fgk_100:.2f}, co2_100={co2_100:.2f}")
-
-    # GLOBALER AUSSCHUSS auf Maschine + Lohn + Tooling + CO2
-    factor_scrap = (1 + scrap_pct / 100.0)
-    sum_mach_100    *= factor_scrap
-    sum_lohn_100    *= factor_scrap
-    sum_tooling_100 *= factor_scrap
-    sum_co2_100     *= factor_scrap
-    # Rüstkosten bleiben (ruest_100 bleibt wie es ist)
-    sum_fgk_100     *= factor_scrap
-
-    fert_cost_100 = (
-        sum_mach_100 + sum_lohn_100 + sum_ruest_100 +
-        sum_tooling_100 + sum_fgk_100
+    sum_fert_per_piece = (
+            sum_mach_no_scrap
+            + sum_lohn_no_scrap
+            + sum_tool_no_scrap
+            + sum_fert_scrap
+            + sum_fgk
+            + sum_ruest
     )
-    mat_sum_100 = mat_einzel_100 + fremd_100 + mat_gemein_100
-    herstell_100 = mat_sum_100 + fert_cost_100
 
-    # SG&A + Profit
-    sga_100    = herstell_100 * (sga_pct / 100.0)
-    profit_100 = herstell_100 * (profit_pct / 100.0)
-    total_all_100 = herstell_100 + sga_100 + profit_100
+    # --------------------------------------------------
+    # C) HERSTELLKOSTEN => SG&A => PROFIT => TOTAL
+    # --------------------------------------------------
+    herstell_per_piece = sum_mat_per_piece + sum_fert_per_piece
+    sga_per_piece = herstell_per_piece * (sga_pct / 100.0)
+    profit_per_piece = herstell_per_piece * (profit_pct / 100.0)
+    total_per_piece = herstell_per_piece + sga_per_piece + profit_per_piece
 
-    # CO2-Gesamt
-    mat_co2_100 = (mat_weight * 100.0) * mat_co2 * factor_scrap
-    total_co2_100 = mat_co2_100 + sum_co2_100
+    # --------------------------------------------------
+    # D) Optional: CO₂ Material
+    # --------------------------------------------------
+    # Nur als grobe Schätzung:
+    mat_co2_piece = mat_weight * mat_co2  # kgCO2 pro Stück (ohne Ausschuss)
+    # Willst du den Material-Ausschuss auch in CO2 einrechnen?
+    # => mat_co2_piece += mat_co2_piece * (scrap_pct / 100.0)
 
-    # Nochmals am Ende eine Zusammenfassung
-    print(f"[calculate_all] End-Summen => "
-          f"sum_mach_100={sum_mach_100:.2f}, sum_lohn_100={sum_lohn_100:.2f}, "
-          f"sum_ruest_100={sum_ruest_100:.2f}, sum_tooling_100={sum_tooling_100:.2f}, sum_fgk_100={sum_fgk_100:.2f}, "
-          f"mat_sum_100={mat_sum_100:.2f}, fert_cost_100={fert_cost_100:.2f}, "
-          f"herstell_100={herstell_100:.2f}, sga_100={sga_100:.2f}, profit_100={profit_100:.2f}, total_all_100={total_all_100:.2f}, "
-          f"mat_co2_100={mat_co2_100:.2f}, co2_proc_100={sum_co2_100:.2f}, total_co2_100={total_co2_100:.2f}")
+    total_co2_piece = mat_co2_piece + sum_co2_proc
 
-    return {
-        "matEinzel100": round(mat_einzel_100, 2),
-        "matGemein100": round(mat_gemein_100, 2),
-        "fremd100": round(fremd_100, 2),
-        "mach100": round(sum_mach_100, 2),
-        "lohn100": round(sum_lohn_100, 2),
-        "ruest100": round(sum_ruest_100, 2),
-        "tooling100": round(sum_tooling_100, 2),
-        "fgk100": round(sum_fgk_100, 2),
-        "herstell100": round(herstell_100, 2),
-        "sga100": round(sga_100, 2),
-        "profit100": round(profit_100, 2),
-        "totalAll100": round(total_all_100, 2),
-        "co2Mat100": round(mat_co2_100, 2),
-        "co2Proc100": round(sum_co2_100, 2),
-        "co2Total100": round(total_co2_100, 2)
+    # --------------------------------------------------
+    # E) Zusammenstellen: dictionary
+    # --------------------------------------------------
+    # => pro Stück
+    # => Du kannst pro 100 noch ableiten, wenn du willst
+    out = {
+        # Material Details
+        "matEinzel": round(mat_einzel_no_scrap, 2),
+        "fremd": round(fremd_no_scrap, 2),
+        "matScrap": round(mat_scrap_value, 2),
+        "matGemein": round(mat_gemein_value, 2),
+        "matSum": round(sum_mat_per_piece, 2),
+
+        # Fertigungs-Details
+        "mach": round(sum_mach_no_scrap, 2),
+        "lohn": round(sum_lohn_no_scrap, 2),
+        "tooling": round(sum_tool_no_scrap, 2),
+        "ruest": round(sum_ruest, 2),
+        "scrapFert": round(sum_fert_scrap, 2),
+        "fgk": round(sum_fgk, 2),
+        "fertSum": round(sum_fert_per_piece, 2),
+
+        # Gesamtergebnis
+        "herstell": round(herstell_per_piece, 2),
+        "sga": round(sga_per_piece, 2),
+        "profit": round(profit_per_piece, 2),
+        "total": round(total_per_piece, 2),
+
+        # CO2
+        "co2Mat": round(mat_co2_piece, 3),
+        "co2Fert": round(sum_co2_proc, 3),
+        "co2Total": round(total_co2_piece, 3),
     }
+
+    print("[calculate_all] => Ergebnis:", out)
+    return out
+
+
 # -----------------------------------------------------------
 # 2) WEITERE FUNKTIONEN => Maschinen, Lohn, Material etc.
 # -----------------------------------------------------------
