@@ -2551,54 +2551,54 @@ function checkMaterialAccess() {
  *  - wenn extended => openLohnModal()
  */
 
-// Exporte, falls nötig
-window.onAskGPT = onAskGPT;
-window.doLogin = doLogin;
-window.doLogout = doLogout;
-window.doRegister = doRegister;
-window.checkLicense = checkLicense;
+    // Exporte, falls nötig
+    window.onAskGPT = onAskGPT;
+    window.doLogin = doLogin;
+    window.doLogout = doLogout;
+    window.doRegister = doRegister;
+    window.checkLicense = checkLicense;
 
 
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("V2 => DOMContentLoaded => combined with old V1 stuff");
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log("V2 => DOMContentLoaded => combined with old V1 stuff");
 
-  // 1) (Aus V1:) Tab 1 aktivieren
-  console.log("DEBUG: Activating Tab #tab1 (like in V1)...");
-  const tab1El = document.querySelector("#tab1");
-  // V1 hat per classList.add("active", "show") Tab 1 sichtbar gemacht
-  if (tab1El) {
-    tab1El.classList.add("active", "show");
-    console.log("DEBUG: Tab #tab1 found => .active .show added");
-  } else {
-    console.warn("DEBUG: #tab1 not found in DOM => can't set active");
-  }
+      // 1) (Aus V1:) Tab 1 aktivieren
+      console.log("DEBUG: Activating Tab #tab1 (like in V1)...");
+      const tab1El = document.querySelector("#tab1");
+      // V1 hat per classList.add("active", "show") Tab 1 sichtbar gemacht
+      if (tab1El) {
+        tab1El.classList.add("active", "show");
+        console.log("DEBUG: Tab #tab1 found => .active .show added");
+      } else {
+        console.warn("DEBUG: #tab1 not found in DOM => can't set active");
+      }
 
-  // 2) (Aus V1:) Baugruppen-Daten aus localStorage laden
-  //    Nur falls du das wirklich noch brauchst:
-  const saved = localStorage.getItem("baugruppe");
-  if (saved) {
-    console.log("DEBUG: Found 'baugruppe' in localStorage => parsing JSON");
-    baugruppenItems = JSON.parse(saved);
-    renderBaugruppeItems(); // V2-Funktion, sollte identisch sein
-  }
+      // 2) (Aus V1:) Baugruppen-Daten aus localStorage laden
+      //    Nur falls du das wirklich noch brauchst:
+      const saved = localStorage.getItem("baugruppe");
+      if (saved) {
+        console.log("DEBUG: Found 'baugruppe' in localStorage => parsing JSON");
+        baugruppenItems = JSON.parse(saved);
+        renderBaugruppeItems(); // V2-Funktion, sollte identisch sein
+      }
 
-  // 3) (Aus V1:) Input-Felder default 0.00, falls du das willst
-  // (Kannst du optional machen, wenn's in V1 war)
-  // document.getElementById("txtCosts100").value = "0.00";
-  // document.getElementById("txtCo2Per100").value = "0.00";
+      // 3) (Aus V1:) Input-Felder default 0.00, falls du das willst
+      // (Kannst du optional machen, wenn's in V1 war)
+      // document.getElementById("txtCosts100").value = "0.00";
+      // document.getElementById("txtCo2Per100").value = "0.00";
 
-  // 4) (Aus V2, vorhandenes):
-  console.log("DEBUG: initFertRows(8)");
-  initFertRows(8);
-  //
-  // In V1 war: initFertRows(DEFAULT_ROW_COUNT);
+      // 4) (Aus V2, vorhandenes):
+      console.log("DEBUG: initFertRows(8)");
+      initFertRows(8);
+      //
+      // In V1 war: initFertRows(DEFAULT_ROW_COUNT);
 
-  // 5) (Aus V1:) initCharts()
-  console.log("DEBUG: initCharts()");
-  initCharts();
+      // 5) (Aus V1:) initCharts()
+      console.log("DEBUG: initCharts()");
+      initCharts();
 
-  console.log("DEBUG: DOMContentLoaded end (fusion done).");
-});
+      console.log("DEBUG: DOMContentLoaded end (fusion done).");
+    });
 
 async function checkLicenseThen(fnIfOk) {
   try {
