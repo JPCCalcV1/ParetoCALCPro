@@ -560,24 +560,19 @@ function updateApexCharts(resultData) {
     console.log("DEBUG: apexInitialized is false -> calling initApexCharts()");
     initApexCharts();
   }
+  let material = (resultData.matSum ?? 0);    // anstatt aus 4 Teilvariablen
+  let fertigung = (resultData.fertSum ?? 0); // anstatt aus 5 Teilvariablen
+  let sgaVal = (resultData.sga ?? 0);
+  let profitVal = (resultData.profit ?? 0);
 
-  // (1) Rechne Material & Fertigung zusammen
-  let material = (resultData.matEinzel100 ?? 0) + (resultData.matGemein100 ?? 0) + (resultData.fremd100 ?? 0);
-  let fertigung = (resultData.mach100 ?? 0) + (resultData.lohn100 ?? 0) + (resultData.fgk100 ?? 0);
-  let sgaVal = (resultData.sga100 ?? 0);
-  let profitVal = (resultData.profit100 ?? 0);
-
-  console.log("DEBUG: cost-dist =>", material, fertigung, sgaVal, profitVal);
-
-  // (2) Kosten-Kuchen updaten (Material, Fertigung, SGA, Profit)
   apexCostChart.updateSeries([ material, fertigung, sgaVal, profitVal ]);
 
-  // (3) CO2-Daten
-  let co2Mat = (resultData.co2Mat100 ?? 0);
-  let co2Proc = (resultData.co2Proc100 ?? 0);
-  console.log("DEBUG: co2-dist =>", co2Mat, co2Proc);
 
-  apexCo2Chart.updateSeries([ co2Mat, co2Proc ]);
+  // (3) CO2-Daten
+  //    => neues Konzept: co2Mat, co2Fert
+  let co2Mat = (resultData.co2Mat ?? 0);
+  let co2Fert = (resultData.co2Fert ?? 0);
+  apexCo2Chart.updateSeries([ co2Mat, co2Fert ]);
 
   console.log("DEBUG: Exiting updateApexCharts()");
 }
