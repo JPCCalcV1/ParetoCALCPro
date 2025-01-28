@@ -436,8 +436,8 @@ function calcAll() {
       updateResultTable(data);
 
       // top area "Kosten/100" und "CO2/100"
-      let cost_100 = data.totalAll100 ?? 0;
-      let co2_100 = (data.co2Mat100 ?? 0) + (data.co2Proc100 ?? 0);
+      let cost_100 = data.total ?? 0;
+      let co2_100 = (data.co2Mat ?? 0) + (data.co2Fert ?? 0);
 
         // Quick & Dirty => pro Stück
   let cost_per_piece = cost_100 / 100;
