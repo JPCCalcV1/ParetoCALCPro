@@ -141,6 +141,135 @@
     padding: 6px;
     text-align: right;
   }
+  /* 5) SGChat => Chat-Bubble + Chat-Fenster */
+.modal-body { position: relative; }
+#sgChatBubble {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 9999;
+}
+#sgChatBubble img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+#sgChatWindow {
+  position: absolute;
+  right: 60px;
+  bottom: 60px;
+  width: 280px;
+  background: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  z-index: 9999;
+  display: none;
+}
+#sgChatWindow .header {
+  background: #f0f0f0;
+  padding: 6px;
+  font-weight: bold;
+}
+#sgChatWindow .body {
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 6px;
+  font-size: 0.85rem;
+}
+#sgChatWindow .footer {
+  padding: 6px;
+  text-align: right;
+}
+/* 5) FGChat => Chat-Bubble + Chat-Fenster */
+.modal-body { position: relative; }
+#fgChatBubble {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 9999;
+}
+#fgChatBubble img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+#fgChatWindow {
+  position: absolute;
+  right: 60px;
+  bottom: 60px;
+  width: 280px;
+  background: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  z-index: 9999;
+  display: none;
+}
+#fgChatWindow .header {
+  background: #f0f0f0;
+  padding: 6px;
+  font-weight: bold;
+}
+#fgChatWindow .body {
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 6px;
+  font-size: 0.85rem;
+}
+#fgChatWindow .footer {
+  padding: 6px;
+  text-align: right;
+}
+/* 5) mssChat => Chat-Bubble + Chat-Fenster */
+.modal-body { position: relative; }
+#mssChatBubble {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 9999;
+}
+#mssChatBubble img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+#mssChatWindow {
+  position: absolute;
+  right: 60px;
+  bottom: 60px;
+  width: 280px;
+  background: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  z-index: 9999;
+  display: none;
+}
+#mssChatWindow .header {
+  background: #f0f0f0;
+  padding: 6px;
+  font-weight: bold;
+}
+#mssChatWindow .body {
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 6px;
+  font-size: 0.85rem;
+}
+#mssChatWindow .footer {
+  padding: 6px;
+  text-align: right;
+}
 
   /* Sonstige Utility */
   .table-sm td, .table-sm th {
@@ -1581,11 +1710,47 @@ btn btn-teal: ein ColorAdmin-Farbton.
             ></canvas>
           </div>
         </div>
+        <div id="FGChatBubble">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2990/2990675.png"
+            alt="Chat"
+            onclick="toggleFGChatWindow()"
+          />
+        </div>
+
+        <div id="FGChatWindow">
+          <div class="header">KI-Assistent</div>
+          <div class="body">
+            <p>Hallo, wie kann ich helfen?</p>
+          </div>
+          <div class="footer d-flex align-items-center" style="gap:5px;">
+            <!-- NEU: Eingabefeld + Senden-Button -->
+            <input
+              type="text"
+              id="FGChatInput"
+              class="form-control form-control-sm"
+              placeholder="Frage eingeben..."
+              style="flex:1;"
+            />
+
+
+
+            <button class="btn btn-sm btn-primary" onclick="sendFGChat()">Senden</button>
+            <button class="btn btn-sm btn-secondary" onclick="toggleFGChatWindow()">Schließen</button>
+          </div>
+        </div>
       </div><!-- .modal-body -->
 
       <!-- FOOTER -->
       <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
         <div>
+                    <button
+      type="button"
+      class="btn btn-info btn-sm"
+      onclick="askFGPredefined('Wie verwende ich das Feinguss-Parametrik-Tool')"
+    >
+      <i class="fa fa-question-circle me-1"></i> Advisor
+    </button>
           <button
             type="button"
             class="btn btn-sm btn-theme me-2"
@@ -2878,12 +3043,47 @@ btn btn-teal: ein ColorAdmin-Farbton.
             ></canvas>
           </div>
         </div>
+        <div id="SGChatBubble">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2990/2990675.png"
+            alt="Chat"
+            onclick="toggleSGChatWindow()"
+          />
+        </div>
 
+        <div id="SGChatWindow">
+          <div class="header">KI-Assistent</div>
+          <div class="body">
+            <p>Hallo, wie kann ich helfen?</p>
+          </div>
+          <div class="footer d-flex align-items-center" style="gap:5px;">
+            <!-- NEU: Eingabefeld + Senden-Button -->
+            <input
+              type="text"
+              id="SGChatInput"
+              class="form-control form-control-sm"
+              placeholder="Frage eingeben..."
+              style="flex:1;"
+            />
+
+
+
+            <button class="btn btn-sm btn-primary" onclick="sendSGChat()">Senden</button>
+            <button class="btn btn-sm btn-secondary" onclick="toggleSGChatWindow()">Schließen</button>
+          </div>
+        </div>
       </div><!-- END modal-body -->
 
       <!-- FOOTER -->
       <div class="modal-footer d-flex justify-content-between align-items-center" style="padding: 0.5rem 1rem;">
         <div>
+          <button
+      type="button"
+      class="btn btn-info btn-sm"
+      onclick="askSGPredefined('Wie verwende ich den Spritzgussrechner')"
+    >
+      <i class="fa fa-question-circle me-1"></i> Advisor
+    </button>
           <!-- Reihenfolge wie im Original, nur Design & Icons ergänzt -->
           <button
             type="button"
@@ -3758,9 +3958,10 @@ btn btn-teal: ein ColorAdmin-Farbton.
 
 <!-- 2) MODAL-STRUKTUR -->
 <!-- 2) MODAL-STRUKTUR -->
+<!-- 2) MODAL-STRUKTUR -->
 <div class="modal fade" id="modalMachine" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl" style="max-width:1000px;"> <!-- Extra-breit -->
-    <div class="modal-content" style="font-size: 0.9rem; position: relative;">
+    <div class="modal-content" style="font-size: 0.9rem;">
 
       <!-- HEADER -->
       <div class="modal-header bg-theme text-white" style="padding: 0.6rem 1rem;">
@@ -3768,12 +3969,8 @@ btn btn-teal: ein ColorAdmin-Farbton.
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <!-- CHAT-BUBBLE (NEU) -->
-
-      <!-- ENDE CHAT-BEREICH -->
-
-      <!-- BODY: 2 Tabs (Abschreibung + Energie) -->
-      <div class="modal-body p-2">
+      <!-- BODY: 2 Tabs (Abschreibung + Energie), position: relative für Chat-Bubble -->
+      <div class="modal-body p-2 position-relative">
         <ul class="nav nav-tabs nav-tabs-v2" role="tablist" style="margin-bottom: 0.5rem;">
           <li class="nav-item">
             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#machTabCapital" type="button">
@@ -3900,7 +4097,7 @@ btn btn-teal: ein ColorAdmin-Farbton.
               </div>
             </div>
 
-            <!-- Minimales Info-Fenster (Dedicated) -->
+            <!-- Minimales Chat-Fenster (Dedicated-Info) -->
             <div id="miniChatDedicated" class="border p-2 bg-light" style="display:none; margin-bottom: 0.5rem;">
               <strong>Dedicated? Was bedeutet das?</strong>
               <p class="mb-1" style="font-size:0.85rem;">
@@ -3946,15 +4143,6 @@ btn btn-teal: ein ColorAdmin-Farbton.
                 </div>
               </div>
             </div>
-
-            <!-- Beispiel-Button für 'vordefinierte Frage' -->
-            <button
-              type="button"
-              class="btn btn-info btn-sm mt-2"
-              onclick="askMachPredefined('Wie berechne ich den Maschinenstundensatz?')"
-            >
-              <i class="fa fa-question-circle me-1"></i> Chat: Wie berechne ich den Maschinenstundensatz?
-            </button>
           </div><!-- END TAB 1 -->
 
           <!-- TAB 2: Energie & Betrieb -->
@@ -4101,36 +4289,50 @@ btn btn-teal: ein ColorAdmin-Farbton.
             </div>
           </div><!-- END TAB 2 -->
         </div><!-- /.tab-content -->
-      </div><!-- /.modal-body -->
-      <div id="machChatBubble" onclick="toggleMachChatWindow()">
-        <img src="https://cdn-icons-png.flaticon.com/512/2990/2990675.png" alt="Chat" />
-      </div>
 
-      <!-- CHAT-FENSTER (NEU) -->
-      <div id="machChatWindow">
-        <div class="header">KI-Assistent</div>
-        <div class="body" id="machChatBody">
-          <p>Hallo, wie kann ich helfen?</p>
-        </div>
-        <div class="footer">
-          <input
-            type="text"
-            id="machChatInput"
-            class="form-control form-control-sm"
-            placeholder="Frage eingeben..."
+        <!-- ============== NEUER CHAT-BEREICH (Bubble & Window) ============== -->
+        <div id="mssChatBubble">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2990/2990675.png"
+            alt="Chat"
+            onclick="toggleMssChatWindow()"
           />
-          <button class="btn btn-sm btn-primary" onclick="sendMachChat()">Senden</button>
-          <button class="btn btn-sm btn-secondary" onclick="toggleMachChatWindow()">Schließen</button>
         </div>
-      </div>
+
+        <div id="mssChatWindow">
+          <div class="header">KI-Assistent</div>
+          <div class="body">
+            <p>Hallo, wie kann ich helfen?</p>
+          </div>
+          <div class="footer">
+            <input
+              type="text"
+              id="mssChatInput"
+              class="form-control form-control-sm"
+              placeholder="Frage eingeben..."
+              style="flex:1;"
+            />
+            <button class="btn btn-sm btn-primary" onclick="sendMssChat()">Senden</button>
+            <button class="btn btn-sm btn-secondary" onclick="toggleMssChatWindow()">Schließen</button>
+          </div>
+        </div>
+        <!-- ============== /NEUER CHAT-BEREICH ============== -->
+
+      </div><!-- /.modal-body -->
+
       <!-- FOOTER: Buttons + Maschinenkosten -->
       <div class="modal-footer d-flex justify-content-between align-items-center" style="padding:0.5rem 1rem;">
-        <!-- Linker Block: Berechnen, Übernehmen, Schließen -->
-        <button type="button" class="btn btn-info btn-sm mt-2"
-        onclick="askMachPredefined('Wie berechne ich den Maschinenstundensatz?')">
-        ...
-      </button>
+        <!-- Linker Block: Advisor, Berechnen, Übernehmen, Schließen -->
         <div class="d-flex align-items-center gap-2">
+          <!-- Neu: Advisor-Button, stellt Standard-Frage an Mss-Chat -->
+          <button
+            type="button"
+            class="btn btn-info btn-sm"
+            onclick="askMssPredefined('Wie verwende ich den Maschinenstundensatzrechner?')"
+          >
+            <i class="fa fa-question-circle me-1"></i> Advisor
+          </button>
+
           <button type="button" class="btn btn-sm btn-theme" onclick="calcExtendedMachineRate()">
             <i class="fa fa-calculator me-1"></i> Berechnen
           </button>
@@ -4148,27 +4350,11 @@ btn btn-teal: ein ColorAdmin-Farbton.
           <!-- Statt <input>, damit .textContent = ... im JS funktioniert -->
           <span id="machResult" class="fw-bold text-theme">--</span>
         </div>
-
-        <script>
-          function openMiniChatDedicated(){
-            document.getElementById('miniChatDedicated').style.display = 'block';
-          }
-          function closeMiniChatDedicated(){
-            document.getElementById('miniChatDedicated').style.display = 'none';
-          }
-          /* ACHTUNG:
-             Stelle sicher, dass deine JS-Funktion
-             calcExtendedMachineRate()
-             exakt die IDs referenziert, die wir hier haben:
-             - machKaufpreis, machZinssatz, ...
-             - machZinsHr, machBetriebHr, machStromCostHr, ...
-             - Der Code muss 1:1 matchen
-          */
-        </script>
       </div><!-- /.modal-footer -->
+
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
-</div><!-- #modalMachine --><!-- #modalMachine -->
+</div><!-- #modalMachine -->
 <!-- Jahreskosten (falls du es brauchst) -->
 
 <!-- =================== MATERIAL MODAL (Design wie PCB-Kalkulator) =================== -->

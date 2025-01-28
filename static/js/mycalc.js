@@ -3161,3 +3161,209 @@ function askPCBPredefined(question) {
 
   sendPcbChat();
 }
+
+
+function toggleSGChatWindow() {
+  const wnd = document.getElementById("SGChatWindow");
+  if (!wnd) return;
+  if (wnd.style.display === "none" || !wnd.style.display) {
+    wnd.style.display = "block";
+  } else {
+    wnd.style.display = "none";
+  }
+}
+
+/**
+ * sendPcbChat()
+ *  - Liest den Wert aus #pcbChatInput,
+ *  - postet "Du: ..." ins Chat-Fenster,
+ *  - ruft askCustomGPT(...) auf => Antwort => "KI: ..." in Chat.
+ *  - Falls GPT usage exceeded => alert(...), Fehlermeldung in Chat.
+ */
+function sendSGChat() {
+  const inputEl = document.getElementById("SGChatInput");
+  const chatBody = document.querySelector("#SGChatWindow .body");
+  if (!inputEl || !chatBody) return;
+
+  const userText = inputEl.value.trim();
+  if (!userText) return;
+
+  // 1) User-Text in den Chat schreiben
+  const userP = document.createElement("p");
+  userP.innerHTML = `<strong>Du:</strong> ${userText}`;
+  chatBody.appendChild(userP);
+  chatBody.scrollTop = chatBody.scrollHeight;
+
+  // 2) GPT anfragen
+  askCustomGPT(userText)
+    .then((reply) => {
+      const aiP = document.createElement("p");
+      aiP.innerHTML = `<strong>KI:</strong> ${reply}`;
+      chatBody.appendChild(aiP);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    })
+    .catch((err) => {
+      console.error("sendSGChat error:", err);
+      const errP = document.createElement("p");
+      errP.style.color = "red";
+      errP.innerHTML = `Fehler: ${err.message}`;
+      chatBody.appendChild(errP);
+
+      if (err.message === "GPT usage limit exceeded") {
+        alert("Dein GPT-Kontingent ist aufgebraucht. Bitte upgrade dein Abo!");
+      }
+      chatBody.scrollTop = chatBody.scrollHeight;
+    });
+
+  // Eingabefeld leeren
+  inputEl.value = "";
+}
+function askSGPredefined(question) {
+  toggleSGChatWindow(); // Chatfenster öffnen
+  const inputEl = document.getElementById("SGChatInput");
+  if (inputEl) {
+    inputEl.value = question;
+  }
+
+  sendSGChat();
+}
+
+
+
+
+function toggleFGChatWindow() {
+  const wnd = document.getElementById("FGChatWindow");
+  if (!wnd) return;
+  if (wnd.style.display === "none" || !wnd.style.display) {
+    wnd.style.display = "block";
+  } else {
+    wnd.style.display = "none";
+  }
+}
+
+/**
+ * sendPcbChat()
+ *  - Liest den Wert aus #pcbChatInput,
+ *  - postet "Du: ..." ins Chat-Fenster,
+ *  - ruft askCustomGPT(...) auf => Antwort => "KI: ..." in Chat.
+ *  - Falls GPT usage exceeded => alert(...), Fehlermeldung in Chat.
+ */
+function sendFGChat() {
+  const inputEl = document.getElementById("FGChatInput");
+  const chatBody = document.querySelector("#FGChatWindow .body");
+  if (!inputEl || !chatBody) return;
+
+  const userText = inputEl.value.trim();
+  if (!userText) return;
+
+  // 1) User-Text in den Chat schreiben
+  const userP = document.createElement("p");
+  userP.innerHTML = `<strong>Du:</strong> ${userText}`;
+  chatBody.appendChild(userP);
+  chatBody.scrollTop = chatBody.scrollHeight;
+
+  // 2) GPT anfragen
+  askCustomGPT(userText)
+    .then((reply) => {
+      const aiP = document.createElement("p");
+      aiP.innerHTML = `<strong>KI:</strong> ${reply}`;
+      chatBody.appendChild(aiP);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    })
+    .catch((err) => {
+      console.error("sendFGChat error:", err);
+      const errP = document.createElement("p");
+      errP.style.color = "red";
+      errP.innerHTML = `Fehler: ${err.message}`;
+      chatBody.appendChild(errP);
+
+      if (err.message === "GPT usage limit exceeded") {
+        alert("Dein GPT-Kontingent ist aufgebraucht. Bitte upgrade dein Abo!");
+      }
+      chatBody.scrollTop = chatBody.scrollHeight;
+    });
+
+  // Eingabefeld leeren
+  inputEl.value = "";
+}
+function askFGPredefined(question) {
+  toggleFGChatWindow(); // Chatfenster öffnen
+  const inputEl = document.getElementById("FGChatInput");
+  if (inputEl) {
+    inputEl.value = question;
+  }
+
+  sendFGChat();
+}
+
+ // ========== Hier ab: Chat-Logik für "mss" statt "pcb" ==========
+  function toggleMssChatWindow() {
+    const wnd = document.getElementById("mssChatWindow");
+    if (!wnd) return;
+    if (wnd.style.display === "none" || !wnd.style.display) {
+      wnd.style.display = "block";
+    } else {
+      wnd.style.display = "none";
+    }
+  }
+
+  /**
+   * sendMssChat()
+   *  - Liest den Wert aus #mssChatInput,
+   *  - postet "Du: ..." ins Chat-Fenster,
+   *  - ruft askCustomGPT(...) auf => Antwort => "KI: ..." in Chat.
+   *  - Falls GPT usage exceeded => alert(...), Fehlermeldung in Chat.
+   */
+  function sendMssChat() {
+    const inputEl = document.getElementById("mssChatInput");
+    const chatBody = document.querySelector("#mssChatWindow .body");
+    if (!inputEl || !chatBody) return;
+
+    const userText = inputEl.value.trim();
+    if (!userText) return;
+
+    // 1) User-Text in den Chat schreiben
+    const userP = document.createElement("p");
+    userP.innerHTML = `<strong>Du:</strong> ${userText}`;
+    chatBody.appendChild(userP);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    // 2) GPT anfragen (Platzhalter-Implementierung)
+    askCustomGPT(userText)
+      .then((reply) => {
+        const aiP = document.createElement("p");
+        aiP.innerHTML = `<strong>KI:</strong> ${reply}`;
+        chatBody.appendChild(aiP);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      })
+      .catch((err) => {
+        console.error("sendMssChat error:", err);
+        const errP = document.createElement("p");
+        errP.style.color = "red";
+        errP.innerHTML = `Fehler: ${err.message}`;
+        chatBody.appendChild(errP);
+
+        if (err.message === "GPT usage limit exceeded") {
+          alert("Dein GPT-Kontingent ist aufgebraucht. Bitte upgrade dein Abo!");
+        }
+        chatBody.scrollTop = chatBody.scrollHeight;
+      });
+
+    // Eingabefeld leeren
+    inputEl.value = "";
+  }
+
+  /**
+   * askMssPredefined(question)
+   *  - Öffnet das Chat-Fenster,
+   *  - setzt die Eingabe auf "question",
+   *  - ruft sendMssChat() auf.
+   */
+  function askMssPredefined(question) {
+    toggleMssChatWindow(); // Chatfenster öffnen
+    const inputEl = document.getElementById("mssChatInput");
+    if (inputEl) {
+      inputEl.value = question;
+    }
+    sendMssChat();
+  }
