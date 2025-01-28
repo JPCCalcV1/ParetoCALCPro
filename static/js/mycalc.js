@@ -889,7 +889,7 @@ function updateRowCalc(rowIdx, lotSize) {
   const lohnRate = parseFloat(row[3].querySelector("input").value) || 0;
   const ruestVal = parseFloat(row[4].querySelector("input").value) || 0;
   const toolingVal = parseFloat(row[5].querySelector("input").value) || 0;
-  // const fgkPct = parseFloat(row[6].querySelector("input").value) || 0; // Nur nötig, wenn du's einbeziehen willst
+  const fgkPct = parseFloat(row[6].querySelector("input").value) || 0; // Nur nötig, wenn du's einbeziehen willst
   const co2Hour = parseFloat(row[7].querySelector("input").value) || 0;
 
   console.log("DEBUG: cycTime=", cycTime, "msRate=", msRate, "lohnRate=", lohnRate,
@@ -907,8 +907,11 @@ function updateRowCalc(rowIdx, lotSize) {
   // => Tooling (falls gewünscht 1:1 addieren, je 100)
   const costTool100 = toolingVal * 100; // oder (toolingVal / lotSize)*100, je nach V1-Logik?
 
+    const sumNoFgk100   = costMach100 + costLohn100 + costRuest100 + costTool100;
+      // **Neu**: FGK in % von sumNoFgk100
+  const costFgk100    = sumNoFgk100 * (fgkPct / 100);
   // Summiere => spalte[8] (Kosten/100)
-  const cost100 = costMach100 + costLohn100 + costRuest100 + costTool100;
+  const cost100       = sumNoFgk100 + costFgk100;
   row[8].querySelector("span").textContent = cost100.toFixed(2);
 
   // => CO₂ pro 100 (CycTime in h * co2Hour * 100)
