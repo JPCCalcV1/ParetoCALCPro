@@ -440,8 +440,8 @@ function calcAll() {
       let co2_100 = (data.co2Mat100 ?? 0) + (data.co2Proc100 ?? 0);
 
         // Quick & Dirty => pro Stück
-  let cost_per_piece = cost_100 / 100;
-  let co2_per_piece  = co2_100  / 100;
+  let cost_per_piece = cost_100 / 100000;
+  let co2_per_piece  = co2_100  / 100000;
       document.getElementById("txtCosts100").value = cost_per_piece.toFixed(4);
   document.getElementById("txtCo2Per100").value = co2_per_piece.toFixed(4);
 
