@@ -448,8 +448,8 @@ function calcAll() {
       let cost_per_piece = cost_100 / 100; // => wieder data.total
       let co2_per_piece  = co2_100  / 100; // => again "co2Mat+co2Fert"
 
-      document.getElementById("txtCosts100").value = cost_per_piece.toFixed(4);
-      document.getElementById("txtCo2Per100").value = co2_per_piece.toFixed(4);
+      document.getElementById("txtCosts100").value = cost_per_piece.toFixed(2);
+      document.getElementById("txtCo2Per100").value = co2_per_piece.toFixed(2);
 
       // (b) ApexCharts erzeugen (einmalig) & aktualisieren
       if (!apexInitialized) {
@@ -902,6 +902,9 @@ function updateRowCalc(rowIdx, lotSize) {
   console.log("DEBUG: cycTime=", cycTime, "msRate=", msRate, "lohnRate=", lohnRate,
       "ruestVal=", ruestVal, "toolingVal=", toolingVal, "co2Hour=", co2Hour);
 
+  // -------------------------------------------------
+  // A) Ursprüngliche Berechnungen OHNE Ausschuss
+  // -------------------------------------------------
   // Zyklus in Stunden:
   const cycTimeH = cycTime / 3600;
 
@@ -912,29 +915,64 @@ function updateRowCalc(rowIdx, lotSize) {
   // => Rüstkosten pro 100 (verteilt auf lotSize)
   const costRuest100 = (ruestVal / lotSize) * 100;
   // => Tooling (falls gewünscht 1:1 addieren, je 100)
-  const costTool100 = toolingVal * 100; // oder (toolingVal / lotSize)*100, je nach V1-Logik?
+  const costTool100 = toolingVal * 100; // oder (toolingVal / lotSize)*100, je nach Logik
 
-    const sumNoFgk100   = costMach100 + costLohn100 + costRuest100 + costTool100;
-      // **Neu**: FGK in % von sumNoFgk100
+  const sumNoFgk100   = costMach100 + costLohn100 + costRuest100 + costTool100;
+  // FGK in % von sumNoFgk100
   const costFgk100    = sumNoFgk100 * (fgkPct / 100);
   // Summiere => spalte[8] (Kosten/100)
   const cost100       = sumNoFgk100 + costFgk100;
   row[8].querySelector("span").textContent = cost100.toFixed(2);
 
   // => CO₂ pro 100 (CycTime in h * co2Hour * 100)
-  // (Beispiel: cycTime=10s => cycTimeH=10/3600=0.0027h, co2Hour=3 => result=0.0081 => *100 => 0.81)
   const co2_100 = cycTimeH * co2Hour * 100;
   row[9].querySelector("span").textContent = co2_100.toFixed(2);
 
   const cost_per_piece = cost100 / 100;
-row[8].querySelector("span").textContent = cost_per_piece.toFixed(4);
+  row[8].querySelector("span").textContent = cost_per_piece.toFixed(4);
 
-const co2_per_piece = co2_100 / 100;
-row[9].querySelector("span").textContent = co2_per_piece.toFixed(4);
+  const co2_per_piece = co2_100 / 100;
+  row[9].querySelector("span").textContent = co2_per_piece.toFixed(4);
 
   console.log("DEBUG: cost100=", cost100, "co2_100=", co2_100);
+
+
+  // -------------------------------------------------
+  // B) NEU: Ausschuss (scrapPct) einbeziehen
+  // -------------------------------------------------
+  let scrapPctInput = document.getElementById("scrapPct");
+  let scrapPct = 0;
+  if (scrapPctInput) {
+    scrapPct = parseFloat(scrapPctInput.value) || 0;
+  }
+  const factorScrap = 1 + scrapPct / 100;
+
+  // 1) Maschine, Lohn, Tooling werden mit Ausschuss beaufschlagt
+  const costMach100WithScrap = costMach100 * factorScrap;
+  const costLohn100WithScrap = costLohn100 * factorScrap;
+  const costTool100WithScrap = costTool100 * factorScrap;
+
+  // 2) Rüstkosten bleiben unverändert => costRuest100
+  // 3) Neue Summe ohne FGK:
+  const sumNoFgk100WithScrap = costMach100WithScrap + costLohn100WithScrap + costRuest100 + costTool100WithScrap;
+
+  // 4) FGK neu berechnen
+  const costFgk100WithScrap = sumNoFgk100WithScrap * (fgkPct / 100);
+
+  // 5) Gesamtkosten pro 100 mit Ausschuss
+  const cost100WithScrap = sumNoFgk100WithScrap + costFgk100WithScrap;
+
+  // 6) CO₂ pro 100 (optional mit Ausschuss)
+  let co2_100WithScrap = co2_100 * factorScrap;
+
+  // 7) Erneut in Spalte 8 & 9 anzeigen (überschreiben)
+  row[8].querySelector("span").textContent = (cost100WithScrap / 100).toFixed(4);
+  row[9].querySelector("span").textContent = (co2_100WithScrap / 100).toFixed(4);
+
+  console.log("DEBUG: cost100WithScrap=", cost100WithScrap, "co2_100WithScrap=", co2_100WithScrap);
   console.log("DEBUG: Exiting updateRowCalc()");
 }
+
 
 /** ============== Material-Funktionen ============== */
 
