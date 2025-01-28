@@ -2634,10 +2634,7 @@ function openPcbModalSafe() {
   });
 }
 
-function togglePcbChatWindow() {
-  let cw = document.getElementById("pcbChatWindow");
-  cw.style.display = (cw.style.display === "block") ? "none" : "block";
-}
+
 
 
   async function exportBaugruppenExcel() {
@@ -3157,7 +3154,7 @@ function askMachPredefined(question) {
 }
 function askPCBPredefined(question) {
   togglePcbChatWindow(); // Chatfenster öffnen
-  const inputEl = document.getElementById("PcbChatInput");
+  const inputEl = document.getElementById("pcbChatInput");
   if (inputEl) {
     inputEl.value = question;
   }
