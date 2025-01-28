@@ -438,8 +438,12 @@ function calcAll() {
       // top area "Kosten/100" und "CO2/100"
       let cost_100 = data.totalAll100 ?? 0;
       let co2_100 = (data.co2Mat100 ?? 0) + (data.co2Proc100 ?? 0);
-      document.getElementById("txtCosts100").value = cost_100.toFixed(2);
-      document.getElementById("txtCo2Per100").value = co2_100.toFixed(2);
+
+        // Quick & Dirty => pro Stück
+  let cost_per_piece = cost_100 / 100;
+  let co2_per_piece  = co2_100  / 100;
+      document.getElementById("txtCosts100").value = cost_per_piece.toFixed(4);
+  document.getElementById("txtCo2Per100").value = co2_per_piece.toFixed(4);
 
       // (b) ApexCharts erzeugen (einmalig) & aktualisieren
       if (!apexInitialized) {
@@ -911,6 +915,12 @@ function updateRowCalc(rowIdx, lotSize) {
   // (Beispiel: cycTime=10s => cycTimeH=10/3600=0.0027h, co2Hour=3 => result=0.0081 => *100 => 0.81)
   const co2_100 = cycTimeH * co2Hour * 100;
   row[9].querySelector("span").textContent = co2_100.toFixed(2);
+
+  const cost_per_piece = cost100 / 100;
+row[8].querySelector("span").textContent = cost_per_piece.toFixed(4);
+
+const co2_per_piece = co2_100 / 100;
+row[9].querySelector("span").textContent = co2_per_piece.toFixed(4);
 
   console.log("DEBUG: cost100=", cost100, "co2_100=", co2_100);
   console.log("DEBUG: Exiting updateRowCalc()");
@@ -1674,94 +1684,123 @@ function acceptMachine() {
 function updateResultTable(data) {
   console.log("DEBUG: updateResultTable()", data);
 
-  // 1) Material-Einzel, -Gemein, Fremd
-  const matEinzel = data.matEinzel100 ?? 0;
-  const matGemein = data.matGemein100 ?? 0;
-  const fremd = data.fremd100 ?? 0;
-
-  // 2) Fertigung: Maschine, Lohn, FGK, Rüst, Tooling
-  const mach = data.mach100 ?? 0;
-  const lohn = data.lohn100 ?? 0;
-  const fgk = data.fgk100 ?? 0;
-  const ruest = data.ruest100 ?? 0;
-  const tooling = data.tooling100 ?? 0;
-
-  // 3) Sonstige Summen
-  const herstell = data.herstell100 ?? 0;
-  const sga = data.sga100 ?? 0;
-  const profit = data.profit100 ?? 0;
-  const totalAll = data.totalAll100 ?? 0;
-
-  // ----------------------------------------------------------------
-  // A) HTML-Felder direkt beschreiben
-  // ----------------------------------------------------------------
+  //
+  // A) Rohe "pro 100"-Werte holen
+  //
   // Material
-  document.getElementById("tdMatEinzel").textContent = matEinzel.toFixed(2);
-  document.getElementById("tdMatGemein").textContent = matGemein.toFixed(2);
-  document.getElementById("tdFremd").textContent = fremd.toFixed(2);
+  const matEinzel_100 = data.matEinzel100 ?? 0;
+  const matGemein_100 = data.matGemein100 ?? 0;
+  const fremd_100     = data.fremd100 ?? 0;
 
   // Fertigung
-  document.getElementById("tdMach").textContent = mach.toFixed(2);
-  document.getElementById("tdLohn").textContent = lohn.toFixed(2);
-  document.getElementById("tdFGK").textContent = fgk.toFixed(2);
+  const mach_100    = data.mach100 ?? 0;
+  const lohn_100    = data.lohn100 ?? 0;
+  const fgk_100     = data.fgk100 ?? 0;
+  const ruest_100   = data.ruest100 ?? 0;
+  const tooling_100 = data.tooling100 ?? 0;
 
-  // Neu: Rüst & Tooling
-  document.getElementById("tdRuestDetailed").textContent = ruest.toFixed(2);
-  document.getElementById("tdToolingDetailed").textContent = tooling.toFixed(2);
+  // Summen
+  const herstell_100 = data.herstell100 ?? 0;
+  const sga_100      = data.sga100 ?? 0;
+  const profit_100   = data.profit100 ?? 0;
+  const totalAll_100 = data.totalAll100 ?? 0;
+
+  //
+  // B) Quick & Dirty: Auf "pro Stück" umrechnen (jeweils /100)
+  //
+  // Material (pro Stück)
+  const matEinzel = matEinzel_100 / 100;
+  const matGemein = matGemein_100 / 100;
+  const fremd     = fremd_100     / 100;
+
+  // Fertigung (pro Stück)
+  const mach    = mach_100    / 100;
+  const lohn    = lohn_100    / 100;
+  const fgk     = fgk_100     / 100;
+  const ruest   = ruest_100   / 100;  // Rüstkosten/100 => Rüst pro Stück
+  const tooling = tooling_100 / 100;
+
+  // Summen (pro Stück)
+  const herstell = herstell_100 / 100;
+  const sga      = sga_100      / 100;
+  const profit   = profit_100   / 100;
+  const totalAll = totalAll_100 / 100;
+
+  //
+  // C) In HTML-Felder schreiben
+  //
+  // Material
+  document.getElementById("tdMatEinzel").textContent   = matEinzel.toFixed(2);
+  document.getElementById("tdMatGemein").textContent   = matGemein.toFixed(2);
+  document.getElementById("tdFremd").textContent       = fremd.toFixed(2);
+
+  // Fertigung
+  document.getElementById("tdMach").textContent        = mach.toFixed(2);
+  document.getElementById("tdLohn").textContent        = lohn.toFixed(2);
+  document.getElementById("tdFGK").textContent         = fgk.toFixed(2);
+  document.getElementById("tdRuestDetailed").textContent  = ruest.toFixed(2);
+  document.getElementById("tdToolingDetailed").textContent= tooling.toFixed(2);
 
   // Summen unten
-  document.getElementById("tdHerstell").textContent = herstell.toFixed(2);
-  document.getElementById("tdSGA").textContent = sga.toFixed(2);
-  document.getElementById("tdProfit").textContent = profit.toFixed(2);
-  document.getElementById("tdTotal").textContent = totalAll.toFixed(2);
+  document.getElementById("tdHerstell").textContent  = herstell.toFixed(2);
+  document.getElementById("tdSGA").textContent       = sga.toFixed(2);
+  document.getElementById("tdProfit").textContent    = profit.toFixed(2);
+  document.getElementById("tdTotal").textContent     = totalAll.toFixed(2);
 
-  // ----------------------------------------------------------------
-  // B) Ausschuss und Detail-Summen
-  // ----------------------------------------------------------------
-  // Material-Summe = (matEinzel + matGemein + fremd)
-  const matSum = matEinzel + matGemein + fremd;
+  //
+  // D) Weitere Detail-Summen (pro Stück)
+  //
+  // z.B. Material-Gesamtsumme = (matEinzel_100 + matGemein_100 + fremd_100) /100
+  const matSum_100 = matEinzel_100 + matGemein_100 + fremd_100;
+  const matSum     = matSum_100 / 100;
   document.getElementById("tdMatSumDetailed").textContent = matSum.toFixed(2);
 
-  // Fertigungs-Summe = (mach + lohn + fgk + ruest + tooling)
-  const fertSum = mach + lohn + fgk + ruest + tooling;
+  // Fertigungs-Gesamtsumme = (mach_100 + lohn_100 + fgk_100 + ruest_100 + tooling_100) /100
+  const fertSum_100 = mach_100 + lohn_100 + fgk_100 + ruest_100 + tooling_100;
+  const fertSum     = fertSum_100 / 100;
   document.getElementById("tdFertSumDetailed").textContent = fertSum.toFixed(2);
 
-  // Ausschuss: Falls du 'scrapPct' aus Tab1 hast, berechne Delta (nur Demo):
+  //
+  // E) Ausschuss-Delta-Berechnung pro Stück
+  //
   const scrapPctInput = document.getElementById("scrapPct");
   let scrapPct = 0;
   if (scrapPctInput) {
     scrapPct = parseFloat(scrapPctInput.value) || 0;
   }
-  const factorScrap = 1 + scrapPct / 100.0;
+  const factorScrap = 1 + scrapPct / 100;
 
   // (1) Material-Ausschuss
-  // Wir gehen davon aus, dass matEinzel100 (data.matEinzel100) bereits scrap-bereinigt ist.
-  // => Baseline (ohne Scrap) = matEinzel100 / factorScrap
-  const basisMatEinzel = matEinzel / factorScrap;
-  const matScrapDelta = matEinzel - basisMatEinzel;
+  //   - matEinzel_100 enthält schon Ausschuss
+  //   - Basis ohne Ausschuss = (matEinzel_100 / factorScrap) / 100 => pro Stück
+  const basisMatEinzel_100 = matEinzel_100 / factorScrap;
+  const basisMatEinzel     = basisMatEinzel_100 / 100;
+  const matScrapDelta      = matEinzel - basisMatEinzel;
   document.getElementById("tdMatScrapDelta").textContent = matScrapDelta.toFixed(2);
 
   // (2) Fertigungs-Ausschuss
-  // Bei dir werden (mach, lohn, tooling, fgk) mit scrap multipliziert, nur ruest NICHT.
-  // => Also Basis (ohne Scrap) = (mach/factorScrap) + (lohn/factorScrap) + (tooling/factorScrap) + (fgk/factorScrap) + ruest
-  // => Dann Differenz = fertSum - basis
-  const basisMach = mach / factorScrap;
-  const basisLohn = lohn / factorScrap;
-  const basisTool = tooling / factorScrap;
-  const basisFgk = fgk / factorScrap;
-  // Rüst bleibt unverändert (kein Scrap)
-  const basisFertSum = basisMach + basisLohn + basisTool + basisFgk + ruest;
-  const fertScrapDelta = fertSum - basisFertSum;
-
+  //   - (mach_100, lohn_100, tooling_100, fgk_100) wurden mit Ausschuss multipliziert,
+  //     nur ruest_100 nicht
+  //   - Also baseline = (mach_100/factorScrap + lohn_100/factorScrap + tooling_100/factorScrap + fgk_100/factorScrap + ruest_100)
+  //   - Dann /100 => pro Stück
+  const basisMach_100   = mach_100    / factorScrap;
+  const basisLohn_100   = lohn_100    / factorScrap;
+  const basisTooling_100= tooling_100 / factorScrap;
+  const basisFgk_100    = fgk_100     / factorScrap;
+  // ruest_100 bleibt gleich
+  const basisFertSum_100 = basisMach_100 + basisLohn_100 + basisTooling_100 + basisFgk_100 + ruest_100;
+  const basisFertSum     = basisFertSum_100 / 100;
+  const fertScrapDelta   = fertSum - basisFertSum;
   document.getElementById("tdFertScrapDelta").textContent = fertScrapDelta.toFixed(2);
 
-  // ----------------------------------------------------------------
-  // C) Debug-Log
-  // ----------------------------------------------------------------
+  //
+  // F) Debug-Log
+  //
   console.log("DEBUG: updateResultTable() => matSum=", matSum, "fertSum=", fertSum);
   console.log("DEBUG: matScrapDelta=", matScrapDelta, "fertScrapDelta=", fertScrapDelta);
   console.log("DEBUG: Exiting updateResultTable()");
 }
+
 
 function onSliderMaterialChange(e) {
   console.log("DEBUG: Entering onSliderMaterialChange() with e =", e);
