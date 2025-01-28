@@ -9,6 +9,8 @@
 "use strict";
 
 let sgChart = null;
+let currentTaktRow = null;
+
 
 // NEU: Globale Variable, um die geklickte Zeile zu speichern:
 
