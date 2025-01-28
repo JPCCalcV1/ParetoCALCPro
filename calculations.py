@@ -71,7 +71,7 @@ def calculate_all(data):
         sum_mach_100    += mach_100
         sum_lohn_100    += lohn_100
         sum_ruest_100   += ruest_100
-        sum_tooling_100 += tooling_100
+        sum_tooling_100 += tooling_100 *100
         sum_co2_100     += co2_100
         sum_fgk_100     += step_fgk_100
 
