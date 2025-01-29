@@ -810,18 +810,19 @@
                 </div>
               </div>
               <div class="row mb-2">
-                <label for="lotSize" class="col-sm-3 col-form-label">
-                  Losgröße
-                </label>
-                <div class="col-sm-3">
-                  <input
-                    type="number"
-                    class="form-control form-control-sm input-custom"
-                    id="lotSize"
-                    value="100"
-                  />
-                </div>
-              </div>
+  <label for="lotSize" class="col-sm-3 col-form-label">
+    Losgröße
+  </label>
+  <div class="col-sm-3">
+    <input
+      type="number"
+      class="form-control form-control-sm input-custom"
+      id="lotSize"
+      value="100"
+      oninput="handleLotSizeChange()"
+    />
+  </div>
+</div>
               <div class="row mb-2">
                 <label for="scrapPct" class="col-sm-3 col-form-label">
                   Globaler Ausschuss (%)
@@ -1268,7 +1269,7 @@
           <button class="btn btn-primary mt-3" onclick="addResultToBaugruppeFromTab4()">
             In Baugruppe übernehmen
 
-          <button class="btn btn-indigo mt-2" onclick="export8StepsExcel()">
+          <button class="btn btn-indigo mt-2" onclick="exportEpicExcel()">
             <i class="fa fa-file-excel me-1"></i> Excel Export 8 Schritte
           </button>
           <button class="btn btn-orange mt-2" onclick="exportBaugruppenPowerPoint()">

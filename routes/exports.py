@@ -8,20 +8,16 @@ exports_bp = Blueprint("exports_bp", __name__)
 
 @exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
 def baugruppe_excel_8steps():
-    """
-    POST erwartet JSON mit tab1, tab2, tab3, tab4.
-    Gibt ein Excel zurück mit 2 Sheets:
-    1) "Pareto-Kalk – Gesamtübersicht"
-    2) "Lieferanten-Vergleich"
-    """
     data = request.get_json() or {}
-    tab1 = data.get("tab1", {})  # Projekt/Teil
-    tab2 = data.get("tab2", {})  # Material
-    tab3 = data.get("tab3", [])  # Fertigungsschritte
-    tab4 = data.get("tab4", {})  # Ergebnis-Summen
+    tab1 = data.get("tab1", {})
+    tab2 = data.get("tab2", {})
+    tab3 = data.get("tab3", [])
+    tab4 = data.get("tab4", {})
 
     try:
-        excel_bytes, filename = export_baugruppe_eight_steps_excel(tab1, tab2, tab3, tab4)
+        excel_bytes, filename = export_baugruppe_eight_steps_excel(
+            tab1, tab2, tab3, tab4
+        )
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

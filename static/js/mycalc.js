@@ -20,7 +20,6 @@ let currentLohnRow = null;
  * falls noch nicht vorhanden.
  */
 // Falls wir GPT-Anfragen starten:
-let isGPTSessionCreated = false;
 
 // Hilfsfunktion
 function parseFloatAllowZero(inputStr, fallbackVal) {
@@ -2539,75 +2538,113 @@ async function exportBaugruppenPowerPoint() {
   URL.revokeObjectURL(url);
 }
 
-    async function export8StepsExcel() {
-  // 1) Daten aus Tab1..Tab4 sammeln
+  async function export8StepsExcel() {
+  // 1) OPTIONAL: vorher alles berechnen/aktualisieren,
+  //    damit <td> bzw. <span>-Felder gefüllt sind.
+  //    z.B.: calcAll();
+  //    oder updateRowCalc();
+  //  calcAll();
+
+  // ------------------------------------------------
+  // A) tab1 => Projektdaten
+  // ------------------------------------------------
   const tab1 = {
-    scrapPct: parseFloat(document.getElementById("scrapPct")?.value) || 5,
-    sgaPct: parseFloat(document.getElementById("sgaPct")?.value) || 10,
-    profitPct: parseFloat(document.getElementById("profitPct")?.value) || 5,
-    // ...
+    projectName: document.getElementById("txtProjectName")?.value || "",
+    partName:    document.getElementById("txtPartName")?.value || "",
+    annualQty:   parseFloat(document.getElementById("annualQty")?.value) || 0,
+    lotSize:     parseFloat(document.getElementById("lotSize")?.value) || 0,
+    scrapPct:    parseFloat(document.getElementById("scrapPct")?.value) || 0,
+    sgaPct:      parseFloat(document.getElementById("sgaPct")?.value) || 0,
+    profitPct:   parseFloat(document.getElementById("profitPct")?.value) || 0
   };
+
+  // ------------------------------------------------
+  // B) tab2 => Material
+  // ------------------------------------------------
   const tab2 = {
-    matPrice: parseFloat(document.getElementById("matPrice")?.value) || 2.0,
-    matWeight: parseFloat(document.getElementById("matWeight")?.value) || 0.2,
-    fremdValue: parseFloat(document.getElementById("fremdValue")?.value) || 0,
-    // ...
+    matName:    document.getElementById("matName")?.value || "Aluminium",
+    matPrice:   parseFloat(document.getElementById("matPrice")?.value) || 0,
+    matCo2:     parseFloat(document.getElementById("matCo2")?.value) || 0, // falls du so ein Feld hast
+    matGK:      parseFloat(document.getElementById("matGK")?.value) || 0,
+    matWeight:  parseFloat(document.getElementById("matWeight")?.value) || 0,
+    fremdValue: parseFloat(document.getElementById("fremdValue")?.value) || 0
   };
-  // tab3 => 8 Steps
+
+  // ------------------------------------------------
+  // C) tab3 => Fertigungsschritte (bis zu 8 Zeilen)
+  // ------------------------------------------------
   const rows = document.querySelectorAll("#fertTable tbody tr");
   const tab3 = [];
-  rows.forEach((tr, idx) => {
-    if(idx<8){
-      const cells = tr.querySelectorAll("td");
-      tab3.push({
-        stepName: cells[0].querySelector("input")?.value || "",
-        kosten_100: parseFloat(cells[8].querySelector("span")?.innerText) || 0,
-        co2_100: parseFloat(cells[9].querySelector("span")?.innerText) || 0
-      });
-    }
+  rows.forEach((tr) => {
+    const tds = tr.querySelectorAll("td");
+    tab3.push({
+      stepName:   tds[0].querySelector("input")?.value ?? "",
+      cycTime:    parseFloat(tds[1].querySelector("input")?.value) || 0,
+      msRate:     parseFloat(tds[2].querySelector("input")?.value) || 0,
+      lohnRate:   parseFloat(tds[3].querySelector("input")?.value) || 0,
+      ruestVal:   parseFloat(tds[4].querySelector("input")?.value) || 0,
+      tooling:    parseFloat(tds[5].querySelector("input")?.value) || 0,
+      fgkPct:     parseFloat(tds[6].querySelector("input")?.value) || 0,
+      co2Hour:    parseFloat(tds[7].querySelector("input")?.value) || 0,
+      kosten_100: parseFloat(tds[8].querySelector("span")?.innerText) || 0,
+      co2_100:    parseFloat(tds[9]?.querySelector("span")?.innerText) || 0  // falls 10. Spalte existiert
+    });
   });
+
+  // ------------------------------------------------
+  // D) tab4 => Ergebnisse / Summen
+  // ------------------------------------------------
+  // (IDs entsprechend deinem HTML-Code)
   const tab4 = {
-    matEinzel: parseFloat(document.getElementById("tdMatEinzel")?.innerText) || 0,
-    matGemein: parseFloat(document.getElementById("tdMatGemein")?.innerText) || 0,
-    fremd: parseFloat(document.getElementById("tdFremd")?.innerText) || 0,
-    ruest: parseFloat(document.getElementById("tdRuest")?.innerText) || 0,
-    tooling: parseFloat(document.getElementById("tdTooling")?.innerText) || 0,
-    herstell: parseFloat(document.getElementById("tdHerstell")?.innerText) || 0,
-    sga: parseFloat(document.getElementById("tdSGA")?.innerText) || 0,
-    profit: parseFloat(document.getElementById("tdProfit")?.innerText) || 0,
-    total: parseFloat(document.getElementById("tdTotal")?.innerText) || 0,
-    co2_100: parseFloat(document.getElementById("tdCo2Total")?.innerText) || 0
+    matEinzel:          parseFloat(document.getElementById("tdMatEinzel")?.innerText) || 0,
+    fremd:              parseFloat(document.getElementById("tdFremd")?.innerText) || 0,
+    matAusschuss:       parseFloat(document.getElementById("tdMatScrapDelta")?.innerText) || 0,
+    matGemein:          parseFloat(document.getElementById("tdMatGemein")?.innerText) || 0,
+    summe_mat:          parseFloat(document.getElementById("tdMatSumDetailed")?.innerText) || 0,
+
+    mach:               parseFloat(document.getElementById("tdMach")?.innerText) || 0,
+    lohn:               parseFloat(document.getElementById("tdLohn")?.innerText) || 0,
+    ruest:              parseFloat(document.getElementById("tdRuestDetailed")?.innerText) || 0,
+    tooling:            parseFloat(document.getElementById("tdToolingDetailed")?.innerText) || 0,
+    fertAusschuss_cost: parseFloat(document.getElementById("tdFertScrapDelta")?.innerText) || 0,
+    fgk_cost:           parseFloat(document.getElementById("tdFGK")?.innerText) || 0,
+    summe_fert_cost:    parseFloat(document.getElementById("tdFertSumDetailed")?.innerText) || 0,
+
+    herstell:           parseFloat(document.getElementById("tdHerstell")?.innerText) || 0,
+    sga:                parseFloat(document.getElementById("tdSGA")?.innerText) || 0,
+    profit:             parseFloat(document.getElementById("tdProfit")?.innerText) || 0,
+    total:              parseFloat(document.getElementById("tdTotal")?.innerText) || 0
   };
 
-  // 2) Post => /exports/baugruppe/excel_8steps
-  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
-  const resp = await fetch("/exports/baugruppe/excel_8steps", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrfToken
-    },
-    body: JSON.stringify({ tab1, tab2, tab3, tab4 })
-  });
+  // ------------------------------------------------
+  // 2) POST => /baugruppe/excel_8steps
+  // ------------------------------------------------
+  try {
+    const resp = await fetch("/baugruppe/excel_8steps", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tab1, tab2, tab3, tab4 })
+    });
 
-  if(!resp.ok){
-    let errData = null;
-    try {errData = await resp.json();} catch(e){}
-    if(errData?.error) alert("Fehler: " + errData.error);
-    else alert("Fehler: " + resp.status);
-    return;
+    if (!resp.ok) {
+      alert("Fehler beim Excel-Export: " + resp.status + " " + resp.statusText);
+      return;
+    }
+
+    // 3) Download anstoßen
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "ParetoKalk_Gesamtuebersicht.xlsx";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("Fehler beim POST:", err);
+    alert("Unerwarteter Fehler beim Excel-Export: " + err.message);
   }
-
-  // 3) Download
-  const blob = await resp.blob();
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "ParetoKalk_OnePager_8Steps.xlsx";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
 }
 async function exportEpicExcel() {
   // 1) Daten aus Tabs sammeln
@@ -2930,3 +2967,15 @@ function askFGPredefined(question) {
     }
     sendMssChat();
   }
+function handleLotSizeChange() {
+  // 1) Neuen Lot-Wert auslesen
+  const newLotVal = parseFloat(document.getElementById("lotSize")?.value) || 100;
+
+  // 2) Alle Zeilen neu berechnen
+  const rows = document.querySelectorAll("#fertTable tbody tr");
+  rows.forEach((row, idx) => {
+    updateRowCalc(idx, newLotVal);
+  });
+
+  console.log("handleLotSizeChange => Alle Zeilen mit neuer Losgröße", newLotVal, "aktualisiert");
+}

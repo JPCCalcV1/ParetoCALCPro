@@ -304,6 +304,9 @@ function applySpritzgussResult() {
     fertRows[currentTaktRow]
       .cells[1]
       .querySelector("input").value = cycVal.toFixed(1);
+        // NEU: Direkt danach => Re-Calc der Zeile (damit Kosten/CO2 aktualisieren):
+    const lotVal = parseFloat(document.getElementById("lotSize")?.value) || 100;
+    updateRowCalc(currentTaktRow, lotVal);
   }
 
   // Modal schließen
