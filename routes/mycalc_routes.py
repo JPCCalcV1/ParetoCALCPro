@@ -254,7 +254,47 @@ def gpt_ask():
         # auto create conversation
         sid = create_gpt_session_internal("AutoSession")
         if not sid:
-            return
+            return jsonify({"error": "GPT session creation fail"}), 500
+        session["gpt_session_id"] = sid
+        sess_id = sid
+
+    endpoint = f"https://app.customgpt.ai/api/v1/projects/{CGPT_PROJECT_ID}/conversations/{sess_id}/messages"
+    headers = {
+        "Authorization": f"Bearer {CGPT_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "response_source": "default",
+        "prompt": prompt
+    }
+
+    try:
+        r = requests.post(endpoint, headers=headers, json=payload, timeout=15)
+        if not r.ok:
+            current_app.logger.warning(
+                "CustomGPT request failed: code=%s, text=%s",
+                r.status_code, r.text
+            )
+            return jsonify({"error": f"CustomGPT: {r.status_code}", "details": r.text}), 500
+
+        rd = r.json()
+        answer_txt = rd.get("data", {}).get("openai_response", "")
+        if not answer_txt.strip():
+            current_app.logger.warning(
+                "CustomGPT returned empty openai_response: %r",
+                rd
+            )
+            return jsonify({"error": "No valid answer"}), 500
+
+        # usage
+        g.user.gpt_used_count += 1
+        db.session.commit()
+
+        return jsonify({"answer": answer_txt}), 200
+
+    except Exception as ex:
+        current_app.logger.exception("Error in /mycalc/gpt_ask")
+        return jsonify({"error": str(ex)}), 500
 
 
 def create_gpt_session_internal(name="AutoSession"):
