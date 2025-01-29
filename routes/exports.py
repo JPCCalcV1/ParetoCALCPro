@@ -7,6 +7,7 @@ exports_bp = Blueprint("exports_bp", __name__)
 # ------------------------------------------------------------------------
 
 @exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
+@csrf_exempt
 def baugruppe_excel_8steps():
     data = request.get_json() or {}
     tab1 = data.get("tab1", {})
