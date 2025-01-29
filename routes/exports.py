@@ -1,14 +1,13 @@
 from flask import Blueprint, request, send_file, jsonify
 from .excel import export_baugruppe_eight_steps_excel
 from .powerpoint import export_baugruppe_pptx
-from flask_wtf.csrf import CSRFProtect, csrf_exempt
+
 exports_bp = Blueprint("exports_bp", __name__)
 # ------------------------------------------------------------------------
 # Einige Zeilen Kontext / andere Routen
 # ------------------------------------------------------------------------
 
 @exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
-@csrf_exempt
 def baugruppe_excel_8steps():
     data = request.get_json() or {}
     tab1 = data.get("tab1", {})
