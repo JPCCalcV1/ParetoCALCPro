@@ -3,21 +3,9 @@ import os
 import xlsxwriter
 from flask import current_app
 from datetime import datetime
+from openpyxl import Workbook
+from openpyxl.styles import Font, Border, Side, PatternFill, Alignment
 
-
-# ==========================================================
-# FILE: routes/excel.py
-# ==========================================================
-import io
-import os
-import xlsxwriter
-from flask import current_app
-from datetime import datetime
-
-# (Mindestens 20 Zeilen Kontext: ggf. weitere Imports / Funktionen)
-# ---------------------------------------------------------------
-# Beispiel: Vorhandene, ältere export-Funktionen
-# ---------------------------------------------------------------
 
 def export_baugruppe_excel(baugruppen_list, filename="baugruppe_export.xlsx"):
     """
@@ -43,228 +31,136 @@ def export_baugruppe_excel(baugruppen_list, filename="baugruppe_export.xlsx"):
     output.seek(0)
     return output, filename
 
+from flask import Blueprint
+exports_bp = Blueprint("exports_bp", __name__)
 
 # ---------------------------------------------------------------
 # NEUE FUNKTION: export_baugruppe_eight_steps_excel
 # ---------------------------------------------------------------
-def export_baugruppe_eight_steps_excel(tab1_data, tab2_data, tab3_steps, tab4_summary):
+def export_baugruppe_eight_steps_excel(tab1, tab2, tab3, tab4):
     """
-    Beispiel-Funktion, die eine Excel-Datei im Byte-Stream zurückgibt.
-    Hier kannst du dein "episches" Layout umsetzen.
-    Beispielfunktion, die ein "episches" Excel-Layout erzeugt:
-
-    - Zeile 1: große Überschrift (A1..J1 gemergt), Logo links
-    - Materialkosten (Einzel, Fremdzukauf, Ausschuss, Gemeinkosten)
-    - 8 Fertigungsschritte (tab3)
-    - Summen-Zeilen (Herstellkosten, SG&A, Profit, Total)
-    - Umfassender Rahmen um den gesamten Block
+    Erzeugt ein OnePager-Excel mit den Projekt-/Material-/Fertigungs- und Ergebnisdaten,
+    plus optional ein 2. Tabellenblatt für Supplier-Breakdown.
     """
+    # Neues Workbook
     wb = Workbook()
     ws = wb.active
-    ws.title = "8Steps-OnePager"
+    ws.title = "Kalkulation OnePager"
 
-    # 1) Allgemeines Layout / Formatierungen
-    # -------------------------------------
-    # Erste Zeile höher machen (z.B. 60 == "vierfach" normal)
-    ws.row_dimensions[1].height = 60
-    # -----------------------------------------------
-    # 1) Allgemeine Layout-Einstellungen
-    # -----------------------------------------------
-    # a) Spaltenbreiten
-    # Du kannst jede Spalte anpassen; z.B. A,B normalbreit, C,D minimal breiter,
-    # und die letzten 6 Spalten (E..J) so breit wie C,D oder noch breiter.
-    ws.column_dimensions["A"].width = 16
+    # ----------------------------------------------------------------
+    # 1) Allgemeines Layout: Spaltenbreiten, Schrift, Farben
+    # ----------------------------------------------------------------
+    ws.column_dimensions["A"].width = 25
     ws.column_dimensions["B"].width = 16
-    ws.column_dimensions["C"].width = 18
-    ws.column_dimensions["D"].width = 18
+    ws.column_dimensions["C"].width = 16
+    ws.column_dimensions["D"].width = 16
+    ws.column_dimensions["E"].width = 16
+    ws.column_dimensions["F"].width = 16
+    ws.column_dimensions["G"].width = 16
+    ws.column_dimensions["H"].width = 16
+    ws.column_dimensions["I"].width = 16
+    ws.column_dimensions["J"].width = 16
 
-    # Letzte 6 Spalten (E..J) extra breit
-    for col in ["E","F","G","H","I","J"]:
-        ws.column_dimensions[col].width = 18
-
-    # Spaltenbreiten (nach Bedarf anpassen)
-    for col in range(1, 30):  # z.B. bis Spalte AD
-        ws.column_dimensions[chr(64 + col)].width = 14
-    # b) Dicke Ränder definieren
+    # Rand-Styles
     thin = Side(border_style="thin", color="000000")
     medium = Side(border_style="medium", color="000000")
-    all_thin_border = Border(top=thin, left=thin, right=thin, bottom=thin)
-    outer_medium_border = Border(top=medium, left=medium, right=medium, bottom=medium)
-
-    # Beispiel: Logo links oben einfügen (A1)
-    # Du brauchst ein passendes Bild, z.B. "static/logo.png".
-    # Hier nur demonstrativ, Pfad müsstest du anpassen:
-    # c) Überschrift-Hintergrund (gerne auch eine andere Farbe)
+    all_border = Border(left=thin, right=thin, top=thin, bottom=thin)
     header_fill = PatternFill(start_color="FFCCE5FF", end_color="FFCCE5FF", fill_type="solid")
 
-    # -----------------------------------------------
-    # 2) Kopfleiste (Zeile 1) mit Logo & Titel
-    # -----------------------------------------------
-    # Merge A1..J1
-    ws.merge_cells("A1:J1")
-    ws.row_dimensions[1].height = 45  # Höhe für 3-4 Zeilen
+    # ----------------------------------------------------------------
+    # 2) Kopfzeile mit Logo & Titel
+    # ----------------------------------------------------------------
+    # Zusammenführen (A1..D2 als Beispiel, E1..J8 für Logo).
+    # Oder du kannst A1..J1 mergen und das Logo einfach positionieren.
+    ws.merge_cells("A1:D2")
+    ws["A1"].value = "Pareto-Kalk – Gesamtübersicht"
+    ws["A1"].alignment = Alignment(horizontal="center", vertical="center")
+    ws["A1"].font = Font(bold=True, size=14)
+    ws.row_dimensions[1].height = 40
 
-    # Logo links: Wenn du kein Logo hast, kannst du den Code auskommentieren
+    # Logo in Spalte F1 (z.B.). Pfad musst du anpassen:
     # try:
-    #     img = Image("static/logo.png")
-    #     img.width = 100
     #     img = Image("static/img/jpc.jpeg")
-    #     img.width = 80
-    #     img.height = 40
-    #     ws.add_image(img, "A1")
+    #     img.width = 200  # Anpassen an gewünschte Größe
+    #     img.height = 80
+    #     ws.add_image(img, "F1")
     # except:
-    # except Exception:
     #     pass
 
-    # 2) Überschriftenzeile "blau" einfärben
-    # --------------------------------------
-    header_fill = PatternFill(start_color="FFCCFFCC", end_color="FFCCFFCC", fill_type="solid")
-    # Du kannst natürlich eine andere Farbe nehmen, z.B. "FF99CCFF" für hellblau
-
-    thin = Side(border_style="thin", color="000000")
-    all_border = Border(left=thin, right=thin, top=thin, bottom=thin)
-
-    # Beispiel: Wir bauen eine Überschrift in Zeile 1, Spalten A bis H zusammen gemerged
-    ws.merge_cells("A1:H1")
-    cell_header = ws["A1"]
-    cell_header.value = "Meine epische 8-Schritte-Kalkulation"
-    cell_header.fill = header_fill
-    cell_header.font = Font(bold=True, size=14)
-    cell_header.alignment = Alignment(vertical="center", horizontal="center")
-    cell_title = ws["A1"]
-    cell_title.value = "JPC Calc V2.0 - EPISCHES KALKULATIONSTOOL"
-    cell_title.alignment = Alignment(horizontal="center", vertical="center")
-    cell_title.font = Font(bold=True, size=14)
-    cell_title.fill = header_fill
-    # Rahmen um die gesamte gemergte Zelle:
-    # Achtung: openpyxl behandelt Merged Cells nur am "Start"-Zelle (A1).
-    # Für einen kompletten Rahmen einfach später unten "um den Gesamten Block" den Rahmen ziehen.
-
-    # 3) Material-Daten (tab2) und Fertigungs-Daten (tab3) untereinander
-    # ------------------------------------------------------------------
-    # Beispiel: Start ab Zeile 3
-    start_row = 3
-    # -----------------------------------------------
-    # 3) Start des "großen Datenblocks"
-    # -----------------------------------------------
-    # Wir beginnen ab Zeile 3, Spalte A, um Material-Infos abzulegen
-    current_row = 3
-
-    # a) Material: Überschrift in Blau
-    mat_header_row = start_row
-    ws.merge_cells(f"A{mat_header_row}:C{mat_header_row}")
-    ws[f"A{mat_header_row}"].value = "Material"
-    ws[f"A{mat_header_row}"].fill = header_fill
-    ws[f"A{mat_header_row}"].border = all_border
-    ws[f"A{mat_header_row}"].font = Font(bold=True)
-    ws[f"A{mat_header_row}"].alignment = Alignment(horizontal="center")
-    # Überschrift "Material"
-    ws.merge_cells(start_row=current_row, start_column=1, end_row=current_row, end_column=10)
-    ws.cell(row=current_row, column=1).value = "Material-Kosten & Ausschuss"
-    ws.cell(row=current_row, column=1).alignment = Alignment(horizontal="center", vertical="center")
-    ws.cell(row=current_row, column=1).font = Font(bold=True)
-    ws.cell(row=current_row, column=1).fill = header_fill
-    current_row += 1
-
-    # b) Beispiel Zeile darunter: Aluminium, Fremdzukauf, MGK
-    # (keine Leerzeilen dazwischen, wie von dir gewünscht)
-    ws[f"A{mat_header_row+1}"].value = "Aluminium:"
-    ws[f"B{mat_header_row+1}"].value = tab2_data.get("matPrice", 0.0)
-    ws[f"C{mat_header_row+1}"].value = tab2_data.get("matWeight", 0.0)
-    # 3.1) Material Einzelkosten
-    ws.cell(row=current_row, column=1).value = "Material-Einzelkosten"
-    ws.cell(row=current_row, column=2).value = tab4_summary.get("matEinzel", 0.0)
-    current_row += 1
-
-    ws[f"A{mat_header_row+2}"].value = "Fremdzukauf:"
-    ws[f"B{mat_header_row+2}"].value = tab2_data.get("fremdValue", 0.0)
-    # Fremdzukauf
-    ws.cell(row=current_row, column=1).value = "Fremdzukauf"
-    ws.cell(row=current_row, column=2).value = tab4_summary.get("fremd", 0.0)
-    current_row += 1
-
-    ws[f"A{mat_header_row+3}"].value = "MGK:"
-    ws[f"B{mat_header_row+3}"].value = tab2_data.get("matGK", 0.0)
-    # Ausschuss (Material)
-    ws.cell(row=current_row, column=1).value = "Ausschuss (Material)"
-    # tab4 => matAusschuss
-    ws.cell(row=current_row, column=2).value = tab4_summary.get("matAusschuss", 0.0)
-    current_row += 1
-
-    # (Nur Beispiel, du kannst natürlich weitere Felder in Spalten verschieben)
-    # Materialkosten / Material-CO2 "3 Spalten weiter rechts" => z.B. in F und G
-    ws[f"F{mat_header_row+1}"].value = "Materialkosten (€)"
-    ws[f"G{mat_header_row+1}"].value = tab4_summary.get("matEinzel", 0.0)
-    ws[f"F{mat_header_row+2}"].value = "Material-CO₂"
-    ws[f"G{mat_header_row+2}"].value = tab4_summary.get("matEinzel_co2", 0.0)
-    # Material-Gemeinkosten
-    ws.cell(row=current_row, column=1).value = "Material-Gemeinkosten"
-    ws.cell(row=current_row, column=2).value = tab4_summary.get("matGemein", 0.0)
-    current_row += 2  # 1 Leerzeile dazwischen (optional)
-
-    # 4) Fertigungsschritte (tab3)
-    # ------------------------------------------------------------------
-    fert_header_row = mat_header_row + 5
-    ws.merge_cells(f"A{fert_header_row}:H{fert_header_row}")
-    ws[f"A{fert_header_row}"].value = "Fertigungsschritte (8 Steps)"
-    ws[f"A{fert_header_row}"].fill = header_fill
-    ws[f"A{fert_header_row}"].font = Font(bold=True)
-    ws[f"A{fert_header_row}"].alignment = Alignment(horizontal="center")
-    # -----------------------------------------------
-    # 4) Fertigungsschritte (8 Steps)
-    # -----------------------------------------------
-    ws.merge_cells(start_row=current_row, start_column=1, end_row=current_row, end_column=10)
-    ws.cell(row=current_row, column=1).value = "Fertigungsschritte (max. 8)"
-    ws.cell(row=current_row, column=1).alignment = Alignment(horizontal="center", vertical="center")
-    ws.cell(row=current_row, column=1).font = Font(bold=True)
-    ws.cell(row=current_row, column=1).fill = header_fill
-    current_row += 1
-
-    # Headline (z.B. in Zeile fert_header_row+1)
-    step_titles = [
-        "Schritt", "Zyklus (s)", "MS (€/h)", "Lohn (€/h)",
-        "Rüst (€/Los)", "Ausschuss", "CO₂ (kg/h)", "Kosten/Stück"
-    # Spaltenüberschriften
-    headers = [
-        "Arbeitsschritt", "Zyklus (s)", "MS (€/h)", "Lohn (€/h)",
-        "Rüst (€/Los)", "Tooling/St. (€)", "FGK (%)", "CO₂ (kg/h)",
-        "Kosten/St. (€)", "CO₂/St. (kg)"
+    # ----------------------------------------------------------------
+    # 3) Projekt-Daten (tab1) – ab Zeile 4
+    # ----------------------------------------------------------------
+    current_row = 4
+    project_fields = [
+        ("Projektname",   tab1.get("projectName", "")),
+        ("Bauteilname",   tab1.get("partName", "")),
+        ("Jahresstückzahl", tab1.get("annualQty", 0)),
+        ("Losgröße",        tab1.get("lotSize", 0)),
+        ("Ausschuss (%)",   tab1.get("scrapPct", 0)),
+        ("SG&A (%)",        tab1.get("sgaPct", 0)),
+        ("Profit (%)",      tab1.get("profitPct", 0)),
     ]
-    for col_idx, title in enumerate(step_titles, start=1):
-        cell = ws.cell(row=fert_header_row + 1, column=col_idx)
-        cell.value = title
-        cell.fill = header_fill
-        cell.font = Font(bold=True)
-        cell.alignment = Alignment(horizontal="center")
-        cell.border = all_border
+    for label, val in project_fields:
+        ws.cell(row=current_row, column=1).value = label
+        ws.cell(row=current_row, column=2).value = val
+        current_row += 1
 
-    # Danach die 8 Schritte
-    for i, step_data in enumerate(tab3_steps, start=1):
-        r = fert_header_row + 1 + i
-        ws.cell(row=r, column=1).value = step_data.get("stepName", f"Step{i}")
-        ws.cell(row=r, column=2).value = step_data.get("cycTime", 0)
-        ws.cell(row=r, column=3).value = step_data.get("msRate", 0)
-        ws.cell(row=r, column=4).value = step_data.get("lohnRate", 0)
-        ws.cell(row=r, column=5).value = step_data.get("ruestVal", 0)
-        ws.cell(row=r, column=6).value = step_data.get("tooling", 0)  # wenn du's nicht rauslassen willst
-        ws.cell(row=r, column=7).value = step_data.get("co2Hour", 0)
-        ws.cell(row=r, column=8).value = step_data.get("kosten_100", 0)
-    for col_idx, h in enumerate(headers, start=1):
-        ws.cell(row=current_row, column=col_idx).value = h
-        ws.cell(row=current_row, column=col_idx).alignment = Alignment(horizontal="center", vertical="center")
-        ws.cell(row=current_row, column=col_idx).font = Font(bold=True)
-        ws.cell(row=current_row, column=col_idx).fill = header_fill
+    # Schöne Überschrift "Material" (z.B. in Zeile current_row+1)
+    current_row += 1
+    ws.merge_cells(start_row=current_row, start_column=1, end_row=current_row, end_column=2)
+    ws.cell(row=current_row, column=1).value = "Materialdaten"
+    ws.cell(row=current_row, column=1).font = Font(bold=True)
+    ws.cell(row=current_row, column=1).fill = header_fill
     current_row += 1
 
-        # ggf. Rahmen / Ausrichtung
-        for col_ in range(1, 9):
-            c = ws.cell(row=r, column=col_)
-            c.border = all_border
-            c.alignment = Alignment(horizontal="center")
-    # Jetzt tab3-Schritte auflisten
-    for i, step in enumerate(tab3_steps, start=1):
-        # max. 8 Zeilen
-        row_i = current_row + i - 1
+    # ----------------------------------------------------------------
+    # 4) Material-Daten (tab2)
+    # ----------------------------------------------------------------
+    # Felder: Name, Preis, CO2, GK, Gewicht, Fremdzukauf
+    mat_fields = [
+        ("Materialname",   tab2.get("matName", "Aluminium")),
+        ("Materialpreis (€/kg)", tab2.get("matPrice", 0.0)),
+        # (Optional) CO2 z.B. "Material-CO₂ (kg/kg)" – nur wenn du willst:
+        # ("Material-CO₂ (kg/kg)",  ???  ),
+        ("Material-GK (%)",       tab2.get("matGK", 0.0)),
+        ("Bauteilgewicht (kg)",   tab2.get("matWeight", 0.0)),
+        ("Fremdzukauf (€/Stück)", tab2.get("fremdValue", 0.0)),
+    ]
+    for label, val in mat_fields:
+        ws.cell(row=current_row, column=1).value = label
+        ws.cell(row=current_row, column=2).value = val
+        current_row += 1
+
+    # Leerzeile
+    current_row += 1
+
+    # ----------------------------------------------------------------
+    # 5) Fertigungsschritte (tab3)
+    # ----------------------------------------------------------------
+    ws.merge_cells(start_row=current_row, start_column=1, end_row=current_row, end_column=4)
+    ws.cell(row=current_row, column=1).value = "Fertigungsschritte"
+    ws.cell(row=current_row, column=1).font = Font(bold=True)
+    ws.cell(row=current_row, column=1).fill = header_fill
+    current_row += 1
+
+    # Tabellen-Kopf (Arbeitsschritt, Zyklus, MS, Lohn, Rüst, Tooling, FGK, CO2, Kosten, ...)
+    fert_headers = [
+        "Arbeitsschritt", "Zyklus (s)", "MS (€/h)", "Lohn (€/h)",
+        "Rüst (€/Los)",   "Tooling/Stück (€)", "FGK (%)",
+        # (Optional) CO2 => "CO₂ (kg/h)",
+        "Kosten/Stück"
+    ]
+    # Wenn du CO2 gar nicht willst, einfach rauslassen.
+    for col_i, title in enumerate(fert_headers, start=1):
+        ws.cell(row=current_row, column=col_i).value = title
+        ws.cell(row=current_row, column=col_i).font = Font(bold=True)
+        ws.cell(row=current_row, column=col_i).alignment = Alignment(horizontal="center")
+
+    current_row += 1
+
+    # Jetzt die bis zu 8 Schritte eintragen
+    for i, step in enumerate(tab3, start=1):
+        row_i = current_row + (i - 1)
         ws.cell(row=row_i, column=1).value = step.get("stepName", f"Step {i}")
         ws.cell(row=row_i, column=2).value = step.get("cycTime", 0.0)
         ws.cell(row=row_i, column=3).value = step.get("msRate", 0.0)
@@ -272,136 +168,108 @@ def export_baugruppe_eight_steps_excel(tab1_data, tab2_data, tab3_steps, tab4_su
         ws.cell(row=row_i, column=5).value = step.get("ruestVal", 0.0)
         ws.cell(row=row_i, column=6).value = step.get("tooling", 0.0)
         ws.cell(row=row_i, column=7).value = step.get("fgkPct", 0.0)
-        ws.cell(row=row_i, column=8).value = step.get("co2Hour", 0.0)
-        ws.cell(row=row_i, column=9).value = step.get("kosten_100", 0.0)
-        ws.cell(row=row_i, column=10).value = step.get("co2_100", 0.0)
+        # (Optional) CO2 => ws.cell(row=row_i, column=8).value = step.get("co2Hour", 0.0)
+        # (Optional) Kosten => ws.cell(row=row_i, column=9).value = step.get("kosten_100", 0.0)
 
-    # Summe-Zeile unter Steps (z.B. in Zeile fert_header_row+1+8+1)
-    sum_row = fert_header_row + 1 + 8 + 1
-    ws.cell(row=sum_row, column=1).value = "Summe:"
-    ws.cell(row=sum_row, column=8).value = tab4_summary.get("summe_fert_cost", 0.0)
-    for col_ in range(1, 9):
-        c = ws.cell(row=sum_row, column=col_)
-        c.border = all_border
-        if col_ == 1:
-            c.font = Font(bold=True)
-    # Nach den 8 Schritten (oder weniger)
-    after_steps_row = current_row + len(tab3_steps)
-    current_row = after_steps_row + 2
+    current_row += max(len(tab3), 1)  # Falls tab3 leer, mach +1
+    current_row += 1
 
-    # 5) Herstellkosten, SG&A, Profit, Total (tab4)
-    # ---------------------------------------------
-    # Beispielhaft ab sum_row+2:
-    sum_row2 = sum_row + 2
-    ws.cell(row=sum_row2, column=1).value = "Herstellkosten:"
-    ws.cell(row=sum_row2, column=2).value = tab4_summary.get("herstell", 0.0)
-    # Fertigungs-Ausschuss
-    ws.cell(row=current_row, column=1).value = "Ausschuss (Fertigung)"
-    ws.cell(row=current_row, column=2).value = tab4_summary.get("fertAusschuss_cost", 0.0)
-    current_row += 2
-
-    ws.cell(row=sum_row2+1, column=1).value = "SG&A:"
-    ws.cell(row=sum_row2+1, column=2).value = tab4_summary.get("sga", 0.0)
-    # -----------------------------------------------
-    # 5) Summen (Herstell, SG&A, Profit, Total)
-    # -----------------------------------------------
-    ws.merge_cells(start_row=current_row, start_column=1, end_row=current_row, end_column=10)
-    ws.cell(row=current_row, column=1).value = "Summen / Endkosten"
-    ws.cell(row=current_row, column=1).alignment = Alignment(horizontal="center", vertical="center")
+    # ----------------------------------------------------------------
+    # 6) Ergebnis (Tab4) – Material- und Fertigungskosten
+    # ----------------------------------------------------------------
+    ws.merge_cells(start_row=current_row, start_column=1, end_row=current_row, end_column=4)
+    ws.cell(row=current_row, column=1).value = "Ergebnis (Zusammenfassung)"
     ws.cell(row=current_row, column=1).font = Font(bold=True)
     ws.cell(row=current_row, column=1).fill = header_fill
     current_row += 1
 
-    ws.cell(row=sum_row2+2, column=1).value = "Profit:"
-    ws.cell(row=sum_row2+2, column=2).value = tab4_summary.get("profit", 0.0)
-    ws.cell(row=current_row,   column=1).value = "Herstellkosten/Stück"
-    ws.cell(row=current_row,   column=2).value = tab4_summary.get("herstell", 0.0)
-    current_row += 1
-    ws.cell(row=current_row,   column=1).value = "SG&A"
-    ws.cell(row=current_row,   column=2).value = tab4_summary.get("sga", 0.0)
-    current_row += 1
-    ws.cell(row=current_row,   column=1).value = "Profit"
-    ws.cell(row=current_row,   column=2).value = tab4_summary.get("profit", 0.0)
-    current_row += 1
-    ws.cell(row=current_row,   column=1).value = "Gesamtkosten/Stück"
-    ws.cell(row=current_row,   column=2).value = tab4_summary.get("total", 0.0)
-    ws.cell(row=current_row,   column=1).font = Font(bold=True)
-    ws.cell(row=current_row,   column=2).font = Font(bold=True)
+    # Liste der Zeilen, die direkt aus tab4 befüllt werden
+    # Du hast in Tab4 z.B.:
+    #   matEinzel, fremd, matAusschuss, matGemein, [summeMaterial?]
+    #   mach, lohn, ruest, tooling, fertAusschuss_cost, fgk_cost, [summeFert?]
+    #   herstell, sga, profit, total
+    ergebnis_fields = [
+        ("Material-Einzelkosten/Stück", tab4.get("matEinzel", 0.0)),
+        ("Fremdzukauf/Stück",          tab4.get("fremd", 0.0)),
+        ("Ausschuss (Material)/Stück", tab4.get("matAusschuss", 0.0)),
+        ("Material-Gemeinkosten/Stück", tab4.get("matGemein", 0.0)),
+        ("Maschinenkosten/Stück",      tab4.get("mach", 0.0)),   # Falls du es so nennst
+        ("Lohnkosten/Stück",           tab4.get("lohn", 0.0)),
+        ("Rüstkosten/Stück",           tab4.get("ruest", 0.0)),
+        ("Tooling/Stück",              tab4.get("tool_cost", 0.0)),
+        ("Ausschuss (Fertigung)/Stück", tab4.get("fertAusschuss_cost", 0.0)),
+        ("Fertigungsgemeinkosten/Stück", tab4.get("fgk_cost", 0.0)),
+        ("Herstellkosten/Stück",       tab4.get("herstell", 0.0)),
+        ("SG&A",                       tab4.get("sga", 0.0)),
+        ("Profit",                     tab4.get("profit", 0.0)),
+        ("Gesamtkosten/Stück",         tab4.get("total", 0.0)),
+        # (Optional) CO₂-Gesamt/Stück => ("CO₂/Stück (kg)", tab4.get("co2_100", 0.0)),
+    ]
+    for label, val in ergebnis_fields:
+        ws.cell(row=current_row, column=1).value = label
+        ws.cell(row=current_row, column=2).value = val
+        current_row += 1
 
-    ws.cell(row=sum_row2+3, column=1).value = "Gesamtkosten:"
-    ws.cell(row=sum_row2+3, column=2).value = tab4_summary.get("total", 0.0)
-    ws.cell(row=sum_row2+3, column=2).font = Font(bold=True)
-    # -----------------------------------------------
-    # 6) Umfassenden Rahmen ziehen
-    # -----------------------------------------------
-    # Wir wissen, dass wir von Zeile 1 bis current_row
-    # und von Spalte A (1) bis Spalte J (10) gehen wollen.
-    # -> Also alle Zellen in diesem Bereich durchiterieren und Border setzen
-    max_row = current_row
-    for r in range(1, max_row+1):
-        for c in range(1, 11):  # A..J
+    # ----------------------------------------------------------------
+    # 7) Rahmen um alles
+    # ----------------------------------------------------------------
+    # Wir wollen von A1..J<current_row-1> einfassen:
+    max_row = current_row - 1
+    for r in range(1, max_row + 1):
+        for c in range(1, 11):
             cell = ws.cell(row=r, column=c)
-            # Setze leichten Rahmen an jeder Zelle:
-            cell.border = all_thin_border
+            cell.border = all_border  # dünner Rahmen an jeder Zelle
 
-    # 6) Optional: zweites Tabellenblatt anlegen
-    # ------------------------------------------
-    ws2 = wb.create_sheet("Cost-Breakdown-Sheet")
-    ws2["A1"].value = "Lieferanten-Breakdown"
-    ws2["A1"].font = Font(bold=True, size=12)
-    # Zusätzlich: Um den gesamten Block (1,1) bis (max_row,10) dicken Außenrahmen
-    # setzen. Das macht man am einfachsten über die "Außenkanten" einzeln:
-    # oben (row=1, col=1..10), unten (row=max_row, col=1..10),
-    # links (row=1..max_row, col=1), rechts (row=1..max_row, col=10).
+    # Außenkante noch etwas dicker (optional):
+    # Oben (r=1, c=1..10), Unten (r=max_row, c=1..10),
+    # Links (r=1..max_row, c=1), Rechts (r=1..max_row, c=10):
     for c in range(1, 11):
-        # oben
         top_cell = ws.cell(row=1, column=c)
         top_cell.border = Border(
             top=medium,
             left=top_cell.border.left,
             right=top_cell.border.right,
-            bottom=top_cell.border.bottom
+            bottom=top_cell.border.bottom,
         )
-        # unten
         bottom_cell = ws.cell(row=max_row, column=c)
         bottom_cell.border = Border(
             top=bottom_cell.border.top,
             left=bottom_cell.border.left,
             right=bottom_cell.border.right,
-            bottom=medium
+            bottom=medium,
         )
-    for r in range(1, max_row+1):
-        # links
+    for r in range(1, max_row + 1):
         left_cell = ws.cell(row=r, column=1)
         left_cell.border = Border(
-            top=left_cell.border.top,
             left=medium,
+            top=left_cell.border.top,
             right=left_cell.border.right,
-            bottom=left_cell.border.bottom
+            bottom=left_cell.border.bottom,
         )
-        # rechts
         right_cell = ws.cell(row=r, column=10)
         right_cell.border = Border(
+            right=medium,
             top=right_cell.border.top,
             left=right_cell.border.left,
-            right=medium,
-            bottom=right_cell.border.bottom
+            bottom=right_cell.border.bottom,
         )
 
-    # Hier kannst du ein leeres „Formular“ bauen, das dein Lieferant ausfüllt
-    # und auf dem du später Delta-Berechnungen machst.
+    # ----------------------------------------------------------------
+    # 8) (Optional) 2. Tabellenblatt für Supplier Breakdown
+    # ----------------------------------------------------------------
+    ws2 = wb.create_sheet("Supplier-Breakdown")
+    ws2["A1"].value = "Lieferant kann hier seine eigenen Daten eintragen"
+    ws2["A1"].font = Font(bold=True)
+    # usw. – hier kannst du ein Skeleton für den Lieferanten anlegen.
 
-    # 7) Workbook in BytesIO speichern
-    # --------------------------------
-    # -----------------------------------------------
-    # 7) Speichern in einen BytesIO-Stream
-    # -----------------------------------------------
+    # ----------------------------------------------------------------
+    # 9) In Bytes schreiben und zurückgeben
+    # ----------------------------------------------------------------
     output = io.BytesIO()
     wb.save(output)
     output.seek(0)
 
     return output, "ParetoKalk_Gesamtuebersicht.xlsx"
-
 # ---------------------------------------------------------------
 # (Hiernach könnten weitere Hilfsfunktionen / Routen folgen)
 # ---------------------------------------------------------------
@@ -877,4 +745,7 @@ def export_pareto_kalk_epic(
     workbook.close()
     output.seek(0)
     return output, filename
+
+
+
 

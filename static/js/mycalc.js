@@ -2397,7 +2397,7 @@ function openPcbModalSafe() {
 
 
 
-async function exportBaugruppenExcel() {
+ async function exportBaugruppenExcel() {
   // 1) Bauteile aus globaler Liste:
   if(!window.baugruppenItems || !window.baugruppenItems.length){
   alert("Keine Einträge in der Baugruppenliste.");
@@ -2660,7 +2660,7 @@ async function exportBaugruppenPowerPoint() {
   URL.revokeObjectURL(url);
 }
 
-async function export8StepsExcel() {
+    async function export8StepsExcel() {
   // 1) Daten aus Tab1..Tab4 sammeln
   const tab1 = {
     scrapPct: parseFloat(document.getElementById("scrapPct")?.value) || 5,
@@ -2827,6 +2827,7 @@ async function exportEpicExcel() {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
 
 
 function updateSliderLabel(rangeEl, labelId) {

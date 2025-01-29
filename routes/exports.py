@@ -1,159 +1,249 @@
 import io
-from flask import request, jsonify, send_file, Blueprint
+import os
+import xlsxwriter
+from flask import current_app
+from datetime import datetime
 from openpyxl import Workbook
-from openpyxl.drawing.image import Image
-from openpyxl.styles import Alignment, Border, Side, PatternFill, Font
-# Ggf. openpyxl.worksheet.worksheet import Worksheet
-
-
-
-from flask import Blueprint, request, send_file, session, jsonify
-from .excel import (
-    export_baugruppe_eight_steps_excel,
-    export_baugruppe_comparison_excel,
-    export_pareto_kalk_epic
-)
-from .powerpoint import export_baugruppe_pptx
-
+from openpyxl.styles import Font, Border, Side, PatternFill, Alignment
+from flask import Blueprint
 exports_bp = Blueprint("exports_bp", __name__)
 
-# ------------------------------------------------------------------------
-# Einige Zeilen Kontext / andere Routen
-# ------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------
-# NEUE Route: Erzeugt fancy/vergleichende Excel-Auswertung
-# ------------------------------------------------------------------------
-@exports_bp.route("/baugruppe/excel_comparison", methods=["POST"])
-def baugruppe_excel_comparison():
+# ---------------------------------------------------------------
+# NEUE FUNKTION: export_baugruppe_eight_steps_excel
+# ---------------------------------------------------------------
+def export_baugruppe_eight_steps_excel(tab1, tab2, tab3, tab4):
     """
-    Neue Route: Erstellt das 'FullOverview' + 'SupplierCompare'-Excel
-    mit Ampelfunktion für Delta-Analyse.
+    Erzeugt ein OnePager-Excel mit den Projekt-/Material-/Fertigungs- und Ergebnisdaten,
+    plus optional ein 2. Tabellenblatt für Supplier-Breakdown.
     """
+    # Neues Workbook
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Kalkulation OnePager"
 
+    # ----------------------------------------------------------------
+    # 1) Allgemeines Layout: Spaltenbreiten, Schrift, Farben
+    # ----------------------------------------------------------------
+    ws.column_dimensions["A"].width = 25
+    ws.column_dimensions["B"].width = 16
+    ws.column_dimensions["C"].width = 16
+    ws.column_dimensions["D"].width = 16
+    ws.column_dimensions["E"].width = 16
+    ws.column_dimensions["F"].width = 16
+    ws.column_dimensions["G"].width = 16
+    ws.column_dimensions["H"].width = 16
+    ws.column_dimensions["I"].width = 16
+    ws.column_dimensions["J"].width = 16
 
-    # 2) JSON Daten abrufen: Tab1, Tab2, Tab3, Tab4
-    data = request.get_json() or {}
-    tab1 = data.get("tab1", {})    # dict
-    tab2 = data.get("tab2", {})    # dict
-    tab3 = data.get("tab3", [])    # list of dict (max. 8)
-    tab4 = data.get("tab4", {})    # dict (Ergebnis-Summary)
+    # Rand-Styles
+    thin = Side(border_style="thin", color="000000")
+    medium = Side(border_style="medium", color="000000")
+    all_border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    header_fill = PatternFill(start_color="FFCCE5FF", end_color="FFCCE5FF", fill_type="solid")
 
-    # 3) Excel generieren
-    excel_bytes, filename = export_baugruppe_comparison_excel(tab1, tab2, tab3, tab4)
+    # ----------------------------------------------------------------
+    # 2) Kopfzeile mit Logo & Titel
+    # ----------------------------------------------------------------
+    # Zusammenführen (A1..D2 als Beispiel, E1..J8 für Logo).
+    # Oder du kannst A1..J1 mergen und das Logo einfach positionieren.
+    ws.merge_cells("A1:D2")
+    ws["A1"].value = "Pareto-Kalk – Gesamtübersicht"
+    ws["A1"].alignment = Alignment(horizontal="center", vertical="center")
+    ws["A1"].font = Font(bold=True, size=14)
+    ws.row_dimensions[1].height = 40
 
-    # 4) Download
-    return send_file(
-        excel_bytes,
-        download_name=filename,
-        as_attachment=True,
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+    # Logo in Spalte F1 (z.B.). Pfad musst du anpassen:
+    # try:
+    #     img = Image("static/img/jpc.jpeg")
+    #     img.width = 200  # Anpassen an gewünschte Größe
+    #     img.height = 80
+    #     ws.add_image(img, "F1")
+    # except:
+    #     pass
 
-# ------------------------------------------------------------------------
-# (Weitere Routen oder Endpunkte könnten folgen)
-# ------------------------------------------------------------------------
+    # ----------------------------------------------------------------
+    # 3) Projekt-Daten (tab1) – ab Zeile 4
+    # ----------------------------------------------------------------
+    current_row = 4
+    project_fields = [
+        ("Projektname",   tab1.get("projectName", "")),
+        ("Bauteilname",   tab1.get("partName", "")),
+        ("Jahresstückzahl", tab1.get("annualQty", 0)),
+        ("Losgröße",        tab1.get("lotSize", 0)),
+        ("Ausschuss (%)",   tab1.get("scrapPct", 0)),
+        ("SG&A (%)",        tab1.get("sgaPct", 0)),
+        ("Profit (%)",      tab1.get("profitPct", 0)),
+    ]
+    for label, val in project_fields:
+        ws.cell(row=current_row, column=1).value = label
+        ws.cell(row=current_row, column=2).value = val
+        current_row += 1
 
+    # Schöne Überschrift "Material" (z.B. in Zeile current_row+1)
+    current_row += 1
+    ws.merge_cells(start_row=current_row, start_column=1, end_row=current_row, end_column=2)
+    ws.cell(row=current_row, column=1).value = "Materialdaten"
+    ws.cell(row=current_row, column=1).font = Font(bold=True)
+    ws.cell(row=current_row, column=1).fill = header_fill
+    current_row += 1
 
-@exports_bp.route("/baugruppe/pdf", methods=["POST"])
-def baugruppe_pdf_export():
-    # License-Check
+    # ----------------------------------------------------------------
+    # 4) Material-Daten (tab2)
+    # ----------------------------------------------------------------
+    # Felder: Name, Preis, CO2, GK, Gewicht, Fremdzukauf
+    mat_fields = [
+        ("Materialname",   tab2.get("matName", "Aluminium")),
+        ("Materialpreis (€/kg)", tab2.get("matPrice", 0.0)),
+        # (Optional) CO2 z.B. "Material-CO₂ (kg/kg)" – nur wenn du willst:
+        # ("Material-CO₂ (kg/kg)",  ???  ),
+        ("Material-GK (%)",       tab2.get("matGK", 0.0)),
+        ("Bauteilgewicht (kg)",   tab2.get("matWeight", 0.0)),
+        ("Fremdzukauf (€/Stück)", tab2.get("fremdValue", 0.0)),
+    ]
+    for label, val in mat_fields:
+        ws.cell(row=current_row, column=1).value = label
+        ws.cell(row=current_row, column=2).value = val
+        current_row += 1
 
+    # Leerzeile
+    current_row += 1
 
-    data = request.get_json() or {}
-    items = data.get("baugruppenItems",[])
-    if not items:
-        return jsonify({"error":"Keine Einträge in Baugruppe"}),400
+    # ----------------------------------------------------------------
+    # 5) Fertigungsschritte (tab3)
+    # ----------------------------------------------------------------
+    ws.merge_cells(start_row=current_row, start_column=1, end_row=current_row, end_column=4)
+    ws.cell(row=current_row, column=1).value = "Fertigungsschritte"
+    ws.cell(row=current_row, column=1).font = Font(bold=True)
+    ws.cell(row=current_row, column=1).fill = header_fill
+    current_row += 1
 
-    pdf_io, filename = export_baugruppe_pdf(items)
-    return send_file(pdf_io, download_name=filename, as_attachment=True, mimetype="application/pdf")
+    # Tabellen-Kopf (Arbeitsschritt, Zyklus, MS, Lohn, Rüst, Tooling, FGK, CO2, Kosten, ...)
+    fert_headers = [
+        "Arbeitsschritt", "Zyklus (s)", "MS (€/h)", "Lohn (€/h)",
+        "Rüst (€/Los)",   "Tooling/Stück (€)", "FGK (%)",
+        # (Optional) CO2 => "CO₂ (kg/h)",
+        "Kosten/Stück"
+    ]
+    # Wenn du CO2 gar nicht willst, einfach rauslassen.
+    for col_i, title in enumerate(fert_headers, start=1):
+        ws.cell(row=current_row, column=col_i).value = title
+        ws.cell(row=current_row, column=col_i).font = Font(bold=True)
+        ws.cell(row=current_row, column=col_i).alignment = Alignment(horizontal="center")
 
-@exports_bp.route("/baugruppe/ppt", methods=["POST"])
-def baugruppe_ppt_export():
-    """
-    Erstellt eine PowerPoint-Präsentation (3 Slides):
-      1) Deckblatt (Logo + Projektinfo)
-      2) Kalkulation (Tab1-4)
-      3) Vergleich (Unsere Kalkulation vs. Lieferant)
+    current_row += 1
 
-    KEIN License-Check.
-    Erwartet JSON-Body mit "tab1", "tab2", "tab3" (Liste max.8), "tab4".
-    """
-    data = request.get_json() or {}
-    # Sammle die Dicts, identisch wie beim Excel-Export
-    tab1 = data.get("tab1", {})
-    tab2 = data.get("tab2", {})
-    tab3 = data.get("tab3", [])
-    tab4 = data.get("tab4", {})
+    # Jetzt die bis zu 8 Schritte eintragen
+    for i, step in enumerate(tab3, start=1):
+        row_i = current_row + (i - 1)
+        ws.cell(row=row_i, column=1).value = step.get("stepName", f"Step {i}")
+        ws.cell(row=row_i, column=2).value = step.get("cycTime", 0.0)
+        ws.cell(row=row_i, column=3).value = step.get("msRate", 0.0)
+        ws.cell(row=row_i, column=4).value = step.get("lohnRate", 0.0)
+        ws.cell(row=row_i, column=5).value = step.get("ruestVal", 0.0)
+        ws.cell(row=row_i, column=6).value = step.get("tooling", 0.0)
+        ws.cell(row=row_i, column=7).value = step.get("fgkPct", 0.0)
+        # (Optional) CO2 => ws.cell(row=row_i, column=8).value = step.get("co2Hour", 0.0)
+        # (Optional) Kosten => ws.cell(row=row_i, column=9).value = step.get("kosten_100", 0.0)
 
-    try:
-        ppt_bytes, filename = export_baugruppe_pptx(tab1, tab2, tab3, tab4)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    current_row += max(len(tab3), 1)  # Falls tab3 leer, mach +1
+    current_row += 1
 
-    return send_file(
-        ppt_bytes,
-        download_name=filename,
-        as_attachment=True,
-        mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    )
+    # ----------------------------------------------------------------
+    # 6) Ergebnis (Tab4) – Material- und Fertigungskosten
+    # ----------------------------------------------------------------
+    ws.merge_cells(start_row=current_row, start_column=1, end_row=current_row, end_column=4)
+    ws.cell(row=current_row, column=1).value = "Ergebnis (Zusammenfassung)"
+    ws.cell(row=current_row, column=1).font = Font(bold=True)
+    ws.cell(row=current_row, column=1).fill = header_fill
+    current_row += 1
 
+    # Liste der Zeilen, die direkt aus tab4 befüllt werden
+    # Du hast in Tab4 z.B.:
+    #   matEinzel, fremd, matAusschuss, matGemein, [summeMaterial?]
+    #   mach, lohn, ruest, tooling, fertAusschuss_cost, fgk_cost, [summeFert?]
+    #   herstell, sga, profit, total
+    ergebnis_fields = [
+        ("Material-Einzelkosten/Stück", tab4.get("matEinzel", 0.0)),
+        ("Fremdzukauf/Stück",          tab4.get("fremd", 0.0)),
+        ("Ausschuss (Material)/Stück", tab4.get("matAusschuss", 0.0)),
+        ("Material-Gemeinkosten/Stück", tab4.get("matGemein", 0.0)),
+        ("Maschinenkosten/Stück",      tab4.get("mach", 0.0)),   # Falls du es so nennst
+        ("Lohnkosten/Stück",           tab4.get("lohn", 0.0)),
+        ("Rüstkosten/Stück",           tab4.get("ruest", 0.0)),
+        ("Tooling/Stück",              tab4.get("tool_cost", 0.0)),
+        ("Ausschuss (Fertigung)/Stück", tab4.get("fertAusschuss_cost", 0.0)),
+        ("Fertigungsgemeinkosten/Stück", tab4.get("fgk_cost", 0.0)),
+        ("Herstellkosten/Stück",       tab4.get("herstell", 0.0)),
+        ("SG&A",                       tab4.get("sga", 0.0)),
+        ("Profit",                     tab4.get("profit", 0.0)),
+        ("Gesamtkosten/Stück",         tab4.get("total", 0.0)),
+        # (Optional) CO₂-Gesamt/Stück => ("CO₂/Stück (kg)", tab4.get("co2_100", 0.0)),
+    ]
+    for label, val in ergebnis_fields:
+        ws.cell(row=current_row, column=1).value = label
+        ws.cell(row=current_row, column=2).value = val
+        current_row += 1
 
+    # ----------------------------------------------------------------
+    # 7) Rahmen um alles
+    # ----------------------------------------------------------------
+    # Wir wollen von A1..J<current_row-1> einfassen:
+    max_row = current_row - 1
+    for r in range(1, max_row + 1):
+        for c in range(1, 11):
+            cell = ws.cell(row=r, column=c)
+            cell.border = all_border  # dünner Rahmen an jeder Zelle
 
-
-@exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
-def baugruppe_excel_8steps():
-    """
-    Erstellt ein breites OnePager-Excel (8 Schritte + Summen).
-    Erwartet JSON mit tab1, tab2, tab3, tab4.
-    Erstellt einen "OnePager"-Excel-Export mit 8 Schritten + Summen,
-    in dem u.a. Material-/Fertigungskosten und Ausschuss etc. abgebildet sind.
-    """
-    data = request.get_json() or {}
-    tab1 = data.get("tab1", {})
-    tab2 = data.get("tab2", {})
-    tab3 = data.get("tab3", [])  # list of dict
-    tab4 = data.get("tab4", {})
-
-    try:
-        excel_bytes, filename = export_baugruppe_eight_steps_excel(
-            tab1_data=tab1,
-            tab2_data=tab2,
-            tab3_steps=tab3,
-            tab4_summary=tab4
+    # Außenkante noch etwas dicker (optional):
+    # Oben (r=1, c=1..10), Unten (r=max_row, c=1..10),
+    # Links (r=1..max_row, c=1), Rechts (r=1..max_row, c=10):
+    for c in range(1, 11):
+        top_cell = ws.cell(row=1, column=c)
+        top_cell.border = Border(
+            top=medium,
+            left=top_cell.border.left,
+            right=top_cell.border.right,
+            bottom=top_cell.border.bottom,
         )
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        bottom_cell = ws.cell(row=max_row, column=c)
+        bottom_cell.border = Border(
+            top=bottom_cell.border.top,
+            left=bottom_cell.border.left,
+            right=bottom_cell.border.right,
+            bottom=medium,
+        )
+    for r in range(1, max_row + 1):
+        left_cell = ws.cell(row=r, column=1)
+        left_cell.border = Border(
+            left=medium,
+            top=left_cell.border.top,
+            right=left_cell.border.right,
+            bottom=left_cell.border.bottom,
+        )
+        right_cell = ws.cell(row=r, column=10)
+        right_cell.border = Border(
+            right=medium,
+            top=right_cell.border.top,
+            left=right_cell.border.left,
+            bottom=right_cell.border.bottom,
+        )
 
-    return send_file(
-        excel_bytes,
-        download_name=filename,
-        as_attachment=True,
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+    # ----------------------------------------------------------------
+    # 8) (Optional) 2. Tabellenblatt für Supplier Breakdown
+    # ----------------------------------------------------------------
+    ws2 = wb.create_sheet("Supplier-Breakdown")
+    ws2["A1"].value = "Lieferant kann hier seine eigenen Daten eintragen"
+    ws2["A1"].font = Font(bold=True)
+    # usw. – hier kannst du ein Skeleton für den Lieferanten anlegen.
 
-@exports_bp.route("/baugruppe/excel_epic", methods=["POST"])
-def baugruppe_excel_epic():
-    """
-    Route für das 'epische' Excel nach dem Layout deines Screenshots.
-    Erwartet JSON Body mit tab1, tab2, tab3, tab4.
-    Keine License-Checks, 1:1 Copy-Paste.
-    """
-    data = request.get_json() or {}
-    tab1 = data.get("tab1", {})
-    tab2 = data.get("tab2", {})
-    tab3 = data.get("tab3", [])
-    tab4 = data.get("tab4", {})
+    # ----------------------------------------------------------------
+    # 9) In Bytes schreiben und zurückgeben
+    # ----------------------------------------------------------------
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
 
-    try:
-        excel_bytes, filename = export_pareto_kalk_epic(tab1, tab2, tab3, tab4)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-    return send_file(
-        excel_bytes,
-        download_name=filename,
-        as_attachment=True,
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+    return output, "ParetoKalk_Gesamtuebersicht.xlsx"
+# ---------------------------------------------------------------
+# (Hiernach könnten weitere Hilfsfunktionen / Routen folgen)
+# ---------------------------------------------------------------
