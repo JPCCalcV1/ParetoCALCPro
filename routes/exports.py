@@ -1,5 +1,5 @@
 from flask import Blueprint, request, send_file, jsonify
-from .excel import export_baugruppe_eight_steps_excel, export_baugruppe_comparison_excel
+from .excel import export_baugruppe_eight_steps_excel
 
 # ------------------------------------------------------------------------
 # Einige Zeilen Kontext / andere Routen
