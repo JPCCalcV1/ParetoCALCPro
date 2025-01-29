@@ -63,14 +63,7 @@
       </div>
 
       <!-- 2FA Toggle (optional) -->
-      <div class="mb-3">
-        <p>2FA ist {{ "aktiviert" if user.twofa_enabled else "deaktiviert" }}.</p>
-        <form action="{{ url_for('account_bp.toggle_2fa') }}" method="POST">
-          <button class="btn btn-secondary">
-            {{ "2FA deaktivieren" if user.twofa_enabled else "2FA aktivieren" }}
-          </button>
-        </form>
-      </div>
+
 
       <hr/>
       <p>

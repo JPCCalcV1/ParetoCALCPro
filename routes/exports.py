@@ -1,3 +1,11 @@
+import io
+from flask import request, jsonify, send_file, Blueprint
+from openpyxl import Workbook
+from openpyxl.drawing.image import Image
+from openpyxl.styles import Alignment, Border, Side, PatternFill, Font
+# Ggf. openpyxl.worksheet.worksheet import Worksheet
+
+
 
 from flask import Blueprint, request, send_file, session, jsonify
 from .excel import (
@@ -97,8 +105,8 @@ def baugruppe_ppt_export():
 @exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
 def baugruppe_excel_8steps():
     """
-    Erstellt ein breites OnePager-Excel (8 Schritte + Summen).
-    Erwartet JSON mit tab1, tab2, tab3, tab4.
+    Erstellt einen "OnePager"-Excel-Export mit 8 Schritten + Summen,
+    in dem u.a. Material-/Fertigungskosten und Ausschuss etc. abgebildet sind.
     """
     data = request.get_json() or {}
     tab1 = data.get("tab1", {})

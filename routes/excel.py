@@ -93,13 +93,13 @@ def export_baugruppe_eight_steps_excel(tab1_data, tab2_data, tab3_steps, tab4_su
     ws.row_dimensions[1].height = 45  # Höhe für 3-4 Zeilen
 
     # Logo links: Wenn du kein Logo hast, kannst du den Code auskommentieren
-    # try:
-    #     img = Image("static/img/jpc.jpeg")
-    #     img.width = 80
-    #     img.height = 40
-    #     ws.add_image(img, "A1")
-    # except Exception:
-    #     pass
+    try:
+        img = Image("static/img/jpc.jpeg")
+        img.width = 80
+        img.height = 40
+        ws.add_image(img, "A1")
+    except Exception:
+        pass
 
     cell_title = ws["A1"]
     cell_title.value = "JPC Calc V2.0 - EPISCHES KALKULATIONSTOOL"
