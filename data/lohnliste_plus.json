@@ -1,0 +1,11 @@
+[
+    {
+      "country": "Lohn-Dummy",
+      "shiftModel": "3-shift",
+      "baseWageGrossEURh": 25,
+      "lohnNebenkostenPercent": 0.70,
+      "shiftZuschlagPercent": 0.10,
+      "allInEURh": 33.33,
+      "comment": "für Lohndaten bitte auf Premium upgraden"
+    }
+  ]

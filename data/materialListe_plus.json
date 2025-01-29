@@ -1,0 +1,14 @@
+[
+  {
+    "material": "Dummy",
+    "verfahrensTyp": "z.B. Spritzguss",
+    "form": "Guss-Roh",
+    "beschichtung": "Unbeschichtet",
+    "basisPreisEURkg": 1.60,
+    "legierungsZuschlagEURkg": 0.20,
+    "umarbeitungsKostenEURkg": 0.50,
+    "gesamtPreisEURkg": 2.50,
+    "co2EmissionenKG": 4.0,
+    "kommentar": "Materialdaten im Premium-Abo"
+  }
+]

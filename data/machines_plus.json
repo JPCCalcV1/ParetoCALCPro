@@ -1,0 +1,11 @@
+[
+  {
+    "machineName": "Maschinen-Dummy",
+    "machineNameIntern": "Index MS16 Plus (Vollausstattung, Standard)",
+    "verfahren": "Drehen",
+    "kaufpreis": 500000,
+    "power_kW": 50,
+    "throughputPartsPerYear": 500000,
+    "comment": "Maschinendaten nur im Premium-Abo!"
+  }
+]
