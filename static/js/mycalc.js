@@ -851,7 +851,7 @@ function attachRowEvents() {
   rows.forEach((row, rowIdx) => {
     console.log("DEBUG: In attachRowEvents() forEach - rowIdx =", rowIdx);
     row.querySelectorAll("input").forEach((inp) => {
-      inp.addEventListener("change", () => {
+      inp.addEventListener("input", () => {
         console.log("DEBUG: onChange event for rowIdx =", rowIdx, "input element =", inp);
         const lotVal = parseFloat(document.getElementById("lotSize")?.value) || 100;
         updateRowCalc(rowIdx, lotVal);
