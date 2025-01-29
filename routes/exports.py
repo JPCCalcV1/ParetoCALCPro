@@ -1,44 +1,41 @@
-
+from flask import Blueprint, request, send_file, jsonify
+from .excel import export_baugruppe_eight_steps_excel, export_baugruppe_comparison_excel
 
 # ------------------------------------------------------------------------
 # Einige Zeilen Kontext / andere Routen
 # ------------------------------------------------------------------------
 
-
+exports_bp = Blueprint("exports_bp", __name__)
 # ------------------------------------------------------------------------
 # NEUE Route: Erzeugt fancy/vergleichende Excel-Auswertung
 # ------------------------------------------------------------------------
-@exports_bp.route("/baugruppe/excel_comparison", methods=["POST"])
-def baugruppe_excel_comparison():
-    """
-    Neue Route: Erstellt das 'FullOverview' + 'SupplierCompare'-Excel
-    mit Ampelfunktion für Delta-Analyse.
-    """
 
 
-    # 2) JSON Daten abrufen: Tab1, Tab2, Tab3, Tab4
+@exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
+def baugruppe_excel_8steps():
+    """
+    Nimmt POST-JSON mit tab1, tab2, tab3, tab4 entgegen und gibt
+    ein schön formatiertes OnePager-Excel zurück. Optional mit 2. Blatt.
+    """
     data = request.get_json() or {}
-    tab1 = data.get("tab1", {})    # dict
-    tab2 = data.get("tab2", {})    # dict
-    tab3 = data.get("tab3", [])    # list of dict (max. 8)
-    tab4 = data.get("tab4", {})    # dict (Ergebnis-Summary)
+    tab1 = data.get("tab1", {})
+    tab2 = data.get("tab2", {})
+    tab3 = data.get("tab3", [])
+    tab4 = data.get("tab4", {})
 
-    # 3) Excel generieren
-    excel_bytes, filename = export_baugruppe_comparison_excel(tab1, tab2, tab3, tab4)
+    try:
+        excel_bytes, filename = export_baugruppe_eight_steps_excel(
+            tab1, tab2, tab3, tab4
+        )
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    # 4) Download
     return send_file(
         excel_bytes,
         download_name=filename,
         as_attachment=True,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
-
-# ------------------------------------------------------------------------
-# (Weitere Routen oder Endpunkte könnten folgen)
-# ------------------------------------------------------------------------
-
-
 
 @exports_bp.route("/baugruppe/ppt", methods=["POST"])
 def baugruppe_ppt_export():
@@ -68,59 +65,4 @@ def baugruppe_ppt_export():
         download_name=filename,
         as_attachment=True,
         mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    )
-
-
-
-
-@exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
-def baugruppe_excel_8steps():
-    """
-    Nimmt POST-JSON mit tab1, tab2, tab3, tab4 entgegen und gibt
-    ein schön formatiertes OnePager-Excel zurück. Optional mit 2. Blatt.
-    """
-    data = request.get_json() or {}
-    tab1 = data.get("tab1", {})
-    tab2 = data.get("tab2", {})
-    tab3 = data.get("tab3", [])
-    tab4 = data.get("tab4", {})
-
-    try:
-        excel_bytes, filename = export_baugruppe_eight_steps_excel(
-            tab1, tab2, tab3, tab4
-        )
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-    return send_file(
-        excel_bytes,
-        download_name=filename,
-        as_attachment=True,
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-
-
-@exports_bp.route("/baugruppe/excel_epic", methods=["POST"])
-def baugruppe_excel_epic():
-    """
-    Route für das 'epische' Excel nach dem Layout deines Screenshots.
-    Erwartet JSON Body mit tab1, tab2, tab3, tab4.
-    Keine License-Checks, 1:1 Copy-Paste.
-    """
-    data = request.get_json() or {}
-    tab1 = data.get("tab1", {})
-    tab2 = data.get("tab2", {})
-    tab3 = data.get("tab3", [])
-    tab4 = data.get("tab4", {})
-
-    try:
-        excel_bytes, filename = export_pareto_kalk_epic(tab1, tab2, tab3, tab4)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-    return send_file(
-        excel_bytes,
-        download_name=filename,
-        as_attachment=True,
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
