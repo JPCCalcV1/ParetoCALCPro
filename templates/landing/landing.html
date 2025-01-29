@@ -358,7 +358,7 @@ async function buyPlus() {
       let whoData = await whoRes.json();
       if (!whoData.logged_in) {
         // User ist nicht eingeloggt => Weiterleiten zum Login
-        window.location = "/auth/login?next=%2F%23upgrade";
+        window.location = "/auth/login?next=%2F%23pricing";
         return;
       }
 
@@ -389,7 +389,7 @@ async function buyPlus() {
       let whoData = await whoRes.json();
       if (!whoData.logged_in) {
         // User ist nicht eingeloggt => Weiterleiten zum Login
-        window.location = "/auth/login?next=%2F%23upgrade";
+        window.location = "/auth/login?next=%2F%23pricing";
         return;
       }
 
