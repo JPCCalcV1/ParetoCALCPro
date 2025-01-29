@@ -2042,7 +2042,7 @@ function onAskGPT(inputId, outputId) {
     return;
   }
 
-  out.textContent = "Ich frage die KI...";
+  out.textContent = "Bitte warten, Anfrage bei der KI läuft...";
   askCustomGPT(question)
       .then((reply) => {
         out.textContent = reply;

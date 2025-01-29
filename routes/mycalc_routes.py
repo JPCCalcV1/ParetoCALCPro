@@ -269,7 +269,7 @@ def gpt_ask():
     }
 
     try:
-        r = requests.post(endpoint, headers=headers, json=payload, timeout=15)
+        r = requests.post(endpoint, headers=headers, json=payload, timeout=30)
         if not r.ok:
             current_app.logger.warning(
                 "CustomGPT request failed: code=%s, text=%s",
