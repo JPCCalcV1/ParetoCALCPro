@@ -42,7 +42,7 @@ def create_app():
     app.config["SESSION_COOKIE_HTTPONLY"] = True
     app.config["SESSION_COOKIE_SAMESITE"] = "None"
 
-    print("DEBUG DB-URL =", app.config["SQLALCHEMY_DATABASE_URI"])
+
 
     db.init_app(app)
     if Migrate:
