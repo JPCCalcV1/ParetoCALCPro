@@ -2971,7 +2971,7 @@ async function exportBaugruppenPowerPoint() {
   URL.revokeObjectURL(url);
 }
 
-async function export8StepsExcel() {
+    async function export8StepsExcel() {
   // 1) Daten aus Tab1..Tab4 sammeln
   const tab1 = {
     scrapPct: parseFloat(document.getElementById("scrapPct")?.value) || 5,

@@ -1,19 +1,4 @@
 
-from flask import Blueprint, request, send_file, session, jsonify
-from .excel import (
-    export_baugruppe_eight_steps_excel,
-    export_baugruppe_comparison_excel,
-    export_pareto_kalk_epic,
-    )
-from .powerpoint import export_baugruppe_pptx
-
-
-
-
-
-
-
-exports_bp = Blueprint("exports_bp", __name__)
 
 # ------------------------------------------------------------------------
 # Einige Zeilen Kontext / andere Routen

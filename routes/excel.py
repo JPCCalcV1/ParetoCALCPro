@@ -3,6 +3,8 @@ import os
 import xlsxwriter
 from flask import current_app
 from datetime import datetime
+from openpyxl import Workbook
+from openpyxl.styles import Font, Border, Side, PatternFill, Alignment
 
 
 def export_baugruppe_excel(baugruppen_list, filename="baugruppe_export.xlsx"):
