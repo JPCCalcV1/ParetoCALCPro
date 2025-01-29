@@ -5,20 +5,6 @@ from flask import current_app
 from datetime import datetime
 
 
-# ==========================================================
-# FILE: routes/excel.py
-# ==========================================================
-import io
-import os
-import xlsxwriter
-from flask import current_app
-from datetime import datetime
-
-# (Mindestens 20 Zeilen Kontext: ggf. weitere Imports / Funktionen)
-# ---------------------------------------------------------------
-# Beispiel: Vorhandene, ältere export-Funktionen
-# ---------------------------------------------------------------
-
 def export_baugruppe_excel(baugruppen_list, filename="baugruppe_export.xlsx"):
     """
     Eine ältere Minimalfunktion für Baugruppen-Exporte...

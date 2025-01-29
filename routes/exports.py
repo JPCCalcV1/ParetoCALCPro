@@ -1,19 +1,17 @@
-import io
-from flask import request, jsonify, send_file, Blueprint
-from openpyxl import Workbook
-from openpyxl.drawing.image import Image
-from openpyxl.styles import Alignment, Border, Side, PatternFill, Font
-# Ggf. openpyxl.worksheet.worksheet import Worksheet
-
-
 
 from flask import Blueprint, request, send_file, session, jsonify
 from .excel import (
     export_baugruppe_eight_steps_excel,
     export_baugruppe_comparison_excel,
-    export_pareto_kalk_epic
-)
+    export_pareto_kalk_epic,
+    )
 from .powerpoint import export_baugruppe_pptx
+
+
+
+
+
+
 
 exports_bp = Blueprint("exports_bp", __name__)
 
@@ -56,18 +54,6 @@ def baugruppe_excel_comparison():
 # ------------------------------------------------------------------------
 
 
-@exports_bp.route("/baugruppe/pdf", methods=["POST"])
-def baugruppe_pdf_export():
-    # License-Check
-
-
-    data = request.get_json() or {}
-    items = data.get("baugruppenItems",[])
-    if not items:
-        return jsonify({"error":"Keine Einträge in Baugruppe"}),400
-
-    pdf_io, filename = export_baugruppe_pdf(items)
-    return send_file(pdf_io, download_name=filename, as_attachment=True, mimetype="application/pdf")
 
 @exports_bp.route("/baugruppe/ppt", methods=["POST"])
 def baugruppe_ppt_export():
