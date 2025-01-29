@@ -2620,7 +2620,7 @@ async function exportBaugruppenPowerPoint() {
   // 2) POST => /baugruppe/excel_8steps
   // ------------------------------------------------
   try {
-    const resp = await fetch("/baugruppe/excel_8steps", {
+    const resp = await fetch("/exports/baugruppe/excel_8steps", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ tab1, tab2, tab3, tab4 })
