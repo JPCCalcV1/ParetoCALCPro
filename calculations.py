@@ -65,13 +65,20 @@ def calculate_all(data):
         step_base_no_scrap = mach_cost_piece + lohn_cost_piece + tool_cost_piece
         step_scrap_value = step_base_no_scrap * (scrap_pct / 100.0)
 
-        # 3) Fertigungs-Gemeinkosten (auf base + scrap)
-        step_base_plus_scrap = step_base_no_scrap + step_scrap_value
-        step_fgk_value = step_base_plus_scrap * (fgk_pct / 100.0)
+        # 3) Fertigungsgemeinkosten wollen wir auch auf Rüsten und Ausschuss rechnen.
+        #    => FGK-Basis ist (Maschine + Lohn + Tooling + Rüsten) + Ausschuss
 
-        # 4) Rüstkosten verteilen
-        #   Rüstkosten/Los => Rüstkosten / lot_size => €/Stk
+        #   Rüstkosten verteilen (€/Stk)
         ruest_per_piece = ruest_val / lot_size
+
+        #   Base *ohne* Ausschuss, ABER *mit* Rüsten:
+        base_no_scrap_for_fgk = step_base_no_scrap + ruest_per_piece
+
+        #   Füge Ausschuss hinzu
+        base_plus_scrap_for_fgk = base_no_scrap_for_fgk + step_scrap_value
+
+        #   FGK
+        step_fgk_value = base_plus_scrap_for_fgk * (fgk_pct / 100.0)
 
         # 5) Summen und CO₂
         sum_mach_no_scrap += mach_cost_piece
