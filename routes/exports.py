@@ -91,21 +91,18 @@ def baugruppe_ppt_export():
 @exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
 def baugruppe_excel_8steps():
     """
-    Erstellt einen "OnePager"-Excel-Export mit 8 Schritten + Summen,
-    in dem u.a. Material-/Fertigungskosten und Ausschuss etc. abgebildet sind.
+    Nimmt POST-JSON mit tab1, tab2, tab3, tab4 entgegen und gibt
+    ein schön formatiertes OnePager-Excel zurück. Optional mit 2. Blatt.
     """
     data = request.get_json() or {}
     tab1 = data.get("tab1", {})
     tab2 = data.get("tab2", {})
-    tab3 = data.get("tab3", [])  # list of dict
+    tab3 = data.get("tab3", [])
     tab4 = data.get("tab4", {})
 
     try:
         excel_bytes, filename = export_baugruppe_eight_steps_excel(
-            tab1_data=tab1,
-            tab2_data=tab2,
-            tab3_steps=tab3,
-            tab4_summary=tab4
+            tab1, tab2, tab3, tab4
         )
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -116,6 +113,7 @@ def baugruppe_excel_8steps():
         as_attachment=True,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
 
 @exports_bp.route("/baugruppe/excel_epic", methods=["POST"])
 def baugruppe_excel_epic():
