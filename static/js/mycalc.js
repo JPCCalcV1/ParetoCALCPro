@@ -924,10 +924,10 @@ function updateRowCalc(rowIdx, lotSize) {
   row[9].querySelector("span").textContent = co2_100.toFixed(2);
 
   const cost_per_piece = cost100 / 100;
-  row[8].querySelector("span").textContent = cost_per_piece.toFixed(4);
+  row[8].querySelector("span").textContent = cost_per_piece.toFixed(2);
 
   const co2_per_piece = co2_100 / 100;
-  row[9].querySelector("span").textContent = co2_per_piece.toFixed(4);
+  row[9].querySelector("span").textContent = co2_per_piece.toFixed(2);
 
   console.log("DEBUG: cost100=", cost100, "co2_100=", co2_100);
 
@@ -961,8 +961,8 @@ function updateRowCalc(rowIdx, lotSize) {
   let co2_100WithScrap = co2_100 * factorScrap;
 
   // 7) Erneut in Spalte 8 & 9 anzeigen (überschreiben)
-  row[8].querySelector("span").textContent = (cost100WithScrap / 100).toFixed(4);
-  row[9].querySelector("span").textContent = (co2_100WithScrap / 100).toFixed(4);
+  row[8].querySelector("span").textContent = (cost100WithScrap / 100).toFixed(2);
+  row[9].querySelector("span").textContent = (co2_100WithScrap / 100).toFixed(2);
 
   console.log("DEBUG: cost100WithScrap=", cost100WithScrap, "co2_100WithScrap=", co2_100WithScrap);
   console.log("DEBUG: Exiting updateRowCalc()");

@@ -91,11 +91,13 @@ def baugruppe_ppt_export():
         mimetype="application/vnd.openxmlformats-officedocument.presentationml.presentation"
     )
 
+
+
+
 @exports_bp.route("/baugruppe/excel_8steps", methods=["POST"])
 def baugruppe_excel_8steps():
     """
-    Erstellt ein breites OnePager-Excel (8 Schritte in B..Q, Summen in R..S).
-    KEIN License-Check.
+    Erstellt ein breites OnePager-Excel (8 Schritte + Summen).
     Erwartet JSON mit tab1, tab2, tab3, tab4.
     """
     data = request.get_json() or {}
