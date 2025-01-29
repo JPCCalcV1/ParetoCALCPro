@@ -53,7 +53,7 @@ function openTaktzeitModal() {
 
 function calcAll() {
   console.log("DEBUG: Entering calcAll()");
-
+ recalcAllRows();
   // -------------------------
   // 1. Projekt-Inputs
   // -------------------------
@@ -2978,4 +2978,17 @@ function handleLotSizeChange() {
   });
 
   console.log("handleLotSizeChange => Alle Zeilen mit neuer Losgröße", newLotVal, "aktualisiert");
+}
+
+function recalcAllRows() {
+  console.log("DEBUG: Entering recalcAllRows()");
+  const lotVal = parseFloat(document.getElementById("lotSize")?.value) || 100;
+  const rows = document.querySelectorAll("#fertTable tbody tr");
+
+  rows.forEach((row, idx) => {
+    // updateRowCalc erwartet (rowIdx, lotSize)
+    updateRowCalc(idx, lotVal);
+  });
+
+  console.log("DEBUG: Exiting recalcAllRows()");
 }
