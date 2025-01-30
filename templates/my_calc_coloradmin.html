@@ -4678,7 +4678,25 @@ function loadGoogleAnalytics() {
   gtag("config", "G-7W9D1NDGR0");
 }
 </script>
+  <script>
+  function loadLinkedInTag() {
+    // Partner-ID festlegen:
+    window._linkedin_partner_id = "XXXXXX"; // Deine LinkedIn-Partner-ID
+    window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+    window._linkedin_data_partner_ids.push(_linkedin_partner_id);
 
+    // Script dynamisch einfügen
+    var lnScript = document.createElement("script");
+    lnScript.type = "text/javascript";
+    lnScript.async = true;
+    lnScript.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(lnScript, s);
+
+    // Optional: <noscript> Tag kann manuell eingebunden werden, falls du willst.
+  }
+  </script>
 <script>
 // Lade optional deine Lizenz-/Login-Prüfung
 window.addEventListener("DOMContentLoaded", () => {
@@ -4702,6 +4720,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // Falls schon "cookieConsent=all" vorhanden ist => GA sofort laden
   if (getCookie("cookieConsent") === "all") {
     loadGoogleAnalytics();
+    loadLinkedInTag(); // ← LinkedIn direkt nach Zustimmung laden
   }
 
   // Klick auf "Alle akzeptieren"
@@ -4714,6 +4733,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       // Sofort Google Analytics nachträglich laden
       loadGoogleAnalytics();
+      loadLinkedInTag();
     });
 
   // Klick auf "Nur essenzielle"
