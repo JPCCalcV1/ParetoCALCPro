@@ -15,7 +15,7 @@ def check_logged_in():
         return jsonify({"error": "Not logged in"}), 401
 
 @gpt_bp.route("/create-session", methods=["POST"])
-@limiter.limit("50/minute")
+@limiter.limit("450/minute")
 def create_gpt_session():
     """
     Erzeugt / reaktiviert eine GPT-Session mit Kontingent (allowed_count).
@@ -55,7 +55,7 @@ def create_gpt_session():
 
 
 @gpt_bp.route("/ask", methods=["POST"])
-@limiter.limit("50/minute")
+@limiter.limit("450/minute")
 def gpt_ask():
     """
     Verbraucht 1 GPT-Call. Nur erlaubt, solange used_count < allowed_count.

@@ -16,7 +16,7 @@ from helpers.sendgrid_helper import send_email
 auth_bp = Blueprint("auth_bp", __name__)
 
 @auth_bp.route("/register", methods=["POST"])
-@limiter.limit("5 per 15 minutes")
+@limiter.limit("150 per 15 minutes")
 def register():
     """
     Registriert einen neuen User.
@@ -59,7 +59,7 @@ def register():
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
-@limiter.limit("5 per 15 minutes")  # Rate-Limit: max. 5 Logins in 15 Min
+@limiter.limit("150 per 15 minutes")  # Rate-Limit: max. 5 Logins in 15 Min
 def login():
     if request.method == "GET":
         # Gib einfach das Login-Template zurück (HTML-Form)

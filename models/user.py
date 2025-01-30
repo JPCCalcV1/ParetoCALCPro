@@ -19,7 +19,7 @@ class User(db.Model):
 
     # GPT-Felder
     gpt_used_count = db.Column(db.Integer, default=0)
-    gpt_allowed_count = db.Column(db.Integer, default=10)
+    gpt_allowed_count = db.Column(db.Integer, default=35)
     addons = db.Column(db.String(200), default="")
 
     # 2FA-Felder

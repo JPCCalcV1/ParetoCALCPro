@@ -221,7 +221,7 @@ def do_calc():
 
 @mycalc_bp.route("/gpt_ask", methods=["POST"])
 @csrf.exempt  # falls dein JS keinen CSRF-Token sendet
-@limiter.limit("2000 per day")  # NEU: max. 50 GPT-Calls pro Tag
+@limiter.limit("5000 per day")  # NEU: max. 50 GPT-Calls pro Tag
 def gpt_ask():
     """
     GPT => userQuestion => check license => custom GPT usage -> +1 gpt_used_count

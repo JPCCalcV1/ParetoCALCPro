@@ -8,7 +8,7 @@ param_calc_bp = Blueprint('param_calc_bp', __name__)
 
 @param_calc_bp.route("/feinguss", methods=["POST"])
 @csrf.exempt
-@limiter.limit("50/minute")
+@limiter.limit("150/minute")
 def calc_feinguss():
     """
     POST /calc/param/feinguss
@@ -238,7 +238,7 @@ def calc_feinguss():
 
 @param_calc_bp.route('/kaltfliess', methods=['POST'])
 @csrf.exempt   # Falls du globales CSRF hast und dein Frontend den Token NICHT mitsendet.
-@limiter.limit("50/minute")  # optionales Rate-Limit
+@limiter.limit("150/minute")  # optionales Rate-Limit
 def calc_kaltfliess():
     """
     Nimmt JSON-Daten vom Frontend entgegen (Kaltfließpressen-Parameter)
@@ -407,7 +407,7 @@ def calc_kaltfliess():
 
 @param_calc_bp.route('/schmieden', methods=['POST'])
 @csrf.exempt   # Falls du globales CSRF hast und dein Frontend den Token NICHT mitsendet.
-@limiter.limit("50/minute")  # optionales Rate-Limit
+@limiter.limit("150/minute")  # optionales Rate-Limit
 def calc_schmieden():
     """
     Nimmt die JSON-Daten (Material, Land, Teilgewicht, Losgröße, etc.) entgegen,
@@ -563,7 +563,7 @@ def calc_schmieden():
 
 @param_calc_bp.route("/pcb", methods=["POST"])
 @csrf.exempt   # Falls du globales CSRF hast und dein Frontend den Token NICHT mitsendet
-@limiter.limit("50/minute")  # optionales Rate-Limit
+@limiter.limit("150/minute")  # optionales Rate-Limit
 def calc_pcb():
     """
     Nimmt JSON-Daten für den PCB-Kalkulator entgegen und führt
