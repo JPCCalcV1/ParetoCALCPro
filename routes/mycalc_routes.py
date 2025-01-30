@@ -66,7 +66,7 @@ def get_machine_list():
         return jsonify({"error": "Lizenz abgelaufen"}), 403
 
     if lvl in ["plus"]:
-        filename = "machines_test.json"
+        filename = "machines_plus.json"
     elif lvl == "premium":
         filename = "machines_premium.json"
     elif lvl == "extended":
