@@ -4605,9 +4605,8 @@ btn btn-teal: ein ColorAdmin-Farbton.
 <script
   src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"
 ></script>
-<!-- Externes JS -->
-  <!-- In base.html oder layout.html (im <head> oder unten vor </body>) -->
 
+<!-- Externes JS (deine Calculator-Skripte) -->
 <script src="/static/js/mycalc.js"></script>
 <script src="/static/js/feinguss_calculator.js"></script>
 <script src="/static/js/schmieden_calculator.js"></script>
@@ -4617,71 +4616,141 @@ btn btn-teal: ein ColorAdmin-Farbton.
 <script src="/static/js/druckguss_calculator.js"></script>
 <script src="/static/js/milling_calculator.js"></script>
 <script src="/static/js/stamping_calculator.js"></script>
-    <!-- Live Chat Widget -->
+<!-- Live Chat Widget (falls vorhanden) -->
 
-<hr/>
-<div id="cookieBanner" style="position: fixed; bottom: 0; left: 0; right: 0;
-     background: #222; color: #fff; padding: 10px; display: none; z-index: 9999;">
+<hr />
+<div
+  id="cookieBanner"
+  style="
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #222;
+    color: #fff;
+    padding: 10px;
+    display: none;
+    z-index: 9999;
+  "
+>
   <p style="margin: 0;">
     Wir verwenden Cookies. Einige sind essenziell, andere helfen uns,
     unsere Seite zu verbessern. Mit Klick auf „Alle akzeptieren“ stimmen
     Sie der Verwendung zu.
-    <a href="/datenschutz" style="color: #fff; text-decoration: underline;">
-      Mehr Infos
-    </a>
+    <a
+      href="/datenschutz"
+      style="color: #fff; text-decoration: underline;"
+      >Mehr Infos</a
+    >
   </p>
-  <button id="cookieAcceptAll" class="btn btn-sm btn-success" style="margin: 5px;">Alle akzeptieren</button>
-  <button id="cookieDeclineAll" class="btn btn-sm btn-light" style="margin: 5px;">Nur essenzielle</button>
+  <button
+    id="cookieAcceptAll"
+    class="btn btn-sm btn-success"
+    style="margin: 5px;"
+  >
+    Alle akzeptieren
+  </button>
+  <button
+    id="cookieDeclineAll"
+    class="btn btn-sm btn-light"
+    style="margin: 5px;"
+  >
+    Nur essenzielle
+  </button>
 </div>
-</div>
+</div> <!-- Hier wird das Haupt-DIV (id="app") geschlossen, falls oben geöffnet -->
+
+<!-- 1) Funktion zum Laden von Google Analytics (GA4) -->
 <script>
-window.addEventListener("DOMContentLoaded", () => {
-  checkLicense(); // oder checkUserLogin();
-});
-  (function () {
-    function getCookie(name) {
-      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      if (match) return match[2];
-    }
+function loadGoogleAnalytics() {
+  // GA-Script dynamisch anlegen
+  var gaScript = document.createElement("script");
+  gaScript.async = true;
+  gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX";
+  document.head.appendChild(gaScript);
 
-    if (!getCookie("cookieConsent")) {
-      document.getElementById("cookieBanner").style.display = "block";
-    }
+  // GA-Tracking konfigurieren
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
 
-    document.getElementById("cookieAcceptAll").addEventListener("click", function () {
-      document.cookie = "cookieConsent=all; path=/; max-age=" + (365 * 24 * 60 * 60);
-      document.getElementById("cookieBanner").style.display = "none";
-      // optional: Google Analytics oder andere Tracker aktivieren
-    });
-
-    document.getElementById("cookieDeclineAll").addEventListener("click", function () {
-      document.cookie = "cookieConsent=essential; path=/; max-age=" + (365 * 24 * 60 * 60);
-      document.getElementById("cookieBanner").style.display = "none";
-    });
-  })();
+  // Deine Measurement ID eintragen
+  gtag("config", "G-XXXXXXXXXX");
+}
 </script>
+
 <script>
-  // Starte das ColorAdmin App-Framework
-  document.addEventListener('DOMContentLoaded', function() {
-    App.init();
+// Lade optional deine Lizenz-/Login-Prüfung
+window.addEventListener("DOMContentLoaded", () => {
+  if (typeof checkLicense === "function") {
+    checkLicense(); // oder checkUserLogin();
+  }
+});
+
+// Cookie-Banner Logik
+(function () {
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+    if (match) return match[2];
+  }
+
+  // Banner nur anzeigen, wenn noch keine Zustimmung vorliegt
+  if (!getCookie("cookieConsent")) {
+    document.getElementById("cookieBanner").style.display = "block";
+  }
+
+  // Falls schon "cookieConsent=all" vorhanden ist => GA sofort laden
+  if (getCookie("cookieConsent") === "all") {
+    loadGoogleAnalytics();
+  }
+
+  // Klick auf "Alle akzeptieren"
+  document
+    .getElementById("cookieAcceptAll")
+    .addEventListener("click", function () {
+      document.cookie =
+        "cookieConsent=all; path=/; max-age=" + 365 * 24 * 60 * 60;
+      document.getElementById("cookieBanner").style.display = "none";
+
+      // Sofort Google Analytics nachträglich laden
+      loadGoogleAnalytics();
+    });
+
+  // Klick auf "Nur essenzielle"
+  document
+    .getElementById("cookieDeclineAll")
+    .addEventListener("click", function () {
+      document.cookie =
+        "cookieConsent=essential; path=/; max-age=" + 365 * 24 * 60 * 60;
+      document.getElementById("cookieBanner").style.display = "none";
+    });
+})();
+</script>
+
+<script>
+  // Starte das ColorAdmin-App-Framework, wenn vorhanden
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof App !== "undefined" && App.init) {
+      App.init();
+    }
   });
 
-  // Minimales Chat-Fenster an/aus
-  function toggleChatWindow(){
+  // Minimales Chat-Fenster an/aus (nur falls du es nutzt)
+  function toggleChatWindow() {
     const cw = document.getElementById("chatWindow");
-    cw.style.display = (cw.style.display === "block") ? "none" : "block";
+    if (cw) {
+      cw.style.display = cw.style.display === "block" ? "none" : "block";
+    }
   }
 </script>
-<hr/>
+
+<hr />
 <footer class="text-center my-3">
   <a href="/impressum">Impressum</a> |
   <a href="/datenschutz">Datenschutz</a> |
   <a href="/agb">AGB</a>
 </footer>
 
-
-
-</div>
-
+</div> <!-- Falls noch ein offenes DIV war, hier schließen -->
 </body>
 </html>
