@@ -59,7 +59,7 @@ def register():
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
-@limiter.limit("150 per 15 minutes")  # Rate-Limit: max. 5 Logins in 15 Min
+@limiter.limit("10 per 15 minutes")  # Rate-Limit: max. 5 Logins in 15 Min
 def login():
     if request.method == "GET":
         # Gib einfach das Login-Template zurück (HTML-Form)
