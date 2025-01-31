@@ -2359,9 +2359,9 @@ function openDruckgussModalSafe() {
 }
 
 function openMillingModalSafe() {
-  checkLicenseThen(() => {
-    openMillingModal();
-  });
+  // Minimal: Zeige Alert und mach NIX
+  alert("Die Zerspanung (Milling) ist nur im Extended-Abo verfügbar.");
+  // optional: console.log("User tried to open Milling Modal but is blocked.");
 }
 
 function openStampingModalSafe() {
