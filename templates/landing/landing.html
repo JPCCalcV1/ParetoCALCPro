@@ -361,6 +361,35 @@ Unser Ziel: Unternehmen ein leistungsstarkes Tool zu bieten, das Transparenz sch
 
   <!-- Payment-Skripte (Beispiel für Stripe-Kauf) -->
   <script>
+  function loadGoogleAnalytics() {
+    var gaScript = document.createElement("script");
+    gaScript.async = true;
+    gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-7W9D1NDGR0";
+    document.head.appendChild(gaScript);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-7W9D1NDGR0");
+  }
+
+  function loadLinkedInTag() {
+    // Deine Partner-ID
+    window._linkedin_partner_id = "XXXXXX";
+    window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+    window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+
+    var lnScript = document.createElement("script");
+    lnScript.type = "text/javascript";
+    lnScript.async = true;
+    lnScript.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(lnScript, s);
+  }
+  </script>
+
+  <script>
 window.addEventListener("DOMContentLoaded", () => {
   checkLicense(); // oder checkUserLogin();
 });
@@ -459,33 +488,51 @@ async function buyPlus() {
     <button id="cookieAcceptAll" class="btn btn-sm btn-success" style="margin: 5px;">Alle akzeptieren</button>
     <button id="cookieDeclineAll" class="btn btn-sm btn-light" style="margin: 5px;">Nur essenzielle</button>
   </div>
-  <script>
-    (function(){
-      function getCookie(name) {
-        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        if (match) return match[2];
-      }
-      if(!getCookie("cookieConsent")) {
-        document.getElementById("cookieBanner").style.display = "block";
-      }
+   <script>
+  (function() {
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+    }
 
-      document.getElementById("cookieAcceptAll").addEventListener("click", function(){
-        document.cookie = "cookieConsent=all; path=/; max-age="+(365*24*60*60);
-        document.getElementById("cookieBanner").style.display = "none";
-      });
+    // Falls du checkLicense() brauchst:
+    // function checkLicense() { ... }
 
-      document.getElementById("cookieDeclineAll").addEventListener("click", function(){
-        document.cookie = "cookieConsent=essential; path=/; max-age="+(365*24*60*60);
-        document.getElementById("cookieBanner").style.display = "none";
-      });
-    })();
-  </script>
+    // Banner anzeigen, falls noch keine Einwilligung
+    if (!getCookie("cookieConsent")) {
+      document.getElementById("cookieBanner").style.display = "block";
+    }
 
-  <!-- Zusätzlicher Footer mit Impressum-Links -->
-  <hr/>
-  <footer class="text-center my-3">
-    <a href="/impressum">Impressum</a> |
-    <a href="/datenschutz">Datenschutz</a> |
+    // Falls cookieConsent=all => lade GA/LinkedIn sofort
+    if (getCookie("cookieConsent") === "all") {
+      loadGoogleAnalytics();
+      loadLinkedInTag();
+    }
+
+    // Klick 'Alle akzeptieren'
+    document.getElementById("cookieAcceptAll").addEventListener("click", function () {
+      document.cookie = "cookieConsent=all; path=/; max-age=" + (365 * 24 * 60 * 60);
+      document.getElementById("cookieBanner").style.display = "none";
+
+      // GA+LinkedIn laden
+      loadGoogleAnalytics();
+      loadLinkedInTag();
+    });
+
+    // Klick 'Nur essenzielle'
+    document.getElementById("cookieDeclineAll").addEventListener("click", function () {
+      document.cookie = "cookieConsent=essential; path=/; max-age=" + (365 * 24 * 60 * 60);
+      document.getElementById("cookieBanner").style.display = "none";
+    });
+  })();
+   </script>
+
+
+<!-- Zusätzlicher Footer mit Impressum-Links -->
+<hr/>
+<footer class="text-center my-3">
+  <a href="/impressum">Impressum</a> |
+  <a href="/datenschutz">Datenschutz</a> |
     <a href="/agb">AGB</a>
   </footer>
 

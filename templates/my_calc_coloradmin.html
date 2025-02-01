@@ -4619,84 +4619,11 @@ btn btn-teal: ein ColorAdmin-Farbton.
 <!-- Live Chat Widget (falls vorhanden) -->
 
 <hr />
-<div
-  id="cookieBanner"
-  style="
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #222;
-    color: #fff;
-    padding: 10px;
-    display: none;
-    z-index: 9999;
-  "
->
-  <p style="margin: 0;">
-    Wir verwenden Cookies. Einige sind essenziell, andere helfen uns,
-    unsere Seite zu verbessern. Mit Klick auf „Alle akzeptieren“ stimmen
-    Sie der Verwendung zu.
-    <a
-      href="/datenschutz"
-      style="color: #fff; text-decoration: underline;"
-      >Mehr Infos</a
-    >
-  </p>
-  <button
-    id="cookieAcceptAll"
-    class="btn btn-sm btn-success"
-    style="margin: 5px;"
-  >
-    Alle akzeptieren
-  </button>
-  <button
-    id="cookieDeclineAll"
-    class="btn btn-sm btn-light"
-    style="margin: 5px;"
-  >
-    Nur essenzielle
-  </button>
-</div>
+
 </div> <!-- Hier wird das Haupt-DIV (id="app") geschlossen, falls oben geöffnet -->
 
 <!-- 1) Funktion zum Laden von Google Analytics (GA4) -->
-<script>
-function loadGoogleAnalytics() {
-  // GA-Script dynamisch anlegen
-  var gaScript = document.createElement("script");
-  gaScript.async = true;
-  gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-7W9D1NDGR0";
-  document.head.appendChild(gaScript);
 
-  // GA-Tracking konfigurieren
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-
-  // Deine Measurement ID eintragen
-  gtag("config", "G-7W9D1NDGR0");
-}
-</script>
-  <script>
-  function loadLinkedInTag() {
-    // Partner-ID festlegen:
-    window._linkedin_partner_id = "XXXXXX"; // Deine LinkedIn-Partner-ID
-    window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
-    window._linkedin_data_partner_ids.push(_linkedin_partner_id);
-
-    // Script dynamisch einfügen
-    var lnScript = document.createElement("script");
-    lnScript.type = "text/javascript";
-    lnScript.async = true;
-    lnScript.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
-
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(lnScript, s);
-
-    // Optional: <noscript> Tag kann manuell eingebunden werden, falls du willst.
-  }
-  </script>
 <script>
 // Lade optional deine Lizenz-/Login-Prüfung
 window.addEventListener("DOMContentLoaded", () => {
@@ -4705,46 +4632,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Cookie-Banner Logik
-(function () {
-  function getCookie(name) {
-    const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-    if (match) return match[2];
-  }
 
-  // Banner nur anzeigen, wenn noch keine Zustimmung vorliegt
-  if (!getCookie("cookieConsent")) {
-    document.getElementById("cookieBanner").style.display = "block";
-  }
-
-  // Falls schon "cookieConsent=all" vorhanden ist => GA sofort laden
-  if (getCookie("cookieConsent") === "all") {
-    loadGoogleAnalytics();
-    loadLinkedInTag(); // ← LinkedIn direkt nach Zustimmung laden
-  }
-
-  // Klick auf "Alle akzeptieren"
-  document
-    .getElementById("cookieAcceptAll")
-    .addEventListener("click", function () {
-      document.cookie =
-        "cookieConsent=all; path=/; max-age=" + 365 * 24 * 60 * 60;
-      document.getElementById("cookieBanner").style.display = "none";
-
-      // Sofort Google Analytics nachträglich laden
-      loadGoogleAnalytics();
-      loadLinkedInTag();
-    });
-
-  // Klick auf "Nur essenzielle"
-  document
-    .getElementById("cookieDeclineAll")
-    .addEventListener("click", function () {
-      document.cookie =
-        "cookieConsent=essential; path=/; max-age=" + 365 * 24 * 60 * 60;
-      document.getElementById("cookieBanner").style.display = "none";
-    });
-})();
 </script>
 
 <script>
