@@ -695,8 +695,8 @@ function updateRowCalc(rowIdx, lotSize) {
   // 5) Gesamtkosten pro 100 mit Ausschuss
   const cost100WithScrap = sumNoFgk100WithScrap + costFgk100WithScrap;
 
-  // 6) CO₂ pro 100 (optional mit Ausschuss)
-  let co2_100WithScrap = co2_100 * factorScrap;
+  // 6) CO₂ pro 100 (ohne Ausschuss)
+  let co2_100WithScrap = co2_100;
 
   // 7) Erneut in Spalte 8 & 9 anzeigen (überschreiben)
   row[8].querySelector("span").textContent = (cost100WithScrap / 100).toFixed(2);
